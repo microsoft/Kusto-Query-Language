@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
@@ -11,6 +9,7 @@ namespace Kusto.Language.Binding
     using Symbols;
     using Syntax;
     using Utils;
+    using static Symbols.TypeFacts;
 
     internal sealed partial class Binder
     {
@@ -56,24 +55,69 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Binds a function call
         /// </summary>
-        private SemanticInfo BindFunctionCall(FunctionCallExpression functionCall, FunctionSymbol fn)
+        private SemanticInfo BindFunctionCall(
+            FunctionCallExpression functionCall, FunctionSymbol fn)
         {
-            var diagnostics = s_diagnosticListPool.AllocateFromPool();
             var arguments = s_expressionListPool.AllocateFromPool();
             var argumentTypes = s_typeListPool.AllocateFromPool();
-            var matchingSignatures = s_signatureListPool.AllocateFromPool();
 
             try
             {
                 GetArgumentsAndTypes(functionCall, arguments, argumentTypes);
+                return BindFunctionCall(functionCall, fn, arguments, argumentTypes);
+            }
+            finally
+            {
+                s_expressionListPool.ReturnToPool(arguments);
+                s_typeListPool.ReturnToPool(argumentTypes);
+            }
+        }
 
+        /// <summary>
+        /// Binds a function call
+        /// </summary>
+        private SemanticInfo BindFunctionCall(
+            FunctionCallExpression functionCall, 
+            FunctionSymbol fn, 
+            IReadOnlyList<Expression> arguments,
+            IReadOnlyList<TypeSymbol> argumentTypes)
+        {
+            var diagnostics = s_diagnosticListPool.AllocateFromPool();
+            var matchingSignatures = s_signatureListPool.AllocateFromPool();
+
+            try
+            {
                 GetBestMatchingSignatures(fn.Signatures, arguments, argumentTypes, matchingSignatures);
 
                 if (matchingSignatures.Count == 1)
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
                     var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, functionCall.Name, diagnostics);
-                    return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
+                    var resultType = funResult.Type;
+
+                    // check for possible better dynamic result
+                    if (funResult.Type == ScalarTypes.Dynamic
+                        && HasDynamicPrimitives(argumentTypes))
+                    {
+                        var unwrappedArgumentTypes = s_typeListPool.AllocateFromPool();
+                        try
+                        {
+                            GetUnwrappedDynamicPrimitives(argumentTypes, unwrappedArgumentTypes);
+                            var unwrappedResultType = BindFunctionCall(functionCall, fn, arguments, unwrappedArgumentTypes).ResultType;
+                            if (unwrappedResultType is ScalarSymbol
+                                && !(unwrappedResultType is DynamicSymbol)
+                                && unwrappedResultType != ScalarTypes.Unknown)
+                            {
+                                resultType = ScalarTypes.GetDynamic(unwrappedResultType);
+                            }
+                        }
+                        finally
+                        {
+                            s_typeListPool.ReturnToPool(unwrappedArgumentTypes);
+                        }
+                    }
+
+                    return new SemanticInfo(matchingSignatures[0], resultType, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
                 }
                 else
                 {
@@ -95,8 +139,6 @@ namespace Kusto.Language.Binding
             finally
             {
                 s_diagnosticListPool.ReturnToPool(diagnostics);
-                s_expressionListPool.ReturnToPool(arguments);
-                s_typeListPool.ReturnToPool(argumentTypes);
                 s_signatureListPool.ReturnToPool(matchingSignatures);
             }
         }
@@ -348,6 +390,10 @@ namespace Kusto.Language.Binding
                     var iArg = argumentParameters.IndexOf(signature.Parameters[0]);
                     return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
 
+                case ReturnTypeKind.Parameter0Array:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[0]);
+                    return iArg >= 0 && iArg < argumentTypes.Count ? (TypeSymbol)ScalarTypes.GetDynamicArray(argumentTypes[iArg]) : ErrorSymbol.Instance;
+
                 case ReturnTypeKind.Parameter1:
                     iArg = argumentParameters.IndexOf(signature.Parameters[1]);
                     return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg] : ErrorSymbol.Instance;
@@ -374,10 +420,10 @@ namespace Kusto.Language.Binding
 
                 case ReturnTypeKind.Parameter0Promoted:
                     iArg = argumentParameters.IndexOf(signature.Parameters[0]);
-                    return iArg >= 0 && iArg < argumentTypes.Count ? Promote(argumentTypes[iArg]) : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? TypeFacts.PromoteToLong(argumentTypes[iArg]) : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Common:
-                    return GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
+                    return TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
                     return TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance;
@@ -919,57 +965,6 @@ namespace Kusto.Language.Binding
             }
         }
 
-        /// <summary>
-        /// Gets the common argument type for arguments corresponding to parameters constrained to specific <see cref="ParameterTypeKind"/>.CommonXXX values.
-        /// </summary>
-        public static TypeSymbol GetCommonArgumentType(IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<TypeSymbol> argumentTypes)
-        {
-            TypeSymbol commonType = null;
-            var hadUnknown = false;
-
-            for (int i = 0; i < argumentTypes.Count; i++)
-            {
-                var parameter = argumentParameters[i];
-                if (parameter != null)
-                {
-                    var argType = argumentTypes[i];
-
-                    if ((parameter.TypeKind == ParameterTypeKind.CommonScalar && argType.IsScalar)
-                        || (parameter.TypeKind == ParameterTypeKind.CommonScalarOrDynamic && argType.IsScalar)
-                        || (parameter.TypeKind == ParameterTypeKind.CommonNumber && IsNumber(argType))
-                        || (parameter.TypeKind == ParameterTypeKind.CommonSummable && IsSummable(argType))
-                        || (parameter.TypeKind == ParameterTypeKind.CommonOrderable && IsOrderable(argType)))
-                    {
-                        if (commonType == null)
-                        {
-                            if (argType == ScalarTypes.Unknown)
-                            {
-                                hadUnknown = true;
-                            }
-                            else
-                            {
-                                commonType = argType;
-                            }
-                        }
-                        else if (commonType.IsPromotableTo(argType))
-                        {
-                            // a type that can be promoted to is better
-                            commonType = argType;
-                        }
-                        else if (commonType == ScalarTypes.Dynamic)
-                        {
-                            // non-dynamic scalars are better
-                            commonType = argType;
-                        }
-                    }
-                }
-            }
-
-            if (commonType == null && hadUnknown)
-                return ScalarTypes.Unknown;
-
-            return commonType;
-        }
 
         /// <summary>
         /// Gets the common return type across a set of signatures, or error if there is no common type.
@@ -1109,18 +1104,30 @@ namespace Kusto.Language.Binding
                     var best = result[0];
                     for (int i = 1; i < result.Count; i++)
                     {
-                        if (IsBetterSignatureMatch(result[i], best, arguments, argumentTypes))
+                        var signatureCompare = CompareSignatureMatch(result[i], best, arguments, argumentTypes);
+                        if (signatureCompare > 0)
                         {
                             best = result[i];
                         }
+                        else if (signatureCompare == 0)
+                        {
+                            // these two signatures are ambiguous
+                            return;
+                        }
                     }
 
+                    // go through again looking for signatures that somehow now compare
+                    // as better or equal to the prevously determined best.
                     for (int i = 0; i < result.Count; i++)
                     {
-                        if (result[i] != best && !IsBetterSignatureMatch(best, result[i], arguments, argumentTypes))
+                        if (result[i] != best)
                         {
-                            // non-best is now better than best second time around??? must be ambiguous
-                            return;
+                            var signatureCompare = CompareSignatureMatch(best, result[i], arguments, argumentTypes);
+                            if (signatureCompare <= 0)
+                            {
+                                // now a different signature is better? This is ambiguous.
+                                return;
+                            }
                         }
                     }
 
@@ -1134,70 +1141,40 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Determines if <see cref="P:signature1"/> is a better match than <see cref="P:signature2"/> for the specified arguments.
         /// </summary>
-        private bool IsBetterSignatureMatch(Signature signature1, Signature signature2, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
+        private int CompareSignatureMatch(Signature signature1, Signature signature2, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
         {
             var argCount = argumentTypes.Count;
             var matchCount1 = GetParameterMatchCount(signature1, arguments, argumentTypes);
             var matchCount2 = GetParameterMatchCount(signature2, arguments, argumentTypes);
 
-            // if function matches all arguments but other-function does not, function is better
+            // if signature1 matches all arguments but signature2 does not, signature1 is better
             if (matchCount1 == argCount && matchCount2 < argCount)
-                return true;
+                return matchCount1 - matchCount2;
 
-            // function with better parameter matches wins
-            Signature better = null;
-            for (int i = 0; i < argumentTypes.Count; i++)
-            {
-                if (IsBetterParameterMatch(signature1, signature2, arguments, argumentTypes, i))
-                {
-                    if (better == signature2) // function1 is better here but function2 was better before, therefore it is ambiguous
-                        break;
+            // signature with better worst overall parameter match wins
+            var worstMatch1 = GetWorstParameterMatch(signature1, arguments, argumentTypes);
+            var worstMatch2 = GetWorstParameterMatch(signature2, arguments, argumentTypes);
 
-                    better = signature1;
-                }
-                else if (IsBetterParameterMatch(signature2, signature1, arguments, argumentTypes, i))
-                {
-                    if (better == signature1) // function2 is better here but function1 was better before, therefore it is ambiguous
-                    {
-                        better = null;
-                        break;
-                    }
+            var matchCompare = CompareParameterMatch(worstMatch1, worstMatch2);
+            if (matchCompare != 0)
+                return matchCompare;
 
-                    better = signature2;
-                }
-            }
+            // signature with the better best overall parameter match wins
+            var bestMatch1 = GetBestParameterMatch(signature1, arguments, argumentTypes);
+            var bestMatch2 = GetBestParameterMatch(signature2, arguments, argumentTypes);
 
-            // if function1 is clearly better on all parameter matches, function1 is better
-            if (better == signature1)
-                return true;
+            matchCompare = CompareParameterMatch(bestMatch1, bestMatch2);
+            if (matchCompare != 0)
+                return matchCompare;
 
-            // ambigous on parameter-to-parameter matches
-            // if function1 has more matches than function2, function1 is better
-            return matchCount1 > matchCount2;
+            // ambigous on betterness of parameter matches
+            // signature with the most matching parameters wins
+            return matchCount1 - matchCount2;
         }
 
-        /// <summary>
-        /// Determines if <see cref="P:signature1"/> is a better match than <see cref="P:signature"/> for the specified argument at the corresponding parameter position.
-        /// </summary>
-        private bool IsBetterParameterMatch(Signature signature1, Signature signature2, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, int argumentIndex)
+        private static int CompareParameterMatch(ParameterMatchKind match1, ParameterMatchKind match2)
         {
-            var argumentParameters1 = s_parameterListPool.AllocateFromPool();
-            var argumentParameters2 = s_parameterListPool.AllocateFromPool();
-            try
-            {
-                signature1.GetArgumentParameters(arguments, argumentParameters1);
-                signature2.GetArgumentParameters(arguments, argumentParameters2);
-
-                var matches1 = GetParameterMatchKind(signature1, argumentParameters1, argumentTypes, argumentParameters1[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
-                var matches2 = GetParameterMatchKind(signature2, argumentParameters2, argumentTypes, argumentParameters2[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
-
-                return matches1 > matches2;
-            }
-            finally
-            {
-                s_parameterListPool.ReturnToPool(argumentParameters2);
-                s_parameterListPool.ReturnToPool(argumentParameters1);
-            }
+            return match1 - match2;
         }
 
         /// <summary>
@@ -1240,6 +1217,60 @@ namespace Kusto.Language.Binding
                 && argument is LiteralExpression lit
                 && lit.LiteralValue is string value
                 && value == parameter.DefaultValueIndicator;
+        }
+
+        private ParameterMatchKind GetWorstParameterMatch(
+            Signature signature,
+            IReadOnlyList<Expression> arguments,
+            IReadOnlyList<TypeSymbol> argumentTypes)
+        {
+            var argumentParameters = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                signature.GetArgumentParameters(arguments, argumentParameters);
+
+                var worstMatchKind = ParameterMatchKind.Exact;
+
+                for (int argumentIndex = 0; argumentIndex < arguments.Count; argumentIndex++)
+                {
+                    var matchKind = GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
+                    if (matchKind < worstMatchKind)
+                        worstMatchKind = matchKind;
+                }
+
+                return worstMatchKind;
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(argumentParameters);
+            }
+        }
+
+        private ParameterMatchKind GetBestParameterMatch(
+            Signature signature,
+            IReadOnlyList<Expression> arguments,
+            IReadOnlyList<TypeSymbol> argumentTypes)
+        {
+            var argumentParameters = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                signature.GetArgumentParameters(arguments, argumentParameters);
+
+                var bestMatchKind = ParameterMatchKind.None;
+
+                for (int argumentIndex = 0; argumentIndex < arguments.Count; argumentIndex++)
+                {
+                    var matchKind = GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[argumentIndex], arguments[argumentIndex], argumentTypes[argumentIndex]);
+                    if (matchKind > bestMatchKind)
+                        bestMatchKind = matchKind;
+                }
+
+                return bestMatchKind;
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(argumentParameters);
+            }
         }
 
         private ParameterMatchKind GetParameterMatchKind(
@@ -1302,12 +1333,17 @@ namespace Kusto.Language.Binding
                         }
                         else
                         {
-                            return ParameterMatchKind.OneOfTwo;
+                            return ParameterMatchKind.OneOfMany;
                         }
                     }
                     else if (SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Promotable))
                     {
                         return ParameterMatchKind.Promoted;
+                    }
+                    else if (allowLooseParameterMatching
+                        && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Dynamic))
+                    {
+                        return ParameterMatchKind.Dynamic;
                     }
                     else if (allowLooseParameterMatching
                         && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Compatible))
@@ -1322,41 +1358,56 @@ namespace Kusto.Language.Binding
                     break;
 
                 case ParameterTypeKind.Integer:
-                    if (IsInteger(argumentType))
-                        return ParameterMatchKind.OneOfTwo;
+                    if (TypeFacts.IsInteger(argumentType))
+                        return ParameterMatchKind.Integer;
                     break;
 
                 case ParameterTypeKind.RealOrDecimal:
-                    if (IsRealOrDecimal(argumentType))
-                        return ParameterMatchKind.OneOfTwo;
+                    if (TypeFacts.IsRealOrDecimal(argumentType))
+                        return ParameterMatchKind.OneOfMany;
                     break;
 
                 case ParameterTypeKind.StringOrDynamic:
-                    if (IsStringOrDynamic(argumentType))
-                        return ParameterMatchKind.OneOfTwo;
+                    if (TypeFacts.IsStringOrDynamic(argumentType))
+                        return ParameterMatchKind.OneOfMany;
                     break;
 
-                case ParameterTypeKind.IntegerOrDynamic:
-                    if (IsIntegerOrDynamic(argumentType))
-                        return ParameterMatchKind.OneOfTwo;
+                case ParameterTypeKind.StringOrArray:
+                    if (TypeFacts.IsStringOrArray(argumentType))
+                        return ParameterMatchKind.OneOfMany;
+                    break;
+
+                case ParameterTypeKind.IntegerOrArray:
+                    if (TypeFacts.IsIntegerOrArray(argumentType))
+                        return ParameterMatchKind.OneOfMany;
+                    break;
+
+                case ParameterTypeKind.DynamicArray:
+                    if (TypeFacts.IsDynamicArray(argumentType))
+                        return ParameterMatchKind.OneOfMany;
+                    break;
+
+                case ParameterTypeKind.DynamicBag:
+                    if (TypeFacts.IsDynamicBag(argumentType))
+                        return ParameterMatchKind.OneOfMany;
                     break;
 
                 case ParameterTypeKind.Number:
-                    if (IsNumber(argumentType))
+                    if (TypeFacts.IsNumeric(argumentType))
                         return ParameterMatchKind.Number;
                     break;
 
                 case ParameterTypeKind.NumberOrBool:
-                    if (IsNumber(argumentType) || argumentType == ScalarTypes.Bool)
+                    if (TypeFacts.IsNumeric(argumentType) || argumentType == ScalarTypes.Bool)
                         return ParameterMatchKind.Number;
                     break;
 
                 case ParameterTypeKind.Summable:
-                    if (IsSummable(argumentType))
+                    if (TypeFacts.IsSummable(argumentType))
                         return ParameterMatchKind.Summable;
                     break;
                 case ParameterTypeKind.Orderable:
-                    if (IsOrderable(argumentType))
+                    if (TypeFacts.IsOrderable(argumentType))
                         return ParameterMatchKind.Orderable;
                     break;
                 case ParameterTypeKind.Tabular:
@@ -1386,7 +1437,7 @@ namespace Kusto.Language.Binding
                     break;
 
                 case ParameterTypeKind.NotDynamic:
-                    if (!SymbolsAssignable(argumentType, ScalarTypes.Dynamic))
+                    if (argumentType.IsAnyScalarExceptDynamic())
                         return ParameterMatchKind.NotType;
                     break;
 
@@ -1404,7 +1455,7 @@ namespace Kusto.Language.Binding
                 case ParameterTypeKind.CommonSummable:
                 case ParameterTypeKind.CommonOrderable:
                 case ParameterTypeKind.CommonScalarOrDynamic:
-                    var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                    var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                     if (commonType != null)
                     {
                         if (SymbolsAssignable(commonType, argumentType, Conversion.None))
@@ -1414,6 +1465,10 @@ namespace Kusto.Language.Binding
                         else if (SymbolsAssignable(commonType, argumentType, Conversion.Promotable))
                         {
                             return ParameterMatchKind.Promoted;
+                        }
+                        else if (SymbolsAssignable(commonType, argumentType, Conversion.Dynamic))
+                        {
+                            return ParameterMatchKind.Dynamic;
                         }
                         else if (allowLooseParameterMatching
                             && SymbolsAssignable(commonType, argumentType, Conversion.Compatible))

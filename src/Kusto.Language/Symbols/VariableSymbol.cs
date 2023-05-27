@@ -48,8 +48,5 @@ namespace Kusto.Language.Symbols
         public override SymbolKind Kind => SymbolKind.Variable;
 
         public override Tabularity Tabularity => this.Type.Tabularity;
-
-        protected override string GetDisplay() =>
-            $"let {this.Name}: {this.Type.Display}";
     }
 }

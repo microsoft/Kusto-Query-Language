@@ -224,16 +224,19 @@ namespace Kusto.Language.Binding
                             var types = map.GetTypes(col.Name);
                             foreach (var type in types)
                             {
-                                var newName = uniqueNames.GetOrAddName(col.Name + "_" + type.Name);
                                 var sameTypeColumns = map.GetColumns(col.Name, type);
-                                var newCol = new ColumnSymbol(newName, type, originalColumns: sameTypeColumns);
+                                var newType = TypeFacts.GetCommonColumnType(sameTypeColumns, Conversion.None) ?? type;
+                                var suggestedName = col.Name + "_" + newType.Name;
+                                var newName = uniqueNames.GetOrAddName(suggestedName);
+                                var newCol = new ColumnSymbol(newName, newType, originalColumns: sameTypeColumns);
                                 newColumns.Add(newCol);
                             }
                         }
                         else if (map.HasMultipleColumns(col.Name, col.Type))
                         {
                             var cols = map.GetColumns(col.Name, col.Type);
-                            var newCol = new ColumnSymbol(col.Name, col.Type, originalColumns: cols);
+                            var newType = TypeFacts.GetCommonColumnType(cols, Conversion.None) ?? col.Type;
+                            var newCol = new ColumnSymbol(col.Name, newType, originalColumns: cols);
                             newColumns.Add(GetUniqueColumn(newCol, uniqueNames));
                         }
                         else
@@ -278,10 +281,7 @@ namespace Kusto.Language.Binding
                         if (map.HasMultipleTypes(col.Name))
                         {
                             var types = map.GetTypes(col.Name);
-                            var commonType = TypeFacts.GetCommonScalarType(types);
-                            if (commonType == null)
-                                commonType = ScalarTypes.Dynamic;
-
+                            var commonType = TypeFacts.GetCommonScalarType(types) ?? ScalarTypes.Dynamic;
                             var originalCols = map.GetColumns(col.Name).ToList();
                             var newCol = new ColumnSymbol(col.Name, commonType, originalColumns: originalCols);
                             newColumns.Add(newCol);

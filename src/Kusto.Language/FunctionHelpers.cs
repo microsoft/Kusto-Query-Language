@@ -40,7 +40,6 @@ namespace Kusto.Language
             }
         }
 
-
         /// <summary>
         /// Adds the column referenced by the argument corresponding to the specified parameter to the list.
         /// </summary>
@@ -62,11 +61,27 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Gets the value of the literal expression.
+        /// Gets the value of the constant expression.
         /// </summary>
-        public static string GetLiteralValue(Expression expr)
+        public static string GetConstantValue(Expression expr)
         {
-            return expr.LiteralValue?.ToString() ?? "";
+            return expr.ConstantValue?.ToString() ?? "";
+        }
+
+        /// <summary>
+        /// Gets the values for all the constant expressions.
+        /// </summary>
+        public static IReadOnlyList<string> GetConstantValues(SyntaxList<SeparatedElement<Expression>> expressions)
+        {
+            var list = new List<string>();
+
+            for (int i = 0; i < expressions.Count; i++)
+            {
+                var expr = expressions[i].Element;
+                list.Add(GetConstantValue(expr));
+            }
+
+            return list;
         }
 
         /// <summary>

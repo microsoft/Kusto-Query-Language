@@ -20,9 +20,29 @@ namespace Kusto.Language.Binding
         Unknown,
 
         /// <summary>
+        /// The argument is converted to dynamic.
+        /// </summary>
+        Dynamic,
+
+        /// <summary>
+        /// The argument is narrowed to the compatible parameter type.
+        /// </summary>
+        Compatible,
+
+        /// <summary>
+        /// The argument is widened to the parameter type
+        /// </summary>
+        Promoted,  
+
+        /// <summary>
         /// The argument's type is not the excluded type
         /// </summary>
         NotType,
+
+        /// <summary>
+        /// The argument's type is one of many possible types.
+        /// </summary>
+        OneOfMany,  
 
         /// <summary>
         /// The argument's type is a scalar type
@@ -45,14 +65,9 @@ namespace Kusto.Language.Binding
         Number,
 
         /// <summary>
-        /// The argument type is compatible with the parameter type
+        /// The argument's type is an integer
         /// </summary>
-        Compatible,
-
-        /// <summary>
-        /// The arguments type can be promoted to the parameter type
-        /// </summary>
-        Promoted,  // smaller set than all numbers
+        Integer,
 
         /// <summary>
         /// The argument's type is tabular.
@@ -73,11 +88,6 @@ namespace Kusto.Language.Binding
         /// The argument's type is a cluster
         /// </summary>
         Cluster,
-
-        /// <summary>
-        /// The argument's type is one of two possible parameter types
-        /// </summary>
-        OneOfTwo,  // one of two explicit types?
 
         /// <summary>
         /// The argument's type is an exact match for the parameter type

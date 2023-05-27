@@ -76,32 +76,6 @@ namespace Kusto.Language.Symbols
             }
         }
 
-        protected override string GetDisplay()
-        {
-            if (this.Name.Length > 0)
-            {
-                if (this.NodeShape != null)
-                {
-                    return $"{this.Name}: [Edge{this.EdgeShape.Display}, Node{this.NodeShape.Display}]";
-                }
-                else
-                {
-                    return $"{this.Name}: [Edge{this.EdgeShape.Display}]";
-                }
-            }
-            else
-            {
-                if (this.NodeShape != null)
-                {
-                    return $"[Edge{this.EdgeShape.Display}, Node{this.NodeShape.Display}]";
-                }
-                else
-                {
-                    return $"[Edge{this.EdgeShape.Display}]";
-                }
-            }
-        }
-
         /// <summary>
         /// Merges two graph definitions together by merging the edge and node shapes.
         /// </summary>

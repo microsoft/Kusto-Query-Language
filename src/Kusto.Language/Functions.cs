@@ -5,6 +5,7 @@ namespace Kusto.Language
     using System.Linq;
     using Kusto.Language.Syntax;
     using Symbols;
+    using Utils;
     using static FunctionHelpers;
 
     /// <summary>
@@ -55,14 +56,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol StrcatArray =
             new FunctionSymbol("strcat_array", ScalarTypes.String,
-                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("array", ScalarTypes.DynamicArray),
                 new Parameter("delimiter", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayStrcat =
             new FunctionSymbol("array_strcat", ScalarTypes.String,
-                new Parameter("array", ScalarTypes.Dynamic),
+                new Parameter("array", ScalarTypes.DynamicArray),
                 new Parameter("delimiter", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -113,7 +114,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ToUtf8_Deprecated =
-            new FunctionSymbol("to_utf8", ScalarTypes.Dynamic,
+            new FunctionSymbol("to_utf8", 
+                ScalarTypes.DynamicArray,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -121,7 +123,8 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol UnicodeCodepointsFromString =
-            new FunctionSymbol("unicode_codepoints_from_string", ScalarTypes.Dynamic,
+            new FunctionSymbol("unicode_codepoints_from_string", 
+                ScalarTypes.DynamicArray,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -163,7 +166,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol HasAnyIndex =
             new FunctionSymbol("has_any_index", ScalarTypes.Long,
                 new Parameter("source", ParameterTypeKind.StringOrDynamic),
-                new Parameter("values", ScalarTypes.Dynamic))
+                new Parameter("values", ScalarTypes.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -174,7 +177,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Split =
-            new FunctionSymbol("split", ScalarTypes.Dynamic,
+            new FunctionSymbol("split", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("source", ParameterTypeKind.Scalar),
                 new Parameter("delimiter", ScalarTypes.String),
                 new Parameter("requestedIndex", ParameterTypeKind.Integer, minOccurring: 0))
@@ -182,7 +186,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseCommandLine =
-            new FunctionSymbol("parse_command_line", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_command_line", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("command", ParameterTypeKind.Scalar),
                 new Parameter("parser", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -204,12 +209,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtractAll_Deprecated =
              new FunctionSymbol("extractall",
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfString,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("source", ScalarTypes.String)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfString,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                    new Parameter("captureGroups", ScalarTypes.Dynamic),
+                    new Parameter("captureGroups", ParameterTypeKind.DynamicArray),
                     new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -218,12 +225,14 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtractAll =
             new FunctionSymbol("extract_all",
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfString,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("source", ScalarTypes.String)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfString,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
-                    new Parameter("captureGroups", ScalarTypes.Dynamic),
+                    new Parameter("captureGroups", ParameterTypeKind.DynamicArray),
                     new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -281,8 +290,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ReplaceStrings =
            new FunctionSymbol("replace_strings", ScalarTypes.String,
                new Parameter("text", ScalarTypes.String),
-               new Parameter("lookups", ScalarTypes.Dynamic),
-               new Parameter("rewrites", ScalarTypes.Dynamic))
+               new Parameter("lookups", ParameterTypeKind.DynamicArray),
+               new Parameter("rewrites", ParameterTypeKind.DynamicArray))
            .WithResultNameKind(ResultNameKind.None)
             .Hide() // Unhide on June-2023
            .ConstantFoldable();
@@ -327,7 +336,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol MakeString_Deprecated =
             new FunctionSymbol("make_string",
                 ScalarTypes.String,
-                new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
+                new Parameter("value", ParameterTypeKind.IntegerOrArray, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Obsolete("unicode_codepoints_to_string")
@@ -336,7 +345,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol UnicodeCodepointsToString =
             new FunctionSymbol("unicode_codepoints_to_string",
                 ScalarTypes.String,
-                new Parameter("value", ParameterTypeKind.IntegerOrDynamic, maxOccurring: MaxRepeat))
+                new Parameter("value", ParameterTypeKind.IntegerOrArray, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
         #endregion
@@ -356,13 +365,15 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDynamic_ =  // use _ because build fails claiming ToDynamic exists on object.
-            new FunctionSymbol("todynamic", ScalarTypes.Dynamic,
+            new FunctionSymbol("todynamic", 
+                ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToObject_Deprecated =
-            new FunctionSymbol("toobject", ScalarTypes.Dynamic,
+            new FunctionSymbol("toobject", 
+                ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument)
@@ -370,43 +381,50 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ToLong =
-            new FunctionSymbol("tolong", ScalarTypes.Long,
+            new FunctionSymbol("tolong", 
+                ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToInt =
-            new FunctionSymbol("toint", ScalarTypes.Int,
+            new FunctionSymbol("toint", 
+                ScalarTypes.Int,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToReal =
-            new FunctionSymbol("toreal", ScalarTypes.Real,
+            new FunctionSymbol("toreal", 
+                ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDouble =
-            new FunctionSymbol("todouble", ScalarTypes.Real,
+            new FunctionSymbol("todouble", 
+                ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDateTime =
-            new FunctionSymbol("todatetime", ScalarTypes.DateTime,
+            new FunctionSymbol("todatetime", 
+                ScalarTypes.DateTime,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTimespan =
-            new FunctionSymbol("totimespan", ScalarTypes.TimeSpan,
+            new FunctionSymbol("totimespan", 
+                ScalarTypes.TimeSpan,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTime =
-           new FunctionSymbol("totime", ScalarTypes.TimeSpan,
+           new FunctionSymbol("totime", 
+               ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Hide()
            .Obsolete("totimespan")
@@ -414,31 +432,36 @@ namespace Kusto.Language
            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBool =
-            new FunctionSymbol("tobool", ScalarTypes.Bool,
+            new FunctionSymbol("tobool", 
+                ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBoolean =
-            new FunctionSymbol("toboolean", ScalarTypes.Bool,
+            new FunctionSymbol("toboolean", 
+                ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDecimal =
-            new FunctionSymbol("todecimal", ScalarTypes.Decimal,
+            new FunctionSymbol("todecimal", 
+                ScalarTypes.Decimal,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToGuid =
-            new FunctionSymbol("toguid", ScalarTypes.Guid,
+            new FunctionSymbol("toguid", 
+                ScalarTypes.Guid,
                 new Parameter("value", ParameterTypeKind.StringOrDynamic))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly new FunctionSymbol GetType =
-            new FunctionSymbol("gettype", ScalarTypes.String,
+            new FunctionSymbol("gettype", 
+                ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -487,62 +510,72 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToString =
-            new FunctionSymbol("base64_decode_tostring", ScalarTypes.String,
+            new FunctionSymbol("base64_decode_tostring", 
+                ScalarTypes.String,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToArray =
-            new FunctionSymbol("base64_decode_toarray", ScalarTypes.Dynamic,
+            new FunctionSymbol("base64_decode_toarray", 
+                ScalarTypes.DynamicArray,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToGuid =
-            new FunctionSymbol("base64_decode_toguid", ScalarTypes.Guid,
+            new FunctionSymbol("base64_decode_toguid",
+                ScalarTypes.Guid,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeFromGuid =
-            new FunctionSymbol("base64_encode_fromguid", ScalarTypes.String,
+            new FunctionSymbol("base64_encode_fromguid",
+                ScalarTypes.String,
                 new Parameter("guid", ScalarTypes.Guid))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeFromArray =
-            new FunctionSymbol("base64_encode_fromarray", ScalarTypes.String,
-                new Parameter("base64_string_decodced_as_array", ScalarTypes.Dynamic))
+            new FunctionSymbol("base64_encode_fromarray", 
+                ScalarTypes.String,
+                new Parameter("base64_string_decoded_as_array", ParameterTypeKind.DynamicArray))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ZlibDecompressString =
-            new FunctionSymbol("zlib_decompress_from_base64_string", ScalarTypes.String,
+            new FunctionSymbol("zlib_decompress_from_base64_string", 
+                ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ZlibCompressString =
-            new FunctionSymbol("zlib_compress_to_base64_string", ScalarTypes.String,
+            new FunctionSymbol("zlib_compress_to_base64_string", 
+                ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol GzipDecompressString =
-            new FunctionSymbol("gzip_decompress_from_base64_string", ScalarTypes.String,
+            new FunctionSymbol("gzip_decompress_from_base64_string", 
+                ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol GzipCompressString =
-            new FunctionSymbol("gzip_compress_to_base64_string", ScalarTypes.String,
+            new FunctionSymbol("gzip_compress_to_base64_string", 
+                ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Lz4CompressDynamicArray =
-            new FunctionSymbol("__lz4_compress_dynamic_array_to_base64_string", ScalarTypes.String,
-                new Parameter("dynamic", ScalarTypes.Dynamic))
+            new FunctionSymbol("__lz4_compress_dynamic_array_to_base64_string", 
+                ScalarTypes.String,
+                new Parameter("dynamic", ParameterTypeKind.DynamicArray))
             .ConstantFoldable()
             .Hide()
             .WithResultNameKind(ResultNameKind.None);
@@ -550,13 +583,15 @@ namespace Kusto.Language
 
         #region parsing functions
         public static readonly FunctionSymbol ParseCsv =
-            new FunctionSymbol("parse_csv", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_csv", 
+                ScalarTypes.DynamicArray,
                 new Parameter("csv_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseJson_Deprecated =
-            new FunctionSymbol("parsejson", ScalarTypes.Dynamic,
+            new FunctionSymbol("parsejson", 
+                ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable()
@@ -564,19 +599,33 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ParseJson =
-            new FunctionSymbol("parse_json", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_json", 
+                ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseXml =
-            new FunctionSymbol("parse_xml", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_xml", 
+                ScalarTypes.DynamicBag,
                 new Parameter("xml_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
+        private static TypeSymbol ParseUrlResult =
+                ScalarTypes.GetDynamicBag(
+                    new ColumnSymbol("Scheme", ScalarTypes.String),
+                    new ColumnSymbol("Host", ScalarTypes.String),
+                    new ColumnSymbol("Port", ScalarTypes.String),
+                    new ColumnSymbol("Path", ScalarTypes.String),
+                    new ColumnSymbol("Username", ScalarTypes.String),
+                    new ColumnSymbol("Password", ScalarTypes.String),
+                    new ColumnSymbol("Query Parameters", ScalarTypes.Dynamic),
+                    new ColumnSymbol("Fragment", ScalarTypes.String));
+
         public static readonly FunctionSymbol ParseUrl_Deprecated =
-            new FunctionSymbol("parseurl", ScalarTypes.Dynamic,
+            new FunctionSymbol("parseurl",
+                ParseUrlResult,
                 new Parameter("url", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -584,13 +633,19 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ParseUrl =
-            new FunctionSymbol("parse_url", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_url",
+                ParseUrlResult,
                 new Parameter("url", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static readonly TypeSymbol ParseUrlQueryResult =
+            ScalarTypes.GetDynamicBag(
+                new ColumnSymbol("Query Parameters", ScalarTypes.Dynamic));
+
         public static readonly FunctionSymbol ParseUrlQuery_Deprecated =
-            new FunctionSymbol("parseurlquery", ScalarTypes.Dynamic,
+            new FunctionSymbol("parseurlquery",
+                ParseUrlQueryResult,
                 new Parameter("query", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
@@ -598,7 +653,8 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ParseUrlQuery =
-            new FunctionSymbol("parse_urlquery", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_urlquery",
+                ParseUrlQueryResult,
                 new Parameter("query", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -661,7 +717,7 @@ namespace Kusto.Language
                     new Parameter("ranges", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
                     new Parameter("ip", ParameterTypeKind.StringOrDynamic),
-                    new Parameter("ranges", ScalarTypes.Dynamic)))
+                    new Parameter("ranges", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Ipv4NetmaskSuffix =
@@ -677,7 +733,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv4RangeToCidrList =
-            new FunctionSymbol("ipv4_range_to_cidr_list", ScalarTypes.Dynamic,
+            new FunctionSymbol("ipv4_range_to_cidr_list", 
+                ScalarTypes.DynamicArray,
                 new Parameter("start_ip", ScalarTypes.String),
                 new Parameter("end_ip", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -728,25 +785,59 @@ namespace Kusto.Language
                     new Parameter("ranges", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
                     new Parameter("ip", ParameterTypeKind.StringOrDynamic),
-                    new Parameter("ranges", ScalarTypes.Dynamic)))
+                    new Parameter("ranges", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
         #endregion
 
+        private static readonly TypeSymbol ParsePathResult =
+            ScalarTypes.GetDynamicBag(
+                new ColumnSymbol("Scheme", ScalarTypes.String),
+                new ColumnSymbol("RootPath", ScalarTypes.String),
+                new ColumnSymbol("DirectoryPath", ScalarTypes.String),
+                new ColumnSymbol("DirectoryName", ScalarTypes.String),
+                new ColumnSymbol("Filename", ScalarTypes.String),
+                new ColumnSymbol("Extension", ScalarTypes.String),
+                new ColumnSymbol("AlternateDataStreamName", ScalarTypes.String));
+
         public static readonly FunctionSymbol ParsePath =
-            new FunctionSymbol("parse_path", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_path", 
+                ParsePathResult,
                 new Parameter("path", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static readonly TypeSymbol ParseUserAgentResult =
+            ScalarTypes.GetDynamicBag(
+                new ColumnSymbol("Browser", 
+                    ScalarTypes.GetDynamicBag(
+                        new ColumnSymbol("Family", ScalarTypes.String),
+                        new ColumnSymbol("MajorVersion", ScalarTypes.String),
+                        new ColumnSymbol("MinorVersion", ScalarTypes.String),
+                        new ColumnSymbol("Patch", ScalarTypes.String))),
+                new ColumnSymbol("OperatingSystem",
+                    ScalarTypes.GetDynamicBag(
+                        new ColumnSymbol("Family", ScalarTypes.String),
+                        new ColumnSymbol("MajorVersion", ScalarTypes.String),
+                        new ColumnSymbol("MinorVersion", ScalarTypes.String),
+                        new ColumnSymbol("Patch", ScalarTypes.String),
+                        new ColumnSymbol("PatchMinor", ScalarTypes.String))),
+                new ColumnSymbol("Device", 
+                    ScalarTypes.GetDynamicBag(
+                        new ColumnSymbol("Family", ScalarTypes.String),
+                        new ColumnSymbol("Brand", ScalarTypes.String),
+                        new ColumnSymbol("Model", ScalarTypes.String))));
+
         public static readonly FunctionSymbol ParseUserAgent =
-            new FunctionSymbol("parse_user_agent", ScalarTypes.Dynamic,
+            new FunctionSymbol("parse_user_agent",
+                ParseUserAgentResult,
                 new Parameter("user_agent", ScalarTypes.String),
-                new Parameter("look_for", ParameterTypeKind.StringOrDynamic, minOccurring: 0))
+                new Parameter("look_for", ParameterTypeKind.StringOrArray, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseVersion =
-            new FunctionSymbol("parse_version", ScalarTypes.Decimal,
+            new FunctionSymbol("parse_version", 
+                ScalarTypes.Decimal,
                 new Parameter("version", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -994,7 +1085,8 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol DateTimeListTimezones =
-            new FunctionSymbol("datetime_list_timezones", ScalarTypes.Dynamic)
+            new FunctionSymbol("datetime_list_timezones", 
+                ScalarTypes.DynamicArray)
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
@@ -1338,14 +1430,16 @@ namespace Kusto.Language
 
         #region dynamic array/object functions
         public static readonly FunctionSymbol TreePath =
-            new FunctionSymbol("treepath", ScalarTypes.Dynamic,
-                new Parameter("object", ScalarTypes.Dynamic))
+            new FunctionSymbol("treepath", 
+                ScalarTypes.DynamicArrayOfString,
+                new Parameter("object", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("tree")
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Repeat =
-            new FunctionSymbol("repeat", ScalarTypes.Dynamic,
+            new FunctionSymbol("repeat", 
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("value", ParameterTypeKind.Scalar),
                 new Parameter("count", ScalarTypes.Long))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -1354,7 +1448,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Arraylength_Deprecated =
             new FunctionSymbol("arraylength", ScalarTypes.Long,
-                new Parameter("array", ScalarTypes.Dynamic))
+                new Parameter("array", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Obsolete("array_length")
@@ -1362,18 +1456,20 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ArrayLength =
             new FunctionSymbol("array_length", ScalarTypes.Long,
-                new Parameter("array", ScalarTypes.Dynamic))
+                new Parameter("array", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayReverse =
-            new FunctionSymbol("array_reverse", ScalarTypes.Dynamic,
-                new Parameter("value", ScalarTypes.Dynamic))
+            new FunctionSymbol("array_reverse", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("value", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Range =
-            new FunctionSymbol("range", ScalarTypes.Dynamic,
+            new FunctionSymbol("range", 
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("start", ParameterTypeKind.Summable),
                 new Parameter("stop", ParameterTypeKind.Summable),
                 new Parameter("step", ParameterTypeKind.Summable, minOccurring: 0))
@@ -1381,30 +1477,51 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayConcat =
-            new FunctionSymbol("array_concat", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic, maxOccurring: 64))
+            new FunctionSymbol("array_concat",
+                context =>
+                {
+                    var arrays = context.GetArguments("array");
+                    return TypeFacts.GetCommonResultType(arrays, Conversion.None) ?? ScalarTypes.DynamicArray;
+                },
+                Tabularity.Scalar,
+                new Parameter("array", ParameterTypeKind.DynamicArray, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayIff =
-            new FunctionSymbol("array_iff", ScalarTypes.Dynamic,
-                new Parameter("condition_array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_iff",
+                context =>
+                {
+                    var whenTrue = context.GetArgument("when_true");
+                    var whenFalse = context.GetArgument("when_true");
+                    return TypeFacts.GetCommonResultType(whenTrue, whenFalse) ?? ScalarTypes.DynamicArray;
+                },
+                Tabularity.Scalar,
+                new Parameter("condition_array", ParameterTypeKind.DynamicArray),
                 new Parameter("when_true", ParameterTypeKind.Scalar),
                 new Parameter("when_false", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayIif =
-            new FunctionSymbol("array_iif", ScalarTypes.Dynamic,
-                new Parameter("condition_array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_iif",
+                context =>
+                {
+                    var whenTrue = context.GetArgument("when_true");
+                    var whenFalse = context.GetArgument("when_true");
+                    return TypeFacts.GetCommonResultType(whenTrue, whenFalse) ?? ScalarTypes.DynamicArray;
+                },
+                Tabularity.Scalar,
+                new Parameter("condition_array", ParameterTypeKind.DynamicArray),
                 new Parameter("when_true", ParameterTypeKind.Scalar),
                 new Parameter("when_false", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .Hide();
 
         public static readonly FunctionSymbol ArrayIndexOf =
-            new FunctionSymbol("array_index_of", ScalarTypes.Long,
-                new Parameter("array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_index_of", 
+                ScalarTypes.Long,
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar),
                 new Parameter("start", ParameterTypeKind.Integer, minOccurring: 0),
                 new Parameter("length", ParameterTypeKind.Integer, minOccurring: 0),
@@ -1412,14 +1529,16 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetHasElement =
-            new FunctionSymbol("set_has_element", ScalarTypes.Bool,
-                new Parameter("set", ScalarTypes.Dynamic),
+            new FunctionSymbol("set_has_element", 
+                ScalarTypes.Bool,
+                new Parameter("set", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArraySlice =
-            new FunctionSymbol("array_slice", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_slice", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("start", ParameterTypeKind.Integer),
                 new Parameter("end", ParameterTypeKind.Integer))
             .WithResultNameKind(ResultNameKind.None)
@@ -1427,47 +1546,56 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ArraySplit =
             new FunctionSymbol("array_split",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("array", ScalarTypes.Dynamic),
+                new Signature(
+                    ReturnTypeKind.Parameter0,
+                    new Parameter("array", ParameterTypeKind.DynamicArray),
                     new Parameter("index", ParameterTypeKind.Integer)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("array", ScalarTypes.Dynamic),
-                    new Parameter("indices", ScalarTypes.Dynamic)))
+                new Signature(
+                    ReturnTypeKind.Parameter0,
+                    new Parameter("array", ParameterTypeKind.DynamicArray),
+                    new Parameter("indices", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayShiftLeft =
-            new FunctionSymbol("array_shift_left", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_shift_left", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("shift_count", ParameterTypeKind.Integer),
                 new Parameter("default_value", ParameterTypeKind.Scalar, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayShiftRight =
-            new FunctionSymbol("array_shift_right", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_shift_right", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("shift_count", ParameterTypeKind.Integer),
                 new Parameter("default_value", ParameterTypeKind.Scalar, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayRotateLeft =
-             new FunctionSymbol("array_rotate_left", ScalarTypes.Dynamic,
-                 new Parameter("array", ScalarTypes.Dynamic),
+             new FunctionSymbol("array_rotate_left", 
+                 ReturnTypeKind.Parameter0,
+                 new Parameter("array", ParameterTypeKind.DynamicArray),
                  new Parameter("rotate_count", ParameterTypeKind.Integer))
              .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayRotateRight =
-            new FunctionSymbol("array_rotate_right", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic),
+            new FunctionSymbol("array_rotate_right", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("rotate_count", ParameterTypeKind.Integer))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        private static readonly Parameter m_ArraySort_ArraysArg = new Parameter("arrays", ScalarTypes.Dynamic, minOccurring: 1, maxOccurring: 64);
-        private static readonly Parameter m_ArraySort_NullsLastArg = new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0, maxOccurring: 1);
+        private static readonly Parameter m_ArraySort_ArraysArg = 
+            new Parameter("arrays", ParameterTypeKind.DynamicArray, minOccurring: 1, maxOccurring: 64);
+
+        private static readonly Parameter m_ArraySort_NullsLastArg = 
+            new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0, maxOccurring: 1);
 
         public static readonly FunctionSymbol ArraySortAsc =
             new FunctionSymbol("array_sort_asc",
@@ -1505,7 +1633,9 @@ namespace Kusto.Language
         private static TypeSymbol GetArraySortResult(CustomReturnTypeContext context)
         {
             var result = new List<ColumnSymbol>();
-            for (int i = 0; (i < context.Arguments.Count) && (context.Arguments[i].ResultType == ScalarTypes.Dynamic); i++)
+            
+            for (int i = 0; 
+                (i < context.Arguments.Count) && (context.Arguments[i].ResultType.IsDynamicArray()); i++)
             {
                 var argument = context.Arguments[i];
                 var argumentExpressionName = context.GetResultName(argument);
@@ -1513,25 +1643,29 @@ namespace Kusto.Language
                 var resultColumn = new ColumnSymbol(resultColumnName, argument.ResultType, source: argument);
                 result.Add(resultColumn);
             }
+
             return new TupleSymbol(result);
         }
 
         public static readonly FunctionSymbol BagKeys =
-            new FunctionSymbol("bag_keys", ScalarTypes.Dynamic,
-                new Parameter("object", ScalarTypes.Dynamic))
+            new FunctionSymbol("bag_keys", 
+                ScalarTypes.DynamicArrayOfString,
+                new Parameter("object", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Zip =
-            new FunctionSymbol("zip", ScalarTypes.Dynamic,
-                new Parameter("array", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            new FunctionSymbol("zip", 
+                ScalarTypes.DynamicArrayOfArray,
+                new Parameter("array", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Pack =
             new FunctionSymbol("pack",
                 new Signature(
-                    ScalarTypes.Dynamic,
+                    GetBagPackReturnType,
+                    Tabularity.Scalar,
                     new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
                 .WithLayout(ParameterLayouts.BlockRepeating))
@@ -1543,7 +1677,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol PackDictionary =
             new FunctionSymbol("pack_dictionary",
                 new Signature(
-                    ScalarTypes.Dynamic,
+                    GetBagPackReturnType,
+                    Tabularity.Scalar,
                     new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
                 .WithLayout(ParameterLayouts.BlockRepeating))
@@ -1555,179 +1690,327 @@ namespace Kusto.Language
         public static readonly FunctionSymbol BagPack =
             new FunctionSymbol("bag_pack",
                 new Signature(
-                    ScalarTypes.Dynamic,
+                    GetBagPackReturnType,
+                    Tabularity.Scalar,
                     new Parameter("key", ScalarTypes.String, maxOccurring: MaxRepeat),
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat))
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static TypeSymbol GetBagPackReturnType(CustomReturnTypeContext context)
+        {
+            var keys = context.GetArguments("key");
+            var values = context.GetArguments("value");
+            var columns = new List<ColumnSymbol>(keys.Count);
+
+            for (int i = 0; i < keys.Count; i++)
+            {
+                if (keys[i].ConstantValue is string name)
+                {
+                    var type = (i < values.Count ? values[i].ResultType : null) ?? ScalarTypes.Unknown;
+                    columns.Add(new ColumnSymbol(name, type));
+                }
+            }
+
+            return ScalarTypes.GetDynamicBag(columns);
+        }
+
         public static readonly FunctionSymbol BagPackColumns =
             new FunctionSymbol("bag_pack_columns",
-                new Signature(
-                    ScalarTypes.Dynamic,
-                    new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat, argumentKind: ArgumentKind.Column))
-                .WithLayout(ParameterLayouts.BlockRepeating))
+                GetBagPackColumnsReturnType,
+                Tabularity.Scalar,
+                new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat, argumentKind: ArgumentKind.Column))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static TypeSymbol GetBagPackColumnsReturnType(CustomReturnTypeContext context)
+        {
+            var values = context.GetArguments("value");
+            var columns = new List<ColumnSymbol>(values.Count);
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                if (values[i].ReferencedSymbol is ColumnSymbol col)
+                {
+                    columns.Add(col);
+                }
+            }
+
+            return ScalarTypes.GetDynamicBag(columns);
+        }
+
         public static readonly FunctionSymbol PackAll =
-            new FunctionSymbol("pack_all", ScalarTypes.Dynamic,
+            new FunctionSymbol("pack_all", 
+                context => ScalarTypes.GetDynamicBag(context.RowScope?.Columns),
+                Tabularity.Scalar,
                 new Parameter("ignore_null_empty", ParameterTypeKind.Scalar, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackArray =
             new FunctionSymbol("pack_array",
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    context =>
+                    {
+                        var values = context.GetArguments("value");
+                        var type = TypeFacts.GetCommonResultType(values);
+                        return ScalarTypes.GetDynamicArray(type);
+                    },
+                    Tabularity.Scalar,
                     new Parameter("value", ParameterTypeKind.Scalar, maxOccurring: MaxRepeat)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    context =>
+                    {
+                        return context.RowScope != null
+                            ? ScalarTypes.GetDynamicArray(TypeFacts.GetCommonColumnType(context.RowScope.Columns))
+                            : ScalarTypes.DynamicArray;
+                    },
+                    Tabularity.Scalar,
                     new Parameter("value", ParameterTypeKind.Scalar, ArgumentKind.StarOnly)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        private static TypeSymbol GetSetType(CustomReturnTypeContext context)
+        {
+            var sets = context.GetArguments("set");
+            var commonType = TypeFacts.GetCommonResultType(sets);
+            return commonType is DynamicArraySymbol ? commonType : ScalarTypes.DynamicArray;
+        }
+
         public static readonly FunctionSymbol SetUnion =
-            new FunctionSymbol("set_union", ScalarTypes.Dynamic,
-                new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            new FunctionSymbol("set_union", 
+                GetSetType,
+                Tabularity.Scalar,
+                new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetIntersect =
-            new FunctionSymbol("set_intersect", ScalarTypes.Dynamic,
-                new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            new FunctionSymbol("set_intersect",
+                GetSetType,
+                Tabularity.Scalar,
+                new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetDifference =
-            new FunctionSymbol("set_difference", ScalarTypes.Dynamic,
-                new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            new FunctionSymbol("set_difference",
+                GetSetType,
+                Tabularity.Scalar,
+                new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagMerge =
-            new FunctionSymbol("bag_merge", ScalarTypes.Dynamic,
-                new Parameter("bag", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 64))
+            new FunctionSymbol("bag_merge", 
+                context =>
+                {
+                    var bags = context.GetArguments("bag");
+                    if (bags.Count > 0
+                        && bags[0].ResultType is DynamicBagSymbol merged)
+                    {
+                        for (int i = 1; i < bags.Count; i++)
+                        {
+                            if (bags[i].ResultType is DynamicBagSymbol obj)
+                            {
+                                merged = ScalarTypes.GetDynamicBag(TypeFacts.Union(merged.Properties, obj.Properties));
+                            }
+                        }
+
+                        return merged;
+                    }
+
+                    return ScalarTypes.DynamicBag;
+                },
+                Tabularity.Scalar,
+                new Parameter("bag", ParameterTypeKind.DynamicBag, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol DynamicToJson =
-            new FunctionSymbol("dynamic_to_json", ScalarTypes.String,
-                new Parameter("dynamic", ScalarTypes.Dynamic))
+            new FunctionSymbol("dynamic_to_json", 
+                ScalarTypes.String,
+                new Parameter("dynamic", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagRemoveKeys =
-            new FunctionSymbol("bag_remove_keys", ScalarTypes.Dynamic,
-                new Parameter("bag", ScalarTypes.Dynamic),
-                new Parameter("keys", ScalarTypes.Dynamic))
+            new FunctionSymbol("bag_remove_keys", 
+                context =>
+                {
+                    var bag = context.GetArgument("bag");
+                    var keys = context.GetArgument("keys");
+
+                    if (bag != null &&
+                        bag.ResultType is DynamicBagSymbol bs
+                        && keys is JsonArrayExpression ja)
+                    {
+                        var namesToRemove = GetConstantValues(ja.Values).ToHashSetEx();
+                        var newProps = bs.Properties.Where(p => !namesToRemove.Contains(p.Name)).ToList();
+                        return ScalarTypes.GetDynamicBag(newProps);
+                    }
+
+                    return ScalarTypes.DynamicBag;
+                },
+                Tabularity.Scalar,
+                new Parameter("bag", ParameterTypeKind.DynamicBag),
+                new Parameter("keys", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagZip =
-            new FunctionSymbol("bag_zip", ScalarTypes.Dynamic,
-                new Parameter("keys", ScalarTypes.Dynamic),
-                new Parameter("values", ScalarTypes.Dynamic))
+            new FunctionSymbol("bag_zip", 
+                ScalarTypes.DynamicBag,
+                new Parameter("keys", ParameterTypeKind.DynamicArray),
+                new Parameter("values", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol JaccardIndex =
-            new FunctionSymbol("jaccard_index", ScalarTypes.Dynamic,
-                new Parameter("set", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 2))
+            new FunctionSymbol("jaccard_index", 
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 2))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagHasKey =
-            new FunctionSymbol("bag_has_key", ScalarTypes.Bool,
-                new Parameter("bag", ScalarTypes.Dynamic),
+            new FunctionSymbol("bag_has_key", 
+                ScalarTypes.Bool,
+                new Parameter("bag", ParameterTypeKind.DynamicBag),
                 new Parameter("key", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagSetKey =
-            new FunctionSymbol("bag_set_key", ScalarTypes.Dynamic,
-                new Parameter("bag", ScalarTypes.Dynamic),
+            new FunctionSymbol("bag_set_key", 
+                context => 
+                {
+                    var bag = context.GetArgument("bag");
+                    var key = context.GetArgument("key");
+                    var value = context.GetArgument("value");
+
+                    if (bag != null 
+                        && key != null
+                        && key.ConstantValue is string name
+                        && !string.IsNullOrWhiteSpace(name)
+                        && !IsJsonPath(name) // maybe someday
+                        && value != null
+                        && value.ResultType is ScalarSymbol type)
+                    {
+                        var currentBag = bag.ResultType as DynamicBagSymbol ?? ScalarTypes.DynamicBag;
+                        var newProperty = new ColumnSymbol(name, type);
+                        return currentBag.AddOrUpdateProperty(newProperty);
+                    }
+
+                    return bag?.ResultType ?? ScalarTypes.DynamicBag;
+                },
+                Tabularity.Scalar,
+                new Parameter("bag", ParameterTypeKind.DynamicBag),
                 new Parameter("key", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+
+        private static bool IsJsonPath(string key)
+        {
+            return key.Contains('$')
+                || key.Contains('.')
+                || key.Contains('[')
+                || key.Contains(']');
+        }
         #endregion
 
         #region digest / series functions
         public static readonly FunctionSymbol PercentileTDigest =
             new FunctionSymbol("percentile_tdigest",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("tdigest", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.Dynamic,
+                    new Parameter("tdigest", ParameterTypeKind.DynamicArray),
                     new Parameter("percentile1", ScalarTypes.Real)),
-                new Signature(ReturnTypeKind.ParameterNLiteral,
-                    new Parameter("tdigest", ScalarTypes.Dynamic),
+                new Signature(
+                    ReturnTypeKind.ParameterNLiteral,
+                    new Parameter("tdigest", ParameterTypeKind.DynamicArray),
                     new Parameter("percentile1", ScalarTypes.Real),
                     new Parameter("type", ScalarTypes.Type, ArgumentKind.Literal)))
             .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         public static readonly FunctionSymbol PercentileArrayTDigest =
             new FunctionSymbol("percentiles_array_tdigest",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("tdigest", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArray,
+                    new Parameter("tdigest", ParameterTypeKind.DynamicArray),
                     new Parameter("percentile", ScalarTypes.Real, maxOccurring: MaxRepeat)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("tdigest", ScalarTypes.Dynamic),
-                    new Parameter("percentiles", ScalarTypes.Dynamic)))
+                new Signature(
+                    ScalarTypes.DynamicArray,
+                    new Parameter("tdigest", ParameterTypeKind.DynamicArray),
+                    new Parameter("percentiles", ParameterTypeKind.DynamicArray)))
             .WithResultNamePrefix("percentile_tdigest")
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
 
         public static readonly FunctionSymbol PercentRankTDigest =
-            new FunctionSymbol("percentrank_tdigest", ScalarTypes.Real,
-                    new Parameter("digest", ScalarTypes.Dynamic),
-                    new Parameter("value", ParameterTypeKind.Scalar))
+            new FunctionSymbol("percentrank_tdigest", 
+                ScalarTypes.Real,
+                new Parameter("digest", ParameterTypeKind.DynamicArray),
+                new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RankTDigest =
-            new FunctionSymbol("rank_tdigest", ScalarTypes.Real,
-                new Parameter("digest", ScalarTypes.Dynamic),
+            new FunctionSymbol("rank_tdigest", 
+                ScalarTypes.Real,
+                new Parameter("digest", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol TdigestIsValid =
-            new FunctionSymbol("tdigest_isvalid", ScalarTypes.Bool,
-                new Parameter("digest", ScalarTypes.Dynamic),
+            new FunctionSymbol("tdigest_isvalid", 
+                ScalarTypes.Bool,
+                new Parameter("digest", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
         public static readonly FunctionSymbol HllIsValid =
-            new FunctionSymbol("hll_isvalid", ScalarTypes.Bool,
-                new Parameter("hll", ScalarTypes.Dynamic),
+            new FunctionSymbol("hll_isvalid", 
+                ScalarTypes.Bool,
+                new Parameter("hll", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
         public static readonly FunctionSymbol TDigestMerge =
-            new FunctionSymbol("tdigest_merge", ScalarTypes.Dynamic,
-                new Parameter("tdigest", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 16))
+            new FunctionSymbol("tdigest_merge", 
+                ScalarTypes.DynamicArray,
+                new Parameter("tdigest", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("tdigests_merge_result");
 
         public static readonly FunctionSymbol MergeTDigest =
-            new FunctionSymbol("merge_tdigest", ScalarTypes.Dynamic,
-                new Parameter("tdigest", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 16))
+            new FunctionSymbol("merge_tdigest", 
+                ScalarTypes.DynamicArray,
+                new Parameter("tdigest", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("tdigests_merge_result");
 
         public static readonly FunctionSymbol HllMerge =
-            new FunctionSymbol("hll_merge", ScalarTypes.Dynamic,
-                new Parameter("hll", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 16))
+            new FunctionSymbol("hll_merge", 
+                ScalarTypes.DynamicArray,
+                new Parameter("hll", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("hll_merged_result");
 
         public static readonly FunctionSymbol DCountHll =
-            new FunctionSymbol("dcount_hll", ScalarTypes.Long,
-                new Parameter("hll", ScalarTypes.Dynamic))
+            new FunctionSymbol("dcount_hll", 
+                ScalarTypes.Long,
+                new Parameter("hll", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
         public static readonly FunctionSymbol SeriesFir =
-            new FunctionSymbol("series_fir", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("filter", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_fir", 
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
+                new Parameter("filter", ParameterTypeKind.DynamicArray),
                 new Parameter("normalize", ScalarTypes.Bool, minOccurring: 0),
                 new Parameter("center", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
@@ -1748,18 +2031,32 @@ namespace Kusto.Language
                             new ColumnSymbol("variance", ScalarTypes.Real, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesStatsDynamic =
-            new FunctionSymbol("series_stats_dynamic", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_stats_dynamic", 
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return new DynamicBagSymbol(
+                        new ColumnSymbol("min", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("min_idx", ScalarTypes.Long, source: source),
+                        new ColumnSymbol("max", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("max_idx", ScalarTypes.Long, source: source),
+                        new ColumnSymbol("avg", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("stdev", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("variance", ScalarTypes.Real, source: source));
+                },
+                Tabularity.Scalar,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ArraySum =
-           new FunctionSymbol("array_sum", ScalarTypes.Real,
-               new Parameter("array", ScalarTypes.Dynamic))
+           new FunctionSymbol("array_sum", 
+               ScalarTypes.Real,
+               new Parameter("array", ParameterTypeKind.DynamicArray))
            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesFft =
@@ -1769,26 +2066,26 @@ namespace Kusto.Language
                     var source = context.GetArgument("series");
                     return MakePrefixedTuple(context, "series",
                         new TupleSymbol(
-                            new ColumnSymbol("real", ScalarTypes.Dynamic, source: source),
-                            new ColumnSymbol("imag", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("real", ScalarTypes.DynamicArrayOfReal, source: source),
+                            new ColumnSymbol("imag", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
+                new Parameter("series", ParameterTypeKind.DynamicArray),
+                new Parameter("series_imaginary", ParameterTypeKind.DynamicArray, minOccurring: 0));
 
-        public static readonly FunctionSymbol SeriesIFft =
+        public static readonly FunctionSymbol SeriesIfft =
             new FunctionSymbol("series_ifft",
                 context =>
                 {
                     var source = context.GetArgument("series");
                     return MakePrefixedTuple(context, "series",
                         new TupleSymbol(
-                            new ColumnSymbol("real", ScalarTypes.Dynamic, source: source),
-                            new ColumnSymbol("imag", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("real", ScalarTypes.DynamicArrayOfReal, source: source),
+                            new ColumnSymbol("imag", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("series_imaginary", ScalarTypes.Dynamic, minOccurring: 0));
+                new Parameter("series", ParameterTypeKind.DynamicArray),
+                new Parameter("series_imaginary", ParameterTypeKind.DynamicArray, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesFitPoly =
             new FunctionSymbol("series_fit_poly",
@@ -1798,14 +2095,14 @@ namespace Kusto.Language
                     return MakePrefixedTuple(context, "y_series",
                         new TupleSymbol(
                             new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
-                            new ColumnSymbol("coefficients", ScalarTypes.Dynamic, source: source),
+                            new ColumnSymbol("coefficients", ScalarTypes.DynamicArrayOfReal, source: source),
                             new ColumnSymbol("variance", ScalarTypes.Real, source: source),
                             new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
-                            new ColumnSymbol("poly_fit", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("poly_fit", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("y_series", ScalarTypes.Dynamic),
-                new Parameter("x_series", ScalarTypes.Dynamic, minOccurring: 0),
+                new Parameter("y_series", ParameterTypeKind.DynamicArray),
+                new Parameter("x_series", ParameterTypeKind.DynamicArray, minOccurring: 0),
                 new Parameter("degree", ScalarTypes.Int, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesFitLine =
@@ -1820,14 +2117,26 @@ namespace Kusto.Language
                             new ColumnSymbol("variance", ScalarTypes.Real, source: source),
                             new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
                             new ColumnSymbol("interception", ScalarTypes.Real, source: source),
-                            new ColumnSymbol("line_fit", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("line_fit", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic));
+                new Parameter("series", ParameterTypeKind.DynamicArray));
 
         public static readonly FunctionSymbol SeriesFitLineDynamic =
-            new FunctionSymbol("series_fit_line_dynamic", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_fit_line_dynamic", 
+                context =>
+                {
+                    var source = context.GetArgument("series");
+                    return ScalarTypes.GetDynamicBag(
+                        new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("slope", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("interception", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("line_fit", ScalarTypes.DynamicArrayOfReal, source: source));
+                },
+                Tabularity.Scalar,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesFit2Lines =
@@ -1841,7 +2150,7 @@ namespace Kusto.Language
                         new ColumnSymbol("split_idx", ScalarTypes.Long, source: source),
                         new ColumnSymbol("variance", ScalarTypes.Real, source: source),
                         new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
-                        new ColumnSymbol("line_fit", ScalarTypes.Dynamic, source: source),
+                        new ColumnSymbol("line_fit", ScalarTypes.DynamicArrayOfReal, source: source),
                         new ColumnSymbol("right_rsquare", ScalarTypes.Real, source: source),
                         new ColumnSymbol("right_slope", ScalarTypes.Real, source: source),
                         new ColumnSymbol("right_interception", ScalarTypes.Real, source: source),
@@ -1854,21 +2163,43 @@ namespace Kusto.Language
                         new ColumnSymbol("left_rvariance", ScalarTypes.Real, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("array", ScalarTypes.Dynamic));
+                new Parameter("array", ParameterTypeKind.DynamicArray));
+
 
         public static readonly FunctionSymbol SeriesFit2LinesDynamic =
-            new FunctionSymbol("series_fit_2lines_dynamic", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_fit_2lines_dynamic",
+                context =>
+                {
+                    var source = context.GetArgument("array");
+                    return new DynamicBagSymbol(
+                        new ColumnSymbol("rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("split_idx", ScalarTypes.Long, source: source),
+                        new ColumnSymbol("variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("rvariance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("line_fit", ScalarTypes.DynamicArrayOfReal, source: source),
+                        new ColumnSymbol("right_rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_slope", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_interception", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("right_rvariance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_rsquare", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_slope", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_interception", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_variance", ScalarTypes.Real, source: source),
+                        new ColumnSymbol("left_rvariance", ScalarTypes.Real, source: source));
+                },
+                Tabularity.Scalar,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesOutliers =
             new FunctionSymbol("series_outliers",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("kind", ScalarTypes.String, minOccurring: 0),
                     new Parameter("ignore_val", ParameterTypeKind.Number, minOccurring: 0)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                new Signature(ReturnTypeKind.Parameter0,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("kind", ScalarTypes.String),
                     new Parameter("ignore_val", ScalarTypes.Real),
                     new Parameter("min_percentile", ScalarTypes.Real),
@@ -1877,10 +2208,11 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesIIR =
-            new FunctionSymbol("series_iir", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
-                new Parameter("numerators", ScalarTypes.Dynamic),
-                new Parameter("denominators", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_iir", 
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
+                new Parameter("numerators", ParameterTypeKind.DynamicArray),
+                new Parameter("denominators", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesPeriodsDetect =
@@ -1890,11 +2222,11 @@ namespace Kusto.Language
                     var source = context.GetArgument("series");
                     return MakePrefixedTuple(context, "series",
                         new TupleSymbol(
-                            new ColumnSymbol("periods", ScalarTypes.Dynamic, source: source),
-                            new ColumnSymbol("scores", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("periods", ScalarTypes.DynamicArrayOfReal, source: source),
+                            new ColumnSymbol("scores", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("min_period", ParameterTypeKind.Number),
                 new Parameter("max_period", ParameterTypeKind.Number),
                 new Parameter("num_periods", ScalarTypes.Long));
@@ -1906,35 +2238,39 @@ namespace Kusto.Language
                     var source = context.GetArgument("series");
                     return MakePrefixedTuple(context, "series",
                         new TupleSymbol(
-                            new ColumnSymbol("periods", ScalarTypes.Dynamic, source: source),
-                            new ColumnSymbol("scores", ScalarTypes.Dynamic, source: source)));
+                            new ColumnSymbol("periods", ScalarTypes.DynamicArrayOfReal, source: source),
+                            new ColumnSymbol("scores", ScalarTypes.DynamicArrayOfReal, source: source)));
                 },
                 Tabularity.Scalar,
-                new Parameter("series", ScalarTypes.Dynamic),
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("period", ParameterTypeKind.Number, maxOccurring: 16));
 
         public static readonly FunctionSymbol SeriesFillBackwards =
-            new FunctionSymbol("series_fill_backward", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_fill_backward", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillForward =
-            new FunctionSymbol("series_fill_forward", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_fill_forward", 
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillConst =
-            new FunctionSymbol("series_fill_const", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_fill_const",
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("constant_value", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillLinear =
-            new FunctionSymbol("series_fill_linear", ScalarTypes.Dynamic,
-                new Parameter("series", ScalarTypes.Dynamic),
+            new FunctionSymbol("series_fill_linear",
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("fill_edges", ScalarTypes.Bool, minOccurring: 0),
                 new Parameter("constant_value", ParameterTypeKind.Number, minOccurring: 0))
@@ -1942,230 +2278,260 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesAdd =
             new FunctionSymbol("series_add",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArray,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSubtract =
             new FunctionSymbol("series_subtract",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(ScalarTypes.DynamicArray,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesMultiply =
             new FunctionSymbol("series_multiply",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(ScalarTypes.DynamicArray,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(ScalarTypes.DynamicArray,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesDivide =
             new FunctionSymbol("series_divide",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesPow =
             new FunctionSymbol("series_pow",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesGreater =
             new FunctionSymbol("series_greater",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesGreaterEquals =
             new FunctionSymbol("series_greater_equals",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesLess =
             new FunctionSymbol("series_less",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesLessEquals =
             new FunctionSymbol("series_less_equals",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesEquals =
             new FunctionSymbol("series_equals",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesNotEquals =
             new FunctionSymbol("series_not_equals",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Dynamic,
+                new Signature(
+                    ScalarTypes.DynamicArrayOfBool,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSeasonal =
             new FunctionSymbol("series_seasonal",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("period", ParameterTypeKind.Integer)),
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.DynamicArrayOfReal,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("period", ParameterTypeKind.Integer),
                     new Parameter("test_points", ParameterTypeKind.Integer)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesExp =
             new FunctionSymbol("series_exp",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSign =
             new FunctionSymbol("series_sign",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfLong,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesAbs =
             new FunctionSymbol("series_abs",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSin =
             new FunctionSymbol("series_sin",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesAsin =
             new FunctionSymbol("series_asin",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesCos =
             new FunctionSymbol("series_cos",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesAcos =
             new FunctionSymbol("series_acos",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesTan =
             new FunctionSymbol("series_tan",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesAtan =
             new FunctionSymbol("series_atan",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesLog =
             new FunctionSymbol("series_log",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArrayOfReal,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesFloor =
             new FunctionSymbol("series_floor",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ScalarTypes.DynamicArray,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesCeiling =
             new FunctionSymbol("series_ceiling",
-                new Signature(ScalarTypes.Dynamic,
-                    new Parameter("series", ScalarTypes.Dynamic)))
+                ReturnTypeKind.Parameter0,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         private static TypeSymbol SeriesDecomposeResult(CustomReturnTypeContext context)
@@ -2173,10 +2539,10 @@ namespace Kusto.Language
             var source = context.GetArgument("series");
             return MakePrefixedTuple(context, "series",
                 new TupleSymbol(
-                    new ColumnSymbol("baseline", ScalarTypes.Dynamic, source: source),
-                    new ColumnSymbol("seasonal", ScalarTypes.Dynamic, source: source),
-                    new ColumnSymbol("trend", ScalarTypes.Dynamic, source: source),
-                    new ColumnSymbol("residual", ScalarTypes.Dynamic, source: source)));
+                    new ColumnSymbol("baseline", ScalarTypes.DynamicArray, source: source),
+                    new ColumnSymbol("seasonal", ScalarTypes.DynamicArray, source: source),
+                    new ColumnSymbol("trend", ScalarTypes.DynamicArray, source: source),
+                    new ColumnSymbol("residual", ScalarTypes.DynamicArray, source: source)));
         }
 
         private static TypeSymbol SeriesDecomposeAnomaliesResult(CustomReturnTypeContext context)
@@ -2184,57 +2550,64 @@ namespace Kusto.Language
             var source = context.GetArgument("series");
             return MakePrefixedTuple(context, "series",
                 new TupleSymbol(
-                    new ColumnSymbol("ad_flag", ScalarTypes.Dynamic, source: source),
-                    new ColumnSymbol("ad_score", ScalarTypes.Dynamic, source: source),
-                    new ColumnSymbol("baseline", ScalarTypes.Dynamic, source: source)));
+                    new ColumnSymbol("ad_flag", ScalarTypes.DynamicArray, source: source),
+                    new ColumnSymbol("ad_score", ScalarTypes.DynamicArray, source: source),
+                    new ColumnSymbol("baseline", ScalarTypes.DynamicArray, source: source)));
         }
 
         public static readonly FunctionSymbol SeriesDecompose =
              new FunctionSymbol("series_decompose",
-                new Signature(SeriesDecomposeResult, Tabularity.Scalar,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                    SeriesDecomposeResult, 
+                    Tabularity.Scalar,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("trend", ScalarTypes.String, minOccurring: 0),
                     new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0),
-                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesDecomposeForecast =
              new FunctionSymbol("series_decompose_forecast",
-                new Signature(SeriesDecomposeResult, Tabularity.Scalar,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                    SeriesDecomposeResult, 
+                    Tabularity.Scalar,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("test_points", ParameterTypeKind.Integer),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("trend", ScalarTypes.String, minOccurring: 0),
-                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesDecomposeAnomalies =
              new FunctionSymbol("series_decompose_anomalies",
-                new Signature(SeriesDecomposeAnomaliesResult, Tabularity.Scalar,
-                    new Parameter("series", ScalarTypes.Dynamic),
+                    SeriesDecomposeAnomaliesResult, 
+                    Tabularity.Scalar,
+                    new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("threshold", ParameterTypeKind.Number, minOccurring: 0),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("trend", ScalarTypes.String, minOccurring: 0),
                     new Parameter("test_points", ParameterTypeKind.Integer, minOccurring: 0),
                     new Parameter("method", ScalarTypes.String, minOccurring: 0),
-                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0)));
+                    new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesPearsonCorrelation =
-            new FunctionSymbol("series_pearson_correlation", ScalarTypes.Real,
-                new Parameter("series1", ScalarTypes.Dynamic),
-                new Parameter("series2", ScalarTypes.Dynamic))
+            new FunctionSymbol("series_pearson_correlation", 
+                ScalarTypes.Real,
+                new Parameter("series1", ParameterTypeKind.DynamicArray),
+                new Parameter("series2", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesDotProduct =
             new FunctionSymbol("series_dot_product",
-                new Signature(ScalarTypes.Real,
-                    new Parameter("series1", ScalarTypes.Dynamic),
-                    new Parameter("series2", ScalarTypes.Dynamic)),
-                new Signature(ScalarTypes.Real,
-                    new Parameter("series1", ScalarTypes.Dynamic),
+                new Signature(
+                    ScalarTypes.Real,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)),
+                new Signature(
+                    ScalarTypes.Real,
+                    new Parameter("series1", ParameterTypeKind.DynamicArray),
                     new Parameter("series2", ParameterTypeKind.Number)),
-                new Signature(ScalarTypes.Real,
+                new Signature(
+                    ScalarTypes.Real,
                     new Parameter("series1", ParameterTypeKind.Number),
-                    new Parameter("series2", ScalarTypes.Dynamic)))
+                    new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
         #endregion
 
@@ -2469,7 +2842,8 @@ namespace Kusto.Language
         #region geospatial functions
 
         public static readonly FunctionSymbol GeoDistance2Points =
-            new FunctionSymbol("geo_distance_2points", ScalarTypes.Real,
+            new FunctionSymbol("geo_distance_2points", 
+                ScalarTypes.Real,
                 new Parameter("p1_longitude", ParameterTypeKind.Number),
                 new Parameter("p1_latitude", ParameterTypeKind.Number),
                 new Parameter("p2_longitude", ParameterTypeKind.Number),
@@ -2478,23 +2852,26 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoDistancePointToLine =
-            new FunctionSymbol("geo_distance_point_to_line", ScalarTypes.Real,
+            new FunctionSymbol("geo_distance_point_to_line", 
+                ScalarTypes.Real,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
-                new Parameter("lineString", ScalarTypes.Dynamic))
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoDistancePointToPolygon =
-            new FunctionSymbol("geo_distance_point_to_polygon", ScalarTypes.Real,
+            new FunctionSymbol("geo_distance_point_to_polygon",
+                ScalarTypes.Real,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
-                new Parameter("polygon", ScalarTypes.Dynamic))
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInCircle =
-            new FunctionSymbol("geo_point_in_circle", ScalarTypes.Bool,
+            new FunctionSymbol("geo_point_in_circle", 
+                ScalarTypes.Bool,
                 new Parameter("p_longitude", ParameterTypeKind.Number),
                 new Parameter("p_latitude", ParameterTypeKind.Number),
                 new Parameter("pc_longitude", ParameterTypeKind.Number),
@@ -2504,15 +2881,17 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInPolygon =
-            new FunctionSymbol("geo_point_in_polygon", ScalarTypes.Bool,
+            new FunctionSymbol("geo_point_in_polygon", 
+                ScalarTypes.Bool,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
-                new Parameter("polygon", ScalarTypes.Dynamic))
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointBuffer =
-            new FunctionSymbol("geo_point_buffer", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_point_buffer", 
+                ScalarTypes.GeoShape,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
                 new Parameter("radius", ParameterTypeKind.Number),
@@ -2521,159 +2900,180 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineBuffer =
-            new FunctionSymbol("geo_line_buffer", ScalarTypes.Dynamic,
-                new Parameter("lineString", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_line_buffer", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("radius", ParameterTypeKind.Number),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonBuffer =
-            new FunctionSymbol("geo_polygon_buffer", ScalarTypes.Dynamic,
-                new Parameter("polygon", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_polygon_buffer", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("radius", ParameterTypeKind.Number),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Lines =
-            new FunctionSymbol("geo_intersects_2lines", ScalarTypes.Bool,
-                new Parameter("lineString1", ScalarTypes.Dynamic),
-                new Parameter("lineString2", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersects_2lines", 
+                ScalarTypes.Bool,
+                new Parameter("lineString1", ParameterTypeKind.DynamicBag),
+                new Parameter("lineString2", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersection2Lines =
-            new FunctionSymbol("geo_intersection_2lines", ScalarTypes.Dynamic,
-                new Parameter("lineString1", ScalarTypes.Dynamic),
-                new Parameter("lineString2", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersection_2lines", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString1", ParameterTypeKind.DynamicBag),
+                new Parameter("lineString2", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersectsLineWithPolygon =
-            new FunctionSymbol("geo_intersects_line_with_polygon", ScalarTypes.Bool,
-                new Parameter("lineString", ScalarTypes.Dynamic),
-                new Parameter("polygon", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersects_line_with_polygon", 
+                ScalarTypes.Bool,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersectionLineWithPolygon =
-            new FunctionSymbol("geo_intersection_line_with_polygon", ScalarTypes.Dynamic,
-                new Parameter("lineString", ScalarTypes.Dynamic),
-                new Parameter("polygon", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersection_line_with_polygon", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Polygons =
-            new FunctionSymbol("geo_intersects_2polygons", ScalarTypes.Bool,
-                new Parameter("polygon1", ScalarTypes.Dynamic),
-                new Parameter("polygon2", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersects_2polygons", 
+                ScalarTypes.Bool,
+                new Parameter("polygon1", ParameterTypeKind.DynamicBag),
+                new Parameter("polygon2", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersection2Polygons =
-            new FunctionSymbol("geo_intersection_2polygons", ScalarTypes.Dynamic,
-                new Parameter("polygon1", ScalarTypes.Dynamic),
-                new Parameter("polygon2", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_intersection_2polygons", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygon1", ParameterTypeKind.DynamicBag),
+                new Parameter("polygon2", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonsUnion =
-            new FunctionSymbol("geo_union_polygons_array", ScalarTypes.Dynamic,
-                new Parameter("polygons", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_union_polygons_array", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygons", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLinesUnion =
-            new FunctionSymbol("geo_union_lines_array", ScalarTypes.Dynamic,
-                new Parameter("lineStrings", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_union_lines_array", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineStrings", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
-            new FunctionSymbol("geo_polygon_to_s2cells", ScalarTypes.Dynamic,
-                new Parameter("polygon", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_polygon_to_s2cells", 
+                ScalarTypes.DynamicArrayOfString,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("level", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonDensify =
-            new FunctionSymbol("geo_polygon_densify", ScalarTypes.Dynamic,
-                new Parameter("polygon", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_polygon_densify", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("preserve_crossing", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonArea =
-            new FunctionSymbol("geo_polygon_area", ScalarTypes.Real,
-                new Parameter("polygon", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_polygon_area", 
+                ScalarTypes.Real,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonCentroid =
-            new FunctionSymbol("geo_polygon_centroid", ScalarTypes.Dynamic,
-                new Parameter("polygon", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_polygon_centroid", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonPerimeter =
-            new FunctionSymbol("geo_polygon_perimeter", ScalarTypes.Real,
-                new Parameter("polygon", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_polygon_perimeter", 
+                ScalarTypes.Real,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineLength =
-            new FunctionSymbol("geo_line_length", ScalarTypes.Real,
-                new Parameter("lineString", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_line_length", 
+                ScalarTypes.Real,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineCentroid =
-            new FunctionSymbol("geo_line_centroid", ScalarTypes.Dynamic,
-                new Parameter("lineString", ScalarTypes.Dynamic))
+            new FunctionSymbol("geo_line_centroid", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineDensify =
-            new FunctionSymbol("geo_line_densify", ScalarTypes.Dynamic,
-                new Parameter("lineString", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_line_densify", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("preserve_crossing", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineSimplify =
-            new FunctionSymbol("geo_line_simplify", ScalarTypes.Dynamic,
-                new Parameter("lineString", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_line_simplify", 
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonSimplify =
-            new FunctionSymbol("geo_polygon_simplify", ScalarTypes.Dynamic,
-                new Parameter("polygon", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_polygon_simplify", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoSimplifyPolygonsArray =
-            new FunctionSymbol("geo_simplify_polygons_array", ScalarTypes.Dynamic,
-                new Parameter("polygons", ScalarTypes.Dynamic),
+            new FunctionSymbol("geo_simplify_polygons_array", 
+                ScalarTypes.GeoShape,
+                new Parameter("polygons", ParameterTypeKind.DynamicArray),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineValidate =
             new FunctionSymbol("__geo_line_validate", ScalarTypes.String,
-                new Parameter("lineString", ScalarTypes.Dynamic))
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Hide();
 
         public static readonly FunctionSymbol GeoPolygonValidate =
             new FunctionSymbol("__geo_polygon_validate", ScalarTypes.String,
-                new Parameter("polygon", ScalarTypes.Dynamic))
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Hide();
@@ -2687,19 +3087,22 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashToCentralPoint =
-            new FunctionSymbol("geo_geohash_to_central_point", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_geohash_to_central_point", 
+                ScalarTypes.GeoShape,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashToPolygon =
-            new FunctionSymbol("geo_geohash_to_polygon", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_geohash_to_polygon", 
+                ScalarTypes.GeoShape,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashNeighbors =
-            new FunctionSymbol("geo_geohash_neighbors", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_geohash_neighbors", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -2713,19 +3116,22 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellToCentralPoint =
-            new FunctionSymbol("geo_s2cell_to_central_point", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_s2cell_to_central_point", 
+                ScalarTypes.GeoShape,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellNeighbors =
-            new FunctionSymbol("geo_s2cell_neighbors", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_s2cell_neighbors", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellToPolygon =
-            new FunctionSymbol("geo_s2cell_to_polygon", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_s2cell_to_polygon", 
+                ScalarTypes.GeoShape,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -2739,25 +3145,29 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToCentralPoint =
-            new FunctionSymbol("geo_h3cell_to_central_point", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_h3cell_to_central_point", 
+                ScalarTypes.GeoShape,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToPolygon =
-            new FunctionSymbol("geo_h3cell_to_polygon", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_h3cell_to_polygon", 
+                ScalarTypes.GeoShape,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellNeighbors =
-            new FunctionSymbol("geo_h3cell_neighbors", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_h3cell_neighbors", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellChildren =
-            new FunctionSymbol("geo_h3cell_children", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_h3cell_children", 
+                ScalarTypes.DynamicArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
@@ -2771,7 +3181,8 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellRings =
-            new FunctionSymbol("geo_h3cell_rings", ScalarTypes.Dynamic,
+            new FunctionSymbol("geo_h3cell_rings", 
+                ScalarTypes.DynamicArrayOfArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("distance", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
@@ -2795,13 +3206,27 @@ namespace Kusto.Language
             new FunctionSymbol("current_principal", ScalarTypes.String);
         // result column name is dependent on some guid?
 
+        private static readonly TypeSymbol CurrentPrincipalDetailsResult =
+            ScalarTypes.GetDynamicBag(
+                new ColumnSymbol("UserPrincipalName", ScalarTypes.String),
+                new ColumnSymbol("IdentityProvider", ScalarTypes.String),
+                new ColumnSymbol("Authority", ScalarTypes.String),
+                new ColumnSymbol("Mfa", ScalarTypes.String),
+                new ColumnSymbol("Type", ScalarTypes.String),
+                new ColumnSymbol("DisplayName", ScalarTypes.String),
+                new ColumnSymbol("ObjectId", ScalarTypes.String),
+                new ColumnSymbol("FQN", ScalarTypes.String),
+                new ColumnSymbol("Notes", ScalarTypes.String));
+
         public static readonly FunctionSymbol CurrentPrincipalDetails =
-            new FunctionSymbol("current_principal_details", ScalarTypes.Dynamic)
+            new FunctionSymbol("current_principal_details", 
+                CurrentPrincipalDetailsResult)
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol CurrentPrincipalIsMemberOf =
-          new FunctionSymbol("current_principal_is_member_of", ScalarTypes.Bool,
-              new Parameter("group", ParameterTypeKind.StringOrDynamic, minOccurring: 1, maxOccurring: 64))
+          new FunctionSymbol("current_principal_is_member_of", 
+              ScalarTypes.Bool,
+              new Parameter("group", ParameterTypeKind.StringOrArray, minOccurring: 1, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ExtentId =
@@ -2814,7 +3239,8 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ExtentTags =
-            new FunctionSymbol("extent_tags", ScalarTypes.Dynamic)
+            new FunctionSymbol("extent_tags", 
+                ScalarTypes.DynamicArrayOfString)
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol CurrentNodeId =
@@ -2905,7 +3331,8 @@ namespace Kusto.Language
            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowstoreOrdinalRange =
-            new FunctionSymbol("rowstore_ordinal_range", ScalarTypes.Dynamic)
+            new FunctionSymbol("rowstore_ordinal_range", 
+                ScalarTypes.Dynamic)
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
 
@@ -2939,7 +3366,7 @@ namespace Kusto.Language
                     new Parameter("ips", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
                     new Parameter("source", ParameterTypeKind.StringOrDynamic),
-                    new Parameter("ips", ScalarTypes.Dynamic)))
+                    new Parameter("ips", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol HasAnyIpv4Prefix =
@@ -2949,7 +3376,7 @@ namespace Kusto.Language
                     new Parameter("ip_prefixes", ScalarTypes.String, maxOccurring: MaxRepeat)),
                 new Signature(ScalarTypes.Bool,
                     new Parameter("source", ParameterTypeKind.StringOrDynamic),
-                    new Parameter("ip_prefixes", ScalarTypes.Dynamic)))
+                    new Parameter("ip_prefixes", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Invoke =
@@ -3231,7 +3658,7 @@ namespace Kusto.Language
             SeriesStats,
             SeriesStatsDynamic,
             SeriesFft,
-            SeriesIFft,
+            SeriesIfft,
             SeriesFitLine,
             SeriesFitLineDynamic,
             SeriesFit2Lines,

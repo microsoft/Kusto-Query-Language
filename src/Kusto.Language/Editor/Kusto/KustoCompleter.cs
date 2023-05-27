@@ -555,6 +555,7 @@ namespace Kusto.Language.Editor
         {
             var kind = GetCompletionKind(symbol);
             string editName = KustoFacts.BracketNameIfNecessary(symbol.Name);
+            var displayText = CompletionDisplay.GetText(symbol, nameOnly);
 
             switch (symbol)
             {
@@ -568,11 +569,6 @@ namespace Kusto.Language.Editor
                         addExternalTableFuncText
                         ? $"external_table('{t.Name}')"
                         : editName;
-
-                    var displayText =
-                        addExternalTableFuncText
-                        ? $"external_table('{t.Name}')"
-                        : t.Name;
 
                     // Lower ordering priority for external tables so that
                     // “regular” tables are displayed first and then the external ones.
@@ -607,7 +603,7 @@ namespace Kusto.Language.Editor
                 case FunctionSymbol f:
                     if (nameOnly)
                     {
-                        items.Add(new CompletionItem(kind, f.Name, editName));
+                        items.Add(new CompletionItem(kind, displayText, editName));
                         return;
                     }
 
@@ -617,8 +613,6 @@ namespace Kusto.Language.Editor
                         // built-in functions don't need to be escaped even if they are keywords
                         editName = f.Name;
                     }
-
-                    var fdisplay = f.Display;
 
                     if (f.Signatures
                          .Where(s => !s.IsHidden && !s.IsObsolete)
@@ -632,11 +626,11 @@ namespace Kusto.Language.Editor
 
                         if (IsStartOfQuery(contextNode))
                         {
-                            items.Add(new CompletionItem(kind, fdisplay, editName + AfterQueryStart, matchText: f.Name));
+                            items.Add(new CompletionItem(kind, displayText, editName + AfterQueryStart, matchText: f.Name));
                         }
                         else
                         {
-                            items.Add(new CompletionItem(kind, fdisplay, editName, matchText: f.Name));
+                            items.Add(new CompletionItem(kind, displayText, editName, matchText: f.Name));
                         }
                     }
                     else
@@ -646,17 +640,17 @@ namespace Kusto.Language.Editor
 
                         if (this.options.EnableParameterInjection && f.MaxArgumentCount == 1 && !builtIn && !isInvoke)
                         {
-                            items.Add(new CompletionItem(kind, fdisplay, editName + "({parameter})", matchText: f.Name));
+                            items.Add(new CompletionItem(kind, displayText, editName + "({parameter})", matchText: f.Name));
                         }
                         else
                         {
-                            items.Add(new CompletionItem(kind, fdisplay, editName + "(", ")", matchText: f.Name));
+                            items.Add(new CompletionItem(kind, displayText, editName + "(", ")", matchText: f.Name));
                         }
                     }
                     break;
 
                 case PatternSymbol p:
-                    items.Add(new CompletionItem(kind, p.Display, editName + "(", ")", matchText: p.Name));
+                    items.Add(new CompletionItem(kind, displayText, editName + "(", ")", matchText: p.Name));
                     break;
 
                 case VariableSymbol v:
@@ -666,11 +660,11 @@ namespace Kusto.Language.Editor
                     }
                     else if (v.Type is TableSymbol && IsStartOfQuery(contextNode))
                     {
-                        items.Add(new CompletionItem(kind, v.Name, editName + AfterQueryStart));
+                        items.Add(new CompletionItem(kind, displayText, editName + AfterQueryStart));
                     }
                     else
                     {
-                        items.Add(new CompletionItem(kind, v.Name, editName));
+                        items.Add(new CompletionItem(kind, displayText, editName));
                     }
                     break;
 
@@ -681,12 +675,12 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        items.Add(new CompletionItem(kind, symbol.Name, editName));
+                        items.Add(new CompletionItem(kind, displayText, editName));
                     }
                     break;
 
                 case DatabaseSymbol d:
-                    items.Add(new CompletionItem(CompletionKind.Database, d.Name, editName));
+                    items.Add(new CompletionItem(CompletionKind.Database, displayText, editName));
                     if (!string.IsNullOrEmpty(d.AlternateName))
                     {
                         string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName);
@@ -695,7 +689,7 @@ namespace Kusto.Language.Editor
                     break;
 
                 case ClusterSymbol cl:
-                    items.Add(new CompletionItem(CompletionKind.Cluster, cl.Name, KustoFacts.GetBracketedName(cl.Name)));
+                    items.Add(new CompletionItem(CompletionKind.Cluster, displayText, KustoFacts.GetBracketedName(cl.Name)));
                     break;
 
                 case OptionSymbol opt:
@@ -703,7 +697,7 @@ namespace Kusto.Language.Editor
                     break;
 
                 default:
-                    items.Add(new CompletionItem(kind, symbol.Name, editName));
+                    items.Add(new CompletionItem(kind, displayText, editName));
                     break;
             }
         }
@@ -1115,7 +1109,7 @@ namespace Kusto.Language.Editor
                     editText = "guid(" + example + ")";
                 }
             }
-            else if (type == ScalarTypes.Dynamic)
+            else if (type is DynamicSymbol)
             {
                 if (example.StartsWith("dynamic("))
                 {
@@ -2584,25 +2578,31 @@ namespace Kusto.Language.Editor
                     return type.IsScalar;
 
                 case ParameterTypeKind.Integer:
-                    return type is ScalarSymbol s && s.IsInteger;
+                    return type.IsInteger();
 
                 case ParameterTypeKind.RealOrDecimal:
-                    return type == ScalarTypes.Real || type == ScalarTypes.Decimal;
+                    return type.IsRealOrDecimal();
 
                 case ParameterTypeKind.StringOrDynamic:
-                    return type == ScalarTypes.String || type == ScalarTypes.Dynamic;
+                    return type.IsStringOrDynamic();
+
+                case ParameterTypeKind.StringOrArray:
+                    return type.IsStringOrArray();
+
+                case ParameterTypeKind.IntegerOrArray:
+                    return type.IsIntegerOrArray();
 
                 case ParameterTypeKind.Number:
-                    return type is ScalarSymbol s2 && s2.IsNumeric;
+                    return type.IsNumeric();
 
                 case ParameterTypeKind.NumberOrBool:
-                    return type is ScalarSymbol s2b && (s2b.IsNumeric || s2b == ScalarTypes.Bool);
+                    return type.IsNumericOrBool();
 
                 case ParameterTypeKind.Summable:
-                    return type is ScalarSymbol s3 && s3.IsSummable;
+                    return type.IsSummable();
 
                 case ParameterTypeKind.Orderable:
-                    return type is ScalarSymbol s4 && s4.IsOrderable;
+                    return type.IsOrderable();
 
                 case ParameterTypeKind.Tabular:
                     return type.IsTabular;
@@ -2614,16 +2614,13 @@ namespace Kusto.Language.Editor
                     return type is ClusterSymbol;
 
                 case ParameterTypeKind.NotBool:
-                    return type is ScalarSymbol && type != ScalarTypes.Bool;
+                    return type.IsAnyScalarExceptBool();
 
                 case ParameterTypeKind.NotRealOrBool:
-                    return type is ScalarSymbol && type != ScalarTypes.Real && type != ScalarTypes.Bool;
+                    return type.IsAnyScalarExceptReadOrBool();
 
                 case ParameterTypeKind.NotDynamic:
-                    return type is ScalarSymbol && type != ScalarTypes.Dynamic;
-
-                case ParameterTypeKind.IntegerOrDynamic:
-                    return (type is ScalarSymbol s5 && s5.IsInteger) || type == ScalarTypes.Dynamic;
+                    return type.IsAnyScalarExceptDynamic();
 
                 case ParameterTypeKind.Parameter0:
                 case ParameterTypeKind.Parameter1:
@@ -2690,8 +2687,10 @@ namespace Kusto.Language.Editor
                     return CompletionKind.MaterialiedView;
                 case SymbolKind.Graph:
                     return CompletionKind.Graph;
+                case SymbolKind.Primitive:
                 case SymbolKind.Tuple:
-                case SymbolKind.Scalar:
+                case SymbolKind.Array:
+                case SymbolKind.Bag:
                 case SymbolKind.Group:
                 case SymbolKind.Void:
                 default:

@@ -93,17 +93,5 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => Tabularity.None;
 
         public override SymbolKind Kind => SymbolKind.EntityGroup;
-
-        protected override string GetDisplay()
-        {
-            if (this.Definition != null)
-            {
-                return $"entity_group({this.Name}:{this.Definition})";
-            }
-            else
-            {
-                return $"entity_group({this.Name}:{string.Join(", ", this.Members.Select(m => m.Display))})";
-            }
-        }
     }
 }

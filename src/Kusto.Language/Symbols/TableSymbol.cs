@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Kusto.Language.Symbols
 {
-    using Utils;
     using Parsing;
+    using Syntax;
+    using Utils;
 
     /// <summary>
     /// A symbol representing a table
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Symbol: {Kind} {DebugDisplay}")]
     public class TableSymbol : TypeSymbol
     {
         /// <summary>
@@ -376,10 +376,14 @@ namespace Kusto.Language.Symbols
             }
         }
 
-        protected override string GetDisplay() =>
-            $"({string.Join(", ", this.Members.Select(m => m.Display))})";
-
-        private string DebugDisplay => this.Name + this.Display;
+        /// <summary>
+        /// Returns a new <see cref="TableSymbol"/> instance with all columns
+        /// modified to reference the specified source.
+        /// </summary>
+        public TableSymbol WithSource(SyntaxNode source)
+        {
+            return this.WithColumns(this.Columns.Select(p => p.WithSource(source)));
+        }
 
         /// <summary>
         /// An empty table.

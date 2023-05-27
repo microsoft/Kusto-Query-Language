@@ -10,9 +10,12 @@ namespace Kusto.Language.Symbols
     /// <summary>
     /// A parameter declaration for a <see cref="Signature"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Parameter: {Display}")]
+    [System.Diagnostics.DebuggerDisplay("Parameter: {DebugDisplay}")]
     public class Parameter
     {
+        private string DebugText =>
+            DebugDisplay.GetText(this);
+
         /// <summary>
         /// The name of the parameter.
         /// </summary>
@@ -343,22 +346,5 @@ namespace Kusto.Language.Symbols
         public bool IsScalar => this.Tabularity == Tabularity.Scalar;
 
         public bool IsTabular => this.Tabularity == Tabularity.Tabular;
-
-        public string TypeDisplay
-        {
-            get
-            {
-                switch (this.TypeKind)
-                {
-                    case ParameterTypeKind.Declared:
-                        return string.Join("|", this.DeclaredTypes.Select(t => t.Display));
-                    default:
-                        return "<" + this.TypeKind.ToString() + ">";
-                }
-            }
-        }
-
-        public string Display => 
-            $"{this.Name}: {this.TypeDisplay}";
     }
 }

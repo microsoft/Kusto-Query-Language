@@ -222,7 +222,7 @@ namespace Kusto.Language
                                 .WithInheritableProperties(context.RowScope)
                                 .WithIsOpen(true),
                  Tabularity.Tabular,
-                 new Parameter("column", ScalarTypes.Dynamic, ArgumentKind.Column),
+                 new Parameter("column", ParameterTypeKind.Scalar, ArgumentKind.Column),
                  new Parameter("column_prefix", ScalarTypes.String, ArgumentKind.LiteralNotEmpty, minOccurring: 0));
 
         public static readonly IReadOnlyList<ColumnSymbol> BasketColumns = new[] {
@@ -246,7 +246,7 @@ namespace Kusto.Language
                  context => new TableSymbol(context.RowScope.Columns.Concat(context.Arguments.Select((a, i) => new ColumnSymbol("s" + i, ScalarTypes.Long))))
                                 .WithInheritableProperties(context.RowScope),
                  Tabularity.Tabular,
-                 new Parameter("hll", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: MaxRepeat));
+                 new Parameter("hll", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: MaxRepeat));
 
         public static readonly IReadOnlyList<ColumnSymbol> DiffPatternsColumns = new[] {
             new ColumnSymbol("SegmentId", ScalarTypes.Long),
@@ -319,7 +319,7 @@ namespace Kusto.Language
                     }
 
                     cols.Add(new ColumnSymbol("dcount", ScalarTypes.Long));
-                    cols.Add(new ColumnSymbol("samples", ScalarTypes.Dynamic));
+                    cols.Add(new ColumnSymbol("samples", ScalarTypes.DynamicArray));
                     return new TableSymbol(cols);
                 },
                 Tabularity.Tabular,
@@ -330,7 +330,7 @@ namespace Kusto.Language
                 new Parameter("MaxWindowSizeBetweenSteps", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("Step", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("StateColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
-                new Parameter("Sequence", ScalarTypes.Dynamic, ArgumentKind.Constant));
+                new Parameter("Sequence", ParameterTypeKind.DynamicArray, ArgumentKind.Constant));
 
         public static readonly FunctionSymbol FunnelSequenceCompletion =
             new FunctionSymbol("funnel_sequence_completion",
@@ -356,11 +356,11 @@ namespace Kusto.Language
                 new Parameter("End", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("BinSize", ParameterTypeKind.Summable, ArgumentKind.Constant),
                 new Parameter("StateColumn", ParameterTypeKind.NotDynamic, ArgumentKind.Column),
-                new Parameter("Sequence", ScalarTypes.Dynamic, ArgumentKind.Constant),
-                new Parameter("MaxSequencePeriods", ScalarTypes.Dynamic, ArgumentKind.Constant));
+                new Parameter("Sequence", ParameterTypeKind.DynamicArray, ArgumentKind.Constant),
+                new Parameter("MaxSequencePeriods", ParameterTypeKind.DynamicArray, ArgumentKind.Constant));
 
         public static readonly IReadOnlyList<ColumnSymbol> HttpRequestColumns = new[] {
-            new ColumnSymbol("ResponseHeaders", ScalarTypes.Dynamic),
+            new ColumnSymbol("ResponseHeaders", ScalarTypes.DynamicBag),
             new ColumnSymbol("ResponseBody", ScalarTypes.Dynamic)
         };
 
@@ -368,15 +368,15 @@ namespace Kusto.Language
              new FunctionSymbol("http_request",
                  new TableSymbol(HttpRequestColumns),
                  new Parameter("Uri", ScalarTypes.String, ArgumentKind.Constant),
-                 new Parameter("RequestHeaders", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("Options", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("RequestHeaders", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol HttpRequestPost =
              new FunctionSymbol("http_request_post",
                  new TableSymbol(HttpRequestColumns),
                  new Parameter("Uri", ScalarTypes.String, ArgumentKind.Constant),
-                 new Parameter("RequestHeaders", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("Options", ScalarTypes.Dynamic, minOccurring: 0),
+                 new Parameter("RequestHeaders", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
                  new Parameter("Content", ScalarTypes.String, ArgumentKind.Constant, minOccurring: 0));
 
         public static readonly FunctionSymbol Identity =
@@ -394,10 +394,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol InferStorageSchema =
              new FunctionSymbol("infer_storage_schema",
-                 new TableSymbol(new[] {
-                    new ColumnSymbol("CslSchema", ScalarTypes.String),
-                 }),
-                 new Parameter("Options", ScalarTypes.Dynamic));
+                 TableSymbol.From("(CslSchema: string)"),
+                 new Parameter("Options", ScalarTypes.DynamicBag));
 
         private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
@@ -533,7 +531,7 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol Python =
              new FunctionSymbol("python",
@@ -541,8 +539,8 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("Artifacts", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("Artifacts", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol R =
              new FunctionSymbol("r",
@@ -550,7 +548,7 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("OutputSchema", ScalarTypes.Type),
                  new Parameter("Script", ScalarTypes.String),
-                 new Parameter("Arguments", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("Arguments", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol RollingPercentile =
              new FunctionSymbol("rolling_percentile",
@@ -683,8 +681,8 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
-                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("sql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol MySqlRequest =
              new FunctionSymbol("mysql_request",
@@ -692,8 +690,8 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
-                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0));
+                 new Parameter("sql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0));
 
         public static readonly FunctionSymbol PostgreSqlRequest =
            new FunctionSymbol("postgresql_request",
@@ -701,8 +699,8 @@ namespace Kusto.Language
                Tabularity.Tabular,
                new Parameter("connection_string", ScalarTypes.String),
                new Parameter("sql_query", ScalarTypes.String),
-               new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
-               new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0))
+               new Parameter("sql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
+               new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0))
             .Hide(); // Open once service rollout completes
 
         public static readonly FunctionSymbol CosmosdbSqlRequest =
@@ -711,8 +709,8 @@ namespace Kusto.Language
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
                  new Parameter("sql_query", ScalarTypes.String),
-                 new Parameter("sql_parameters", ScalarTypes.Dynamic, minOccurring: 0),
-                 new Parameter("options", ScalarTypes.Dynamic, minOccurring: 0)
+                 new Parameter("sql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0)
                  );
 
         public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =

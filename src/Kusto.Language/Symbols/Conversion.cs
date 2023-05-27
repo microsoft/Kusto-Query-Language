@@ -7,6 +7,9 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public enum Conversion
     {
+        // the enum values are in order of subsumption, a greater value
+        // subsumes all other choices (exception None)
+
         /// <summary>
         /// No conversion allowed between different scalar types (strict)
         /// </summary>
@@ -16,6 +19,11 @@ namespace Kusto.Language.Symbols
         /// Type promotion (widening) allowed.
         /// </summary>
         Promotable,
+
+        /// <summary>
+        /// Conversions to dynamic allowed.
+        /// </summary>
+        Dynamic,
 
         /// <summary>
         /// Conversions between compatible types allowed (widening or narrowing)

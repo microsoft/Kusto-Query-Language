@@ -50,9 +50,29 @@ namespace Kusto.Language.Symbols
         RealOrDecimal,
 
         /// <summary>
-        /// Either a string or a dynamic value
+        /// Either a string or a dynamic (string) value
         /// </summary>
         StringOrDynamic,
+
+        /// <summary>
+        /// Either a string or an array of strings
+        /// </summary>
+        StringOrArray,
+
+        /// <summary>
+        /// Either an integer or dynamic array of integers.
+        /// </summary>
+        IntegerOrArray,
+
+        /// <summary>
+        /// The parameter is any dynamic array type (or dynamic)
+        /// </summary>
+        DynamicArray,
+
+        /// <summary>
+        /// The parameter is any dynamic bag type (or dynamic)
+        /// </summary>
+        DynamicBag,
 
         /// <summary>
         /// Any scalar numeric type (int, long, real, decimal)
@@ -105,22 +125,26 @@ namespace Kusto.Language.Symbols
         Parameter2,
 
         /// <summary>
-        /// The argument type must be promotable to the common scalar type of all the parameters marked CommonXXX.
+        /// The argument type must be promotable to the common scalar type of all the parameters marked CommonXXX,
+        /// but not be dynamic.
         /// </summary>
         CommonScalar,
 
         /// <summary>
-        /// The argument type must be promotable to the common numeric type of all the parameters marked CommonXXX.
+        /// The argument type must be promotable to the common numeric type of all the parameters marked CommonXXX,
+        /// but not dynamic.
         /// </summary>
         CommonNumber,
 
         /// <summary>
-        /// The argument type must be promotable to the common summable type of all the parameters marked CommonXXX.
+        /// The argument type must be promotable to the common summable type of all the parameters marked CommonXXX,
+        /// but not dynamic.
         /// </summary>
         CommonSummable,
 
         /// <summary>
-        /// The argument type must be promotable to the common orderable type of all the parameters marked CommonXXX.
+        /// The argument type must be promotable to the common orderable type of all the parameters marked CommonXXX,
+        /// but not dynamic.
         /// </summary>
         CommonOrderable,
 
@@ -128,10 +152,5 @@ namespace Kusto.Language.Symbols
         /// The argument type must be promotable to the common scalar type of all the parameters marked CommonXXX, or be dynamic.
         /// </summary>
         CommonScalarOrDynamic,
-
-        /// <summary>
-        /// Either a numeric or a dynamic value
-        /// </summary>
-        IntegerOrDynamic,
     }
 }

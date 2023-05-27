@@ -21,8 +21,6 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => this.UnderlyingSymbol.Tabularity;
         public override SymbolKind Kind => SymbolKind.EntityGroupElement;
 
-        protected override string GetDisplay() => this.UnderlyingSymbol.Display;
-
         public static readonly IReadOnlyList<Symbol> SpecialMembers =
             new Symbol[]
             {

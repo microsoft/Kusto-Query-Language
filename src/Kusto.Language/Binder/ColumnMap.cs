@@ -12,15 +12,17 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// map of column names to columns, column lists or dictionaries of type to columns/column lists.
         /// </summary>
-        private Dictionary<string, object> _nameMap;
+        private readonly Dictionary<string, object> _nameMap;
+        private readonly bool _unifyDynamicTypes;
 
-        public ColumnMap()
+        public ColumnMap(bool unifyDynamicTypes = true)
         {
             _nameMap = new Dictionary<string, object>();
+            _unifyDynamicTypes = unifyDynamicTypes;
         }
 
-        public ColumnMap(IEnumerable<ColumnSymbol> columns)
-            : this()
+        public ColumnMap(IEnumerable<ColumnSymbol> columns, bool unifyDynamicTypes = true)
+            : this(unifyDynamicTypes)
         {
             AddRange(columns);
         }
@@ -36,6 +38,13 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private TypeSymbol GetTypeKey(TypeSymbol type)
+        {
+            if (_unifyDynamicTypes && type is DynamicSymbol)
+                return ScalarTypes.Dynamic;
+            return type;
+        }
+
         /// <summary>
         /// Adds a column to the map.
         /// </summary>
@@ -45,44 +54,46 @@ namespace Kusto.Language.Binding
             {
                 if (columnListOrDictionary is ColumnSymbol c)
                 {
-                    if (c.Type == column.Type)
+                    var cKey = GetTypeKey(c.Type);
+                    var columnKey = GetTypeKey(column.Type);
+                    if (cKey == columnKey)
                     {
-                        var list = new List<ColumnSymbol>();
-                        list.Add(c);
-                        list.Add(column);
+                        var list = new List<ColumnSymbol>() { c, column };
                         _nameMap[column.Name] = list;
                     }
                     else
                     {
                         var dict = new Dictionary<TypeSymbol, object>();
-                        dict[c.Type] = c;
-                        dict[column.Type] = column;
+                        dict[cKey] = c;
+                        dict[columnKey] = column;
                         _nameMap[column.Name] = dict;
                     }
                 }
                 else if (columnListOrDictionary is List<ColumnSymbol> list)
                 {
-                    if (list[0].Type == column.Type)
+                    var listTypeKey = GetTypeKey(list[0].Type);
+                    var columnTypeKey = GetTypeKey(column.Type);
+
+                    if (listTypeKey == columnTypeKey)
                     {
                         list.Add(column);
                     }
                     else
                     {
                         var dict = new Dictionary<TypeSymbol, object>();
-                        dict[list[0].Type] = list;
-                        dict[column.Type] = column;
+                        dict[listTypeKey] = list;
+                        dict[columnTypeKey] = column;
                     }
                 }
                 else if (columnListOrDictionary is Dictionary<TypeSymbol, object> dict)
                 {
-                    if (dict.TryGetValue(column.Type, out var columnOrList))
+                    var columnTypeKey = GetTypeKey(column.Type);
+                    if (dict.TryGetValue(columnTypeKey, out var columnOrList))
                     {
                         if (columnOrList is ColumnSymbol col)
                         {
-                            var newList = new List<ColumnSymbol>();
-                            newList.Add(col);
-                            newList.Add(column);
-                            dict[column.Type] = newList;
+                            var newList = new List<ColumnSymbol>() { col, column };
+                            dict[columnTypeKey] = newList;
                         }
                         else if (columnOrList is List<ColumnSymbol> existingColumns)
                         {
@@ -91,7 +102,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        dict[column.Type] = column;
+                        dict[columnTypeKey] = column;
                     }
                 }
             }
@@ -197,14 +208,15 @@ namespace Kusto.Language.Binding
         {
             if (_nameMap.TryGetValue(name, out var columnListOrDictionary))
             {
+                var typeKey = GetTypeKey(type);
                 if (columnListOrDictionary is Dictionary<TypeSymbol, object> dict)
                 {
-                    return dict.TryGetValue(type, out var columnOrList)
+                    return dict.TryGetValue(typeKey, out var columnOrList)
                         && columnOrList is List<ColumnSymbol> cols
                         && cols.Count > 0;
                 }
                 else if (columnListOrDictionary is List<ColumnSymbol> columns
-                    && columns[0].Type == type)
+                    && GetTypeKey(columns[0].Type) == typeKey)
                 {
                     return columns.Count > 1;
                 }
@@ -258,9 +270,10 @@ namespace Kusto.Language.Binding
         {
             if (_nameMap.TryGetValue(name, out var columnListOrDictionary))
             {
+                var typeKey = GetTypeKey(type);
                 if (columnListOrDictionary is Dictionary<TypeSymbol, object> dict)
                 {
-                    if (dict.TryGetValue(type, out var columnOrList))
+                    if (dict.TryGetValue(typeKey, out var columnOrList))
                     {
                         if (columnOrList is List<ColumnSymbol> cols)
                         {

@@ -5,8 +5,6 @@ using System.Text;
 
 namespace Kusto.Language.Symbols
 {
-    using Parsing;
-    using Binding;
     using Syntax;
     using Utils;
 
@@ -133,9 +131,12 @@ namespace Kusto.Language.Symbols
     /// <summary>
     /// The parameter constraints and return type rules of a function or operator symbol.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("{Display}")]
+    [System.Diagnostics.DebuggerDisplay("{DebugText}")]
     public class Signature
     {
+        private string DebugText =>
+            DebugDisplay.GetText(this);
+
         /// <summary>
         /// The symbol this is a signature for.
         /// </summary>
@@ -583,68 +584,6 @@ namespace Kusto.Language.Symbols
             }
         }
 
-        public string ReturnTypeDisplay
-        {
-            get
-            {
-                switch (this.ReturnKind)
-                {
-                    case ReturnTypeKind.Declared:
-                        return this._returnType.Display;
-                    default:
-                        return "<" + this.ReturnKind.ToString() + ">";
-                }
-            }
-        }
-
-        private string _display;
-
-        public string Display
-        {
-            get
-            {
-                if (this._display == null)
-                {
-                    this._display = this.GetDisplay();
-                }
-
-                return this._display;
-            }
-        }
-
-        private string GetDisplay()
-        {
-            var builder = new StringBuilder();
-
-            for (int i = 0; i < this.Parameters.Count; i++)
-            {
-                var p = this.Parameters[i];
-
-                if (i > 0)
-                {
-                    builder.Append(", ");
-                }
-
-                if (p.IsOptional)
-                {
-                    builder.Append("[");
-                    builder.Append(p.Display);
-                    builder.Append("]");
-                }
-                else
-                {
-                    builder.Append(p.Display);
-                }
-            }
-
-            if (this.HasRepeatableParameters)
-            {
-                builder.Append(", ...");
-            }
-
-            return $"{Symbol?.Name ?? ""}({builder}) => {this.ReturnTypeDisplay}";
-        }
-
         /// <summary>
         /// Gets the return type for the function as best as can be determined without specific call site arguments.
         /// </summary>
@@ -759,10 +698,10 @@ namespace Kusto.Language.Symbols
 
                 case ReturnTypeKind.Parameter0Promoted:
                     iArg = argumentParameters.IndexOf(this.Parameters[0]);
-                    return iArg >= 0 && iArg < argumentTypes.Count ? Binding.Binder.Promote(argumentTypes[iArg]) : ErrorSymbol.Instance;
+                    return iArg >= 0 && iArg < argumentTypes.Count ? argumentTypes[iArg].PromoteToLong() : ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Common:
-                    return Binding.Binder.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
+                    return TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
                 case ReturnTypeKind.Widest:
                     return TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance;

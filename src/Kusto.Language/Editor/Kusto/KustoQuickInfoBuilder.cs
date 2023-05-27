@@ -462,7 +462,7 @@ namespace Kusto.Language.Editor
                 default:
                     if (type != null)
                     {
-                        texts.Add(new ClassifiedText(ClassificationKind.Type, type.Display));
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, type.Name));
                     }
                     break;
             }

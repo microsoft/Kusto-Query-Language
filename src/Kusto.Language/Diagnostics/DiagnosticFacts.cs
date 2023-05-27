@@ -421,9 +421,9 @@ namespace Kusto.Language
             return new Diagnostic("KS135", "The expression value must be an real or decimal number.");
         }
 
-        public static Diagnostic GetExpressionMustBeIntegerOrDynamic()
+        public static Diagnostic GetExpressionMustBeIntegerOrArray()
         {
-            return new Diagnostic("KS136", "The expression value must be an integer or dynamic.");
+            return new Diagnostic("KS136", "The expression value must be an integer or a dynamic array of integers.");
         }
 
         public static Diagnostic GetExpressionMustBeNumeric()
@@ -855,6 +855,17 @@ namespace Kusto.Language
         {
             return new Diagnostic("KS231", "Table or graph expected.");
         }
+
+        public static Diagnostic GetNoCommonArgumentType()
+        {
+            return new Diagnostic("KS232", "No common type can be determined from the arguments.");
+        }
+
+        public static Diagnostic GetExpressionMustBeStringOrArray()
+        {
+            return new Diagnostic("KS233", "The expression value must be a string or a dynamic array of strings.");
+        }
+
 
         #region command diagnostics
         public static Diagnostic GetMissingCommand()

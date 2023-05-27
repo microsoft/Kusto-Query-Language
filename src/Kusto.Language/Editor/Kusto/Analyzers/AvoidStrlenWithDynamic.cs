@@ -28,7 +28,7 @@ namespace Kusto.Language.Editor
             {
                 if (fc.ReferencedSymbol == Functions.Strlen
                     && fc.ArgumentList.Expressions.Count == 1
-                    && fc.ArgumentList.Expressions[0].Element.ResultType == ScalarTypes.Dynamic)
+                    && (fc.ArgumentList.Expressions[0].Element.ResultType.IsDynamicArrayOrBag()))
                 {
                     diagnostics.Add(_diagnostic.WithLocation(fc));
                 }

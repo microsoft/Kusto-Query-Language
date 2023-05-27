@@ -14,9 +14,9 @@ namespace Kusto.Language.Symbols
         None = 0,
 
         /// <summary>
-        /// Scalar type
+        /// A primitive scalar type
         /// </summary>
-        Scalar,
+        Primitive,
 
         /// <summary>
         /// Declared local variable
@@ -39,9 +39,19 @@ namespace Kusto.Language.Symbols
         Pattern,
 
         /// <summary>
-        /// A tuple type (has multiple named values, not scalar or tabular)
+        /// A tuple type (a set of multiple columns)
         /// </summary>
         Tuple,
+
+        /// <summary>
+        /// A bag of properties (dynamic object)
+        /// </summary>
+        Bag,
+
+        /// <summary>
+        /// An array of values (dynamic array)
+        /// </summary>
+        Array,
 
         /// <summary>
         /// Column (of table or tuple)

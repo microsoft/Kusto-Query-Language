@@ -29,11 +29,6 @@ namespace Kusto.Language.Symbols
         {
         }
 
-        protected override string GetDisplay()
-        {
-            return "[" + string.Join(", ", this.Members.Select(s => s.Display)) + "]";
-        }
-
         public override Tabularity Tabularity =>
             this.Members[0].Tabularity;
     }

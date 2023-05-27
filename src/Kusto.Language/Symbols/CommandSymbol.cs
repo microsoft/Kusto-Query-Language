@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Kusto.Language.Parsing;
-using Kusto.Language.Syntax;
 
 namespace Kusto.Language.Symbols
 {
-    using Utils;
-
+    /// <summary>
+    /// A <see cref="Symbol"/> corresponding to a control command.
+    /// </summary>
     public class CommandSymbol : Symbol
     {
-        private string resultSchema;
-        private TableSymbol resultType;
+        private string _resultSchema;
+        private TableSymbol _resultType;
 
         /// <summary>
         /// The language declaration of the result schema: (col:type, ...)
@@ -20,12 +17,12 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.resultSchema == null && this.resultType != null)
+                if (_resultSchema == null && _resultType != null)
                 {
-                    this.resultSchema = this.resultType.Display;
+                    _resultSchema = SchemaDisplay.GetText(_resultType);
                 }
 
-                return this.resultSchema;
+                return _resultSchema;
             }
         }
 
@@ -36,20 +33,20 @@ namespace Kusto.Language.Symbols
         {
             get
             {
-                if (this.resultType == null && this.resultSchema != null)
+                if (_resultType == null && _resultSchema != null)
                 {
-                    if (this.resultSchema == "()"
-                        || this.resultSchema == "(*)")
+                    if (_resultSchema == "()"
+                        || _resultSchema == "(*)")
                     {
-                        this.resultType = new TableSymbol().WithIsOpen(true);
+                        _resultType = new TableSymbol().WithIsOpen(true);
                     }
                     else
                     {
-                        this.resultType = TableSymbol.From(this.resultSchema);
+                        _resultType = TableSymbol.From(_resultSchema);
                     }
                 }
 
-                return this.resultType;
+                return _resultType;
             }
         }
 
@@ -58,7 +55,13 @@ namespace Kusto.Language.Symbols
         public CommandSymbol(string name, string resultSchema)
             : base(name)
         {
-            this.resultSchema = resultSchema;
+            _resultSchema = resultSchema;
+        }
+
+        public CommandSymbol(string name, TableSymbol resultType)
+            : base(name)
+        {
+            _resultType = resultType;
         }
     }
 }

@@ -4,12 +4,13 @@ using System.Linq;
 
 namespace Kusto.Language.Symbols
 {
+    using Syntax;
     using Utils;
 
     /// <summary>
     /// A symbol for a tuple of one or more name/value pairs.
     /// </summary>
-    public sealed class TupleSymbol : TypeSymbol
+    public sealed class TupleSymbol : ScalarSymbol
     {
         public IReadOnlyList<ColumnSymbol> Columns { get; }
 
@@ -34,25 +35,29 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Create a <see cref="TupleSymbol"/> instance from a schema description: (col: type, ...)
         /// </summary>
-        public static TupleSymbol From(string schema)
-        {
-            return new TupleSymbol(TableSymbol.From(schema).Columns);
-        }
-
-        public override Tabularity Tabularity => Tabularity.Scalar;
+        public static new TupleSymbol From(string schema) =>
+            ScalarTypes.GetTuple(schema);
 
         /// <summary>
         /// If true, then a single column tuple can be reduced to the scalar value of that column.
         /// </summary>
         public bool IsReducibleToScalar => this.Columns.Count == 1 && this.RelatedTable == null;
 
+        /// <summary>
+        /// Returns a new <see cref="TupleSymbol"/> instance with the specified columns. 
+        /// </summary>
         public TupleSymbol WithColumns(IEnumerable<ColumnSymbol> columns)
         {
             return new TupleSymbol(columns, this.RelatedTable);
         }
 
-        protected override string GetDisplay() =>
-            $"{{{string.Join(", ", this.Members.Select(m => m.Display))}}}";
+        /// <summary>
+        /// Returns a new <see cref="TupleSymbol"/> instance with the columns updated to have the specified source. 
+        /// </summary>
+        public TupleSymbol WithSource(SyntaxNode source)
+        {
+            return this.WithColumns(this.Columns.Select(c => c.WithSource(source)));
+        }
 
         public static readonly TupleSymbol Empty = new TupleSymbol(null);
     }

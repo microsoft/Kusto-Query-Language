@@ -157,9 +157,6 @@ namespace Kusto.Language.Symbols
             return new ClusterSymbol(this.Name, newMembers, this.IsOpen);
         }
 
-        protected override string GetDisplay() =>
-            $"cluster({this.Name})";
-
         /// <summary>
         /// The symbol used to represent unknown clusters.
         /// </summary>

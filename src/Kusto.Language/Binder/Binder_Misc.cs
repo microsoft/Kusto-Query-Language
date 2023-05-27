@@ -394,6 +394,7 @@ namespace Kusto.Language.Binding
         private static readonly SemanticInfo LiteralTimeSpanInfo = new SemanticInfo(ScalarTypes.TimeSpan, isConstant: true);
         private static readonly SemanticInfo LiteralGuidInfo = new SemanticInfo(ScalarTypes.Guid, isConstant: true);
         private static readonly SemanticInfo LiteralDynamicInfo = new SemanticInfo(ScalarTypes.Dynamic, isConstant: true);
+        private static readonly SemanticInfo LiteralNullInfo = new SemanticInfo(ScalarTypes.Null, isConstant: true);
         private static readonly SemanticInfo UnknownInfo = new SemanticInfo(ScalarTypes.Unknown, isConstant: true);
         private static readonly SemanticInfo ErrorInfo = new SemanticInfo(ErrorSymbol.Instance);
         private static readonly SemanticInfo VoidInfo = new SemanticInfo(VoidSymbol.Instance);
@@ -574,6 +575,28 @@ namespace Kusto.Language.Binding
         #endregion
 
         #region Other
+
+        public static bool HasDynamicPrimitives(IReadOnlyList<TypeSymbol> types)
+        {
+            foreach (var type in types)
+            {
+                if (type is DynamicPrimitiveSymbol)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static void GetUnwrappedDynamicPrimitives(IReadOnlyList<TypeSymbol> types, List<TypeSymbol> unwrapped)
+        {
+            foreach (var type in types)
+            {
+                unwrapped.Add(
+                    type is DynamicPrimitiveSymbol dp
+                        ? dp.UnderlyingType
+                        : type);
+            }
+        }
 
         public static EntityGroupElementSymbol GetMacroExpandScope(string name, EntityGroupSymbol entityGroup)
         {
@@ -945,41 +968,6 @@ namespace Kusto.Language.Binding
             return ErrorSymbol.Instance;
         }
 
-        private static bool IsInteger(TypeSymbol type)
-        {
-            return type is ScalarSymbol s && s.IsInteger;
-        }
-
-        private static bool IsRealOrDecimal(TypeSymbol type)
-        {
-            return SymbolsAssignable(ScalarTypes.Real, type) || SymbolsAssignable(ScalarTypes.Decimal, type);
-        }
-
-        private static bool IsStringOrDynamic(TypeSymbol type)
-        {
-            return SymbolsAssignable(ScalarTypes.String, type) || SymbolsAssignable(ScalarTypes.Dynamic, type);
-        }
-
-        private static bool IsNumber(TypeSymbol type)
-        {
-            return type is ScalarSymbol s && s.IsNumeric;
-        }
-
-        private static bool IsIntegerOrDynamic(TypeSymbol type)
-        {
-            return IsInteger(type) || SymbolsAssignable(ScalarTypes.Dynamic, type);
-        }
-
-        private static bool IsSummable(TypeSymbol type)
-        {
-            return type is ScalarSymbol s && s.IsSummable;
-        }
-
-        public static bool IsOrderable(TypeSymbol type)
-        {
-            return type is ScalarSymbol s && s.IsOrderable;
-        }
-
         private static bool IsTabular(TypeSymbol type)
         {
             return type != null && type.IsTabular;
@@ -1031,7 +1019,9 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Variable:
                     var v = (VariableSymbol)referencedSymbol;
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics, isConstant: v.IsConstant);
-                case SymbolKind.Scalar:
+                case SymbolKind.Primitive:
+                case SymbolKind.Array:
+                case SymbolKind.Bag:
                 case SymbolKind.Tuple:
                     return new SemanticInfo((TypeSymbol)referencedSymbol, diagnostics);
                 default:
@@ -1185,12 +1175,12 @@ namespace Kusto.Language.Binding
             switch (qop.ValueKind)
             {
                 case QueryOperatorParameterValueKind.IntegerLiteral:
-                    if (!(parameter.Expression.IsLiteral && IsInteger(type)))
+                    if (!(parameter.Expression.IsLiteral && type.IsInteger()))
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.NumericLiteral:
                 case QueryOperatorParameterValueKind.ForcedRealLiteral:
-                    if (!(parameter.Expression.IsLiteral && IsNumber(type)))
+                    if (!(parameter.Expression.IsLiteral && type.IsNumeric()))
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.ScalarLiteral:
@@ -1198,7 +1188,7 @@ namespace Kusto.Language.Binding
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.SummableLiteral:
-                    if (!(parameter.Expression.IsLiteral && IsSummable(type)))
+                    if (!(parameter.Expression.IsLiteral && type.IsSummable()))
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.StringLiteral:
@@ -1222,7 +1212,7 @@ namespace Kusto.Language.Binding
                         return false;
                     break;
                 case QueryOperatorParameterValueKind.WordOrNumber:
-                    if (!IsNumber(type) && !IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
+                    if (!type.IsNumeric() && !IsTokenLiteral(parameter.Expression, qop.Values, qop.IsCaseSensitive))
                         return false;
                     break;
             }
@@ -1301,7 +1291,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsInteger(type))
+            if (type.IsInteger())
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1316,7 +1306,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsInteger(type) && expression.IsLiteral)
+            if (type.IsInteger() && expression.IsLiteral)
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1406,7 +1396,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsRealOrDecimal(type))
+            if (type.IsRealOrDecimal())
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1417,16 +1407,16 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool CheckIsIntegerOrDynamic(Expression expression, List<Diagnostic> diagnostics)
+        private bool CheckIsIntegerOrArray(Expression expression, List<Diagnostic> diagnostics)
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsIntegerOrDynamic(type))
+            if (type.IsIntegerOrArray())
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
             {
-                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeIntegerOrDynamic().WithLocation(expression));
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeIntegerOrArray().WithLocation(expression));
             }
 
             return false;
@@ -1436,7 +1426,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsStringOrDynamic(type))
+            if (TypeFacts.IsStringOrDynamic(type))
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1447,11 +1437,56 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        private bool CheckIsStringOrArray(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (TypeFacts.IsStringOrArray(type))
+                return true;
+
+            if (!type.IsError && type != ScalarTypes.Unknown)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeStringOrArray().WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsArrayOrDynamic(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (TypeFacts.IsDynamicArray(type))
+                return true;
+
+            if (!type.IsError && type != ScalarTypes.Unknown)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType<TypeSymbol>(ScalarTypes.DynamicArray, ScalarTypes.Dynamic).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsBagOrDynamic(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (TypeFacts.IsDynamicBag(type))
+                return true;
+
+            if (!type.IsError && type != ScalarTypes.Unknown)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType<TypeSymbol>(DynamicBagSymbol.Empty, ScalarTypes.Dynamic).WithLocation(expression));
+            }
+
+            return false;
+        }
+
         private bool CheckIsNumber(Expression expression, List<Diagnostic> diagnostics)
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsNumber(type))
+            if (type.IsNumeric())
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1466,7 +1501,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsNumber(type) || type == ScalarTypes.Bool)
+            if (type.IsNumeric() || type == ScalarTypes.Bool)
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1481,7 +1516,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsSummable(type))
+            if (type.IsSummable())
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1496,7 +1531,7 @@ namespace Kusto.Language.Binding
         {
             var type = GetResultTypeOrError(expression);
 
-            if (IsOrderable(type))
+            if (TypeFacts.IsOrderable(type))
                 return true;
 
             if (!type.IsError && type != ScalarTypes.Unknown)
@@ -1517,12 +1552,12 @@ namespace Kusto.Language.Binding
             var exprType = GetResultTypeOrError(expression);
 
             if (SymbolsAssignable(type, exprType, canPromote ? Conversion.Promotable : Conversion.None)
-                || SymbolsAssignable(ScalarTypes.Dynamic, exprType))
+                || SymbolsAssignable(ScalarTypes.Dynamic, exprType, Conversion.Dynamic))
                 return true;
 
             if (!exprType.IsError && exprType != ScalarTypes.Unknown)
             {
-                if (SymbolsAssignable(ScalarTypes.Dynamic, type))
+                if (SymbolsAssignable(ScalarTypes.Dynamic, type, Conversion.Dynamic))
                 {
                     diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(type).WithLocation(expression));
                 }
@@ -1588,6 +1623,10 @@ namespace Kusto.Language.Binding
             var exprType = GetResultTypeOrError(expression);
 
             if (exprType == ScalarTypes.Unknown)
+                return true;
+
+            if (type == ScalarTypes.Dynamic
+                && !(exprType is DynamicSymbol))
                 return true;
 
             if (!SymbolsAssignable(type, exprType))
@@ -1988,6 +2027,13 @@ namespace Kusto.Language.Binding
             {
                 signature.GetArgumentParameters(arguments, argumentParameters);
 
+                if (dx.Count == initialDxCount)
+                {
+                    // check if a common parameter type is required and 
+                    // if it can be determined from the arguments.
+                    CheckCommonArgumentTypes(signature, argumentParameters, arguments, argumentTypes, location, dx);
+                }
+
                 // check arguments... 
                 if (dx.Count == initialDxCount)
                 {
@@ -2016,6 +2062,30 @@ namespace Kusto.Language.Binding
             finally
             {
                 s_parameterListPool.ReturnToPool(argumentParameters);
+            }
+        }
+
+        private void CheckCommonArgumentTypes(Signature signature, IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, SyntaxElement location, List<Diagnostic> dx)
+        {
+            for (int i = 0; i < argumentParameters.Count; i++)
+            {
+                var p = argumentParameters[i];
+
+                switch (p.TypeKind)
+                {
+                    case ParameterTypeKind.CommonNumber:
+                    case ParameterTypeKind.CommonSummable:
+                    case ParameterTypeKind.CommonOrderable:
+                    case ParameterTypeKind.CommonScalar:
+                    case ParameterTypeKind.CommonScalarOrDynamic:
+                        var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
+                        if (commonType == null)
+                        {
+                            dx.Add(DiagnosticFacts.GetNoCommonArgumentType().WithLocation(location));
+                            return;
+                        }
+                        break;
+                }
             }
         }
 
@@ -2114,12 +2184,24 @@ namespace Kusto.Language.Binding
                             CheckIsRealOrDecimal(argument, diagnostics);
                             break;
 
-                        case ParameterTypeKind.IntegerOrDynamic:
-                            CheckIsIntegerOrDynamic(argument, diagnostics);
+                        case ParameterTypeKind.IntegerOrArray:
+                            CheckIsIntegerOrArray(argument, diagnostics);
                             break;
 
                         case ParameterTypeKind.StringOrDynamic:
                             CheckIsStringOrDynamic(argument, diagnostics);
+                            break;
+
+                        case ParameterTypeKind.StringOrArray:
+                            CheckIsStringOrArray(argument, diagnostics);
+                            break;
+
+                        case ParameterTypeKind.DynamicArray:
+                            CheckIsArrayOrDynamic(argument, diagnostics);
+                            break;
+
+                        case ParameterTypeKind.DynamicBag:
+                            CheckIsBagOrDynamic(argument, diagnostics);
                             break;
 
                         case ParameterTypeKind.Number:
@@ -2187,7 +2269,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonScalar:
                             if (CheckIsScalar(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
@@ -2198,7 +2280,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonScalarOrDynamic:
                             if (CheckIsScalar(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsTypeOrDynamic(argument, commonType, true, diagnostics);
@@ -2209,7 +2291,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonNumber:
                             if (CheckIsNumber(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
@@ -2220,7 +2302,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonSummable:
                             if (CheckIsSummable(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);
@@ -2231,7 +2313,7 @@ namespace Kusto.Language.Binding
                         case ParameterTypeKind.CommonOrderable:
                             if (CheckIsOrderable(argument, diagnostics))
                             {
-                                var commonType = GetCommonArgumentType(argumentParameters, argumentTypes);
+                                var commonType = TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes);
                                 if (commonType != null)
                                 {
                                     CheckIsType(argument, commonType, Conversion.Promotable, diagnostics);

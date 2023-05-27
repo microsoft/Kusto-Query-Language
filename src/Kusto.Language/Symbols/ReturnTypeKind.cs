@@ -86,6 +86,11 @@ namespace Kusto.Language.Symbols
         Parameter0ExternalTable,
 
         /// <summary>
+        /// The return type is an array of parameter 0's type.
+        /// </summary>
+        Parameter0Array,
+
+        /// <summary>
         /// The return type is the common scalar type of all the parameters marked as Common.
         /// </summary>
         Common,

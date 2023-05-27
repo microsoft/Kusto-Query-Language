@@ -99,7 +99,31 @@ namespace Kusto.Language.Binding
                 {
                     CheckSignature(matchingSignatures[0], arguments, argumentTypes, location, diagnostics);
                     var funResult = GetFunctionCallResult(matchingSignatures[0], arguments, argumentTypes, location);
-                    return new SemanticInfo(matchingSignatures[0], funResult.Type, diagnostics, isConstant: AllAreConstant(arguments));
+                    var resultType = funResult.Type;
+
+                    // check for possible better dynamic result
+                    if (funResult.Type == ScalarTypes.Dynamic
+                        && HasDynamicPrimitives(argumentTypes))
+                    {
+                        var unwrappedArgumentTypes = s_typeListPool.AllocateFromPool();
+                        try
+                        {
+                            GetUnwrappedDynamicPrimitives(argumentTypes, unwrappedArgumentTypes);
+                            var unwrappedResultType = GetOperatorInfo(kind, arguments, unwrappedArgumentTypes, location, requireAllArgumentsMatch).ResultType;
+                            if (unwrappedResultType is ScalarSymbol
+                                && !(unwrappedResultType is DynamicSymbol)
+                                && unwrappedResultType != ScalarTypes.Unknown)
+                            {
+                                resultType = ScalarTypes.GetDynamic(unwrappedResultType);
+                            }
+                        }
+                        finally
+                        {
+                            s_typeListPool.ReturnToPool(unwrappedArgumentTypes);
+                        }
+                    }
+
+                    return new SemanticInfo(matchingSignatures[0], resultType, diagnostics, isConstant: AllAreConstant(arguments));
                 }
                 else
                 {
@@ -125,7 +149,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private bool AllAreConstant(IReadOnlyList<Expression> expressions)
+        private static bool AllAreConstant(IReadOnlyList<Expression> expressions)
         {
             for (int i = 0; i < expressions.Count; i++)
             {

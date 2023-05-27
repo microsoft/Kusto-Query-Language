@@ -44,12 +44,6 @@ namespace Kusto.Language.Symbols
         }
 
         public override Tabularity Tabularity => Tabularity.Tabular;
-
-        protected override string GetDisplay()
-        {
-            var prms = string.Join(", ", this.Parameters.Select(p => $"{p.Name}:{p.TypeDisplay}"));
-            return $"{this.Name}({prms})";
-        }
     }
 
     public class PatternSignature

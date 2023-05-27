@@ -182,9 +182,6 @@ namespace Kusto.Language.Symbols
             return With(examples: new Optional<IReadOnlyList<string>>( examples ));
         }
 
-        protected override string GetDisplay() =>
-            $"{this.Name}: {this.Type.Display}";
-
         /// <summary>
         /// Combines multiple sets of columns into a single set of columns.
         /// </summary>

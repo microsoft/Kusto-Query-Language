@@ -34,7 +34,21 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    if (_pathScope == ScalarTypes.Dynamic)
+                    if (_pathScope is DynamicBagSymbol)
+                    {
+                        _pathScope.GetMembers(name, match, list);
+                        if (list.Count == 1 
+                            && list[0] is ColumnSymbol col)
+                        {
+                            return new SemanticInfo(ScalarTypes.GetDynamic(col.Type));
+                        }
+                        else
+                        {
+                            // x.y where x is a known bag will at least return dynamic
+                            return LiteralDynamicInfo;
+                        }
+                    }
+                    else if (_pathScope is DynamicSymbol)
                     {
                         // any x.y where x is dynamic, is also dynamic
                         return LiteralDynamicInfo;
@@ -389,7 +403,8 @@ namespace Kusto.Language.Binding
                         }
                     }
                     // kusto does not allow Table.Column, unless its part of a control command
-                    else if (!(_pathScope is TableSymbol) || IsInsideControlCommandProper(location))
+                    else if (!(_pathScope is TableSymbol) 
+                        || IsInsideControlCommandProper(location))
                     {
                         // lookup named members
                         _pathScope.GetMembers(name, match, list);

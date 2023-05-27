@@ -255,9 +255,7 @@ namespace Kusto.Language.Symbols
             return this._symbolSet.Contains(symbol);
         }
 
-        protected override string GetDisplay() =>
-            $"database({this.Name})";
-
-        public static readonly DatabaseSymbol Unknown = new DatabaseSymbol("", members: null, isOpen: true);
+        public static readonly DatabaseSymbol Unknown = 
+            new DatabaseSymbol("", members: null, isOpen: true);
     }
 }

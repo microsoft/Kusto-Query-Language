@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Kusto.Language.Binding
 {
-    using Parsing;
     using Symbols;
     using Syntax;
     using Utils;
@@ -269,8 +268,9 @@ namespace Kusto.Language.Binding
                     case SyntaxKind.GuidLiteralExpression:
                         return LiteralGuidInfo;
                     case SyntaxKind.TokenLiteralExpression:
-                    case SyntaxKind.NullLiteralExpression:
                         return VoidInfo;
+                    case SyntaxKind.NullLiteralExpression:
+                        return LiteralNullInfo;
                     default:
                         throw new InvalidOperationException($"Unknown literal kind: {node.Kind}");
                 }
@@ -339,7 +339,8 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitDynamicExpression(DynamicExpression node)
             {
-                return LiteralDynamicInfo;
+                var info = node.Expression.GetSemanticInfo();
+                return new SemanticInfo(ScalarTypes.GetDynamic(info.ResultType), isConstant: true);
             }
 
             public override SemanticInfo VisitCompoundStringLiteralExpression(CompoundStringLiteralExpression node)
@@ -736,7 +737,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (collectionType == ScalarTypes.Dynamic)
                 {
-                    if (!IsInteger(indexerType) && !IsStringOrDynamic(indexerType))
+                    if (!TypeFacts.IsInteger(indexerType) && !TypeFacts.IsStringOrDynamic(indexerType))
                     {
                         // must be a integer array index or a string member name index (dynamic okay?)
                         return new SemanticInfo(ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
@@ -747,9 +748,24 @@ namespace Kusto.Language.Binding
                         return new SemanticInfo(ScalarTypes.Dynamic);
                     }
                 }
+                else if (collectionType is DynamicArraySymbol arrayType)
+                {
+                    var elementType = ScalarTypes.GetDynamic(arrayType.ElementType);
+
+                    if (!TypeFacts.IsInteger(indexerType) && indexerType != ScalarTypes.Dynamic)
+                    {
+                        // must be a integer array index
+                        return new SemanticInfo(elementType, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long).WithLocation(selector.Expression));
+                    }
+                    else
+                    {
+                        // you've successfully accessed an element of the array.
+                        return new SemanticInfo(elementType);
+                    }
+                }
                 else if (collectionType is TupleSymbol ts)
                 {
-                    if (IsInteger(indexerType) 
+                    if (TypeFacts.IsInteger(indexerType) 
                         && selector.Expression.IsConstant
                         && TryGetIntValue(selector.Expression.ConstantValue, out var index))
                     {
@@ -998,12 +1014,30 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitJsonArrayExpression(JsonArrayExpression node)
             {
-                return LiteralDynamicInfo;
+                var commonType = TypeFacts.GetCommonResultType(node.Values, Conversion.None);
+                var arrayType = ScalarTypes.GetDynamicArray(commonType);
+                return new SemanticInfo(arrayType);
             }
 
             public override SemanticInfo VisitJsonObjectExpression(JsonObjectExpression node)
             {
-                return LiteralDynamicInfo;
+                var columns = s_columnListPool.AllocateFromPool();
+                try
+                {
+                    for (int i = 0; i < node.Pairs.Count; i++)
+                    {
+                        var pair = node.Pairs[i].Element;
+                        var column = new ColumnSymbol(pair.Name.ValueText, pair.Value.ResultType ?? ScalarTypes.Unknown);
+                        columns.Add(column);
+                    }
+
+                    var bagType = ScalarTypes.GetDynamicBag(columns);
+                    return new SemanticInfo(bagType);
+                }
+                finally
+                {
+                    s_columnListPool.ReturnToPool(columns);
+                }
             }
 
             public override SemanticInfo VisitJsonPair(JsonPair node)
@@ -2786,8 +2820,12 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Element;
 
-                        _binder.CheckIsExactType(expr.Expression, ScalarTypes.Dynamic, diagnostics);
-                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol ?? expr.Expression.ResultType; 
+                        _binder.CheckIsArrayOrDynamic(expr.Expression, diagnostics);
+                        
+                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
+                            ?? TypeFacts.GetElementType(expr.Expression.ResultType)
+                            ?? expr.Expression.ResultType;
+
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, style: ProjectionStyle.Replace, columnType: type);
                     }
 
@@ -2849,8 +2887,12 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Element;
 
-                        _binder.CheckIsExactType(expr.Expression, ScalarTypes.Dynamic, diagnostics);
-                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol ?? expr.Expression.ResultType;
+                        _binder.CheckIsArrayOrDynamic(expr.Expression, diagnostics);
+
+                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
+                            ?? TypeFacts.GetElementType(expr.Expression.ResultType)
+                            ?? expr.Expression.ResultType;
+
                         _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, style: ProjectionStyle.Replace);
                     }
 

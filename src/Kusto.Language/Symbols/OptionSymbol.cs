@@ -39,8 +39,5 @@ namespace Kusto.Language.Symbols
         }
 
         public override Tabularity Tabularity => Tabularity.Scalar;
-
-        protected override string GetDisplay() =>
-            $"{this.Name}";
     }
 }

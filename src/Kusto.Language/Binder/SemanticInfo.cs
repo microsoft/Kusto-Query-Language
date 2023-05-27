@@ -147,32 +147,74 @@ namespace Kusto.Language.Binding
 
         public SemanticInfo WithReferencedSymbol(Symbol symbol)
         {
-            return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            if (this.ReferencedSymbol != symbol)
+            {
+                return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public SemanticInfo WithReferencedSignature(Signature signature)
         {
-            return new SemanticInfo(signature, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            if (this.ReferencedSignature != signature)
+            {
+                return new SemanticInfo(signature, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public SemanticInfo WithResultType(TypeSymbol type)
         {
-            return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            if (this.ResultType != type)
+            {
+                return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public SemanticInfo WithDiagnostics(IEnumerable<Diagnostic> diagnostics)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            if (this.Diagnostics != diagnostics)
+            {
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.CalledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public SemanticInfo WithIsConstant(bool isConstant)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.CalledFunctionInfo);
+            if (this.IsConstant != isConstant)
+            {
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.CalledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public SemanticInfo WithCalledFunctionInfo(FunctionCallInfo calledFunctionInfo)
         {
-            return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, calledFunctionInfo);
+            if (this.CalledFunctionInfo != calledFunctionInfo)
+            {
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, calledFunctionInfo);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         /// <summary>

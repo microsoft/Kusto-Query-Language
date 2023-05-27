@@ -10,4 +10,19 @@ Things that trip up Bridge.Net and cause it to crash.
 5) avoid goto's especially in switch (will not crash but turns it into a state-machine loop)
 6) Don't use 'out var' with primitive types (like Int32.TryParse) on nested in lambdas. Normal out works but 'out var' causes translation errors that only fail at runtime.
 7) use of LINQ any operator with a lambda after using OfType<XXX> causes translator to fail
+8) Use of same lambda parameter name as name in outer scope.
 
+Debugging Bridge.Net:
+To debug bridge.net when you get an build exception (without any useful information).
+
+1) Open Visual Studio w/o project or solution
+2) Open project pointing to msbuild.exe on your machine
+3) Once project is open, set these values in general settings:
+     Executable:     Path to msbuild.exe (should be already set)
+     Arguments:      path to Kusto.Language.Bridge.csproj
+     DebuggerType:   Managed (.Net 4x)
+     Working Dir:    path to Kusto project root
+4) Hit F5: 
+   ** You should stop at actual thrown exception and be able to deduce 
+      what part of Kusto.Language source code causes the problem by 
+      actual exception message or other data on call stack.**

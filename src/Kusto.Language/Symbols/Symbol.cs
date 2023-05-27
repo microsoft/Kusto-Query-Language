@@ -6,9 +6,15 @@ namespace Kusto.Language.Symbols
 {
     using Utils;
 
-    [System.Diagnostics.DebuggerDisplay("Symbol: {Kind} {Display}")]
+    [System.Diagnostics.DebuggerDisplay("Symbol: {Kind} {DebugText}")]
     public abstract class Symbol
     {
+        /// <summary>
+        /// The text used to designate the symbol in the debugger
+        /// </summary>
+        private string DebugText =>
+            DebugDisplay.GetText(this);
+
         /// <summary>
         /// The name of the symbol.
         /// </summary>
@@ -77,29 +83,6 @@ namespace Kusto.Language.Symbols
                     default:
                         return false;
                 }
-            }
-        }
-
-        private string _display;
-
-        protected virtual string GetDisplay() => 
-            !string.IsNullOrEmpty(this.AlternateName) 
-                ? $"{this.Name} ({this.AlternateName})" 
-                : this.Name;
-
-        /// <summary>
-        /// A description of the symbol.
-        /// </summary>
-        public string Display
-        {
-            get
-            {
-                if (this._display == null)
-                {
-                    this._display = this.GetDisplay();
-                }
-
-                return this._display;
             }
         }
 
@@ -247,11 +230,35 @@ namespace Kusto.Language.Symbols
                 return true;
 
             // a single column tuple is assignable to a scalar
-            if (sourceType.Kind == SymbolKind.Tuple
-                && targetType.Kind == SymbolKind.Scalar
+            if (targetType.IsScalar
+                && sourceType.Kind == SymbolKind.Tuple 
                 && sourceType is TupleSymbol stt
                 && stt.Columns.Count == 1)
                 return AreAssignable(targetType, stt.Columns[0].Type);
+
+            if (targetType == ScalarTypes.Dynamic)
+            {
+                if (sourceType is DynamicSymbol)
+                    return true;
+
+                if (sourceType is ScalarSymbol
+                    && allowedConversion >= Conversion.Dynamic)
+                    return true;
+            }
+
+            if (targetType == ScalarTypes.DynamicArray
+                && sourceType is DynamicArraySymbol
+                && allowedConversion != Conversion.None)
+                return true;
+
+            if (targetType == ScalarTypes.DynamicBag
+                && sourceType is DynamicBagSymbol
+                && allowedConversion != Conversion.None)
+                return true;
+
+            if (targetType is DynamicPrimitiveSymbol tp
+                && sourceType is DynamicPrimitiveSymbol sp)
+                return AreAssignable(tp.UnderlyingType, sp.UnderlyingType, allowedConversion);
 
             if (targetType.Kind != sourceType.Kind)
                 return false;
@@ -264,25 +271,34 @@ namespace Kusto.Language.Symbols
 
                 case TupleSymbol _:
                 case GroupSymbol _:
-                    return MembersEqual(targetType, sourceType);
+                    return AreMembersEqual(targetType, sourceType);
 
                 case TableSymbol tarTable:
-                    return TablesAssignable(tarTable, (TableSymbol)sourceType);
+                    return AreTablesAssignable(tarTable, (TableSymbol)sourceType);
 
-                case ScalarSymbol tarScalar:
-                    var srcScalar = (ScalarSymbol)sourceType;
+                case PrimitiveSymbol tarPrim:
+                    var scrPrim = (ScalarSymbol)sourceType;
 
                     switch (allowedConversion)
                     {
                         case Conversion.Promotable:
-                            return srcScalar.IsPromotableTo(tarScalar);
+                            return scrPrim.IsPromotableTo(tarPrim);
                         case Conversion.Compatible:
-                            return srcScalar.IsPromotableTo(tarScalar) || tarScalar.IsPromotableTo(srcScalar);
+                            return scrPrim.IsPromotableTo(tarPrim)
+                                || tarPrim.IsPromotableTo(scrPrim);
                         case Conversion.Any:
                             return true;
                         default:
                             return false;
                     }
+
+                case DynamicArraySymbol tarArray:
+                    var srcArray = (DynamicArraySymbol)sourceType;
+                    return AreAssignable(srcArray.ElementType, tarArray.ElementType, allowedConversion);
+
+                case DynamicBagSymbol tarBag:
+                    var srcBag = (DynamicBagSymbol)sourceType;
+                    return AreBagsAssignable(tarBag, srcBag);
             }
 
             return false;
@@ -291,7 +307,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// True if the members of the source type are assignable to the members of the target type.
         /// </summary>
-        public static bool MembersEqual(Symbol target, Symbol source)
+        private static bool AreMembersEqual(Symbol target, Symbol source)
         {
             if (target.Members.Count != source.Members.Count)
                 return false;
@@ -306,16 +322,35 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// True if a bag value can be assigned to a parameter of specific bag type.
+        /// </summary>
+        private static bool AreBagsAssignable(DynamicBagSymbol targetBag, DynamicBagSymbol sourceBag)
+        {
+            // ensure that the source bag has at least the properties specified of the target bag.
+
+            foreach (var targetProperty in targetBag.Properties)
+            {
+                if (!sourceBag.TryGetProperty(targetProperty.Name, out var sourceProperty)
+                    || !AreAssignable(targetProperty.Type, sourceProperty.Type, Conversion.Any))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// True if a table value can be assigned to a parameter of a specific table type.
         /// </summary>
-        private static bool TablesAssignable(TableSymbol target, TableSymbol source)
+        private static bool AreTablesAssignable(TableSymbol target, TableSymbol source)
         {
             // ensure that the value table has at least the columns specified for the parameter table.
 
-            foreach (var tarCol in target.Columns)
+            foreach (var targetColumn in target.Columns)
             {
-                if (!source.TryGetColumn(tarCol.Name, out var valueColumn)
-                    || !AreAssignable(tarCol.Type, valueColumn.Type))
+                if (!source.TryGetColumn(targetColumn.Name, out var sourceColumn)
+                    || !AreAssignable(targetColumn.Type, sourceColumn.Type))
                 {
                     return false;
                 }

@@ -597,14 +597,14 @@ namespace Kusto.Language.Binding
                     return n.SimpleName;
                 case BracketedExpression be:
                     if (be.Expression.IsLiteral
-                        && be.Expression.ResultType is ScalarSymbol bet
+                        && be.Expression.ResultType is TypeSymbol bet
                         && (bet == ScalarTypes.String || bet == ScalarTypes.Long || bet == ScalarTypes.Int))
                     {
                         return be.Expression.LiteralValue.ToString();
                     }
                     return defaultName;
                 case PathExpression p:
-                    if (p.Expression.ResultType == ScalarTypes.Dynamic
+                    if (p.Expression.ResultType.IsDynamicArrayOrBag()
                         || p.Expression.ResultType == ScalarTypes.Unknown)
                     {
                         var left = GetExpressionResultName(p.Expression, null);
@@ -623,7 +623,7 @@ namespace Kusto.Language.Binding
                         return GetExpressionResultName(p.Selector, defaultName);
                     }
                 case ElementExpression e:
-                    if (e.Expression.ResultType == ScalarTypes.Dynamic
+                    if (e.Expression.ResultType.IsDynamicArrayOrBag()
                         || e.Expression.ResultType == ScalarTypes.Unknown)
                     {
                         var left = GetExpressionResultName(e.Expression, null);

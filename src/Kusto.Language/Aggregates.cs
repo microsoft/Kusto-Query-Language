@@ -64,33 +64,38 @@ namespace Kusto.Language
             .WithResultNamePrefix("dcountif");
 
         public static readonly FunctionSymbol TDigest =
-            new FunctionSymbol("tdigest", ScalarTypes.Dynamic,
+            new FunctionSymbol("tdigest", 
+                ScalarTypes.DynamicArray,
                 new Parameter("expr", ParameterTypeKind.Summable),
                 new Parameter("weight", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("tdigest");
 
         public static readonly FunctionSymbol TDigestMerge =
-            new FunctionSymbol("tdigest_merge", ScalarTypes.Dynamic,
-                new Parameter("tdigest", ScalarTypes.Dynamic))
+            new FunctionSymbol("tdigest_merge", 
+                ScalarTypes.DynamicArray,
+                new Parameter("tdigest", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("merge_tdigests");
 
         public static readonly FunctionSymbol MergeTDigest =
-            new FunctionSymbol("merge_tdigest", ScalarTypes.Dynamic,
-                new Parameter("tdigest", ScalarTypes.Dynamic))
+            new FunctionSymbol("merge_tdigest", 
+                ScalarTypes.DynamicArray,
+                new Parameter("tdigest", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("merge_tdigests");
 
         public static readonly FunctionSymbol Hll =
-            new FunctionSymbol("hll", ScalarTypes.Dynamic,
+            new FunctionSymbol("hll", 
+                ScalarTypes.DynamicArray,
                 new Parameter("expr", ParameterTypeKind.NotRealOrBool),
                 new Parameter("accuracy", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("hll");
 
         public static readonly FunctionSymbol HllIf =
-            new FunctionSymbol("hll_if", ScalarTypes.Dynamic,
+            new FunctionSymbol("hll_if", 
+                ScalarTypes.DynamicArray,
                 new Parameter("expr", ParameterTypeKind.NotRealOrBool),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("accuracy", ParameterTypeKind.Integer, minOccurring: 0))
@@ -98,8 +103,9 @@ namespace Kusto.Language
             .WithResultNamePrefix("hll_if");
 
         public static readonly FunctionSymbol HllMerge =
-            new FunctionSymbol("hll_merge", ScalarTypes.Dynamic,
-                new Parameter("hll", ScalarTypes.Dynamic))
+            new FunctionSymbol("hll_merge", 
+                ScalarTypes.DynamicArray,
+                new Parameter("hll", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("hll_merge");
 
@@ -165,7 +171,8 @@ namespace Kusto.Language
             .WithResultNamePrefix("avgif");
 
         public static readonly FunctionSymbol MakeList_Deprecated =
-            new FunctionSymbol("makelist", ScalarTypes.Dynamic,
+            new FunctionSymbol("makelist",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -174,14 +181,16 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol MakeList =
-            new FunctionSymbol("make_list", ScalarTypes.Dynamic,
+            new FunctionSymbol("make_list",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeListIf =
-            new FunctionSymbol("make_list_if", ScalarTypes.Dynamic,
+            new FunctionSymbol("make_list_if",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
@@ -189,13 +198,15 @@ namespace Kusto.Language
             .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeListWithNulls =
-            new FunctionSymbol("make_list_with_nulls", ScalarTypes.Dynamic,
+            new FunctionSymbol("make_list_with_nulls", 
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("list");
 
         public static readonly FunctionSymbol MakeSet_Deprecated =
-            new FunctionSymbol("makeset", ScalarTypes.Dynamic,
+            new FunctionSymbol("makeset",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -204,14 +215,16 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol MakeSet =
-            new FunctionSymbol("make_set", ScalarTypes.Dynamic,
+            new FunctionSymbol("make_set",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("set");
 
         public static readonly FunctionSymbol MakeSetIf =
-            new FunctionSymbol("make_set_if", ScalarTypes.Dynamic,
+            new FunctionSymbol("make_set_if",
+                ReturnTypeKind.Parameter0Array,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
@@ -225,31 +238,35 @@ namespace Kusto.Language
            .Hide();
 
         public static readonly FunctionSymbol MakeDictionary =
-            new FunctionSymbol("make_dictionary", ScalarTypes.Dynamic,
-                new Parameter("expr", ScalarTypes.Dynamic),
+            new FunctionSymbol("make_dictionary", 
+                ScalarTypes.DynamicBag,
+                new Parameter("expr", ParameterTypeKind.DynamicBag),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("dictionary")
             .Hide();
 
         public static readonly FunctionSymbol MakeBag =
-            new FunctionSymbol("make_bag", ScalarTypes.Dynamic,
-                new Parameter("expr", ScalarTypes.Dynamic),
+            new FunctionSymbol("make_bag", 
+                ScalarTypes.DynamicBag,
+                new Parameter("expr", ParameterTypeKind.DynamicBag),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("bag");
 
         public static readonly FunctionSymbol MakeBagIf =
-            new FunctionSymbol("make_bag_if", ScalarTypes.Dynamic,
-                new Parameter("expr", ScalarTypes.Dynamic),
+            new FunctionSymbol("make_bag_if", 
+                ScalarTypes.DynamicBag,
+                new Parameter("expr", ParameterTypeKind.DynamicBag),
                 new Parameter("predicate", ScalarTypes.Bool),
                 new Parameter("maxSize", ParameterTypeKind.Integer, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("bag");
 
         public static readonly FunctionSymbol BuildSchema =
-            new FunctionSymbol("buildschema", ScalarTypes.Dynamic,
-                new Parameter("expr", ScalarTypes.Dynamic))
+            new FunctionSymbol("buildschema", 
+                ScalarTypes.DynamicBag,
+                new Parameter("expr", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("schema");
 
@@ -300,7 +317,7 @@ namespace Kusto.Language
 
                 foreach (var percentileArg in context.GetArguments(percentileParameterName))
                 {
-                    var percentileFragment = MakeValidNameFragment(GetLiteralValue(percentileArg));
+                    var percentileFragment = MakeValidNameFragment(GetConstantValue(percentileArg));
                     var name = percentileParameterName + "_" + valueArgName + "_" + percentileFragment;
                     columns.Add(new ColumnSymbol(name, resultType, source: valueArg));
                 }
@@ -321,30 +338,38 @@ namespace Kusto.Language
             if (context.GetArgument("expr") is Expression valueArg
                 && context.GetResultName(valueArg) is string valueArgName)
             {
-                cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.Dynamic, source: valueArg));
+                cols.Add(new ColumnSymbol("percentiles_" + valueArgName, ScalarTypes.DynamicArray, source: valueArg));
             }
 
             return new TupleSymbol(cols);
         };
 
         public static readonly FunctionSymbol Percentile =
-            new FunctionSymbol("percentile", PercentileReturn, Tabularity.Scalar,
+            new FunctionSymbol("percentile", 
+                PercentileReturn, 
+                Tabularity.Scalar,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("percentile", ParameterTypeKind.Number));
 
         public static readonly FunctionSymbol Percentiles =
-            new FunctionSymbol("percentiles", PercentileReturn, Tabularity.Scalar,
+            new FunctionSymbol("percentiles", 
+                PercentileReturn, 
+                Tabularity.Scalar,
                 new Parameter("expr", ParameterTypeKind.Scalar),
                 new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat));
 
         public static readonly FunctionSymbol PercentilesArray =
             new FunctionSymbol("percentiles_array",
-                new Signature(PercentileArrayReturn, Tabularity.Scalar,
+                new Signature(
+                    PercentileArrayReturn, 
+                    Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("percentile", ParameterTypeKind.Number, minOccurring: 1, maxOccurring: MaxRepeat)),
-                new Signature(PercentileArrayReturn, Tabularity.Scalar,
+                new Signature(
+                    PercentileArrayReturn, 
+                    Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar),
-                    new Parameter("percentiles", ScalarTypes.Dynamic)));
+                    new Parameter("percentiles", ParameterTypeKind.DynamicArray)));
 
         public static readonly FunctionSymbol PercentileW =
             new FunctionSymbol("percentilew", PercentileReturn, Tabularity.Scalar,
@@ -367,7 +392,7 @@ namespace Kusto.Language
                 new Signature(PercentileArrayReturn, Tabularity.Scalar,
                     new Parameter("expr", ParameterTypeKind.Scalar),
                     new Parameter("weight", ParameterTypeKind.Integer),
-                    new Parameter("percentiles", ScalarTypes.Dynamic)));
+                    new Parameter("percentiles", ParameterTypeKind.DynamicArray)));
 
         public static readonly FunctionSymbol Stdev =
             new FunctionSymbol("stdev", ScalarTypes.Real,
