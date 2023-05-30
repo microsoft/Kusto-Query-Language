@@ -58,10 +58,6 @@ Takes two or more tables and returns the rows of all of them.
 > * The `union` scope will not include [functions](../management/functions.md). To include a function, define a [let statement](./letstatement.md) with the `view` keyword.
 > * There's no guarantee of the order in which the union legs will appear, but if each leg has an `order by` operator, then each leg will be sorted.
 
-## Performance considerations
-
-If the `union` input is [tables](../management/tables.md) as opposed to [tabular expressions](./tabularexpressionstatements.md), and the `union` is followed by a [where operator](./whereoperator.md), consider replacing both with [find](./findoperator.md).
-
 ## Returns
 
 A table with as many rows as there are in all the input tables.
