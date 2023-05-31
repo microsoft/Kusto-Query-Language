@@ -2006,6 +2006,12 @@ namespace Kusto.Language
                 new Parameter("hll", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
 
+        public static readonly FunctionSymbol HllNormalize =
+            new FunctionSymbol("__hll_normalize", ScalarTypes.Dynamic,
+                new Parameter("hll", ScalarTypes.Dynamic, minOccurring: 2, maxOccurring: 16))
+            .WithResultNameKind(ResultNameKind.FirstArgument)
+            .Hide();
+
         public static readonly FunctionSymbol SeriesFir =
             new FunctionSymbol("series_fir", 
                 ScalarTypes.DynamicArrayOfReal,
@@ -3654,6 +3660,7 @@ namespace Kusto.Language
             MergeTDigest,
             HllMerge,
             DCountHll,
+            HllNormalize,
             SeriesFir,
             SeriesStats,
             SeriesStatsDynamic,
