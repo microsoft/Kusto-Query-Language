@@ -83,7 +83,7 @@ This query uses explicit schema definitions that allow various optimizations bef
 ```kusto
 evaluate cosmosdb_sql_request(
   'AccountEndpoint=https://cosmosdbacc.documents.azure.com/;Database=MyDatabase;Collection=MyCollection;AccountKey=' h'R8PM...;',
-  'SELECT Id, Name from c') : (Id:long, Name:string) 
+  'SELECT c.Id, c.Name from c') : (Id:long, Name:string) 
 ```
 
 ### Query Azure Cosmos DB

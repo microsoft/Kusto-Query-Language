@@ -11,7 +11,7 @@ Applies a subquery to each record, and returns the union of the results of
 all subqueries.
 
 For example, assume a table `T` has a column `Metric` of type `dynamic`
-whose values are arrays of `real` numbers. The following query will locate the
+whose values are arrays of `real` numbers. The following query locates the
 two biggest values in each `Metric` value, and return the records corresponding
 to these values.
 
@@ -79,9 +79,9 @@ and *SubQuery* has the same syntax of any query statement.
 |Name|Type|Required|Description|
 |--|--|--|--|
 |*ItemIndex*|string||Indicates the name of a column of type `long` that's appended to the input as part of the array-expansion phase and indicates the 0-based array index of the expanded value.|
-|*Name*|string||The name to assign the array-expanded values of each array-expanded expression. If not specified, the name of the column will be used if available. A random name is generated if *ArrayExpression* isn't a simple column name.|
-|*ArrayExpression*|dynamic|&check;|The array whose values will be array-expanded. If the expression is the name of a column in the input, the input column is removed from the input and a new column of the same name, or *ColumnName* if specified, appears in the output.|
-|*Typename*|string||The name of the type that the individual elements of the `dynamic` array *ArrayExpression* take. Elements that don't conform to this type will be replaced by a null value. If unspecified, `dynamic` is used by default.|
+|*Name*|string||The name to assign the array-expanded values of each array-expanded expression. If not specified, the name of the column is used if available. A random name is generated if *ArrayExpression* isn't a simple column name.|
+|*ArrayExpression*|dynamic|&check;|The array whose values are array-expanded. If the expression is the name of a column in the input, the input column is removed from the input and a new column of the same name, or *ColumnName* if specified, appears in the output.|
+|*Typename*|string||The name of the type that the individual elements of the `dynamic` array *ArrayExpression* take. Elements that don't conform to this type are replaced by a null value. If unspecified, `dynamic` is used by default.|
 |*RowLimit*|int||A limit on the number of records to generate from each record of the input. If unspecified, 2147483647 is used.|
 |*SubQuery*|string||A tabular query expression with an implicit tabular source that gets applied to each array-expanded subtable.|
 
@@ -136,6 +136,31 @@ _data
 |-----|---------|---------|
 |1    |[1,3,5,7]|12       |
 |0    |[2,4,6,8]|14       |
+
+### Select elements in arrays
+
+> [!div class="nextstepaction"]
+> <a href="https://dataexplorer.azure.com/clusters/help/databases/Samples?query=H4sIAAAAAAAAA22PQYvCMBCF7/kV79YEsmBSu4rgoe3doxcpEjW7FJO21KhU/PGmsVZZNsM8eDPzzZCDcj52RoOulVmUleNI21YsDl2lbLkPTr4cIxsIjsHRTZSKiCNKZdA4KhjH840jYsIR+5z1PQLMPvEs4FnAs+RfPOEQ/mQy8U2Px594HvA84HkcdBqWjCPfHFN/XPqcF4wUIHfYy5dqGtNhpa/9V5e98MHJ3km4Gq5rdP1DTV39MtQVKPHVBhK7FykJ7jidrVVtedPjOquOemvKk6NDhb2X/+1JRtgDW1SAO4MBAAA=" target="_blank">Run the query</a>
+
+```kusto
+datatable (Val:int, Arr1:dynamic, Arr2:dynamic)
+[ 1, dynamic(['A1', 'A2', 'A3']),       dynamic([10, 30, 7]), 
+  7, dynamic(['B1', 'B2', 'B5']),       dynamic([15, 11, 50]),
+  3, dynamic(['C1', 'C2', 'C3', 'C4']), dynamic([6, 40, 20, 8])
+] 
+| mv-apply NewArr1=Arr1, NewArr2=Arr2 to typeof(long) on (
+ top 2 by NewArr2
+ | summarize NewArr1=make_list(NewArr1), NewArr2=make_list(NewArr2)
+)
+```
+
+**Output**
+
+|Val1|Arr1|Arr2|`NewArr1`|`NewArr2`|
+|-----|-----------|--------|-----|-----|
+|1    |["A1","A2","A3"]|[10,30,7]|["A2',"A1"]|[30,10] |
+|7    |["B1","B2","B5"]|[15,11,50]|["B5","B1"]|[50,15] |
+|3    |["C1","C2","C3","C4"]|[6,40,20,8]|["C2","C3"]|[40,20] |
 
 ### Using `with_itemindex` for working with a subset of the array
 

@@ -67,3 +67,7 @@ counter("StormEvents")
 > Use the `table()` special function to explicitly specify the
 > table data scope. For example, use this function to restrict processing to the data
 > in the table that falls in the hot cache.
+
+## See also
+
+* [Estimate table size](../../management/estimate-table-size.md)

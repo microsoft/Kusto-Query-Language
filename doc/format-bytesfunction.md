@@ -44,3 +44,7 @@ v5 = format_bytes(20010332, 0, "KB")
 |v1|v2|v3|v4|v5|
 |---|---|---|---|---|
 |564 Bytes|10.1 KB|19 MB|19.08 MB|19541 KB|
+
+## See also
+
+* [Estimate table size](../management/estimate-table-size.md)
