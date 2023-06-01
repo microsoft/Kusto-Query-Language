@@ -5,6 +5,8 @@ items:
   href: syntax-conventions.md
 - name: Quick reference guide
   href: ../../kql-quick-reference.md
+- name: Add a comment in KQL
+  href: comment.md
 - name: Query best practices
   items:
   - name: Best practices
