@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace Kusto.Language.Editor
 {
-    using Kusto.Language.Parsing;
     using Kusto.Language.Symbols;
     using Syntax;
-    using System.Linq;
     using System.Text;
     using Utils;
 
@@ -386,7 +384,7 @@ namespace Kusto.Language.Editor
 
         private static readonly int MaxColumns = 7;
 
-        public static void GetTypeDisplay(TypeSymbol type, List<ClassifiedText> texts, bool useName = false)
+        public static void GetTypeDisplay(TypeSymbol type, List<ClassifiedText> texts, bool useName = false, bool nested = false)
         {
             switch (type)
             {
@@ -398,54 +396,16 @@ namespace Kusto.Language.Editor
                     else
                     {
                         texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "("));
-
-                        var maxCol = Math.Min(MaxColumns, ts.Columns.Count);
-                        for (int i = 0; i < maxCol; i++)
-                        {
-                            if (i > 0)
-                            {
-                                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                            }
-
-                            var col = ts.Columns[i];
-                            texts.Add(new ClassifiedText(ClassificationKind.SchemaMember, col.Name));
-                        }
-
-                        if (maxCol < ts.Columns.Count)
-                        {
-                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
-                        }
-
+                        AddSchemaMembers(ts.Columns, texts);
                         texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ")"));
                     }
                     break;
 
                 case TupleSymbol tus:
-                    {
-                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
-
-                        var maxCol = Math.Min(MaxColumns, tus.Columns.Count);
-                        for (int i = 0; i < maxCol; i++)
-                        {
-                            if (i > 0)
-                            {
-                                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                            }
-
-                            var col = tus.Columns[i];
-                            texts.Add(new ClassifiedText(ClassificationKind.Column, col.Name));
-                        }
-
-                        if (maxCol < tus.Columns.Count)
-                        {
-                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
-                            texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
-                        }
-
-                        texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
-                        break;
-                    }
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
+                    AddSchemaMembers(tus.Columns, texts);
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
+                    break;
 
                 case ClusterSymbol cs:
                     texts.Add(new ClassifiedText(ClassificationKind.Type, $"cluster('{cs.Name}')"));
@@ -459,12 +419,60 @@ namespace Kusto.Language.Editor
                     GetTypeDisplay(eges.UnderlyingSymbol, texts, useName);
                     break;
 
+                case DynamicBagSymbol dbag:
+                    texts.Add(new ClassifiedText(ClassificationKind.Type, "dynamic("));
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "{"));
+                    AddSchemaMembers(dbag.Properties, texts);
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "}"));
+                    texts.Add(new ClassifiedText(ClassificationKind.Type, ")"));
+                    break;
+
+                case DynamicArraySymbol darray:
+                    if (!nested)
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, "dynamic("));
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "["));
+                    if (darray.ElementType != ScalarTypes.Dynamic)
+                        GetTypeDisplay(darray.ElementType, texts, nested: true);
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "]"));
+                    if (!nested)
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, ")"));
+                    break;
+
+                case DynamicPrimitiveSymbol dprim:
+                    if (!nested)
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, "dynamic("));
+                    GetTypeDisplay(dprim.UnderlyingType, texts, nested: true);
+                    if (!nested)
+                        texts.Add(new ClassifiedText(ClassificationKind.Type, ")"));
+                    break;
+
                 default:
                     if (type != null)
                     {
                         texts.Add(new ClassifiedText(ClassificationKind.Type, type.Name));
                     }
                     break;
+            }
+        }
+
+        private static void AddSchemaMembers(IReadOnlyList<ColumnSymbol> columns, List<ClassifiedText> texts)
+        {
+            var maxCol = Math.Min(MaxColumns, columns.Count);
+            for (int i = 0; i < maxCol; i++)
+            {
+                if (i > 0)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                }
+
+                var col = columns[i];
+                texts.Add(new ClassifiedText(ClassificationKind.SchemaMember, col.Name));
+            }
+
+            if (maxCol < columns.Count)
+            {
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ", "));
+                texts.Add(new ClassifiedText(ClassificationKind.Punctuation, "..."));
             }
         }
     }
