@@ -1109,7 +1109,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None).Hide();
 
         public static readonly FunctionSymbol PunycodeDomainEncode =
-            new FunctionSymbol("punycode_string_from_domain", ScalarTypes.String,
+            new FunctionSymbol("punycode_domain_to_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None).Hide();
