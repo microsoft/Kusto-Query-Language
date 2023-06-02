@@ -93,11 +93,6 @@ namespace Kusto.Language.Symbols
         public string ResultNamePrefix { get; }
 
         /// <summary>
-        /// This function is considered a constant if all its arguments are constants.
-        /// </summary>
-        public bool IsConstantFoldable { get; }
-
-        /// <summary>
         /// The name of an alternative function to use instead of this function
         /// if this function is obsolete/deprecated.
         /// </summary>
@@ -114,18 +109,41 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public string OptimizedAlternative { get; }
 
+        [Flags]
+        private enum FunctionFlags
+        {
+            None     = 0b0000_0000,
+            Hidden   = 0b0000_0001,
+            Foldable = 0b0000_0010,
+            View     = 0b0000_0100
+        }
+
+        /// <summary>
+        /// Function internal state bit flags.
+        /// </summary>
+        private readonly FunctionFlags _flags;
+
         /// <summary>
         /// If true, the symbol is hidden from Intellisense.
         /// </summary>
-        public override bool IsHidden => _isHidden || base.IsHidden;
+        public override bool IsHidden => (_flags & FunctionFlags.Hidden) != 0 || base.IsHidden;
 
-        private readonly bool _isHidden;
+        /// <summary>
+        /// If true this function is considered a constant when all its arguments are constants.
+        /// </summary>
+        public bool IsConstantFoldable => (_flags & FunctionFlags.Foldable) != 0;
+
+        /// <summary>
+        /// If true, this function is considered a view.
+        /// </summary>
+        public bool IsView => (_flags & FunctionFlags.View) != 0;
+
+
 
         private FunctionSymbol(
             string name, 
             IEnumerable<Signature> signatures, 
-            bool hidden, 
-            bool constantFoldable, 
+            FunctionFlags flags,
             ResultNameKind resultNameKind, 
             string resultNamePrefix,
             string description,
@@ -141,8 +159,7 @@ namespace Kusto.Language.Symbols
                 signature.Symbol = this;
             }
 
-            this._isHidden = hidden;
-            this.IsConstantFoldable = constantFoldable;
+            _flags = flags;
             this.ResultNameKind = resultNameKind;
             this.ResultNamePrefix = resultNamePrefix;
             this.Alternative = alternative;
@@ -150,7 +167,7 @@ namespace Kusto.Language.Symbols
         }
 
         public FunctionSymbol(string name, IEnumerable<Signature> signatures, string description = null)
-            : this(name, signatures, hidden: false, constantFoldable: false, 
+            : this(name, signatures, flags: FunctionFlags.None, 
                   resultNameKind: ResultNameKind.Default, resultNamePrefix: null, 
                   description: description, alternative: null, optimizedAlternative: null)
         {
@@ -233,8 +250,7 @@ namespace Kusto.Language.Symbols
         private FunctionSymbol With(
             Optional<string> name = default,
             Optional<IEnumerable<Signature>> signatures = default,
-            Optional<bool> isHidden = default,
-            Optional<bool> isConstantFoldable = default,
+            Optional<FunctionFlags> flags = default,
             Optional<ResultNameKind> resultNameKind = default,
             Optional<string> resultNamePrefix = default,
             Optional<string> description = default,
@@ -243,8 +259,7 @@ namespace Kusto.Language.Symbols
         {
             var newName = name.HasValue ? name.Value : this.Name;
             var newSignatures = signatures.HasValue ? signatures.Value : this.Signatures;
-            var newIsHidden = isHidden.HasValue ? isHidden.Value : this.IsHidden;
-            var newIsConstantFoldable = isConstantFoldable.HasValue ? isConstantFoldable.Value : this.IsConstantFoldable;
+            var newFlags = flags.HasValue ? flags.Value : _flags;
             var newResultNameKind = resultNameKind.HasValue ? resultNameKind.Value : this.ResultNameKind;
             var newResultNamePrefix = resultNamePrefix.HasValue ? resultNamePrefix.Value : this.ResultNamePrefix;
             var newDescription = description.HasValue ? description.Value : this.Description;
@@ -253,8 +268,7 @@ namespace Kusto.Language.Symbols
 
             if (newName != this.Name
                 || newSignatures != this.Signatures
-                || newIsHidden != this._isHidden
-                || newIsConstantFoldable != this.IsConstantFoldable
+                || newFlags != this._flags
                 || newResultNameKind != this.ResultNameKind
                 || newResultNamePrefix != this.ResultNamePrefix
                 || newDescription != this.Description
@@ -264,8 +278,7 @@ namespace Kusto.Language.Symbols
                 return new FunctionSymbol(
                     newName,
                     newSignatures,
-                    newIsHidden,
-                    newIsConstantFoldable,
+                    newFlags,
                     newResultNameKind,
                     newResultNamePrefix,
                     newDescription,
@@ -291,7 +304,10 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public FunctionSymbol WithIsHidden(bool isHidden)
         {
-            return With(isHidden: isHidden);
+            return With(flags: 
+                isHidden 
+                    ? _flags | FunctionFlags.Hidden
+                    : _flags & ~FunctionFlags.Hidden);
         }
 
         /// <summary>
@@ -307,7 +323,21 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public FunctionSymbol WithIsConstantFoldable(bool isConstantFoldable)
         {
-            return With(isConstantFoldable: isConstantFoldable);
+            return With(flags: 
+                isConstantFoldable
+                    ? _flags | FunctionFlags.Foldable
+                    : _flags & ~FunctionFlags.Foldable);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="FunctionFlags"/> with the <see cref="IsView"/> property set to the specified value.
+        /// </summary>
+        public FunctionSymbol WithIsView(bool isView)
+        {
+            return With(flags:
+                isView
+                    ? _flags | FunctionFlags.View
+                    : _flags & ~FunctionFlags.View);
         }
 
         /// <summary>

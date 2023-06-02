@@ -344,7 +344,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        _pathScope.GetMembers(name, SymbolMatch.Function, list);
+                        _pathScope.GetMembers(name, SymbolMatch.Function | SymbolMatch.View, list);
                     }
                 }
                 else if (_pathScope is ClusterSymbol && name == Functions.Database.Name)

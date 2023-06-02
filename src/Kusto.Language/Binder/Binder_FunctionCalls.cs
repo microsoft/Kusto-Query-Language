@@ -764,7 +764,7 @@ namespace Kusto.Language.Binding
             // check for local table first
             if (_pathScope == null && !IsPattern(nameOrPattern))
             {
-                var match = SymbolMatch.Table | SymbolMatch.Local;
+                var match = SymbolMatch.Table | SymbolMatch.Local | SymbolMatch.View;
 
                 var symbols = s_symbolListPool.AllocateFromPool();
                 try
@@ -774,7 +774,19 @@ namespace Kusto.Language.Binding
 
                     if (symbols.Count > 0)
                     {
-                        var result = GetResultType(symbols[0]);
+                        var result = symbols[0];
+
+                        if (result is FunctionSymbol fs 
+                            && fs.IsView 
+                            && fs.MinArgumentCount == 0)
+                        {
+                            result = fs.GetReturnType(_globals);
+                        }
+                        else
+                        {
+                            result = GetResultType(result);
+                        }
+
                         return result as TableSymbol ?? (TypeSymbol)ErrorSymbol.Instance;
                     }
                 }

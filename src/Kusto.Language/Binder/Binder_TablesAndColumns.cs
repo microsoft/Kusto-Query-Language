@@ -125,7 +125,7 @@ namespace Kusto.Language.Binding
             var declaredViews = s_tableListPool.AllocateFromPool();
             try
             {
-                GetViewsInScope(declaredViews);
+                GetViewResultTablesInScope(declaredViews);
                 if (declaredViews.Count > 0)
                 {
                     return _currentDatabase.Tables.Concat(declaredViews).ToList();
@@ -142,30 +142,27 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets all the declared views in scope
+        /// Gets all the result tables of declared views in scope
         /// </summary>
-        private void GetViewsInScope(List<TableSymbol> views)
+        private void GetViewResultTablesInScope(List<TableSymbol> views)
         {
             var localSymbols = s_symbolListPool.AllocateFromPool();
             try
             {
                 // get all declared tabular functions
-                _localScope.GetSymbols(SymbolMatch.Tabular | SymbolMatch.Function, localSymbols);
+                _localScope.GetSymbols(SymbolMatch.Tabular | SymbolMatch.View, localSymbols);
 
                 // pick out just view function declarations
                 foreach (var sym in localSymbols)
                 {
                     if (sym is FunctionSymbol fs
+                        && fs.IsView
                         && fs.MinArgumentCount == 0)
                     {
-                        var decl = fs.Signatures[0].Declaration;
-                        if (decl != null && decl.Parent is FunctionDeclaration fd && fd.ViewKeyword != null)
+                        var fts = fs.GetReturnType(_globals) as TableSymbol;
+                        if (fts != null)
                         {
-                            var fts = fs.GetReturnType(_globals) as TableSymbol;
-                            if (fts != null)
-                            {
-                                views.Add(fts);
-                            }
+                            views.Add(fts);
                         }
                     }
                 }

@@ -63,7 +63,7 @@ namespace Kusto.Language.Binding
                     }
 
                     var name = GetNameFromContext(node);
-                    var fs = new FunctionSymbol(name, node.Body, parameters);
+                    var fs = new FunctionSymbol(name, node.Body, parameters).WithIsView(node.ViewKeyword != null);
 
                     return new SemanticInfo(fs, diagnostics);
                 }
@@ -593,10 +593,10 @@ namespace Kusto.Language.Binding
                 try
                 {
                     var match = IsInTabularContext(node)
-                        ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Tabular
-                        : SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar;
+                        ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Tabular
+                        : SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Scalar;
 
-                    _binder.GetSymbolsInContext(node, match, IncludeFunctionKind.LocalFunctions | IncludeFunctionKind.DatabaseFunctions, list);
+                    _binder.GetSymbolsInContext(node, match, IncludeFunctionKind.LocalViews | IncludeFunctionKind.DatabaseFunctions, list);
 
                     FilterVisibleSymbols(node, list, filteredList);
 

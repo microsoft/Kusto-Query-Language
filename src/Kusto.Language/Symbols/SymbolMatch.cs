@@ -32,9 +32,14 @@ namespace Kusto.Language.Symbols
         Function = ExternalTable << 1,
 
         /// <summary>
+        /// Any local view
+        /// </summary>
+        View = Function << 1,
+
+        /// <summary>
         /// Any local variable or parameter
         /// </summary>
-        Local = Function << 1,
+        Local = View << 1,
 
         /// <summary>
         /// Any database
@@ -79,12 +84,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
-        Any = Column | Table | Function | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup | Graph,
+        Any = Column | Table | Function | View | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup | Graph,
 
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | Local | Scalar | Tabular | MaterializedView | EntityGroup | Graph,
+        Default = Column | Table | Function | View | Local | Scalar | Tabular | MaterializedView | EntityGroup | Graph,
     }
 
     public static class SymbolMatchExtensions
@@ -110,7 +115,7 @@ namespace Kusto.Language.Symbols
                 }
             }
 
-            if ((match & SymbolMatch.Column) != 0 && symbol.Kind == SymbolKind.Column)
+            if ((match & SymbolMatch.Column) != 0 && symbol is ColumnSymbol)
                 return true;
 
             if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal && !ts.IsMaterializedView)
@@ -122,13 +127,13 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.MaterializedView) != 0 && symbol is TableSymbol mv && mv.IsMaterializedView)
                 return true;
 
-            if ((match & SymbolMatch.Database) != 0 && symbol.Kind == SymbolKind.Database)
+            if ((match & SymbolMatch.Database) != 0 && symbol is DatabaseSymbol)
                 return true;
 
-            if ((match & SymbolMatch.Cluster) != 0 && symbol.Kind == SymbolKind.Cluster)
+            if ((match & SymbolMatch.Cluster) != 0 && symbol is ClusterSymbol)
                 return true;
 
-            if ((match & SymbolMatch.EntityGroup) != 0 && symbol.Kind == SymbolKind.EntityGroup)
+            if ((match & SymbolMatch.EntityGroup) != 0 && symbol is EntityGroupSymbol)
                 return true;
 
             if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
@@ -140,10 +145,13 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Tabular) != 0 && (match & SymbolMatch.Scalar) == 0 && !symbol.IsTabular)
                 return false;
 
-            if ((match & SymbolMatch.Function) != 0 && (symbol.Kind == SymbolKind.Function || symbol.Kind == SymbolKind.Pattern))
+            if ((match & SymbolMatch.Function) != 0 && (symbol is FunctionSymbol || symbol is PatternSymbol))
                 return true;
 
-            if ((match & SymbolMatch.Local) != 0 && (symbol.Kind == SymbolKind.Variable || symbol.Kind == SymbolKind.Parameter))
+            if ((match & SymbolMatch.View) != 0 && (symbol is FunctionSymbol fs2 && fs2.IsView))
+                return true;
+
+            if ((match & SymbolMatch.Local) != 0 && (symbol is VariableSymbol || symbol is ParameterSymbol))
                 return true;
 
             return false;

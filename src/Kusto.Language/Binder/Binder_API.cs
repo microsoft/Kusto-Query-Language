@@ -495,8 +495,12 @@ namespace Kusto.Language.Binding
                         }
 
                         var localMatch = match;
+
                         if ((include & IncludeFunctionKind.LocalFunctions) == 0)
                             localMatch &= ~SymbolMatch.Function;
+
+                        if ((include & IncludeFunctionKind.LocalViews) == 0)
+                            localMatch &= ~SymbolMatch.View;
 
                         // local symbols
                         _localScope.GetSymbols(localMatch, list);
@@ -747,7 +751,7 @@ namespace Kusto.Language.Binding
             var locals = s_symbolListPool.AllocateFromPool();
             try
             {
-                _localScope.GetSymbols(name, SymbolMatch.Local | SymbolMatch.Function, locals);
+                _localScope.GetSymbols(name, SymbolMatch.Local | SymbolMatch.Function | SymbolMatch.View, locals);
 
                 foreach (Symbol local in locals)
                 {

@@ -1102,6 +1102,18 @@ namespace Kusto.Language
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
+        public static readonly FunctionSymbol PunycodeDomainDecode =
+            new FunctionSymbol("punycode_domain_from_string", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
+        public static readonly FunctionSymbol PunycodeDomainEncode =
+            new FunctionSymbol("punycode_string_from_domain", ScalarTypes.String,
+                new Parameter("string", ScalarTypes.String))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None).Hide();
+
         #endregion
 
         #region hash functions
@@ -3647,6 +3659,8 @@ namespace Kusto.Language
             BagZip,
             PunycodeDecode,
             PunycodeEncode,
+            PunycodeDomainDecode,
+            PunycodeDomainEncode,
 #endregion
 
 #region digest / series functions

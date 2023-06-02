@@ -446,9 +446,10 @@ namespace Kusto.Language
         BuiltInFunctions = 1,
         DatabaseFunctions = BuiltInFunctions << 1,
         LocalFunctions = DatabaseFunctions << 1,
+        LocalViews = LocalFunctions << 1,
 
         None = 0,
-        All = BuiltInFunctions | DatabaseFunctions | LocalFunctions
+        All = BuiltInFunctions | DatabaseFunctions | LocalFunctions | LocalViews
     }
 
     public enum ParserKind
