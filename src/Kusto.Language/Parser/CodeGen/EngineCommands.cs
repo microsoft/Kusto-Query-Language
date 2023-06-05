@@ -68,6 +68,7 @@ namespace Kusto.Language
         private static readonly string _schema38 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
         private static readonly string _schema39 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
         private static readonly string _schema40 = "(Name: string, Entities: string)";
+        private static readonly string _schema41 = "(ExtentContainerId:guid, Url:string, State:string, CreatedOn:datetime, MaxDateTime:datetime, IsRecyclable:bool, StoresDatabaseMetadataPointer:bool, HardDeletePeriod:timespan, ActiveMetadataContainer:bool, MetadataContainer:bool)";
 
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol("ShowDatabase", _schema0);
@@ -1542,7 +1543,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowEntityGroups", _schema40);
 
         public static readonly CommandSymbol AlterExtentContainersAdd =
-            new CommandSymbol("AlterExtentContainersAdd", _schema18);
+            new CommandSymbol("AlterExtentContainersAdd", _schema41);
 
         public static readonly CommandSymbol AlterExtentContainersDrop =
             new CommandSymbol("AlterExtentContainersDrop", _schema18);
@@ -1551,10 +1552,10 @@ namespace Kusto.Language
             new CommandSymbol("AlterExtentContainersRecycle", _schema18);
 
         public static readonly CommandSymbol AlterExtentContainersSet =
-            new CommandSymbol("AlterExtentContainersSet", _schema18);
+            new CommandSymbol("AlterExtentContainersSet", _schema41);
 
         public static readonly CommandSymbol ShowExtentContainers =
-            new CommandSymbol("ShowExtentContainers", _schema18);
+            new CommandSymbol("ShowExtentContainers", _schema41);
 
         public static readonly CommandSymbol DropEmptyExtentContainers =
             new CommandSymbol("DropEmptyExtentContainers", _schema18);
