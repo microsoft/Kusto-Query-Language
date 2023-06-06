@@ -3,27 +3,31 @@ title:  Views
 description: This article describes views in Azure Data Explorer.
 ms.reviewer: zivc
 ms.topic: reference
-ms.date: 04/16/2023
+ms.date: 06/05/2023
 ---
 # Views
 
-**Views** are virtual tables based on the result-set of a Kusto Query Language query.
+Views are virtual tables based on the result-set of a Kusto Query Language query.
 Just like a real table, a view contains rows and columns. Unlike a real table,
 a view doesn't hold its own data storage.
 
 ## Define a view
 
-Views are defined through [user-defined functions](../functions/user-defined-functions.md)
-with the following requirements:
+Views are defined through [user-defined functions](../functions/user-defined-functions.md),
+either stored or query-defined, with the following requirements:
 
-* The result of the function must be tabular (for example, it cannot be a scalar value).
+* The result of the function must be tabular, meaning it can't be a scalar value.
 * The function must take no arguments.
-
-Views can be based on either [stored functions](./stored-functions.md) or defined as part of the query using a [let statement](../letstatement.md).
 
 > [!NOTE]
 > Views are not technically schema entities. However, all functions that comply
 > with the constraints above are regarded as views.
+
+## Stored views
+
+When a [stored function](../../query/schema-entities/stored-functions.md) is designated as a view, it's considered a stored view. Stored views behave like stored functions and can participate in `search` and `union *` scenarios.
+
+To designate a stored function as a stored view, set the `view` property to `true` when you create the function. For more information, see [.create function](../../management/create-function.md).
 
 ### Example: Define and use a view
 

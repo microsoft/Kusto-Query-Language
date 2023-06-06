@@ -32,6 +32,7 @@ Here are several best practices to follow to make your query run faster.
 |  | Use `in` instead of left semi `join` for filtering by a single column. |  |
 | Join across clusters | Across clusters, run the query on the "right" side of the join, where most of the data is located. |  |
 | Join when left side is small and right side is large | Use [hint.strategy=broadcast](./broadcastjoin.md) |  | Small refers to up to 100,000 records. |
+| Join when right side is small and left side is large | Use the [lookup operator](./lookupoperator.md) instead of the `join` operator | | If the right side of the lookup is larger than several tens of MBs, the query will fail. |
 | Join when both sides are too large | Use [hint.shufflekey=\<key>](./shufflequery.md) |  | Use when the join key has high cardinality. |
 | **Extract values on column with strings sharing the same format or pattern** | Use the [parse operator](./parseoperator.md) | Don't use several `extract()` statements. | For example, values like `"Time = <time>, ResourceId = <resourceId>, Duration = <duration>, ...."` |
 | **[extract() function](./extractfunction.md)** | Use when parsed strings don't all follow the same format or pattern. |  | Extract the required values by using a REGEX. |
