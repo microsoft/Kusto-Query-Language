@@ -315,15 +315,37 @@ namespace Kusto.Language.Binding
         /// </summary>
         internal static void MakeColumnNamesUnique(List<ColumnSymbol> columns)
         {
-            var names = s_uniqueNameTablePool.AllocateFromPool();
+            var nameToIndexMap = s_stringToIntMapPool.AllocateFromPool();
+            var nameTable = s_uniqueNameTablePool.AllocateFromPool();
             var newColumns = s_columnListPool.AllocateFromPool();
             try
             {
-                // go through original column order and build out new column list
-                for (int i = 0; i < columns.Count; i++)
+                // associate all unique names with first index where they appear
+                // to avoid renamed columns influcing the names of other columns
+                // further down the list,
+                // so [c, c, c1] will map to [c, c2, c1] not [c, c1, c11]
+                for (int index = 0; index < columns.Count; index++)
                 {
-                    var col = columns[i];
-                    newColumns.Add(GetUniqueColumn(col, names));
+                    var col = columns[index];
+                    if (!nameToIndexMap.ContainsKey(col.Name))
+                        nameToIndexMap.Add(col.Name, index);
+                }
+
+                nameTable.AddNames(nameToIndexMap.Keys);
+
+                // go through original column order and build out new column list
+                for (int index = 0; index < columns.Count; index++)
+                {
+                    var col = columns[index];
+                    if (nameToIndexMap.TryGetValue(col.Name, out var firstIndex)
+                        && index != firstIndex)
+                    {
+                        newColumns.Add(GetUniqueColumn(col, nameTable));
+                    }
+                    else
+                    {
+                        newColumns.Add(col);
+                    }
                 }
 
                 // copy new list back to original
@@ -332,8 +354,9 @@ namespace Kusto.Language.Binding
             }
             finally
             {
-                s_uniqueNameTablePool.ReturnToPool(names);
+                s_uniqueNameTablePool.ReturnToPool(nameTable);
                 s_columnListPool.ReturnToPool(newColumns);
+                s_stringToIntMapPool.ReturnToPool(nameToIndexMap);
             }
         }
 

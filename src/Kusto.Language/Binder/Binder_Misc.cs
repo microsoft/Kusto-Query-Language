@@ -384,6 +384,9 @@ namespace Kusto.Language.Binding
         private static readonly ObjectPool<List<Parameter>> s_parameterListPool =
             new ObjectPool<List<Parameter>>(() => new List<Parameter>(), list => list.Clear());
 
+        private static readonly ObjectPool<Dictionary<string, int>> s_stringToIntMapPool =
+            new ObjectPool<Dictionary<string, int>>(() => new Dictionary<string, int>(), m => m.Clear());
+
         private static readonly SemanticInfo LiteralBoolInfo = new SemanticInfo(ScalarTypes.Bool, isConstant: true);
         private static readonly SemanticInfo LiteralIntInfo = new SemanticInfo(ScalarTypes.Int, isConstant: true);
         private static readonly SemanticInfo LiteralLongInfo = new SemanticInfo(ScalarTypes.Long, isConstant: true);
