@@ -9,7 +9,7 @@ ms.date: 03/14/2023
 
 Binds a name to the operator's input tabular expression. This allows the query to reference the value of the tabular expression multiple times without breaking the query and binding a name through the [let statement](letstatement.md).
 
-To optimize multiple uses of the `as` operator within a single query, see [Named expressions](../../named-expressions.md).
+To optimize multiple uses of the `as` operator within a single query, see [Named expressions](named-expressions.md).
 
 ## Syntax
 

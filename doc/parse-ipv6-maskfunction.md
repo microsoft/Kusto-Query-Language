@@ -25,7 +25,7 @@ Converts IPv6/IPv4 string and netmask to a canonical IPv6 string representation.
 ## Returns
 
 If conversion is successful, the result will be a string representing a canonical IPv6 network address.
-If conversion isn't successful, the result will be `null`.
+If conversion isn't successful, the result will be an empty string.
 
 ## Example
 

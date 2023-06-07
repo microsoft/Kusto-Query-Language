@@ -18,7 +18,7 @@ Use the `let` statement to set a variable name equal to an expression or a funct
 
 If the variable previously represented another value, for example in nested statements, the innermost `let` statement applies.
 
-To optimize multiple uses of the `let` statement within a single query, see [Optimize queries that use named expressions](../../named-expressions.md).
+To optimize multiple uses of the `let` statement within a single query, see [Optimize queries that use named expressions](named-expressions.md).
 
 ## Syntax: Scalar or tabular expressions
 

@@ -4,7 +4,7 @@ items:
 - name: Syntax conventions
   href: syntax-conventions.md
 - name: Quick reference guide
-  href: ../../kql-quick-reference.md
+  href: kql-quick-reference.md
 - name: Add a comment in KQL
   href: comment.md
 - name: Query best practices
@@ -13,7 +13,7 @@ items:
     href: best-practices.md
   - name: Optimize queries that use named expressions
     displayName: let statement, user defined functions, as operator, calculated
-    href: ../../named-expressions.md
+    href: named-expressions.md
 - name: Cross-cluster queries
   items:
   - name: Cross-cluster queries and schema changes

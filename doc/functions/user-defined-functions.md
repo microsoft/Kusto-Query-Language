@@ -18,7 +18,7 @@ The function's input arguments and output determine whether it's scalar or tabul
 
  See [Stored functions](../schema-entities/stored-functions.md) to create and manage entities that allow the reuse of Kusto queries or query parts.
 
-To optimize multiple uses of the user-defined functions within a single query, see [Optimize queries that use named expressions](../../../named-expressions.md).
+To optimize multiple uses of the user-defined functions within a single query, see [Optimize queries that use named expressions](../named-expressions.md)
 
 ## Scalar function
 
