@@ -776,11 +776,11 @@ items:
   - name: repeat()
     href: repeatfunction.md
   - name: replace_regex()
-    displayName: replace()
     href: replace-regex-function.md
   - name: replace_string()
-    displayName: replace()
     href: replace-string-function.md
+  - name: replace_strings()
+    href: replace-strings-function.md
   - name: reverse()
     href: reversefunction.md
   - name: round()

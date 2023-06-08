@@ -3,13 +3,15 @@ title:  replace_string()
 description: Learn how to use the replace_string() function to replace all string matches with another string.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 03/12/2023
+ms.date: 05/21/2023
 ---
 # replace_string()
 
-Replaces all string matches with another string.
+Replaces all string matches with a specified string.
 
 > **Deprecated aliases:** replace()
+
+To replace multiple strings, see [replace_strings()](replace-strings-function.md).
 
 ## Syntax
 
@@ -25,7 +27,7 @@ Replaces all string matches with another string.
 
 ## Returns
 
-*text* after replacing all matches of *lookup* with evaluations of *rewrite*. Matches don't overlap.
+Returns the *text* after replacing all matches of *lookup* with evaluations of *rewrite*. Matches don't overlap.
 
 ## Example
 
@@ -50,5 +52,6 @@ range x from 1 to 5 step 1
 
 ## See also
 
-* For regex matching, see [replace_regex()](replace-regex-function.md).
-* For replacing a set of characters, see [translate()](translatefunction.md).
+* To replace multiple strings, see [replace_strings()](replace-strings-function.md).
+* To replace strings based on regular expression, see [replace_regex()](replace-regex-function.md).
+* To replace a set of characters, see [translate()](translatefunction.md).

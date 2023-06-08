@@ -275,11 +275,13 @@ This article lists all available scalar functions grouped by type. For aggregati
 |[parse_ipv4_mask()](parse-ipv4-maskfunction.md)|Converts input string and IP-prefix mask to long (signed 64-bit) number representation.|
 |[parse_ipv6()](parse-ipv6function.md)|Converts IPv6 or IPv4 string to a canonical IPv6 string representation.|
 |[parse_ipv6_mask()](parse-ipv6-maskfunction.md)|Converts IPv6 or IPv4 string and netmask to a canonical IPv6 string representation.|
-|[parse_json()](parsejsonfunction.md)|Interprets a string as a JSON value) and returns the value as dynamic.|
+|[parse_json()](parsejsonfunction.md)|Interprets a string as a JSON value and returns the value as dynamic.|
 |[parse_url()](parseurlfunction.md)|Parses an absolute URL string and returns a dynamic object contains all parts of the URL.|
 |[parse_urlquery()](parseurlqueryfunction.md)|Parses a url query string and returns a dynamic object contains the Query parameters.|
 |[parse_version()](parse-versionfunction.md)|Converts input string representation of version to a comparable decimal number.|
 |[replace_regex()](replace-regex-function.md)|Replace all regex matches with another string.|
+|[replace_string()](replace-string-function.md)|Replace all single string matches with a specified string.|
+|[replace_strings()](replace-strings-function.md)|Replace all multiple strings matches with specified strings.|
 |[punycode_from_string()](punycode-from-string.md)| Encodes domain name to Punycode form.|
 |[punycode_to_string()](punycode-to-string.md)| Decodes domain name from Punycode form.|
 |[reverse()](reversefunction.md)|Function makes reverse of input string.|
