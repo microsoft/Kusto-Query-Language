@@ -420,8 +420,10 @@ namespace Kusto.Language.Parsing
             switch (keywordKind)
             {
                 case SyntaxKind.LongKeyword:
+                case SyntaxKind.Int64Keyword:
                     return SyntaxKind.LongLiteralToken;
                 case SyntaxKind.IntKeyword:
+                case SyntaxKind.Int32Keyword:
                     return SyntaxKind.IntLiteralToken;
                 case SyntaxKind.RealKeyword:
                 case SyntaxKind.DoubleKeyword:

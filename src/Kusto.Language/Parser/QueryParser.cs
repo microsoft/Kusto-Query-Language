@@ -112,14 +112,46 @@ namespace Kusto.Language.Parsing
 
         #region Reset Points
 
+        /// <summary>
+        /// Gets the reset point for the current input position.
+        /// </summary>
         private int GetResetPoint()
         {
             return _pos;
         }
 
+        /// <summary>
+        /// Resets the parser to the reset point.
+        /// </summary>
         private void Reset(int resetPoint)
         {
             _pos = resetPoint;
+        }
+
+        /// <summary>
+        /// Returns the best result of the set of parsers
+        /// </summary>
+        private TElement ParseBest<TElement>(IReadOnlyList<Func<QueryParser, TElement>> parsers)
+            where TElement : SyntaxElement
+        {
+            var start = GetResetPoint();
+            var bestEnd = start;
+            TElement bestResult = null;
+
+            foreach (var parser in parsers)
+            {
+                Reset(start);
+                var result = parser(this);
+                var end = GetResetPoint();
+                if (end > bestEnd)
+                {
+                    bestEnd = end;
+                    bestResult = result;
+                }
+            }
+
+            Reset(bestEnd);
+            return bestResult;
         }
 
         #endregion
@@ -916,6 +948,9 @@ namespace Kusto.Language.Parsing
             var name = ParseName();
             return name != null ? new NameReference(name) : null;
         }
+
+        private static Func<QueryParser, Expression> FnParseNameReference =
+            qp => qp.ParseNameReference();
 
         /// <summary>
         /// Includes bracketed names, identifiers and extended keywords-as-identifiers
@@ -1942,6 +1977,9 @@ namespace Kusto.Language.Parsing
                 return ParseNameReference();
             }
         }
+
+        private static Func<QueryParser, Expression> FnParseBarePathElementSelector =
+            qp => qp.ParseBarePathElementSelector();
 
         private static readonly HashSet<SyntaxKind> _specialKeywordsAsIdentifiers =
             KustoFacts.SpecialKeywordsAsIdentifiers.ToHashSetEx();
@@ -3171,6 +3209,9 @@ namespace Kusto.Language.Parsing
             ParseBracketedWildcardedNameReference()
             ?? ParseBracketedNameReference();
 
+        private static Func<QueryParser, Expression> FnParseBracketedEntityNamePathElementSelector =
+            qp => qp.ParseBracketedEntityNamePathElementSelector();
+
         private Expression ParseEntityPathExpression()
         {
             var expr = ParsePathElementSelector();
@@ -3203,12 +3244,7 @@ namespace Kusto.Language.Parsing
 
         private static readonly Func<QueryParser, Expression> FnParseEntityReferenceExpression =
             qp => qp.ParseEntityReferenceExpression();
-
-        //private Expression ParseWildcardedEntityPathSelector() =>
-        //    ParseWildcardedNameReference()
-        //    ?? ParseBracketedEntityNamePathElementSelector()
-        //    ?? ParseBarePathElementSelector();
-
+        
         private Expression ParseWildcardedEntityExpression()
         {
             if (ScanWildcardedName() > 0)
@@ -3252,11 +3288,15 @@ namespace Kusto.Language.Parsing
             }
         }
 
-#endregion
+        private static Func<QueryParser, Expression> FnParseWildcardedEntityExpression =
+            qp => qp.ParseWildcardedEntityExpression();
 
-#region Query Operators
 
-#region consume 
+        #endregion
+
+        #region Query Operators
+
+        #region consume 
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_consumeOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.ConsumeParameters);
@@ -3421,11 +3461,35 @@ namespace Kusto.Language.Parsing
 
 #region find
 
+        private Expression ParseFindOperand_NameWithOptionalAsOperator()
+        {
+            Expression expr =
+                ParseBracketedEntityNamePathElementSelector()
+                ?? ParseBarePathElementSelector();
+
+            if (expr != null
+                && ParseToken(SyntaxKind.BarToken) is SyntaxToken barToken)
+            {
+                var asOp = ParseAsOperator() ?? CreateMissingQueryOperator();
+                expr = new PipeExpression(expr, barToken, asOp);
+            }
+
+            return expr;
+        }
+
+        private static Func<QueryParser, Expression> FnParseFindOperand_NameWithOptionalAsOperator =
+            qp => qp.ParseFindOperand_NameWithOptionalAsOperator();
+
+        private static IReadOnlyList<Func<QueryParser, Expression>> FindOperandParsers =
+            new[]
+            {
+                FnParseFindOperand_NameWithOptionalAsOperator,
+                FnParseWildcardedEntityExpression
+            };
+
         private Expression ParseFindOperand()
         {
-            return ParseWildcardedEntityExpression()
-                ?? ParseBracketedEntityNamePathElementSelector()
-                ?? ParseBarePathElementSelector();
+            return ParseBest(FindOperandParsers);
         }
 
         private static readonly Func<QueryParser, Expression> FnParseFindOperand =
@@ -4915,24 +4979,23 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region union
+        #region union
+
+        private static IReadOnlyList<Func<QueryParser, Expression>> ParseUnionExpressionParsers =
+            new[]
+            {
+                FnParseBracketedEntityNamePathElementSelector,
+                FnParseWildcardedEntityExpression,
+                FnParseBarePathElementSelector
+            };
 
         private Expression ParseUnionExpression()
         {
-            var expr = ParseParenthesizedExpression();
-
-            if (expr == null)
-                expr = ParseWildcardedEntityExpression();
-
-            if (expr == null)
-                expr = ParseBracketedEntityNamePathElementSelector();
-
-            if (expr == null)
-                expr = ParseBarePathElementSelector();
-
-            return expr;
+            return
+                ParseParenthesizedExpression()
+                ?? ParseBest(ParseUnionExpressionParsers);
         }
 
         private static readonly Func<QueryParser, Expression> FnParseUnionExpression =
@@ -5833,19 +5896,18 @@ namespace Kusto.Language.Parsing
 
         private SeparatedElement<Statement> ParseFunctionBodyStatement()
         {
-            switch (PeekToken().Kind)
+            var statement =
+                ParseLetStatement()
+                ?? ParseQueryParametersStatement();
+
+            if (statement != null)
             {
-                case SyntaxKind.LetKeyword:
-                    return new SeparatedElement<Statement>(
-                        ParseLetStatement(), 
-                        ParseRequiredToken(SyntaxKind.SemicolonToken));
-                case SyntaxKind.QueryParametersKeyword:
-                    return new SeparatedElement<Statement>(
-                        ParseQueryParametersStatement(),
-                        ParseRequiredToken(SyntaxKind.SemicolonToken));
-                default:
-                    return null;
+                return new SeparatedElement<Statement>(
+                    statement,
+                    ParseRequiredToken(SyntaxKind.SemicolonToken));
             }
+
+            return null;
         }
 
         private static readonly Func<QueryParser, SeparatedElement<Statement>> FnParseFunctionBodyStatements =
@@ -5949,7 +6011,7 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private LetStatement ParseLetStatement()
+        private Statement ParseLetStatement()
         {
             var keyword = ParseToken(SyntaxKind.LetKeyword);
             if (keyword != null)
@@ -6026,14 +6088,20 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region restrict
+        #region restrict
+
+        private static readonly IReadOnlyList<Func<QueryParser, Expression>> ParseRestrictExpressionParsers =
+            new[]
+            {
+                FnParseWildcardedEntityExpression,
+                FnParseNameReference
+            };
 
         private Expression ParseRestrictExpression()
         {
-            return ParseWildcardedEntityExpression()
-                ?? ParseNameReference();
+            return ParseBest(ParseRestrictExpressionParsers);
         }
 
         private static readonly Func<QueryParser, Expression> FnParseRestrictExpression =

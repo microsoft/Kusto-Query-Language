@@ -1664,6 +1664,15 @@ namespace Kusto.Language.Parsing
                     (keyword, kind) => (QueryOperator)new GetSchemaOperator(keyword, kind))
                 .WithTag("<get-schema>");
 
+            var AsOperator =
+                Rule(
+                    Token(SyntaxKind.AsKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
+                    QueryParameterList(QueryOperatorParameters.AsParameters, equalsNeeded: true),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
+                    (keyword, parameters, name) => (QueryOperator)new AsOperator(keyword, parameters, name))
+                .WithTag("<as>");
+
+
             Parser<LexicalToken, DataScopeClause> DataScopeClause(CompletionKind ckind) =>
                 Rule(
                     Token(SyntaxKind.DataScopeKeyword, ckind).Hide(),
@@ -1673,10 +1682,16 @@ namespace Kusto.Language.Parsing
                         new DataScopeClause(dataScopeKeyword, equalToken, valueToken));
 
             var FindOperand =
-                First(
+                Best(
                     WildcardedEntityReference,
-                    BracketedEntityNamePathElementSelector,
-                    BarePathElementSelector);
+                    ApplyOptional(
+                        First(
+                            BracketedEntityNamePathElementSelector,
+                            BarePathElementSelector),
+                        _left =>
+                            Rule(_left, Token(SyntaxKind.BarToken), Required(AsOperator, CreateMissingQueryOperator),
+                                (left, bar, op) => (Expression)new PipeExpression(left, bar, op)))
+                    );
 
             var FindInClause =
                 Rule(
@@ -2504,14 +2519,6 @@ namespace Kusto.Language.Parsing
                     CommaList<Expression>(UnionExpression, CreateMissingExpression, oneOrMore: true),
                     (keyword, parameters, list) => (QueryOperator)new UnionOperator(keyword, parameters, list))
                 .WithTag("<union>");
-
-            var AsOperator =
-                Rule(
-                    Token(SyntaxKind.AsKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
-                    QueryParameterList(QueryOperatorParameters.AsParameters, equalsNeeded: true),
-                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
-                    (keyword, parameters, name) => (QueryOperator)new AsOperator(keyword, parameters, name))
-                .WithTag("<as>");
 
             var SerializeOperator =
                 Rule(
