@@ -450,7 +450,6 @@ namespace Kusto.Language
             SyntaxKind.FilterOperator,
             SyntaxKind.InvokeOperator,
             SyntaxKind.MvExpandOperator,
-            SyntaxKind.MvApplyOperator,
             SyntaxKind.ParseOperator,
             SyntaxKind.ParseWhereOperator,
             SyntaxKind.ParseKvOperator,
