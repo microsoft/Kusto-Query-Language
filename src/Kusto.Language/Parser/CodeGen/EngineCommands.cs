@@ -1524,6 +1524,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterFabricServiceAssignmentsCommand =
             new CommandSymbol("AlterFabricServiceAssignmentsCommand", _schema18);
 
+        public static readonly CommandSymbol DropFabricServiceAssignmentsCommand =
+            new CommandSymbol("DropFabricServiceAssignmentsCommand", _schema18);
+
         public static readonly CommandSymbol CreateEntityGroupCommand =
             new CommandSymbol("CreateEntityGroupCommand", _schema40);
 
@@ -2318,6 +2321,7 @@ namespace Kusto.Language
             AlterClusterStorageKeys,
             ShowClusterStorageKeysHash,
             AlterFabricServiceAssignmentsCommand,
+            DropFabricServiceAssignmentsCommand,
             CreateEntityGroupCommand,
             AlterEntityGroup,
             AlterMergeEntityGroup,
