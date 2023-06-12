@@ -335,6 +335,7 @@ namespace Kusto.Language
             "__sql_subtract",
             "__trace_information",
             "__var",
+            "__warning",
             "__get_scalar",
         };
 
