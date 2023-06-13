@@ -15,6 +15,10 @@ For more information about the underlying algorithm (T-Digest) and the estimated
 
 > The `tdigest_merge()` and `merge_tdigest()` functions are equivalent
 
+> [!IMPORTANT]
+>The results of tdigest() and tdigest_merge() can be stored and later retrieved. For example, you may want to create daily percentiles summary, which can then be used to calculate weekly percentiles.
+> However, the precise binary representation of these results may change over time. There's no guarantee that these functions will produce identical results for identical inputs, and therefore we don't advise relying on them.
+
 ## Syntax
 
 `tdigest_merge(`*expr*`)`

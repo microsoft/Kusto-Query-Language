@@ -18,6 +18,10 @@ Read about the [underlying algorithm (*H*yper*L*og*L*og) and the estimation accu
 >- Use the [hll_merge](hllmergefunction.md) function to merge the results of multiple `hll()` functions.
 >- Use the [dcount_hll](dcount-hllfunction.md) function to calculate the number of distinct values from the output of the `hll()` or `hll_merge` functions.
 
+> [!IMPORTANT]
+>The results of hll(), hll_if(), and hll_merge() can be stored and later retrieved. For example, you may want to create a daily unique users summary, which can then be used to calculate weekly counts.
+> However, the precise binary representation of these results may change over time. There's no guarantee that these functions will produce identical results for identical inputs, and therefore we don't advise relying on them.
+
 ## Syntax
 
 `hll` `(`*expr* [`,` *accuracy*]`)`

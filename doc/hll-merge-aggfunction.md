@@ -13,6 +13,10 @@ Merges HLL results across the group into a single HLL value.
 
 For more information, see the [underlying algorithm (*H*yper*L*og*L*og) and estimation accuracy](#estimation-accuracy).
 
+> [!IMPORTANT]
+> The results of hll(), hll_if(), and hll_merge() can be stored and later retrieved. For example, you may want to create a daily unique users summary, which can then be used to calculate weekly counts.
+> However, the precise binary representation of these results may change over time. There's no guarantee that these functions will produce identical results for identical inputs, and therefore we don't advise relying on them.
+
 ## Syntax
 
 `hll_merge` `(`*hll*`)`
