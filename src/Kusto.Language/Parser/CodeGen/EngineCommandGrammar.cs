@@ -4360,6 +4360,7 @@ namespace Kusto.Language.Parsing
                     Token("create", CompletionKind.CommandPrefix),
                     Token("entity_group"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Optional(Token("ifnotexists")),
                     RequiredToken("("),
                     Required(
                         OneOrMoreCommaList(
@@ -4368,7 +4369,7 @@ namespace Kusto.Language.Parsing
                                 fragment10)),
                         missing4),
                     RequiredToken(")"),
-                    new [] {CD(), CD(), CD("EntityGroupName", CompletionHint.None), CD(), CD(), CD()}));
+                    new [] {CD(), CD(), CD("EntityGroupName", CompletionHint.None), CD(isOptional: true), CD(), CD(), CD()}));
 
             var CreateStorageExternalTable = Command("CreateStorageExternalTable", 
                 Custom(
