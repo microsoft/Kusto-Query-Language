@@ -206,9 +206,9 @@ namespace Kusto.Language.Parsing
             var shape163 = CD("TableName", CompletionHint.None);
             var shape164 = CD("ExternalTableName", CompletionHint.ExternalTable);
             var shape165 = CD("Query", CompletionHint.Tabular);
-            var shape166 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD("TableKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
+            var shape166 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD("TableKind"), CD(), CD("StorageConnectionString", CompletionHint.Literal), CD(), CD(isOptional: true)};
             var shape167 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(CompletionHint.None), CD(), CD(), CD(), CD("TableKind"), CD(), CD(), CD(CompletionHint.None), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
-            var shape168 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(), CD("TableKind"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true)};
+            var shape168 = new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.None), CD(), CD(), CD("TableKind"), CD(), CD("StorageConnectionString", CompletionHint.Literal), CD(), CD(isOptional: true)};
             var shape169 = CD("WorkloadGroupName", CompletionHint.None);
             var shape170 = CD("WorkloadGroup", CompletionHint.Literal);
             var shape171 = new [] {CD(), CD(), CD("WorkloadGroupName", CompletionHint.None), CD("WorkloadGroup", CompletionHint.Literal)};
@@ -2481,13 +2481,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
@@ -2585,13 +2579,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
@@ -4116,13 +4104,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
@@ -4200,13 +4182,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
@@ -4458,13 +4434,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
@@ -4542,13 +4512,7 @@ namespace Kusto.Language.Parsing
                         RequiredToken("="),
                         RequiredToken("delta"),
                         RequiredToken("("),
-                        Required(
-                            OneOrMoreCommaList(
-                                Custom(
-                                    rules.StringLiteral,
-                                    shape36),
-                                fnMissingElement: rules.MissingStringLiteral),
-                            missing0),
+                        Required(rules.StringLiteral, rules.MissingStringLiteral),
                         RequiredToken(")"),
                         Optional(
                             fragment3)}
