@@ -3005,6 +3005,40 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoLineToS2Cells =
+            new FunctionSymbol("geo_line_to_s2cells",
+                ScalarTypes.DynamicArrayOfString,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
+                new Parameter("level", ParameterTypeKind.Number, minOccurring: 0),
+                new Parameter("radius", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoPolygonS2CellCoveringLevel =
+            new FunctionSymbol("__geo_polygon_s2cell_covering_level",
+                ScalarTypes.Int,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineS2CellCoveringLevel =
+            new FunctionSymbol("__geo_line_s2cell_covering_level",
+                ScalarTypes.Int,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLengthToS2CellLevel =
+            new FunctionSymbol("__geo_length_to_s2cell_level",
+                ScalarTypes.Int,
+                new Parameter("length", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonDensify =
             new FunctionSymbol("geo_polygon_densify", 
                 ScalarTypes.GeoShape,
@@ -3780,6 +3814,7 @@ namespace Kusto.Language
             GeoSimplifyPolygonsArray,
             GeoLinesUnion,
             GeoPolygonToS2Cells,
+            GeoPolygonS2CellCoveringLevel,
             GeoPolygonDensify,
             GeoPolygonArea,
             GeoPolygonBuffer,
@@ -3787,12 +3822,15 @@ namespace Kusto.Language
             GeoPolygonValidate,
             GeoPolygonPerimeter,
             GeoPolygonSimplify,
+            GeoLineS2CellCoveringLevel,
             GeoLineLength,
             GeoLineBuffer,
             GeoLineCentroid,
             GeoLineDensify,
             GeoLineSimplify,
             GeoLineValidate,
+            GeoLineToS2Cells,
+            GeoLengthToS2CellLevel,
             GeoPointToGeohash,
             GeohashToCentralPoint,
             GeohashToPolygon,
