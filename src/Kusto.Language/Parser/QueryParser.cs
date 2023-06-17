@@ -71,18 +71,39 @@ namespace Kusto.Language.Parsing
             return ParseFunctionParameters(TokenParser.ParseTokens(text, options), 0, options);
         }
 
+        public static FunctionParameter ParseFunctionParameter(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
+        {
+            return new QueryParser(tokens, start, options).ParseFunctionParameter();
+        }
+
+        public static FunctionParameter ParseFunctionParameter(string text, ParseOptions options = null)
+        {
+            return ParseFunctionParameter(TokenParser.ParseTokens(text, options), 0, options);
+        }
+
         public static FunctionBody ParseFunctionBody(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
             return new QueryParser(tokens, start, options).ParseFunctionBody();
-        }
-        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
-        {
-            return new QueryParser(tokens, start, options).ParseEntityGroup();
         }
 
         public static FunctionBody ParseFunctionBody(string text, ParseOptions options = null)
         {
             return ParseFunctionBody(TokenParser.ParseTokens(text, options), 0, options);
+        }
+
+        public static Expression ParseEntityPath(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
+        {
+            return new QueryParser(tokens, start, options).ParseEntityPathExpression();
+        }
+
+        public static Expression ParseEntityPath(string text, ParseOptions options = null)
+        {
+            return ParseEntityPath(TokenParser.ParseTokens(text, options), 0, options);
+        }
+
+        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
+        {
+            return new QueryParser(tokens, start, options).ParseEntityGroup();
         }
 
         public static EntityGroup ParseEntityGroup(string text, ParseOptions options = null)

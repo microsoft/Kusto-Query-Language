@@ -1530,6 +1530,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol CreateEntityGroupCommand =
             new CommandSymbol("CreateEntityGroupCommand", _schema40);
 
+        public static readonly CommandSymbol CreateOrAlterEntityGroupCommand =
+            new CommandSymbol("CreateOrAlterEntityGroupCommand", _schema40);
+
         public static readonly CommandSymbol AlterEntityGroup =
             new CommandSymbol("AlterEntityGroup", _schema40);
 
@@ -2323,6 +2326,7 @@ namespace Kusto.Language
             AlterFabricServiceAssignmentsCommand,
             DropFabricServiceAssignmentsCommand,
             CreateEntityGroupCommand,
+            CreateOrAlterEntityGroupCommand,
             AlterEntityGroup,
             AlterMergeEntityGroup,
             DropEntityGroup,
