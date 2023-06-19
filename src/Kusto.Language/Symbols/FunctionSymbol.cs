@@ -369,7 +369,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public FunctionSymbol Obsolete(string alternative)
         {
-            return WithIsObsolete(true, alternative);
+            return WithIsObsolete(true, alternative).Hide();
         }
 
         /// <summary>

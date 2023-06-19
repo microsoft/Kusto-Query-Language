@@ -119,8 +119,7 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("unicode_codepoints_from_string")
-            .Hide();
+            .Obsolete("unicode_codepoints_from_string");
 
         public static readonly FunctionSymbol UnicodeCodepointsFromString =
             new FunctionSymbol("unicode_codepoints_from_string", 
@@ -220,8 +219,7 @@ namespace Kusto.Language
                     new Parameter("source", ScalarTypes.String)))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("extract_all")
-            .Hide();
+            .Obsolete("extract_all");
 
         public static readonly FunctionSymbol ExtractAll =
             new FunctionSymbol("extract_all",
@@ -268,8 +266,7 @@ namespace Kusto.Language
                 new Parameter("source", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("replace_regex' or 'replace_string") // added ' for better message formatting
-            .Hide();
+            .Obsolete("replace_regex' or 'replace_string"); // added ' for better message formatting
 
         public static readonly FunctionSymbol ReplaceRegex =
             new FunctionSymbol("replace_regex", ScalarTypes.String,
@@ -293,7 +290,6 @@ namespace Kusto.Language
                new Parameter("lookups", ParameterTypeKind.DynamicArray),
                new Parameter("rewrites", ParameterTypeKind.DynamicArray))
            .WithResultNameKind(ResultNameKind.None)
-            .Hide() // Unhide on June-2023
            .ConstantFoldable();
 
         public static readonly FunctionSymbol TrimStart =
@@ -339,8 +335,7 @@ namespace Kusto.Language
                 new Parameter("value", ParameterTypeKind.IntegerOrArray, maxOccurring: MaxRepeat))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("unicode_codepoints_to_string")
-            .Hide();
+            .Obsolete("unicode_codepoints_to_string");
 
         public static readonly FunctionSymbol UnicodeCodepointsToString =
             new FunctionSymbol("unicode_codepoints_to_string",
@@ -377,8 +372,7 @@ namespace Kusto.Language
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument)
-            .Obsolete("todynamic")
-            .Hide();
+            .Obsolete("todynamic");
 
         public static readonly FunctionSymbol ToLong =
             new FunctionSymbol("tolong", 
@@ -426,7 +420,6 @@ namespace Kusto.Language
            new FunctionSymbol("totime", 
                ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
-           .Hide()
            .Obsolete("totimespan")
            .ConstantFoldable()
            .WithResultNameKind(ResultNameKind.FirstArgument);
@@ -491,7 +484,6 @@ namespace Kusto.Language
             new FunctionSymbol("base64_encodestring", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .Hide()
             .Obsolete("base64_encode_tostring")
             .WithResultNameKind(ResultNameKind.None);
 
@@ -505,7 +497,6 @@ namespace Kusto.Language
             new FunctionSymbol("base64_decodestring", ScalarTypes.String,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
-            .Hide()
             .Obsolete("base64_decode_tostring")
             .WithResultNameKind(ResultNameKind.None);
 
@@ -595,8 +586,7 @@ namespace Kusto.Language
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable()
-            .Obsolete("parse_json")
-            .Hide();
+            .Obsolete("parse_json");
 
         public static readonly FunctionSymbol ParseJson =
             new FunctionSymbol("parse_json", 
@@ -629,8 +619,7 @@ namespace Kusto.Language
                 new Parameter("url", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("parse_url")
-            .Hide();
+            .Obsolete("parse_url");
 
         public static readonly FunctionSymbol ParseUrl =
             new FunctionSymbol("parse_url",
@@ -649,8 +638,7 @@ namespace Kusto.Language
                 new Parameter("query", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("parse_urlquery")
-            .Hide();
+            .Obsolete("parse_urlquery");
 
         public static readonly FunctionSymbol ParseUrlQuery =
             new FunctionSymbol("parse_urlquery",
@@ -935,8 +923,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
-            .Obsolete("week_of_year")
-            .Hide();
+            .Obsolete("week_of_year");
 
         public static readonly FunctionSymbol WeekOfYearISO =
             new FunctionSymbol("week_of_year", ScalarTypes.Int,
@@ -1024,8 +1011,7 @@ namespace Kusto.Language
                 new Parameter("date", ScalarTypes.DateTime))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None)
-            .Obsolete("datetime_part")
-            .Hide();
+            .Obsolete("datetime_part");
 
         public static readonly FunctionSymbol DatetimePart =
             new FunctionSymbol("datetime_part", ScalarTypes.Int,
@@ -1106,13 +1092,15 @@ namespace Kusto.Language
             new FunctionSymbol("punycode_domain_from_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO: uncomment on June-25th 2023
 
         public static readonly FunctionSymbol PunycodeDomainEncode =
             new FunctionSymbol("punycode_domain_to_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None).Hide();
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // TODO: uncomment on June-25th 2023
 
         #endregion
 
@@ -1321,8 +1309,7 @@ namespace Kusto.Language
             new FunctionSymbol("notnull", ScalarTypes.Bool,
                 new Parameter("expression", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
-            .Obsolete("isnotnull")
-            .Hide();
+            .Obsolete("isnotnull");
 
         public static readonly FunctionSymbol IsNotNull =
             new FunctionSymbol("isnotnull", ScalarTypes.Bool,
@@ -1338,8 +1325,7 @@ namespace Kusto.Language
             new FunctionSymbol("notempty", ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
-            .Obsolete("isnotempty")
-            .Hide();
+            .Obsolete("isnotempty");
 
         public static readonly FunctionSymbol IsNotEmpty =
             new FunctionSymbol("isnotempty", ScalarTypes.Bool,
@@ -1372,8 +1358,7 @@ namespace Kusto.Language
                 new Parameter("column_name", ScalarTypes.String, ArgumentKind.Constant),
                 new Parameter("defaultValue", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.FirstArgumentValueIfColumn)
-            .Obsolete("column_ifexists")
-            .Hide();
+            .Obsolete("column_ifexists");
 
         public static readonly FunctionSymbol ColumnIfExists =
             new FunctionSymbol("column_ifexists", ReturnTypeKind.Parameter1,
@@ -1463,8 +1448,7 @@ namespace Kusto.Language
                 new Parameter("array", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
-            .Obsolete("array_length")
-            .Hide();
+            .Obsolete("array_length");
 
         public static readonly FunctionSymbol ArrayLength =
             new FunctionSymbol("array_length", ScalarTypes.Long,
@@ -1683,7 +1667,6 @@ namespace Kusto.Language
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
             .Obsolete("bag_pack")
-            .Hide()
             .ConstantFoldable();
 
         public static readonly FunctionSymbol PackDictionary =
@@ -1696,7 +1679,6 @@ namespace Kusto.Language
                 .WithLayout(ParameterLayouts.BlockRepeating))
             .WithResultNameKind(ResultNameKind.None)
             .Obsolete("bag_pack")
-            .Hide()
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagPack =
@@ -3287,8 +3269,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ExtentId2 =
             new FunctionSymbol("extentid", ScalarTypes.Guid)
-            .Obsolete("extent_id")
-            .Hide();
+            .Obsolete("extent_id");
 
         public static readonly FunctionSymbol ExtentTags =
             new FunctionSymbol("extent_tags", 
@@ -3318,8 +3299,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol CursorCurrent2 =
             new FunctionSymbol("current_cursor", ScalarTypes.String)
-            .Obsolete("cursor_current")
-            .Hide();
+            .Obsolete("cursor_current");
 
         public static readonly FunctionSymbol FormatBytes =
             new FunctionSymbol("format_bytes", ScalarTypes.String,
@@ -3345,8 +3325,7 @@ namespace Kusto.Language
                 new Parameter("column", ParameterTypeKind.NotDynamic),
                 new Parameter("dense", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .Obsolete("row_rank_dense")
-            .Hide();
+            .Obsolete("row_rank_dense");
 
         public static readonly FunctionSymbol RowRankMin =
             new FunctionSymbol("row_rank_min", ScalarTypes.Long,
