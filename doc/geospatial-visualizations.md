@@ -102,7 +102,7 @@ StormEvents
 | summarize count() by EventType, hash = geo_point_to_s2cell(BeginLon, BeginLat)
 | project geo_s2cell_to_central_point(hash), count_
 | extend Events = "count"
-| render piechart with (kind = map)
+| render piechart with (kind = map) // pie map rendering available only in Kusto Explorer desktop
 ```
 
 :::image type="content" source="images/geo-visualizations/storm-events-bubble.png" alt-text="Screenshot of storm events on a bubble map.":::

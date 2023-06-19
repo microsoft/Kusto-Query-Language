@@ -13,7 +13,7 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 
 ## Syntax
 
-*T* `|` `as` [`hint.materialized` `=` `true`] *Name*
+*T* `|` `as` [`hint.materialized` `=` *Materialized*] *Name*
 
 ## Parameters
 
@@ -21,7 +21,7 @@ To optimize multiple uses of the `as` operator within a single query, see [Named
 |--|--|--|--|
 |*T*| string | &check; | The tabular expression to rename.|
 | *Name*| string| &check; | The temporary name for the tabular expression.|
-| *`hint.materialized`*| bool |  | If set to `true`, the value of the tabular expression will be as if it was wrapped by a [materialize()](./materializefunction.md) function call.|
+| *`hint.materialized`*| bool |  | If *Materialized* is set to `true`, the value of the tabular expression will be as if it was wrapped by a [materialize()](./materializefunction.md) function call. Otherwise, the value will be recalculated on every reference.||
 
 > [!NOTE]
 >
