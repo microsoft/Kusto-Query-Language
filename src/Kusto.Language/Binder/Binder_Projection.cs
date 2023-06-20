@@ -26,7 +26,8 @@ namespace Kusto.Language.Binding
             Rename,
             Replace,
             Reorder,
-            Summarize
+            Summarize,
+            GraphMatch
         }
 
         /// <summary>
@@ -288,7 +289,7 @@ namespace Kusto.Language.Binding
                     default:
                         var rs = GetReferencedSymbol(expression);
                         col = GetResultColumn(expression);
-                        if (col != null)
+                        if (col != null && style != ProjectionStyle.GraphMatch)
                         {
                             // if the expression is a column reference, then consider it a declaration
                             builder.Declare(col.WithType(columnType ?? col.Type), diagnostics, expression, replace: style == ProjectionStyle.Replace);
@@ -336,6 +337,28 @@ namespace Kusto.Language.Binding
                         else if (GetResultType(expression) is GroupSymbol g)
                         {
                             diagnostics.Add(DiagnosticFacts.GetTheExpressionRefersToMoreThanOneColumn().WithLocation(expression));
+                        }
+                        else if (style == ProjectionStyle.GraphMatch)
+                        {
+                            var colName = GetGraphExpressionResultName(expression) ?? col?.Name;
+                            if (col == null)
+                            {
+                                type = GetResultTypeOrError(expression);
+                                if (!type.IsError && !type.IsScalar)
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetScalarTypeExpected().WithLocation(expression));
+                                    type = ScalarTypes.Unknown;
+                                }
+
+                                col = GetOrDeclareColumnForExpression(expression, colName, columnType ?? type);
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(colName))
+                            {
+                                col = col.WithName(colName);
+                            }
+
+                            builder.Add(col.WithType(columnType ?? col.Type));
                         }
                         else
                         {
@@ -682,6 +705,42 @@ namespace Kusto.Language.Binding
                 default:
                     return expression;
             }
+        }
+
+        /// <summary>
+        /// Gets the name that an expression will use for its column name in a graph projection.
+        /// </summary>
+        public static string GetGraphExpressionResultName(Expression expression)
+        {
+            if (expression == null)
+            {
+                return string.Empty;
+            }
+
+            Expression patternElementExpression;
+            Expression selector;
+            if (expression is PathExpression pathExpression)
+            {
+                patternElementExpression = pathExpression.Expression;
+                selector = pathExpression.Selector;
+            }
+            else if (expression is ElementExpression elementExpression)
+            {
+                patternElementExpression = elementExpression.Expression;
+                selector = elementExpression.Selector;
+            }
+            else
+            {
+                return GetExpressionResultName(expression);
+            }
+
+            var left = patternElementExpression.Kind == SyntaxKind.ElementExpression || patternElementExpression.Kind == SyntaxKind.PathExpression
+                ? GetGraphExpressionResultName(patternElementExpression)
+                : GetExpressionResultName(patternElementExpression);
+
+            var right = GetExpressionResultName(selector);    
+            
+            return !string.IsNullOrWhiteSpace(left) ? $"{left}_{right}" : right;
         }
     }
 }

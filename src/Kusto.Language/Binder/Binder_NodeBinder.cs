@@ -3499,7 +3499,7 @@ namespace Kusto.Language.Binding
 
                     if (node.ProjectClause != null)
                     {
-                        _binder.CreateProjectionColumns(node.ProjectClause.Expressions, builder, diagnostics);
+                        _binder.CreateProjectionColumns(node.ProjectClause.Expressions, builder, diagnostics, ProjectionStyle.GraphMatch);
                         symbol = new TableSymbol(builder.GetProjection());
                     }
                     else
