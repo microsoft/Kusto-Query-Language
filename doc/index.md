@@ -55,20 +55,20 @@ This query has a single tabular expression statement. The statement begins with 
 
 To try out some more Kusto queries, see [Tutorial: Write Kusto queries](tutorial.md).
 
-## Control commands
+## Management commands
 
-In contrast to Kusto queries, [Control commands](../management/index.md) are requests to Kusto to process or modify data or metadata. For example, the following control command creates a new Kusto table with two columns, `Level` and `Text`:
+In contrast to Kusto queries, [Management commands](../management/index.md) are requests to Kusto to process or modify data or metadata. For example, the following management command creates a new Kusto table with two columns, `Level` and `Text`:
 
 ```kusto
 .create table Logs (Level:string, Text:string)
 ```
 
-Control commands have their own syntax, which isn't part of the Kusto Query Language syntax, although the two share many concepts. In particular, control commands are distinguished from queries by having the first character in the text of the command be the dot (`.`) character (which can't start a query).
-This distinction prevents many kinds of security attacks, simply because it prevents embedding control commands inside queries.
+Management commands have their own syntax, which isn't part of the Kusto Query Language syntax, although the two share many concepts. In particular, management commands are distinguished from queries by having the first character in the text of the command be the dot (`.`) character (which can't start a query).
+This distinction prevents many kinds of security attacks, simply because it prevents embedding management commands inside queries.
 
-Not all control commands modify data or metadata. The large class of commands that start with `.show`, are used to display metadata or data. For example, the `.show tables` command returns a list of all tables in the current database.
+Not all management commands modify data or metadata. The large class of commands that start with `.show`, are used to display metadata or data. For example, the `.show tables` command returns a list of all tables in the current database.
 
-For more information on control commands, see [Management (control commands) overview](../management/index.md).
+For more information on management commands, see [Management commands overview](../management/index.md).
 
 ## Next steps
 

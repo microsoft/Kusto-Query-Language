@@ -92,7 +92,7 @@ Add `| render columnchart` to the query to visualize the result.
 :::image type="content" source="../images/kql-tutorials/damage-per-capita-chart.png" alt-text="Screenshot of column chart showing property damage per capita by state.":::
 
 > [!TIP]
-> There are many types of joins that you can perform with the `join` operator. See a [list of join flavors](../joinoperator.md#join-flavors).
+> There are many types of joins that you can perform with the `join` operator. See a [list of join flavors](../joinoperator.md#returns).
 
 ## Use the lookup operator
 

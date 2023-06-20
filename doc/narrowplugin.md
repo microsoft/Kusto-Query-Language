@@ -25,7 +25,7 @@ The plugin is invoked with the [`evaluate`](evaluateoperator.md) operator.
 ## Examples
 
 The following example shows an easy way to read the output of the Kusto
-`.show diagnostics` control command.
+`.show diagnostics` management command.
 
 ```kusto
 .show diagnostics
