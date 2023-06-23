@@ -302,8 +302,7 @@ Related functions:
 | Asia/Kuala\_Lumpur               |
 | Asia/Kuching                     |
 | Asia/Kuwait                      |
-| Asia/Macao                       |
-| Asia/Macau                       |
+| Asia/Macao Special Administrative Region                      |
 | Asia/Magadan                     |
 | Asia/Makassar                    |
 | Asia/Manila                      |
