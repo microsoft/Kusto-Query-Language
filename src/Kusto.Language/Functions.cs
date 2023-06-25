@@ -1092,15 +1092,13 @@ namespace Kusto.Language
             new FunctionSymbol("punycode_domain_from_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO: uncomment on June-25th 2023
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol PunycodeDomainEncode =
             new FunctionSymbol("punycode_domain_to_string", ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // TODO: uncomment on June-25th 2023
+            .WithResultNameKind(ResultNameKind.None);
 
         #endregion
 
