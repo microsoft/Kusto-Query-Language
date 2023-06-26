@@ -8,7 +8,7 @@ ms.date: 06/18/2023
 
 # rightouter join
 
-The `rightouter` join flavor returns all the records from the right side and only matching records from the left side. This join flavor resembles the [`rightouter` join flavor](join-rightouter.md), but the treatment of the tables is reversed.
+The `rightouter` join flavor returns all the records from the right side and only matching records from the left side. This join flavor resembles the [`leftouter` join flavor](join-leftouter.md), but the treatment of the tables is reversed.
 
 ## Syntax
 

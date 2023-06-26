@@ -20,7 +20,7 @@ find in (Table1, Table2, Table3) where Fruit=="apple"
 
 find in (database('*').*) where Fruit == "apple"
 
-find in (cluster('cluster_name').database('MyDB*'.*)) where Fruit == "apple"
+find in (cluster('cluster_name').database('MyDB*').*) where Fruit == "apple"
 ```
 
 ::: zone-end
