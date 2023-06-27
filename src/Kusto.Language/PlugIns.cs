@@ -394,8 +394,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol InferStorageSchema =
              new FunctionSymbol("infer_storage_schema",
-                 TableSymbol.From("(CslSchema: string)"),
-                 new Parameter("Options", ScalarTypes.DynamicBag));
+                 new TableSymbol(new ColumnSymbol("CslSchema", ScalarTypes.String)),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag));
 
         private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);

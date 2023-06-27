@@ -451,13 +451,21 @@ namespace Kusto.Language.Symbols
             || type == ScalarTypes.Dynamic;  // might be string or array of strings 
 
         /// <summary>
-        /// Returns true if the type is any integer, any dynamic integer or dynamic.
+        /// Returns true if the type is any integer, any dynamic integer, dynamic or dynamic array.
         /// </summary>
         public static bool IsIntegerOrArray(this Symbol type) =>
             type.IsInteger()
             || type == ScalarTypes.DynamicLong
             || type == ScalarTypes.DynamicArrayOfLong
             || type == ScalarTypes.DynamicArray
+            || type == ScalarTypes.Dynamic;
+
+        /// <summary>
+        /// Returns true if the type is any integer, any integer, dynamic integer or dynamic.
+        /// </summary>
+        public static bool IsIntegerOrDynamic(this Symbol type) =>
+            type.IsInteger()
+            || type == ScalarTypes.DynamicLong
             || type == ScalarTypes.Dynamic;
 
         /// <summary>

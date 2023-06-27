@@ -56,7 +56,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol StrcatArray =
             new FunctionSymbol("strcat_array", ScalarTypes.String,
-                new Parameter("array", ScalarTypes.DynamicArray),
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("delimiter", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();

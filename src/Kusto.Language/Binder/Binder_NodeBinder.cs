@@ -735,32 +735,53 @@ namespace Kusto.Language.Binding
                 {
                     return ErrorInfo;
                 }
-                else if (collectionType == ScalarTypes.Dynamic)
-                {
-                    if (!TypeFacts.IsInteger(indexerType) && !TypeFacts.IsStringOrDynamic(indexerType))
-                    {
-                        // must be a integer array index or a string member name index (dynamic okay?)
-                        return new SemanticInfo(ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
-                    }
-                    else
-                    {
-                        // you've successfully accessed an element of a dynamic value: you get another dynamic value.
-                        return new SemanticInfo(ScalarTypes.Dynamic);
-                    }
-                }
                 else if (collectionType is DynamicArraySymbol arrayType)
                 {
                     var elementType = ScalarTypes.GetDynamic(arrayType.ElementType);
 
-                    if (!TypeFacts.IsInteger(indexerType) && indexerType != ScalarTypes.Dynamic)
+                    if (!TypeFacts.IsIntegerOrDynamic(indexerType))
                     {
-                        // must be a integer array index
+                        // must be a integer array index (dynamic okay)
                         return new SemanticInfo(elementType, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long).WithLocation(selector.Expression));
                     }
                     else
                     {
                         // you've successfully accessed an element of the array.
                         return new SemanticInfo(elementType);
+                    }
+                }
+                else if (collectionType is DynamicBagSymbol bagType)
+                {
+                    if (!TypeFacts.IsStringOrDynamic(indexerType))
+                    {
+                        // must be a string member name index (dynamic okay)
+                        return new SemanticInfo(ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.String).WithLocation(selector.Expression));
+                    }
+                    else if (selector.Expression.ConstantValue is string name
+                            && bagType.TryGetProperty(name, out var prop))
+                    {
+                        // you've successfully accessed a known property of the dynamic bag
+                        // you get a dynamic version of whatever type the property is.
+                        return new SemanticInfo(ScalarTypes.GetDynamic(prop.Type));
+                    }
+                    else
+                    { 
+                        // you've successfully accessed an element of a dynamic value
+                        // you get another dynamic value.
+                        return new SemanticInfo(ScalarTypes.Dynamic);
+                    }
+                }
+                else if (collectionType == ScalarTypes.Dynamic)
+                {
+                    if (!TypeFacts.IsStringOrDynamic(indexerType) && !TypeFacts.IsIntegerOrDynamic(indexerType))
+                    {
+                        // must be a integer array index or a string member name index (dynamic okay)
+                        return new SemanticInfo(ScalarTypes.Dynamic, DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Int, ScalarTypes.Long, ScalarTypes.String).WithLocation(selector.Expression));
+                    }
+                    else
+                    {
+                        // you've successfully accessed an element of a dynamic value: you get another dynamic value.
+                        return new SemanticInfo(ScalarTypes.Dynamic);
                     }
                 }
                 else if (collectionType is TupleSymbol ts)
@@ -2820,7 +2841,7 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Element;
 
-                        _binder.CheckIsArrayOrDynamic(expr.Expression, diagnostics);
+                        _binder.CheckIsDynamic(expr.Expression, diagnostics);
                         
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
                             ?? TypeFacts.GetElementType(expr.Expression.ResultType)
@@ -2887,7 +2908,7 @@ namespace Kusto.Language.Binding
                     {
                         var expr = node.Expressions[i].Element;
 
-                        _binder.CheckIsArrayOrDynamic(expr.Expression, diagnostics);
+                        _binder.CheckIsDynamic(expr.Expression, diagnostics);
 
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
                             ?? TypeFacts.GetElementType(expr.Expression.ResultType)

@@ -1455,7 +1455,25 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool CheckIsArrayOrDynamic(Expression expression, List<Diagnostic> diagnostics)
+        /// <summary>
+        /// Checks if the expression is any dynamic type.
+        /// </summary>
+        private bool CheckIsDynamic(Expression expression, List<Diagnostic> diagnostics)
+        {
+            var type = GetResultTypeOrError(expression);
+
+            if (type is DynamicSymbol)
+                return true;
+
+            if (!type.IsError && type != ScalarTypes.Unknown)
+            {
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType(ScalarTypes.Dynamic).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        private bool CheckIsDynamicArray(Expression expression, List<Diagnostic> diagnostics)
         {
             var type = GetResultTypeOrError(expression);
 
@@ -1464,13 +1482,13 @@ namespace Kusto.Language.Binding
 
             if (!type.IsError && type != ScalarTypes.Unknown)
             {
-                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType<TypeSymbol>(ScalarTypes.DynamicArray, ScalarTypes.Dynamic).WithLocation(expression));
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeDynamicArray().WithLocation(expression));
             }
 
             return false;
         }
 
-        private bool CheckIsBagOrDynamic(Expression expression, List<Diagnostic> diagnostics)
+        private bool CheckIsDynamicBag(Expression expression, List<Diagnostic> diagnostics)
         {
             var type = GetResultTypeOrError(expression);
 
@@ -1479,7 +1497,7 @@ namespace Kusto.Language.Binding
 
             if (!type.IsError && type != ScalarTypes.Unknown)
             {
-                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveType<TypeSymbol>(DynamicBagSymbol.Empty, ScalarTypes.Dynamic).WithLocation(expression));
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustBeDynamicBag().WithLocation(expression));
             }
 
             return false;
@@ -2200,11 +2218,11 @@ namespace Kusto.Language.Binding
                             break;
 
                         case ParameterTypeKind.DynamicArray:
-                            CheckIsArrayOrDynamic(argument, diagnostics);
+                            CheckIsDynamicArray(argument, diagnostics);
                             break;
 
                         case ParameterTypeKind.DynamicBag:
-                            CheckIsBagOrDynamic(argument, diagnostics);
+                            CheckIsDynamicBag(argument, diagnostics);
                             break;
 
                         case ParameterTypeKind.Number:

@@ -866,6 +866,15 @@ namespace Kusto.Language
             return new Diagnostic("KS233", "The expression value must be a string or a dynamic array of strings.");
         }
 
+        public static Diagnostic GetExpressionMustBeDynamicArray()
+        {
+            return new Diagnostic("KS234", "The expression value must be a dynamic array.");
+        }
+
+        public static Diagnostic GetExpressionMustBeDynamicBag()
+        {
+            return new Diagnostic("KS235", "The expression must be a dynamic bag.");
+        }
 
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
