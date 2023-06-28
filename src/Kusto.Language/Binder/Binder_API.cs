@@ -661,87 +661,121 @@ namespace Kusto.Language.Binding
             IncludeFunctionKind include,
             List<Symbol> functions)
         {
+            switch (kind)
+            {
+                case ScopeKind.Aggregate:
+                    GetAggregateFunctionsInScope(name, include, functions);
+                    break;
+
+                case ScopeKind.PlugIn:
+                    GetFunctionsInPlugInScope(name, include, functions);
+                    break;
+
+                case ScopeKind.Option:
+                    break;
+
+                case ScopeKind.Normal:
+                default:
+                    GetFunctionsInNormalScope(name, include, functions);
+                    break;
+            }
+        }
+
+        private void GetAggregateFunctionsInScope(
+            string name,
+            IncludeFunctionKind include,
+            List<Symbol> functions)
+        {
+            if (_pathScope != null)
+                return;
+
+            if (name == null)
+            {
+                if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
+                {
+                    functions.AddRange(_globals.Aggregates);
+                }
+
+                GetFunctionsInNormalScope(name, include, functions);
+            }
+            else
+            {
+                if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
+                {
+                    var fn = _globals.GetAggregate(name);
+                    if (fn != null)
+                    {
+                        functions.Add(fn);
+                    }
+                }
+
+                if (functions.Count == 0)
+                {
+                    GetFunctionsInNormalScope(name, include, functions);
+                }
+            }
+        }
+
+        private void GetFunctionsInPlugInScope(
+            string name,
+            IncludeFunctionKind include,
+            List<Symbol> functions)
+        {
+            if (_pathScope != null)
+                return;
+
+            if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
+            {
+                if (name == null)
+                {
+                    functions.AddRange(_globals.PlugIns);
+                }
+                else
+                {
+                    var fn = _globals.GetPlugIn(name);
+                    if (fn != null)
+                    {
+                        functions.Add(fn);
+                    }
+                }
+            }
+        }
+
+        private void GetFunctionsInNormalScope(
+            string name,
+            IncludeFunctionKind include,
+            List<Symbol> functions)
+        {
             if (_pathScope != null)
             {
                 GetSpecialFunctions(name, functions);
             }
             else
             {
-                switch (kind)
+                if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
                 {
-                    case ScopeKind.Aggregate:
-                        if (name == null)
+                    if (name == null)
+                    {
+                        functions.AddRange(_globals.Functions);
+                    }
+                    else if (functions.Count == 0)
+                    {
+                        var fn = _globals.GetFunction(name);
+                        if (fn != null)
                         {
-                            if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
-                            {
-                                functions.AddRange(_globals.Aggregates);
-                            }
-
-                            GetFunctionsInScope(ScopeKind.Normal, name, include, functions);
+                            functions.Add(fn);
                         }
-                        else
-                        {
-                            if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
-                            {
-                                var fn = _globals.GetAggregate(name);
-                                if (fn != null)
-                                {
-                                    functions.Add(fn);
-                                }
-                            }
+                    }
+                }
 
-                            if (functions.Count == 0)
-                            {
-                                GetFunctionsInScope(ScopeKind.Normal, name, include, functions);
-                            }
-                        }
-                        break;
+                if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.LocalFunctions) != 0)
+                {
+                    GetLocalFunctionsInScope(name, functions);
+                }
 
-                    case ScopeKind.PlugIn:
-                        if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
-                        {
-                            if (name == null)
-                            {
-                                functions.AddRange(_globals.PlugIns);
-                            }
-                            else
-                            {
-                                var fn = _globals.GetPlugIn(name);
-                                if (fn != null)
-                                {
-                                    functions.Add(fn);
-                                }
-                            }
-                        }
-                        break;
-
-                    default:
-                        if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
-                        {
-                            if (name == null)
-                            {
-                                functions.AddRange(_globals.Functions);
-                            }
-                            else if (functions.Count == 0)
-                            {
-                                var fn = _globals.GetFunction(name);
-                                if (fn != null)
-                                {
-                                    functions.Add(fn);
-                                }
-                            }
-                        }
-
-                        if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.LocalFunctions) != 0)
-                        {
-                            GetLocalFunctionsInScope(name, functions);
-                        }
-
-                        if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.DatabaseFunctions) != 0 && _currentDatabase != null)
-                        {
-                            _currentDatabase.GetMembers(name, SymbolMatch.Function, functions);
-                        }
-                        break;
+                if ((name == null || functions.Count == 0) && (include & IncludeFunctionKind.DatabaseFunctions) != 0 && _currentDatabase != null)
+                {
+                    _currentDatabase.GetMembers(name, SymbolMatch.Function, functions);
                 }
             }
         }

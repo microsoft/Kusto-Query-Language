@@ -876,6 +876,16 @@ namespace Kusto.Language
             return new Diagnostic("KS235", "The expression must be a dynamic bag.");
         }
 
+        public static Diagnostic GetInvalidNameInAggregateContext(string name)
+        {
+            return new Diagnostic("KS236", $"The name '{name}' is not an aggregate or scalar function.");
+        }
+
+        public static Diagnostic GetInvalidNameInPlugInContext(string name)
+        {
+            return new Diagnostic("KS237", $"The name '{name}' is not a plug-in function.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -15,6 +15,66 @@ namespace Kusto.Language.Binding
     {
         private SemanticInfo BindName(string name, SymbolMatch match, SyntaxNode location, bool includeRowScope = true, bool inferColumns = true)
         {
+            switch (_scopeKind)
+            {
+                case ScopeKind.Normal:
+                default:
+                    return BindNameInNormalScope(name, match, location, includeRowScope, inferColumns);
+                case ScopeKind.Aggregate:
+                    return BindNameInAggregateScope(name, match, location);
+                case ScopeKind.Option:
+                    return BindNameInOptionScope(name, match, location);
+                case ScopeKind.PlugIn:
+                    return BindNameInPlugInScope(name, match, location);
+            }
+        }
+
+        private SemanticInfo BindNameInAggregateScope(string name, SymbolMatch match, SyntaxNode location)
+        {
+            var list = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                GetAggregateFunctionsInScope(name, IncludeFunctionKind.All, list);
+                return GetMatchingSymbolResult(name, location, list, false);
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private SemanticInfo BindNameInOptionScope(string name, SymbolMatch match, SyntaxNode location)
+        {
+            var list = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                var option = _globals.GetOption(name);
+                if (option != null)
+                    list.Add(option);
+                return GetMatchingSymbolResult(name, location, list, false);
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private SemanticInfo BindNameInPlugInScope(string name, SymbolMatch match, SyntaxNode location)
+        {
+            var list = s_symbolListPool.AllocateFromPool();
+            try
+            {
+                GetFunctionsInPlugInScope(name, IncludeFunctionKind.All, list);
+                return GetMatchingSymbolResult(name, location, list, false);
+            }
+            finally
+            {
+                s_symbolListPool.ReturnToPool(list);
+            }
+        }
+
+        private SemanticInfo BindNameInNormalScope(string name, SymbolMatch match, SyntaxNode location, bool includeRowScope, bool inferColumns)
+        {
             if (name == "")
                 return ErrorInfo;
 
@@ -71,7 +131,7 @@ namespace Kusto.Language.Binding
                         foreach (var s in grp.Members)
                         {
                             _pathScope = s;
-                            var alz = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                            var alz = GetMatchingSymbolsInNormalScope(name, match, location, list, includeRowScope, inferColumns);
                             allowZeroArgumentInvocation |= alz;
                         }
                         _pathScope = savePathScope;
@@ -93,7 +153,7 @@ namespace Kusto.Language.Binding
 
                 if (list.Count == 0)
                 {
-                    allowZeroArgumentInvocation = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                    allowZeroArgumentInvocation = GetMatchingSymbolsInNormalScope(name, match, location, list, includeRowScope, inferColumns);
                 }
 
                 return GetMatchingSymbolResult(name, location, list, allowZeroArgumentInvocation);
@@ -137,7 +197,7 @@ namespace Kusto.Language.Binding
                         foreach (var s in grp.Members)
                         {
                             _pathScope = s;
-                            var _ = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                            var _ = GetMatchingSymbolsInNormalScope(name, match, location, list, includeRowScope, inferColumns);
                         }
                         _pathScope = savePathScope;
 
@@ -155,7 +215,7 @@ namespace Kusto.Language.Binding
 
                 if (list.Count == 0)
                 {
-                    var _ = GetMatchingSymbols(name, match, location, list, includeRowScope, inferColumns);
+                    var _ = GetMatchingSymbolsInNormalScope(name, match, location, list, includeRowScope, inferColumns);
                 }
 
                 return list.Count > 0;
@@ -322,7 +382,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private bool GetMatchingSymbols(string name, SymbolMatch match, SyntaxNode location, List<Symbol> list, bool includeRowScope, bool inferColumns)
+        private bool GetMatchingSymbolsInNormalScope(string name, SymbolMatch match, SyntaxNode location, List<Symbol> list, bool includeRowScope, bool inferColumns)
         {
             var allowZeroArgumentInvocation = false;
 
@@ -353,7 +413,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                    GetFunctionsInNormalScope(name, IncludeFunctionKind.All, list);
                 }
             }
             else
@@ -529,6 +589,24 @@ namespace Kusto.Language.Binding
             }
             else if (matches.Count == 0)
             {
+                if (_scopeKind != ScopeKind.Normal)
+                {
+                    GetMatchingSymbolsInNormalScope(name, SymbolMatch.Any, location, matches, true, true);
+                    if (matches.Count > 0)
+                    {
+                        switch (_scopeKind)
+                        {
+                            case ScopeKind.Aggregate:
+                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetInvalidNameInAggregateContext(name).WithLocation(location));
+                            case ScopeKind.PlugIn:
+                                return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetInvalidNameInPlugInContext(name).WithLocation(location));
+                            case ScopeKind.Option:
+                                // invalid option names do not produce an error
+                                return null;
+                        }
+                    }
+                }
+
                 if (IsFunctionCallName(location))
                 {
                     if (_globals.GetAggregate(name) != null && _scopeKind != ScopeKind.Aggregate)
@@ -613,12 +691,10 @@ namespace Kusto.Language.Binding
                             DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(name).WithLocation(location));
                     }
                 }
-                else
-                {
-                    return new SemanticInfo(
-                        ErrorSymbol.Instance,
-                        DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
-                }
+
+                return new SemanticInfo(
+                    ErrorSymbol.Instance,
+                    DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(name).WithLocation(location));
             }
             else
             {
