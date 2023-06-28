@@ -30,7 +30,7 @@ between the two.
 
 For `native` and `shuffle` strategy, the source of the subquery is implicit, and can't be referenced by the subquery. This strategy supports a limited set of operators: `project`, `sort`, `summarize`, `take`, `top`, `order`, `mv-expand`, `mv-apply`, `make-series`, `limit`, `extend`, `distinct`, `count`, `project-away`, `project-keep`, `project-rename`, `project-reorder`, `parse`, `parse-where`, `reduce`, `sample`, `sample-distinct`, `scan`, `search`, `serialize`, `top-nested`, `top-hitters` and `where`.
 
-Operators like `join`, `union`, `external_data`, `plugins`, or any other operator that involves table source that isn't the subtable partitions, aren't allowed.
+Operators like `join`, `union`, `external_data`, `evaluate` (plugins), or any other operator that involves table source that isn't the subtable partitions, aren't allowed.
 
 ## Legacy strategy
 

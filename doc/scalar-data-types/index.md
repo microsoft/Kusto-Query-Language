@@ -24,7 +24,7 @@ additional aliases you can use to refer to them and a roughly equivalent
 
 | Type       | Additional name(s)   | Equivalent .NET type              | gettype()   |
 | ---------- | -------------------- | --------------------------------- | ----------- |
-| `bool`     | `boolean`            | `System.Boolean`                  | `int8`      |
+| `bool`     | `boolean`            | `System.Boolean`                  | `bool`      |
 | `datetime` | `date`               | `System.DateTime`                 | `datetime`  |
 | `dynamic`  |                      | `System.Object`                   | `array` or `dictionary` or any of the other values |
 | `guid`     |                      | `System.Guid`                     | `guid`      |

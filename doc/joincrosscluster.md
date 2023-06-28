@@ -3,7 +3,7 @@ title:  Cross-cluster join
 description: Learn how to perform the Cross-cluster join operation to join datasets residing on different clusters.
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 04/11/2023
+ms.date: 06/27/2023
 zone_pivot_group_filename: data-explorer/zone-pivot-groups.json
 zone_pivot_groups: kql-flavors-all
 ---
@@ -33,21 +33,21 @@ the join operation isn't a cross-cluster join because both its operands originat
 
 When Kusto encounters a cross-cluster join, it will automatically decide where to execute the join operation itself. This decision can have one of the three possible outcomes:
 
-* Execute join operation on the cluster of the left operand, right operand will be first fetched by this cluster. (join in example **(1)** will be executed on the local cluster)
-* Execute join operation on the cluster of the right operand, left operand will be first fetched by this cluster. (join in example **(2)** will be executed on the "SomeCluster2")
-* Execute join operation locally (meaning on the cluster that received the query), both operands will be first fetched by the local cluster.
+* Execute join operation on the cluster of the left operand. The right operand is first fetched by this cluster. (join in example **(1)** will be executed on the local cluster)
+* Execute join operation on the cluster of the right operand. The left operand is first fetched by this cluster. (join in example **(2)** will be executed on the "SomeCluster2")
+* Execute join operation locally (meaning on the cluster that received the query). Both operands are first fetched by the local cluster.
 
 The actual decision depends on the specific query. The automatic join remoting strategy is (simplified version):
 "If one of the operands is local, join will be executed locally. If both operands are remote, join will be executed on the cluster of the right operand".
 
-Sometimes the performance of the query can be improved if automatic remoting strategy is not followed. In this case, execute join operation on the cluster of the largest operand.
+Sometimes the performance of the query can be improved if automatic remoting strategy isn't followed. In this case, execute join operation on the cluster of the largest operand.
 
-If in example **(1)** the dataset produced by `T | ...` is much smaller than one produced by `cluster("SomeCluster").database("SomeDB").T2 | ...`, it is more efficient to execute join operation on "SomeCluster".
+"Example 1" is set to run on the local cluster, but if the dataset produced by `T | ...` is smaller than one produced by `cluster("SomeCluster").database("SomeDB").T2 | ...` then it would be more efficient to execute the join operation on `SomeCluster` instead of on the local cluster.
 
-This operation can be done by giving Kusto join remoting hint. The syntax is:
+To execute the join on `SomeCluster`, specify the remote strategy as `right`. Then, the cluster will execute the join on the right cluster even if the left cluster is the local cluster.
 
 ```kusto
-T | ... | join hint.remote=<strategy> (cluster("SomeCluster").database("SomeDB").T2 | ...) on Col1
+T | ... | join hint.remote=right (cluster("SomeCluster").database("DB").T2 | ...) on Col1
 ```
 
 Following are legal values for `strategy`:
