@@ -1,6 +1,6 @@
 ---
 title:  Query best practices 
-description: This article describes Query best practices  in Azure Data Explorer.
+description: This article describes Query best practices in Azure Data Explorer.
 ms.reviewer: alexans
 ms.topic: reference
 ms.date: 12/12/2021
@@ -15,6 +15,8 @@ Here are several best practices to follow to make your query run faster.
 | Action | Use | Don't use | Notes |
 |--|--|--|--|
 | **Reduce the amount of data being queried** | Use mechanisms such as the `where` operator to reduce the amount of data being processed. |  | See below for efficient ways to reduce the amount of data being processed. |
+| **Avoid using redundant qualified references** | When referencing local entities, use the unqualified name. | | See below for more on the subject. |
+| **`datetime` columns** | Use the `datetime` data type. | Don't use the `long` data type. | In queries, don't use unix time conversion functions, such as `unixtime_milliseconds_todatetime()`. Instead, use update policies to convert unix time to the `datetime` data type during ingestion. |
 | **String operators** | Use the `has` operator | Don't use `contains` | When looking for full tokens, `has` works better, since it doesn't look for substrings. |
 | **Case-sensitive operators** | Use `==` | Don't use  `=~` | Use case-sensitive operators when possible. |
 |  | Use `in` | Don't use `in~` |
@@ -88,3 +90,22 @@ In order of importance:
 * Last, for queries that scan a table column's data (for example, for predicates such as
   `contains "@!@!" that have no terms and don't benefit from indexing), order the predicates such that the ones
   that scan columns with less data will be first. This reduces the need to decompress and scan large columns.
+
+## Avoid using redundant qualified references
+
+Entities such as tables and materialized views are referenced by name.
+For example, the table `T` can be referenced as simply `T` (the *unqualified* name),
+or by using a database qualifier (e.g. `database("DB").T` when the table is in
+a database called `DB`), or by using a fully-qualified name (e.g. `cluster("X.Y.kusto.windows.net").database("DB").T`).
+
+It is a best practice to avoid using name qualifications when they are redundant, for the following reasons:
+
+1. Unqualified names are easier to identify (for a human reader) as belonging to the database-in-scope.
+
+1. Referencing database-in-scope entities is always at least as fast, and in some cases much faster, then entities that belong to other databases
+   (especially when those databases are in a different cluster.) Avoiding qualified names helps the reader to do the right thing.
+
+> [!NOTE]
+> This is not to say that qualified names are bad for performance. In fact, Kusto is able in most cases to identify when a fully qualified name
+> references an entity belonging to the database-in-scope and "short-circuit" the query so that it is not regarded as a cross-cluster query.
+> However, we do recommend to not rely on this when not necessary, for the reasons specified above.

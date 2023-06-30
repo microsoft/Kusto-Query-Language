@@ -3,7 +3,7 @@ title:  rightsemi join
 description: Learn how to use the rightsemi join flavor to merge the rows of two tables. 
 ms.reviewer: alexans
 ms.topic: reference
-ms.date: 06/18/2023
+ms.date: 06/29/2023
 ---
 
 # rightsemi join
@@ -18,7 +18,7 @@ The `rightsemi` join flavor returns all records from the right side that match a
 
 ## Returns
 
-**Schema**: All columns from the left table.  
+**Schema**: All columns from the right table.  
 **Rows**: All records from the right table that match records from the left table.
 
 ## Example
@@ -46,8 +46,8 @@ X | join kind=rightsemi Y on Key
 
 **Output**
 
-|Key|Value1|
-|---|---|
-|b|2|
-|b|3|
-|c|4|
+| Key | Value2 |
+|--|--|
+| b | 10 |
+| c | 20 |
+| c | 30 |
