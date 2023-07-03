@@ -594,11 +594,20 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterClusterPolicyIngestionBatching =
             new CommandSymbol("AlterClusterPolicyIngestionBatching", _schema20);
 
+        public static readonly CommandSymbol AlterMergeClusterPolicyIngestionBatching =
+            new CommandSymbol("AlterMergeClusterPolicyIngestionBatching", _schema20);
+
         public static readonly CommandSymbol AlterDatabasePolicyIngestionBatching =
             new CommandSymbol("AlterDatabasePolicyIngestionBatching", _schema20);
 
+        public static readonly CommandSymbol AlterMergeDatabasePolicyIngestionBatching =
+            new CommandSymbol("AlterMergeDatabasePolicyIngestionBatching", _schema20);
+
         public static readonly CommandSymbol AlterTablePolicyIngestionBatching =
             new CommandSymbol("AlterTablePolicyIngestionBatching", _schema20);
+
+        public static readonly CommandSymbol AlterMergeTablePolicyIngestionBatching =
+            new CommandSymbol("AlterMergeTablePolicyIngestionBatching", _schema20);
 
         public static readonly CommandSymbol AlterTablesPolicyIngestionBatching =
             new CommandSymbol("AlterTablesPolicyIngestionBatching", _schema20);
@@ -2030,8 +2039,11 @@ namespace Kusto.Language
             ShowTablePolicyIngestionBatching,
             ShowTableStarPolicyIngestionBatching,
             AlterClusterPolicyIngestionBatching,
+            AlterMergeClusterPolicyIngestionBatching,
             AlterDatabasePolicyIngestionBatching,
+            AlterMergeDatabasePolicyIngestionBatching,
             AlterTablePolicyIngestionBatching,
+            AlterMergeTablePolicyIngestionBatching,
             AlterTablesPolicyIngestionBatching,
             DeleteDatabasePolicyIngestionBatching,
             DeleteTablePolicyIngestionBatching,
