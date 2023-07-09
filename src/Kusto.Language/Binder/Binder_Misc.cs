@@ -545,32 +545,38 @@ namespace Kusto.Language.Binding
             var edgeTuple = graphScope != null ? new TupleSymbol(graphScope.EdgeShape.Columns, graphScope.EdgeShape) : TupleSymbol.Empty;
             var nodeTuple = graphScope?.NodeShape != null ? new TupleSymbol(graphScope.NodeShape.Columns, graphScope.NodeShape) : TupleSymbol.Empty;
 
-            foreach (var notation in graphMatch.Pattern)
+            foreach (var pattern in graphMatch.Patterns)
             {
-                if (notation is GraphMatchPatternNode node && node.Name != null)
+                foreach (var notation in pattern.Element)
                 {
-                    var local = new VariableSymbol(node.Name.SimpleName, nodeTuple);
-                    SetSemanticInfo(node.Name, new SemanticInfo(local, nodeTuple));
-                }
-                else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
-                {
-                    var local = new VariableSymbol(edge.Name.SimpleName, edgeTuple);
-                    SetSemanticInfo(edge.Name, new SemanticInfo(local, edgeTuple));
+                    if (notation is GraphMatchPatternNode node && node.Name != null)
+                    {
+                        var local = new VariableSymbol(node.Name.SimpleName, nodeTuple);
+                        SetSemanticInfo(node.Name, new SemanticInfo(local, nodeTuple));
+                    }
+                    else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
+                    {
+                        var local = new VariableSymbol(edge.Name.SimpleName, edgeTuple);
+                        SetSemanticInfo(edge.Name, new SemanticInfo(local, edgeTuple));
+                    }
                 }
             }
         }
 
         private void AddGraphMatchPatternDeclarationsToLocalScope(GraphMatchOperator graphMatch)
         {
-            foreach (var notation in graphMatch.Pattern)
+            foreach (var pattern in graphMatch.Patterns)
             {
-                if (notation is GraphMatchPatternNode node && node.Name != null)
+                foreach (var notation in pattern.Element)
                 {
-                    AddDeclarationToLocalScope(node.Name);
-                }
-                else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
-                {
-                    AddDeclarationToLocalScope(edge.Name);
+                    if (notation is GraphMatchPatternNode node && node.Name != null)
+                    {
+                        AddDeclarationToLocalScope(node.Name);
+                    }
+                    else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
+                    {
+                        AddDeclarationToLocalScope(edge.Name);
+                    }
                 }
             }
         }

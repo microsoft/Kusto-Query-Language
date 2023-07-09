@@ -886,6 +886,11 @@ namespace Kusto.Language
             return new Diagnostic("KS237", $"The name '{name}' is not a plug-in function.");
         }
 
+        public static Diagnostic GetMissingGraphMatchPatternElement()
+        {
+            return new Diagnostic("KS238", "Missing graph-match pattern element.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

@@ -2774,18 +2774,25 @@ namespace Kusto.Language.Parsing
                     GraphMatchPatternNode,
                     GraphMatchPatternEdge);
 
+            var GraphMatchPatternClause =
+                CommaList(
+                    List(GraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, oneOrMore: true)
+                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"), new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
+                    CreateMissingGraphMatchPattern,
+                    oneOrMore: true,
+                    endKinds: new[] { SyntaxKind.WhereKeyword, SyntaxKind.ProjectKeyword }
+                ).WithTag("<graph-match-pattern-clause>");
+
             var GraphMatchOperator =
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword).Hide(),
                     QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true),
-                    List(GraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, oneOrMore: true)
-                        .WithCompletion(
-                            new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"),
-                            new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
+                    GraphMatchPatternClause,
                     Optional(WhereClause),
                     Optional(ProjectClause),
-                    (keyword, parameters, pattern, whereClause, projectClause) =>
-                        (QueryOperator)new GraphMatchOperator(keyword, parameters, pattern, whereClause, projectClause));
+                    (keyword, parameters, patterns, whereClause, projectClause) =>
+                        (QueryOperator)new GraphMatchOperator(keyword, parameters, patterns, whereClause, projectClause))
+                .WithTag("<graph-match-operator>");
 
             var PrePipeQueryOperator =
                 First(
@@ -3524,7 +3531,13 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
-                new[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
+                new[] { DiagnosticFacts.GetMissingGraphMatchPatternElement() });
+
+        private static SyntaxList<GraphMatchPatternNotation> CreateMissingGraphMatchPattern(Source<LexicalToken> source, int start) =>
+            new SyntaxList<GraphMatchPatternNotation>(
+                new[] { CreateMissingGraphMatchPatternNotation(source, start) },
+                new[] { DiagnosticFacts.GetMissingGraphMatchPattern() }
+            );
 
         private static GraphToTableOutputClause CreateMissingGraphToTableOutputClause(Source<LexicalToken> source, int start) =>
             new GraphToTableOutputClause(

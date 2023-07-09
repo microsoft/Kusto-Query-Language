@@ -10517,7 +10517,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxList<NamedParameter> Parameters { get; }
         
-        public SyntaxList<GraphMatchPatternNotation> Pattern { get; }
+        public SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>> Patterns { get; }
         
         public WhereClause WhereClause { get; }
         
@@ -10526,11 +10526,11 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="GraphMatchOperator"/>.
         /// </summary>
-        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<GraphMatchPatternNotation> pattern, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>> patterns, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.GraphMatchKeyword = Attach(graphMatchKeyword);
             this.Parameters = Attach(parameters);
-            this.Pattern = Attach(pattern);
+            this.Patterns = Attach(patterns);
             this.WhereClause = Attach(whereClause, optional: true);
             this.ProjectClause = Attach(projectClause, optional: true);
             this.Init();
@@ -10544,7 +10544,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return GraphMatchKeyword;
                 case 1: return Parameters;
-                case 2: return Pattern;
+                case 2: return Patterns;
                 case 3: return WhereClause;
                 case 4: return ProjectClause;
                 default: throw new ArgumentOutOfRangeException();
@@ -10557,7 +10557,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return nameof(GraphMatchKeyword);
                 case 1: return nameof(Parameters);
-                case 2: return nameof(Pattern);
+                case 2: return nameof(Patterns);
                 case 3: return nameof(WhereClause);
                 case 4: return nameof(ProjectClause);
                 default: throw new ArgumentOutOfRangeException();
@@ -10600,7 +10600,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<GraphMatchPatternNotation>)Pattern?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>>)Patterns?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class GraphMatchOperator */
