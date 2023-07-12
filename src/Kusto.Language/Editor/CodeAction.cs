@@ -275,6 +275,11 @@ namespace Kusto.Language.Editor
             this.Changes = changes;
             this.ChangedText = changedText;
         }
+
+        public ChangeTextAction(EditString editString)
+            : this(editString.GetChanges(), editString.CurrentText)
+        {
+        }
     }
 
     /// <summary>
@@ -357,10 +362,16 @@ namespace Kusto.Language.Editor
             return ChangeAndMove(changedText.GetChanges(), changedText.CurrentText, newCaretPosition);
         }
 
-        public static CodeActionResult Failure(string failureReason)
+        public static CodeActionResult Failure(string failureReason = null)
         {
+            if (failureReason == null)
+                return Failed;
             return new CodeActionResult(null, failureReason);
         }
+
+        private static readonly CodeActionResult Failed = 
+            CodeActionResult.Failure("Action failed");
+
 
         public CodeActionResult WithAction(ResultAction action)
         {
@@ -393,7 +404,7 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// A <see cref="CodeActionResult"/> where nothing happens.
+        /// A <see cref="CodeActionResult"/> with no actions.
         /// </summary>
         public static readonly CodeActionResult Nothing = new CodeActionResult(EmptyReadOnlyList<ResultAction>.Instance);
     }

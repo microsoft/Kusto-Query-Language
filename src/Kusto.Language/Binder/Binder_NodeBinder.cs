@@ -3378,6 +3378,14 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitMacroExpandScopeReferenceName(MacroExpandScopeReferenceName node)
             {
+                // set symbol for scope reference declaration
+                if (node.Parent is MacroExpandOperator macroExpand
+                    && macroExpand.EntityGroup?.ResultType is EntityGroupSymbol entityGroup)
+                {
+                    var scopeSymbol = GetMacroExpandScope(node.EntityGroupReferenceName.SimpleName, entityGroup);
+                    _binder.SetSemanticInfo(node.EntityGroupReferenceName, new SemanticInfo(scopeSymbol, scopeSymbol));
+                }
+
                 return null;
             }
 

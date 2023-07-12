@@ -63,10 +63,20 @@ namespace Kusto.Language.Editor
             return node;
         }
 
+        public static void AdjustRangeToNode(KustoCode code, ref int start, ref int length)
+        {
+            var node = GetNodeInRange(code, start, length);
+            if (node != null)
+            {
+                start = node.TextStart;
+                length = node.End - node.TextStart;
+            }
+        }
+
         /// <summary>
         /// Adjusts the range to not include the leading and trailing trivia between tokens.
         /// </summary>
-        public static void TrimRange(KustoCode code, ref int start, ref int length)
+        public static void TrimRangeTrivia(KustoCode code, ref int start, ref int length)
         {
             var expectedEnd = start + length;
 
@@ -94,7 +104,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         public static bool TryGetAdjustedSubqueryRange(KustoCode code, ref int start, ref int length)
         {
-            TrimRange(code, ref start, ref length);
+            TrimRangeTrivia(code, ref start, ref length);
 
             if (code.Syntax.GetNodeAt(start, length) is Expression ex)
             {
@@ -300,6 +310,81 @@ namespace Kusto.Language.Editor
         public static bool IsFunctionBodyExpression(SyntaxNode node)
         {
             return node.Parent is FunctionBody fb && fb.Expression == node;
+        }
+
+        /// <summary>
+        /// Gets a part of an entity expression given a syntax element.
+        /// Returns null if the element is not part of an entity expression.
+        /// </summary>
+        public static Expression GetEntityExpressionPart(SyntaxElement element)
+        {
+            if (element is SyntaxToken token)
+            {
+                element = token.Parent;
+            }
+
+            if (element.Parent is Name name)
+                element = name;
+
+            if (element.Parent is NameReference nameRef)
+                element = nameRef;
+
+            if (element is Expression expr)
+            {
+                if (expr.ReferencedSymbol is TableSymbol
+                    || expr.ReferencedSymbol is EntityGroupElementSymbol)
+                {
+                    return expr;
+                }
+                else if (expr.Parent is FunctionCallExpression fc
+                    && fc.ReferencedSymbol is FunctionSymbol fs
+                    && (fs == Functions.Table || fs == Functions.Database || fs == Functions.Cluster))
+                {
+                    return fc;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the portion of the entity expression from the start of the full entity expression
+        /// up to and including the specified element.
+        /// </summary>
+        public static Expression GetEntityExpressionStart(SyntaxElement element)
+        {
+            if (GetEntityExpressionPart(element) is Expression expr)
+            {
+                var end = expr.End;
+
+                while (expr.Parent is PathExpression parentPath
+                    && parentPath.End <= end)
+                {
+                    expr = parentPath;
+                }
+
+                return expr;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the full entity expression given a part of it
+        /// </summary>
+        public static Expression GetEntityExpression(SyntaxElement element)
+        {
+            if (GetEntityExpressionPart(element) is Expression expr)
+            {
+                while (expr.Parent is PathExpression parentPath)
+                {
+                    expr = parentPath;
+                }
+
+                return expr;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -532,6 +617,49 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
+        /// Changes the whitespace at the beginning of the lines in the text range by the specified amount of spaces.
+        /// Negative delta removes whitespace.
+        /// </summary>
+        public static EditString IndentText(EditString text, int rangeStart, int rangeLength, int indentationDelta, bool includeFirstLine = true)
+        {
+            var edits = new List<TextEdit>();
+
+            var indentation = 
+                indentationDelta == 0 ? ""
+                : indentationDelta > 0 ? new string(' ', indentationDelta)
+                : (string)null;
+
+            var lineStart = rangeStart;
+            if (!includeFirstLine)
+            {
+                var lineLength = TextFacts.GetLineLength(text, lineStart, includeLineBreak: true);
+                lineStart += lineLength;
+            }
+
+            var end = rangeStart + rangeLength;
+            while (lineStart < end)
+            {
+                var lineLength = TextFacts.GetLineLength(text, lineStart, includeLineBreak: true);
+                var wsLength = TokenParser.ScanWhitespace(text, lineStart);
+
+                if (indentationDelta >= 0)
+                {
+                    edits.Add(TextEdit.Insertion(lineStart, indentation));
+                }
+                else
+                {
+                    var len = Math.Min(wsLength, -indentationDelta);
+                    edits.Add(TextEdit.Deletion(lineStart, len));
+                }
+
+                lineStart += lineLength;
+            }
+
+            return text.ApplyAll(edits);
+        }
+
+
+        /// <summary>
         /// Add data items to <see cref="CodeAction"/>
         /// </summary>
         public static CodeAction AddData(CodeAction action, IReadOnlyList<string> data)
@@ -575,6 +703,44 @@ namespace Kusto.Language.Editor
             {
                 return action;
             }
+        }
+
+        /// <summary>
+        /// Inserts open and close brackets at the specified positions and indent the interior text.
+        /// </summary>
+        public static EditString InsertBrackets(
+            this EditString text,
+            int openPosition,
+            string prefixText,           
+            string openBracketText,
+            int closePosition,
+            string closeBracketText,
+            FormattingOptions options)
+        {
+            EditString textWithBrackets;
+
+            var indentation = TextFacts.GetIndentationText(text, openPosition);
+
+            if (options.BrackettingStyle == BrackettingStyle.Diagonal)
+            {
+                textWithBrackets = text.ApplyAll(
+                    TextEdit.Insertion(openPosition, prefixText + " " + openBracketText + "\n"),
+                    TextEdit.Insertion(closePosition, "\n" + indentation + closeBracketText + "\n"));
+            }
+            else
+            {
+                textWithBrackets = text.ApplyAll(
+                    TextEdit.Insertion(openPosition, prefixText + "\n" + indentation + openBracketText + "\n"),
+                    TextEdit.Insertion(closePosition, "\n" + indentation + closeBracketText + "\n"));
+            }
+
+            var interiorStart = textWithBrackets.GetCurrentPosition(openPosition, PositionBias.Right);
+            var interiorEnd = textWithBrackets.GetCurrentPosition(closePosition, PositionBias.Left);
+            var interiorLength = interiorEnd - interiorStart;
+
+            var textWithInteriorIndentation = IndentText(textWithBrackets, interiorStart, interiorLength, options.IndentationSize);
+
+            return textWithInteriorIndentation;
         }
     }
 }

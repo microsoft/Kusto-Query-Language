@@ -8405,12 +8405,12 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken AsKeyword { get; }
         
-        public Name EntityGroupReferenceName { get; }
+        public NameDeclaration EntityGroupReferenceName { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="MacroExpandScopeReferenceName"/>.
         /// </summary>
-        internal MacroExpandScopeReferenceName(SyntaxToken asKeyword, Name entityGroupReferenceName, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal MacroExpandScopeReferenceName(SyntaxToken asKeyword, NameDeclaration entityGroupReferenceName, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.AsKeyword = Attach(asKeyword);
             this.EntityGroupReferenceName = Attach(entityGroupReferenceName);
@@ -8460,7 +8460,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MacroExpandScopeReferenceName((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (Name)EntityGroupReferenceName?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new MacroExpandScopeReferenceName((SyntaxToken)AsKeyword?.Clone(includeDiagnostics), (NameDeclaration)EntityGroupReferenceName?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MacroExpandScopeReferenceName */

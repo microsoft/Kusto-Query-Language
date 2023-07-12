@@ -2622,7 +2622,7 @@ namespace Kusto.Language.Parsing
             var macroExpandScopeReferenceName =
                 Rule(
                     RequiredToken(SyntaxKind.AsKeyword),
-                    First(IdentifierName),
+                    IdentifierNameDeclaration,
                     (asKeyword, macroReferenceName) => new MacroExpandScopeReferenceName(asKeyword, macroReferenceName));
 
             var MacroExpandOperator =

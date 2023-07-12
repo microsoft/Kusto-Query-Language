@@ -241,22 +241,21 @@ namespace Kusto.Language.Binding
             {
                 node.Parameters.Accept(this);
                 node.EntityGroup.Accept(this);
+                node.ScopeReferenceName?.Accept(this);
 
-                if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol)
+                // put entity group scope reference symbol into scope...
+                if (node.ScopeReferenceName?.EntityGroupReferenceName?.ReferencedSymbol is EntityGroupElementSymbol scopeSymbol)
                 {
-                    if (node.ScopeReferenceName != null
-                        && !string.IsNullOrEmpty(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName))
-                    {
-                        var scopeSymbol = GetMacroExpandScope(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName, egSymbol);
-                        _binder._localScope.AddSymbol(new VariableSymbol(node.ScopeReferenceName.EntityGroupReferenceName.SimpleName, scopeSymbol));
-                    }
-                    else if (node.EntityGroup is NameReference entityGroupName)
-                    {
-                        // it is an implicit syntax of macro-expand
-                        var egName = entityGroupName.SimpleName;
-                        var scopeSymbol = GetMacroExpandScope(egName, egSymbol);
-                        _binder._localScope.AddSymbol(new VariableSymbol(egName, scopeSymbol));
-                    }
+                    // scope symbol was set on scope reference name
+                    _binder._localScope.AddSymbol(node.ScopeReferenceName.EntityGroupReferenceName.ReferencedSymbol);
+                }
+                else if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol
+                    && node.EntityGroup is NameReference entityGroupName)
+                {    
+                    // it is an implicit syntax of macro-expand
+                    var egName = entityGroupName.SimpleName;
+                    scopeSymbol = GetMacroExpandScope(egName, egSymbol);
+                    _binder._localScope.AddSymbol(scopeSymbol);
                 }
 
                 node.StatementList.Accept(this);

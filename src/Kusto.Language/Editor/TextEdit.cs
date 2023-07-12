@@ -1,4 +1,7 @@
-﻿namespace Kusto.Language.Editor
+﻿using System;
+using System.Diagnostics;
+
+namespace Kusto.Language.Editor
 {
     /// <summary>
     /// Represents a single edit to a text document: insert, delete or replace.
@@ -26,6 +29,10 @@
         /// </summary>
         public TextEdit(int start, int deleteLength, string insertText)
         {
+            if (start < 0)
+                throw new ArgumentOutOfRangeException("start", "negate start position");
+            if (deleteLength < 0)
+                throw new ArgumentOutOfRangeException("deleteLength", "negative delete length");
             this.Start = start;
             this.DeleteLength = deleteLength;
             this.InsertText = insertText ?? "";

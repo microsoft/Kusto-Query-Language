@@ -265,7 +265,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         public EditString ApplyAll(IReadOnlyList<TextEdit> edits)
         {
-            if (edits == null)
+            if (edits == null || edits.Count == 0)
                 return this;
 
             edits = GetOrderedEdits(edits);
@@ -278,6 +278,13 @@ namespace Kusto.Language.Editor
 
             return ApplyEdits(newText, newEdits);
         }
+
+        /// <summary>
+        /// Returns a new <see cref="EditString"/> with all the edits applied.
+        /// Each edit is specified against positions in the current text and must be non-overlapping with other edits.
+        /// </summary>
+        public EditString ApplyAll(params TextEdit[] edits) =>
+            ApplyAll((IReadOnlyList<TextEdit>)edits);
 
         /// <summary>
         /// Return true if the list of edits can be applied via ApplyAll.
@@ -458,7 +465,8 @@ namespace Kusto.Language.Editor
                 else if (newEdit.Start < oldEdit.Start + oldDelta)
                 {
                     // new edit starts before the old edit but the new edit deletion overlaps with the old edit insertion
-                    var partialDeleteLength = oldEdit.Start - newEdit.Start;
+                    //var partialDeleteLength = oldEdit.Start - newEdit.Start;
+                    var partialDeleteLength = (oldEdit.Start + oldDelta) - newEdit.Start;
 
                     // add the portion of the delete before the overlap
                     combinedEdits.Add(new Edit(newEdit.Start - oldDelta, partialDeleteLength, 0));
@@ -471,7 +479,7 @@ namespace Kusto.Language.Editor
                 {
                     // new edit starts after old edit, but overlaps
                     // split up old edit around new edit start and try again
-                    var partialInsertLength = newEdit.Start - oldEdit.Start;
+                    var partialInsertLength = newEdit.Start - (oldEdit.Start + oldDelta);
                     var partialDeleteLength = Math.Min(oldEdit.DeleteLength, partialInsertLength);
                     
                     // add the old edits partial delete & insert
@@ -581,6 +589,13 @@ namespace Kusto.Language.Editor
 
             public Edit(int start, int deleteLength, int insertLength)
             {
+                if (start < 0)
+                    throw new ArgumentOutOfRangeException("start", "negative start position");
+                if (deleteLength < 0)
+                    throw new ArgumentOutOfRangeException("deleteLength", "negative deletion length");
+                if (insertLength < 0)
+                    throw new ArgumentOutOfRangeException("insertLength", "negative insertion length");
+
                 this.Start = start;
                 this.DeleteLength = deleteLength;
                 this.InsertLength = insertLength;
@@ -615,6 +630,17 @@ namespace Kusto.Language.Editor
             }
 
             return currentPosition;
+        }
+
+        /// <summary>
+        /// Gets the current range start and length for the given original range start and length.
+        /// </summary>
+        public void GetCurrentRange(int originalStart, int originalLength, out int currentStart, out int currentLength)
+        {
+            var originalEnd = originalStart + originalLength;
+            currentStart = GetCurrentPosition(originalStart, PositionBias.Right);
+            var currentEnd = GetCurrentPosition(originalEnd, PositionBias.Left);
+            currentLength = currentEnd - currentStart;
         }
 
         /// <summary>

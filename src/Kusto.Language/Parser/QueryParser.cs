@@ -5207,7 +5207,7 @@ namespace Kusto.Language.Parsing
             var asKeyword = ParseToken(SyntaxKind.AsKeyword);
             if (asKeyword != null)
             {
-                var scopeReferenceName = ParseIdentifierName();
+                var scopeReferenceName = ParseNameDeclaration();
                 return new MacroExpandScopeReferenceName(asKeyword, scopeReferenceName);
             }
 

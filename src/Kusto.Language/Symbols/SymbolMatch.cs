@@ -154,6 +154,16 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Local) != 0 && (symbol is VariableSymbol || symbol is ParameterSymbol))
                 return true;
 
+            if (symbol is EntityGroupElementSymbol ege)
+            {
+                if (Matches(ege.UnderlyingSymbol, match))
+                    return true;
+
+                // allows for entity group elements for clusters & database in contexts looking for tabular expressions
+                if ((match & SymbolMatch.Tabular) != 0 && ege.UnderlyingSymbol.IsTabular)
+                    return true;
+            }
+
             return false;
         }
 

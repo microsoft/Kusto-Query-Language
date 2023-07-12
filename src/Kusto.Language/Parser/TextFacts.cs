@@ -64,13 +64,25 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static string GetWhitespace(string text, int start)
         {
+            var count = GetWhitespaceCount(text, start);
+            return count > 0
+                ? text.Substring(start, count)
+                : "";
+        }
+
+        /// <summary>
+        /// Gets the count of contiguous whitespace in the text from the starting position.
+        /// </summary>
+        public static int GetWhitespaceCount(string text, int start)
+        {
             var end = start;
+            
             while (end < text.Length && TextFacts.IsWhitespace(text[end]))
             {
                 end++;
             }
 
-            return text.Substring(start, end - start);
+            return end - start;
         }
 
         public static bool IsLineBreakStart(char ch)
@@ -146,7 +158,81 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Gets the index of the start of the first line break or -1
+        /// Returns the position of end of the line containing the specified position.
+        /// Does not include any line break characters.
+        /// </summary>
+        public static int GetLineEnd(string text, int position)
+        {
+            var lengthToEnd = GetLineLength(text, position);
+            return position + lengthToEnd;
+        }
+
+        /// <summary>
+        /// Returns the position of the start of the line containing the specified position.
+        /// </summary>
+        public static int GetLineStart(string text, int position)
+        {
+            if (TryGetPreviousLineEnd(text, position, out var previousLineEnd))
+            {
+                var lineBreakLength = GetLineBreakLength(text, previousLineEnd);
+                return previousLineEnd + lineBreakLength;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Gets the position of the end of the previous line given a position on the current line.
+        /// </summary>
+        public static bool TryGetPreviousLineEnd(string text, int position, out int previousLineEnd)
+        {
+            for (; position >= 0; position--)
+            {
+                var lineBreakLength = GetLineBreakLength(text, position);
+                
+                if (lineBreakLength == 0)
+                    continue;
+
+                if (lineBreakLength == 1 
+                    && position > 0
+                    && GetLineBreakLength(text, position - 1) is int longerLineBreakLength
+                    && longerLineBreakLength == lineBreakLength + 1)
+                {
+                    previousLineEnd = position - 1;
+                }
+                else
+                {
+                    previousLineEnd = position;
+                }
+
+                return true;
+            }
+
+            previousLineEnd = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the position of the start of the next line given a position on the current line.
+        /// </summary>
+        public static bool TryGetNextLineStart(string text, int position, out int nextLineStart)
+        {
+            var lineEnd = GetLineEnd(text, position);
+            var lineBreakLength = GetLineBreakLength(text, lineEnd);
+            if (lineBreakLength > 0)
+            {
+                nextLineStart = lineEnd + lineBreakLength;
+                return true;
+            }
+            else
+            {
+                nextLineStart = 0;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the position of the start of the first line break or -1
         /// </summary>
         public static int GetFirstLineBreakStart(string text)
         {
@@ -415,6 +501,79 @@ namespace Kusto.Language.Parsing
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Trims the whitespace from the start of the range.
+        /// </summary>
+        public static void TrimRangeStart(string text, ref int start, ref int length)
+        {
+            var count = GetWhitespaceCount(text, start);
+            start += count;
+            length -= count;
+        }
+
+        /// <summary>
+        /// Trims the whitespace from the end of the range.
+        /// </summary>
+        public static void TrimRangeEnd(string text, int start, ref int length)
+        {
+            length = TrimEnd(text, start, length);
+        }
+
+        /// <summary>
+        /// Trims the whitespace from the start and end of the range.
+        /// </summary>
+        public static void TrimRange(string text, ref int start, ref int length)
+        {
+            TrimRangeStart(text, ref start, ref length);
+            TrimRangeEnd(text, start, ref length);
+        }
+
+        /// <summary>
+        /// Expands the range to include the start of the first line.
+        /// </summary>
+        public static void ExpandRangeToStartOfFirstLine(string text, ref int start, ref int length)
+        {
+            var newStart = GetLineStart(text, start);
+            start = newStart;
+            length += start - newStart;
+        }
+
+        /// <summary>
+        /// Expands range to include the end of the last line.
+        /// </summary>
+        public static void ExpandRangeToEndOfLastLine(string text, int start, ref int length)
+        {
+            var newEnd = GetLineEnd(text, start + length);
+            length = newEnd - start;
+        }
+
+        /// <summary>
+        /// Expands the range to include the start of the first line and the end of the last line.
+        /// </summary>
+        public static void ExpandRangeToStartAndEndOfLines(string text, ref int start, ref int length)
+        {
+            ExpandRangeToStartOfFirstLine(text, ref start, ref length);
+            ExpandRangeToEndOfLastLine(text, start, ref length);
+        }
+
+        /// <summary>
+        /// Gets the length of the whitespace indentation for the line containing the specified position.
+        /// </summary>
+        public static int GetIndentationLength(string text, int position)
+        {
+            var startOfLine = GetLineStart(text, position);
+            return GetWhitespaceCount(text, startOfLine);
+        }
+
+        /// <summary>
+        /// Gets the indentation text for the line containing the position.
+        /// </summary>
+        public static string GetIndentationText(string text, int position)
+        {
+            var startOfLine = GetLineStart(text, position);
+            return GetWhitespace(text, startOfLine);
         }
     }
 }

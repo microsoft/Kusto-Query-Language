@@ -607,12 +607,12 @@ namespace Kusto.Language.Binding
             }
         }
 
+        /// <summary>
+        /// Gets a symbol that represents the a macro expand's entity group scope reference.
+        /// </summary>
         public static EntityGroupElementSymbol GetMacroExpandScope(string name, EntityGroupSymbol entityGroup)
         {
-            // define the X (in a query like macro-expand eg as X) as one of entity group items.
-            // the assumption is that all have the same schema so we pick the 1st one and work with it.
-            // we define it here in the local scope and then we call Accept on the StatementList
-            // which may use this symbol.
+            // currently, the symbol is just a wrapper around the first symbol in the entity group.
             var firstSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault() ?? ErrorSymbol.Instance;
             return new EntityGroupElementSymbol(name, firstSymbol);
         }

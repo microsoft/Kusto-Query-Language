@@ -72,7 +72,7 @@ namespace Kusto.Language.Editor
 
         private bool CanExtractExpression(KustoCode code, int position, int length)
         {
-            TrimRange(code, ref position, ref length);
+            TrimRangeTrivia(code, ref position, ref length);
 
             if (!(code.Syntax.GetNodeAt(position, length) is Expression ex))
                 return false;
@@ -92,7 +92,7 @@ namespace Kusto.Language.Editor
 
         private bool CanExtractFunction(KustoCode code, int position, int length)
         {
-            TrimRange(code, ref position, ref length);
+            TrimRangeTrivia(code, ref position, ref length);
 
             // this will find the overall pipe expression if range is only over a portion.
             if (code.Syntax.GetNodeAt(position, length) is Expression ex)
@@ -170,7 +170,7 @@ namespace Kusto.Language.Editor
 
         private CodeActionResult GetExpressionResult(KustoCode code, int position, int length)
         {
-            TrimRange(code, ref position, ref length);
+            TrimRangeTrivia(code, ref position, ref length);
 
             if (code.Syntax.GetNodeAt(position, length) is Expression ex
                 && ex.TextStart >= position && ex.End <= position + length)
@@ -202,7 +202,7 @@ namespace Kusto.Language.Editor
 
         private CodeActionResult GetFunctionResult(KustoCode code, int position, int length, CodeActionOptions options)
         {
-            TrimRange(code, ref position, ref length);
+            TrimRangeTrivia(code, ref position, ref length);
 
             if (code.Syntax.GetNodeAt(position, length) is Expression ex)
             {

@@ -165,23 +165,23 @@ namespace Kusto.Language.Editor
             {
                 _code.Syntax.WalkElements(e =>
                 {
+                    RelatedElementKind kind;
+
+                    if (e is NameDeclaration nd)
+                    {
+                        kind = RelatedElementKind.Declaration;
+                    }
+                    else if (e is NameReference nr)
+                    {
+                        kind = RelatedElementKind.Reference;
+                    }
+                    else
+                    {
+                        kind = RelatedElementKind.Other;
+                    }
+
                     if (AreSymbolsEqual(symbol, e, options))
                     {
-                        RelatedElementKind kind;
-
-                        if (e is NameDeclaration)
-                        {
-                            kind = RelatedElementKind.Declaration;
-                        }
-                        else if (e is NameReference)
-                        {
-                            kind = RelatedElementKind.Reference;
-                        }
-                        else
-                        {
-                            kind = RelatedElementKind.Other;
-                        }
-
                         elements.Add(new RelatedElement(e.TextStart, e.Width, kind, e.TextStart, e.TextStart));
                     }
                 });
