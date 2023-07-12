@@ -101,8 +101,8 @@ namespace Kusto.Language.Editor
         /// Convert a list of collective changes to a list of sequential changes.
         /// Collective changes are a set of edits each specified at a position in the original text.
         /// Sequential changes are a set of edits each specified at positions in the logical text emerging after applying the prior edits.
-        /// Collective changes can be used in a call to <see cref="ApplyAll"/>.
-        /// Sequential changes can be used in a series of calls to <see cref="Apply"/>, one after the other.
+        /// Collective changes can be used in a call to ApplyAll.
+        /// Sequential changes can be used in a series of calls to Apply, one after the other.
         /// </summary>
         public static IReadOnlyList<TextEdit> ConvertToSequentialChanges(IReadOnlyList<TextEdit> collectiveChanges)
         {
