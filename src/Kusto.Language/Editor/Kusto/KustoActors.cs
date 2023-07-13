@@ -8,6 +8,7 @@ namespace Kusto.Language.Editor
         public static KustoActor FunctionInliner = new InlineDatabaseFunctionActor();
         public static KustoActor ExtractExpression = new ExtractExpressionActor();
         public static KustoActor ConvertToMacroExpand = new ConvertToMacroExpandActor();
+        public static KustoActor Rename = new RenameActor();
         public static KustoActor DiagnosticFixer = new DiagnosticFixActor();
 
         public static IReadOnlyList<KustoActor> All = new KustoActor[]
@@ -15,6 +16,7 @@ namespace Kusto.Language.Editor
             FunctionInliner,
             ExtractExpression,
             ConvertToMacroExpand,
+            Rename,
             DiagnosticFixer,
         };
     }
@@ -25,5 +27,6 @@ namespace Kusto.Language.Editor
         public static string ExtractExpression = KustoActors.ExtractExpression.Name;
         public static string ConvertToMacroExpand = KustoActors.ConvertToMacroExpand.Name;
         public static string DiagnosticFixer = KustoActors.DiagnosticFixer.Name;
+        public static string Rename = KustoActors.Rename.Name;
     }
 }

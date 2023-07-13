@@ -9,8 +9,9 @@ Things that trip up Bridge.Net and cause it to crash.
 4) it does not like use of named parameters, so just avoid it
 5) avoid goto's especially in switch (will not crash but turns it into a state-machine loop)
 6) Don't use 'out var' with primitive types (like Int32.TryParse) on nested in lambdas. Normal out works but 'out var' causes translation errors that only fail at runtime.
-7) use of LINQ any operator with a lambda after using OfType<XXX> causes translator to fail
-8) Use of same lambda parameter name as name in outer scope.
+7) Don't use 'is var xxx', use 'is type xxx' instead.
+8) use of LINQ any operator with a lambda after using OfType<XXX> causes translator to fail
+9) Use of same lambda parameter name as name in outer scope.
 
 Debugging Bridge.Net:
 To debug bridge.net when you get an build exception (without any useful information).

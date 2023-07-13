@@ -249,14 +249,14 @@ namespace Kusto.Language.Editor
     }
 
     /// <summary>
-    /// An action taken by the caller to apply the <see cref="CodeActionResult"/>
+    /// An action taken by the client to apply the result of a code action.
     /// </summary>
     public abstract class ResultAction
     {
     }
 
     /// <summary>
-    /// A <see cref="ResultAction"/> that changes the text of the associated query.
+    /// An action taken by the client to change the text of the <see cref="CodeBlock"/>.
     /// </summary>
     public sealed class ChangeTextAction : ResultAction
     {
@@ -266,16 +266,22 @@ namespace Kusto.Language.Editor
         public IReadOnlyList<TextEdit> Changes { get; }
 
         /// <summary>
-        /// The text after the edits are applied.
+        /// The new text after all the changes have been applied to the original text.
         /// </summary>
         public string ChangedText { get; }
 
+        /// <summary>
+        /// Constructs an action taken by the client to change the text of the <see cref="CodeBlock"/>.
+        /// </summary>
         public ChangeTextAction(IReadOnlyList<TextEdit> changes, string changedText)
         {
             this.Changes = changes;
             this.ChangedText = changedText;
         }
 
+        /// <summary>
+        /// Constructs an action taken by the client to change the text of the <see cref="CodeBlock"/>.
+        /// </summary>
         public ChangeTextAction(EditString editString)
             : this(editString.GetChanges(), editString.CurrentText)
         {
@@ -283,13 +289,15 @@ namespace Kusto.Language.Editor
     }
 
     /// <summary>
-    /// A <see cref="ResultAction"/> that moves the current caret position
-    /// relative to the start of the <see cref="CodeBlock"/>
+    /// An action taken by the client to move the caret to a position relative to the start of the <see cref="CodeBlock"/>
     /// </summary>
     public sealed class MoveCaretAction : ResultAction
     {
         public int NewCaretPosition { get; }
 
+        /// <summary>
+        /// Constructs an action taken by the client to move the caret to a position relative to the start of the <see cref="CodeBlock"/>
+        /// </summary>
         public MoveCaretAction(int newCaretPosition)
         {
             this.NewCaretPosition = newCaretPosition;
@@ -297,14 +305,20 @@ namespace Kusto.Language.Editor
     }
 
     /// <summary>
-    /// A <see cref="ResultAction"/> that initiates a rename of the named element at the current caret position.
+    /// An action taken by the client to intiate a rename of the named element at the current caret position.
     /// </summary>
     public sealed class RenameAction : ResultAction
     {
+        /// <summary>
+        /// Constructs an action taken by the client to intiate a rename of the named element at the current caret position.
+        /// </summary>
         public RenameAction()
         {
         }
 
+        /// <summary>
+        /// An action taken by the client to intiate a rename of the named element at the current caret position.
+        /// </summary>
         public static readonly RenameAction Instance = new RenameAction();
     }
 
