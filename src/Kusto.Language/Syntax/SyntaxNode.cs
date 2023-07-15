@@ -79,34 +79,40 @@ namespace Kusto.Language.Syntax
         public virtual bool IsLiteral => false;
 
         /// <summary>
+        /// The value info of the literal expression.
+        /// </summary>
+        public virtual ValueInfo LiteralValueInfo => null;
+
+        /// <summary>
         /// The value of the literal expression.
         /// </summary>
-        public virtual object LiteralValue => null;
+        public object LiteralValue => LiteralValueInfo?.Value;
     }
 
     public partial class LiteralExpression
     {
         public override bool IsLiteral => true;
 
-        public override object LiteralValue => this.Token.Value;
+        public override ValueInfo LiteralValueInfo => 
+            new ValueInfo(this.Token.ValueText, this.Token.Value);
     }
 
     public partial class CompoundStringLiteralExpression
     {
         public override bool IsLiteral => true;
 
-        private string literalValue;
+        private ValueInfo _literalValue;
 
-        public override object LiteralValue
+        public override ValueInfo LiteralValueInfo
         {
             get
             {
-                if (this.literalValue == null)
+                if (_literalValue == null)
                 {
-                    this.literalValue = string.Concat(this.Tokens.Select(t => t.ValueText));
+                    _literalValue = new ValueInfo(string.Concat(this.Tokens.Select(t => t.ValueText)));
                 }
 
-                return this.literalValue;
+                return _literalValue;
             }
         }
     }
@@ -115,25 +121,33 @@ namespace Kusto.Language.Syntax
     {
         public override bool IsLiteral => true;
 
-        public override object LiteralValue => null;
+        public override ValueInfo LiteralValueInfo => null;
     }
 
     public partial class DynamicExpression
     {
         public override bool IsLiteral => true;
 
-        public override object LiteralValue
+        private ValueInfo _literalInfo;
+
+        public override ValueInfo LiteralValueInfo
         {
             get
             {
-                if (this.Kind == SyntaxKind.NullLiteralExpression)
+                if (_literalInfo == null)
                 {
-                    return null;
+                    var text = this.Expression.ToString(IncludeTrivia.Minimal);
+                    if (this.Kind == SyntaxKind.NullLiteralExpression)
+                    {
+                        _literalInfo = new ValueInfo(text, null);
+                    }
+                    else
+                    {
+                        _literalInfo = new ValueInfo(text);
+                    }
                 }
-                else
-                {
-                    return this.Expression.ToString(IncludeTrivia.Minimal);
-                }
+
+                return _literalInfo;
             }
         }
     }
@@ -175,7 +189,7 @@ namespace Kusto.Language.Syntax
 
     public partial class BracketedName
     {
-        public override string SimpleName => (this.Name.LiteralValue as string) ?? "";
+        public override string SimpleName => this.Name.LiteralValue as string ?? "";
     }
 
     public partial class BracedName

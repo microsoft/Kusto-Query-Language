@@ -554,12 +554,12 @@ namespace Kusto.Language.Binding
             {
                 base.VisitLetStatement(node);
 
-                TryGetLiteralValue(node.Expression, out var literalValue);
+                TryGetLiteralValueInfo(node.Expression, out var valueInfo);
 
                 var exprType = GetResultTypeOrError(node.Expression);
                 Symbol local = (exprType is FunctionSymbol || exprType is EntityGroupSymbol)
                     ? exprType
-                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, GetIsConstant(node.Expression), literalValue, node.Expression);
+                    : (Symbol)new VariableSymbol(node.Name.SimpleName, exprType, GetIsConstant(node.Expression), valueInfo, node.Expression);
 
                 // put local symbol definition on name
                 _binder.SetSemanticInfo(node.Name, new SemanticInfo(local, null));

@@ -222,11 +222,16 @@ namespace Kusto.Language.Syntax
         public bool IsConstant => GetSemanticInfo()?.IsConstant ?? false;
 
         /// <summary>
-        /// The value of the constant if it is known.
+        /// Returns the value info of the constant, or null if it is unknown.
         /// </summary>
-        public object ConstantValue =>
-            this.IsLiteral ? this.LiteralValue
-            : this.ReferencedSymbol is VariableSymbol v && v.IsConstant ? v.ConstantValue
+        public ValueInfo ConstantValueInfo =>
+            this.IsLiteral ? this.LiteralValueInfo
+            : this.ReferencedSymbol is VariableSymbol v && v.IsConstant ? v.ConstantValueInfo
             : null;
+
+        /// <summary>
+        /// The value of the constant or null if it is unknown.
+        /// </summary>
+        public object ConstantValue => ConstantValueInfo?.Value;
     }
 }

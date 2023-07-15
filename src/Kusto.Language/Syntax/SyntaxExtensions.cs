@@ -43,11 +43,11 @@ namespace Kusto.Language.Syntax
                         if (le.Kind == SyntaxKind.StringLiteralExpression
                             || le.Kind == SyntaxKind.TokenLiteralExpression)
                         {
-                            return (string)le.LiteralValue;
+                            return le.LiteralValueInfo?.ValueText;
                         }
                         break;
                     case CompoundStringLiteralExpression cs:
-                        return (string)cs.LiteralValue;
+                        return cs.LiteralValueInfo?.ValueText;
                 }
             }
 

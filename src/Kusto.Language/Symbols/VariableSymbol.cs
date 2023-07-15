@@ -24,9 +24,14 @@ namespace Kusto.Language.Symbols
         public bool IsConstant { get; }
 
         /// <summary>
+        /// The known constant value info (or null if unknown).
+        /// </summary>
+        public ValueInfo ConstantValueInfo { get; }
+
+        /// <summary>
         /// The known constant value (or null if unknown).
         /// </summary>
-        public object ConstantValue { get; }
+        public object ConstantValue => ConstantValueInfo?.Value;
 
         /// <summary>
         /// The expression that the variable is computed from.
@@ -36,12 +41,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Creates a new instance of a <see cref="VariableSymbol"/>
         /// </summary>
-        public VariableSymbol(string name, TypeSymbol type, bool isConstant = false, object constantValue = null, Expression source = null)
+        public VariableSymbol(string name, TypeSymbol type, bool isConstant = false, ValueInfo constantValueInfo = null, Expression source = null)
             : base(name)
         {
             this.Type = type.CheckArgumentNull(nameof(type));
             this.IsConstant = isConstant;
-            this.ConstantValue = constantValue;
+            this.ConstantValueInfo = constantValueInfo;
             this.Source = source;
         }
 

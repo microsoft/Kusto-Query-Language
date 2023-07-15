@@ -555,9 +555,9 @@ namespace Kusto.Language.Binding
 
         internal static bool TryGetLiteralStringValue(Expression expression, out string value)
         {
-            if (TryGetLiteralValue(expression, out var objValue))
+            if (TryGetLiteralValueInfo(expression, out var valueInfo))
             {
-                value = objValue as string;
+                value = valueInfo?.Value as string;
                 return value != null;
             }
             else
@@ -570,18 +570,18 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the value of the literal if the expression is a literal or refers to literal
         /// </summary>
-        internal static bool TryGetLiteralValue(Expression expression, out object value)
+        internal static bool TryGetLiteralValueInfo(Expression expression, out ValueInfo value)
         {
             expression = GetUnderlyingExpression(expression);
 
             if (expression.IsLiteral)
             {
-                value = expression.LiteralValue;
+                value = expression.LiteralValueInfo;
                 return value != null;
             }
             else if (expression is NameReference nr && nr.ReferencedSymbol is VariableSymbol vs && vs.IsConstant)
             {
-                value = vs.ConstantValue;
+                value = vs.ConstantValueInfo;
                 return true;
             }
             else
@@ -1726,21 +1726,21 @@ namespace Kusto.Language.Binding
                             ? p.DeclaredTypes[0]
                             : argType;
 
-                        var isLiteral = Binding.Binder.TryGetLiteralValue(arg, out var literalValue);
-                        locals.Add(new VariableSymbol(p.Name, localType, isLiteral, literalValue, source: arg));
+                        var isLiteral = Binding.Binder.TryGetLiteralValueInfo(arg, out var valueInfo);
+                        locals.Add(new VariableSymbol(p.Name, localType, isLiteral, valueInfo, source: arg));
                     }
                     else
                     {
                         var type = GetRepresentativeType(p);
 
                         var isConstant = p.IsOptional && p.DefaultValue != null;
-                        object constantValue = null;
+                        ValueInfo valueInfo = null;
                         if (isConstant)
                         {
-                            TryGetLiteralValue(p.DefaultValue, out constantValue);
+                            TryGetLiteralValueInfo(p.DefaultValue, out valueInfo);
                         }
 
-                        locals.Add(new VariableSymbol(p.Name, type, isConstant, constantValue));
+                        locals.Add(new VariableSymbol(p.Name, type, isConstant, valueInfo));
                     }
                 }
 

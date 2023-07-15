@@ -31,16 +31,8 @@ namespace Kusto.Language.Binding
 
         private SemanticInfo BindNameInAggregateScope(string name, SymbolMatch match, SyntaxNode location)
         {
-            var list = s_symbolListPool.AllocateFromPool();
-            try
-            {
-                GetAggregateFunctionsInScope(name, IncludeFunctionKind.All, list);
-                return GetMatchingSymbolResult(name, location, list, false);
-            }
-            finally
-            {
-                s_symbolListPool.ReturnToPool(list);
-            }
+            // bind using normal scope but do not allow columns, and allow aggregate functions
+            return BindNameInNormalScope(name, match, location, false, false);
         }
 
         private SemanticInfo BindNameInOptionScope(string name, SymbolMatch match, SyntaxNode location)
@@ -413,7 +405,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    GetFunctionsInNormalScope(name, IncludeFunctionKind.All, list);
+                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
                 }
             }
             else
@@ -591,7 +583,11 @@ namespace Kusto.Language.Binding
             {
                 if (_scopeKind != ScopeKind.Normal)
                 {
+                    var oldScopeKind = _scopeKind;
+                    _scopeKind = ScopeKind.Normal;
                     GetMatchingSymbolsInNormalScope(name, SymbolMatch.Any, location, matches, true, true);
+                    _scopeKind = oldScopeKind;
+
                     if (matches.Count > 0)
                     {
                         switch (_scopeKind)

@@ -110,7 +110,7 @@ namespace Kusto.Language
         /// </summary>
         public static readonly IReadOnlyList<string> HiddenChartTypes = new string[]
         {
-            "3Dchart", "plotly"
+            "3Dchart"
         };
 
         /// <summary>
