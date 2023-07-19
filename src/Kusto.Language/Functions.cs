@@ -2981,7 +2981,8 @@ namespace Kusto.Language
             new FunctionSymbol("geo_polygon_to_s2cells", 
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag),
-                new Parameter("level", ParameterTypeKind.Number, minOccurring: 0))
+                new Parameter("level", ParameterTypeKind.Number, minOccurring: 0),
+                new Parameter("radius", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -2992,8 +2993,7 @@ namespace Kusto.Language
                 new Parameter("level", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("radius", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonS2CellCoveringLevel =
             new FunctionSymbol("__geo_polygon_s2cell_covering_level",
