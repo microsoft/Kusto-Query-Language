@@ -713,11 +713,20 @@ namespace Kusto.Language
             return new Diagnostic("KS204", $"The name '{name}' does not refer to any known table, tabular variable or function.");
         }
 
-        public static Diagnostic GetFuzzyUnionOperandNotDefined(string name)
+        public static Diagnostic GetFuzzyEntityNotDefined(string name = null)
         {
-            return new Diagnostic("KS205",
-                $"The fuzzy union operand '{name}' does not refer to any known table, tabular variable or function.")
-                .WithSeverity(DiagnosticSeverity.Warning);
+            if (string.IsNullOrEmpty(name))
+            {
+                return new Diagnostic("KS205",
+                    $"The fuzzy expression does not refer to any known entity.")
+                    .WithSeverity(DiagnosticSeverity.Warning);
+            }
+            else
+            {
+                return new Diagnostic("KS205",
+                    $"The fuzzy name '{name}' does not refer to any known entity.")
+                    .WithSeverity(DiagnosticSeverity.Warning);
+            }
         }
 
         public static Diagnostic GetExpressionMustBeOrderable()

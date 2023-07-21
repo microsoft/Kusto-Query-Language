@@ -2,6 +2,7 @@
 
 namespace Kusto.Language.Symbols
 {
+    using System.Linq;
     using Utils;
 
     /// <summary>
@@ -9,12 +10,22 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class EntityGroupElementSymbol : TypeSymbol
     {
+        public EntityGroupSymbol EntityGroup { get; }
         public TypeSymbol UnderlyingSymbol { get; }
 
-        public EntityGroupElementSymbol(string name, TypeSymbol underlyingSymbol)
+        public EntityGroupElementSymbol(string name, EntityGroupSymbol entityGroup)
             : base(name)
         {
-            this.UnderlyingSymbol = underlyingSymbol.CheckArgumentNull(nameof(underlyingSymbol));
+            this.EntityGroup = entityGroup.CheckArgumentNull(nameof(entityGroup));
+
+            // currently, the underlying symbol is just this first symbol in the group
+            this.UnderlyingSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault(s => s.Members.Count > 0);
+
+            if (this.UnderlyingSymbol == null)
+                this.UnderlyingSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault();
+
+            if (this.UnderlyingSymbol == null)
+                this.UnderlyingSymbol = ErrorSymbol.Instance;
         }
 
         public override IReadOnlyList<Symbol> Members => SpecialMembers;

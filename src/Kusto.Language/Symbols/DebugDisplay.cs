@@ -25,7 +25,7 @@ namespace Kusto.Language.Symbols
                 case TableSymbol t:
                     return $"table({string.Join(", ", t.Columns.Select(m => GetText(m)))})";
                 case DatabaseSymbol d:
-                    return $"database({KustoFacts.GetSingleQuotedStringLiteral(d.AlternateName != null ? d.AlternateName : d.Name)})";
+                    return $"database({KustoFacts.GetSingleQuotedStringLiteral(!string.IsNullOrEmpty(d.AlternateName) ? d.AlternateName : d.Name)})";
                 case ClusterSymbol c:
                     return $"cluster({KustoFacts.GetSingleQuotedStringLiteral(c.Name)})";
                 case GroupSymbol g:

@@ -508,6 +508,7 @@
         ToTypeOfClause,
         EvaluateSchemaClause,
         RowSchema,
+        EntityGroupExpression,
 
         // query operators
         BadQueryOperator,

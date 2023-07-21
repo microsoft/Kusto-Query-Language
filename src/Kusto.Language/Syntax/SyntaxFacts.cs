@@ -538,6 +538,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DefaultExpressionClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.EvaluateSchemaClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.RowSchema, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.EntityGroupExpression, "", SyntaxCategory.Node),
 
                 // query operators
                 new SyntaxData(SyntaxKind.BadQueryOperator, "", SyntaxCategory.Node),

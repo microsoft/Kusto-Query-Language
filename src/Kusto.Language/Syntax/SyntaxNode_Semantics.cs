@@ -142,12 +142,16 @@ namespace Kusto.Language.Syntax
 
                         if (diagnostics.Count > originalCount)
                         {
-                            var name = expr.ReferencedSymbol?.Name ?? "<unknown>";
-                            var location = expr is FunctionCallExpression fc ? fc.Name : expr;
-                            var errors = diagnostics[originalCount].Message;
-                            var dx = DiagnosticFacts.GetErrorInExpansion(name, errors).WithLocation(location);
+                            var firstError = diagnostics.Skip(originalCount).FirstOrDefault(d => d.Severity == DiagnosticSeverity.Error);
                             diagnostics.SetCount(originalCount);
-                            diagnostics.Add(dx);
+
+                            if (firstError != null)
+                            {
+                                var name = expr.ReferencedSymbol?.Name ?? "<unknown>";
+                                var location = expr is FunctionCallExpression fc ? fc.Name : expr;
+                                var dx = DiagnosticFacts.GetErrorInExpansion(name, firstError.Message).WithLocation(location);
+                                diagnostics.Add(dx);
+                            }
                         }
                     }
                 },

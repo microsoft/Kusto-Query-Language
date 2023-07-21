@@ -608,16 +608,6 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets a symbol that represents the a macro expand's entity group scope reference.
-        /// </summary>
-        public static EntityGroupElementSymbol GetMacroExpandScope(string name, EntityGroupSymbol entityGroup)
-        {
-            // currently, the symbol is just a wrapper around the first symbol in the entity group.
-            var firstSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault() ?? ErrorSymbol.Instance;
-            return new EntityGroupElementSymbol(name, firstSymbol);
-        }
-
-        /// <summary>
         /// Finds the <see cref="EntityGroupElementSymbol"/> associated with the location.
         /// </summary>
         public static EntityGroupElementSymbol GetMacroExpandScope(SyntaxNode location)

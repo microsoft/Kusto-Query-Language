@@ -68,7 +68,6 @@ namespace Kusto.Language.Syntax
 
             return node;
         }
-
     }
 
     public partial class Expression

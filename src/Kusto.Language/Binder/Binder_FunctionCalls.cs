@@ -34,11 +34,11 @@ namespace Kusto.Language.Binding
                 // the name was not a known function or pattern, but we decided to give it a result type, so let's use it
                 return functionCall.Name.GetSemanticInfo();
             }
-            else if (IsFuzzyUnionOperand(functionCall))
+            else if (_isFuzzy)
             {
                 return new SemanticInfo(
                     new TableSymbol().WithIsOpen(true),
-                    DiagnosticFacts.GetFuzzyUnionOperandNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
+                    DiagnosticFacts.GetFuzzyEntityNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
             }
             else
             {
@@ -117,7 +117,12 @@ namespace Kusto.Language.Binding
                         }
                     }
 
-                    return new SemanticInfo(matchingSignatures[0], resultType, diagnostics, isConstant: fn.IsConstantFoldable && AllAreConstant(arguments), calledFunctionInfo: funResult.Info);
+                    return new SemanticInfo(
+                        matchingSignatures[0],
+                        resultType,
+                        diagnostics,
+                        isConstant: fn.IsConstantFoldable && AllAreConstant(arguments),
+                        calledFunctionInfo: funResult.Info);
                 }
                 else
                 {
@@ -609,7 +614,14 @@ namespace Kusto.Language.Binding
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownCluster(name).WithLocation(location));
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(name).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownCluster(name).WithLocation(location));
+                    }
                 }
 
                 cluster = GetOpenCluster(name);
@@ -629,7 +641,14 @@ namespace Kusto.Language.Binding
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(nameOrPattern).WithLocation(location));
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(nameOrPattern).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(nameOrPattern).WithLocation(location));
+                    }
                 }
 
                 if (!IsPattern(nameOrPattern))
@@ -802,7 +821,14 @@ namespace Kusto.Language.Binding
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(nameOrPattern).WithLocation(location));
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(nameOrPattern).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownTable(nameOrPattern).WithLocation(location));
+                    }
                 }
 
                 // return open table regardless of containing tables's open state to reduce cascading errors
@@ -924,7 +950,14 @@ namespace Kusto.Language.Binding
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownExternalTable(name).WithLocation(location));
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownExternalTable(name).WithLocation(location));
+                    }
                 }
 
                 table = new TableSymbol(name).WithIsExternal(true).WithIsOpen(true);
@@ -945,7 +978,14 @@ namespace Kusto.Language.Binding
             {
                 if (diagnostics != null && location != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownMaterializedView(name).WithLocation(location));
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownMaterializedView(name).WithLocation(location));
+                    }
                 }
 
                 table = new TableSymbol(name).WithIsMaterializedView(true).WithIsOpen(true);

@@ -46,6 +46,11 @@ namespace Kusto.Language.Binding
         private readonly FunctionSymbol _currentFunction;
 
         /// <summary>
+        /// The fuzzy entity evaluation is in effect.
+        /// </summary>
+        private bool _isFuzzy;
+
+        /// <summary>
         /// All symbol declared locally within the query appear in the local scope.
         /// These are symbols declared by let statements or the as query operator.
         /// Local scopes may be nested within other local scopes.
@@ -129,6 +134,7 @@ namespace Kusto.Language.Binding
             _currentCluster = currentCluster ?? globals.Cluster;
             _currentDatabase = currentDatabase ?? globals.Database;
             _currentFunction = currentFunction;
+            _isFuzzy = outerBinder?._isFuzzy ?? false;
             _outerBinder = outerBinder;
             _globalBindingCache = globalBindingCache ?? new GlobalBindingCache();
             _localBindingCache = localBindingCache ?? new LocalBindingCache();

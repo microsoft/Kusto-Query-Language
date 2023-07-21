@@ -103,7 +103,20 @@ namespace Kusto.Language.Binding
 
             public override void VisitPipeExpression(PipeExpression node)
             {
-                node.Expression.Accept(this); 
+                if (node.Operator is UnionOperator union)
+                {
+                    // set fuzziness of left side expression if operator is fuzzy union
+                    var oldIsFuzzy = _binder._isFuzzy;
+                    var isFuzzy = union.Parameters.GetParameterLiteralValue<bool?>(QueryOperatorParameters.IsFuzzy);
+                    if (isFuzzy != null)
+                        _binder._isFuzzy = isFuzzy.Value;
+                    node.Expression.Accept(this);
+                    _binder._isFuzzy = oldIsFuzzy;
+                }
+                else
+                {
+                    node.Expression.Accept(this);
+                }
 
                 // result of left-side expression is in scope for right-side query operator
                 var oldRowScope = _binder._rowScope;
@@ -209,17 +222,20 @@ namespace Kusto.Language.Binding
 
             public override void VisitUnionOperator(UnionOperator node)
             {
+                // union operator expressions do not bind to row scope columns (they are only tables)
                 var oldRowScope = _binder._rowScope;
                 _binder._rowScope = null;
-                try
-                {
-                    // union operator expressions do not bind to row scope columns (they are only tables)
-                    VisitChildren(node);
-                }
-                finally
-                {
-                    _binder._rowScope = oldRowScope;
-                }
+
+                // set fuzziness of input evaluation
+                var oldIsFuzzy = _binder._isFuzzy;
+                var isFuzzy = node.Parameters.GetParameterLiteralValue<bool?>(QueryOperatorParameters.IsFuzzy);
+                if (isFuzzy != null)
+                    _binder._isFuzzy = isFuzzy.Value;
+
+                VisitChildren(node);
+
+                _binder._rowScope = oldRowScope;
+                _binder._isFuzzy = oldIsFuzzy;
 
                 BindNode(node);
             }
@@ -240,6 +256,15 @@ namespace Kusto.Language.Binding
             public override void VisitMacroExpandOperator(MacroExpandOperator node)
             {
                 node.Parameters.Accept(this);
+
+                // set fuzziness of entity evaluation
+                var oldIsFuzzy = _binder._isFuzzy;
+                var isFuzzy = node.Parameters.GetParameterLiteralValue<bool?>(QueryOperatorParameters.IsFuzzy);
+                if (isFuzzy != null)
+                {
+                    _binder._isFuzzy = isFuzzy.Value;
+                }
+
                 node.EntityGroup.Accept(this);
                 node.ScopeReferenceName?.Accept(this);
 
@@ -254,11 +279,13 @@ namespace Kusto.Language.Binding
                 {    
                     // it is an implicit syntax of macro-expand
                     var egName = entityGroupName.SimpleName;
-                    scopeSymbol = GetMacroExpandScope(egName, egSymbol);
+                    scopeSymbol = new EntityGroupElementSymbol(egName, egSymbol);
                     _binder._localScope.AddSymbol(scopeSymbol);
                 }
 
+                _binder._isFuzzy = false;
                 node.StatementList.Accept(this);
+                _binder._isFuzzy = oldIsFuzzy;
 
                 BindNode(node);
             }

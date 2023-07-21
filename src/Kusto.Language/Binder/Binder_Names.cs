@@ -632,7 +632,7 @@ namespace Kusto.Language.Binding
                                 DiagnosticFacts.GetPlugInFunctionNotDefined(name).WithLocation(location));
                         }
                     }
-                    else if (IsFuzzyUnionOperand(location))
+                    else if (_isFuzzy)
                     {
                         return null;
                     }
@@ -669,11 +669,12 @@ namespace Kusto.Language.Binding
                 }
                 else if (IsInTabularContext(location))
                 {
-                    if (IsFuzzyUnionOperand(location))
+                    if (_isFuzzy)
                     {
+                        // unknown table name in fuzzy context?
                         return new SemanticInfo(
                             new TableSymbol().WithIsOpen(true),
-                            DiagnosticFacts.GetFuzzyUnionOperandNotDefined(name).WithLocation(location));
+                            DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
                     }
                     else if (_pathScope is DatabaseSymbol ds
                         && ds.IsOpen)
@@ -777,41 +778,6 @@ namespace Kusto.Language.Binding
                     || hint == Editor.CompletionHint.ExternalTable)
                 {
                     return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Determine if the element is the operand of a fuzzy union
-        /// </summary>
-        private static bool IsFuzzyUnionOperand(SyntaxElement element)
-        {
-            if (element.Parent is FunctionCallExpression fc && fc.Name == element)
-            {
-                element = element.Parent;
-            }
-
-            while (element.Parent is ParenthesizedExpression
-                || element.Parent is SyntaxList
-                || element.Parent is SeparatedElement)
-            {
-                element = element.Parent;
-            }
-
-            var context = element.Parent;
-
-            if (context != null)
-            {
-                if (context is PipeExpression pe && pe.Expression == element)
-                {
-                    context = pe.Operator;
-                }
-
-                if (context is UnionOperator uo)
-                {
-                    return uo.Parameters.GetParameterLiteralValue<bool>(QueryOperatorParameters.IsFuzzy);
                 }
             }
 

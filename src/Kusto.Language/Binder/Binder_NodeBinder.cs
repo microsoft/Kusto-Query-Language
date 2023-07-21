@@ -3382,7 +3382,7 @@ namespace Kusto.Language.Binding
                 if (node.Parent is MacroExpandOperator macroExpand
                     && macroExpand.EntityGroup?.ResultType is EntityGroupSymbol entityGroup)
                 {
-                    var scopeSymbol = GetMacroExpandScope(node.EntityGroupReferenceName.SimpleName, entityGroup);
+                    var scopeSymbol = new EntityGroupElementSymbol(node.EntityGroupReferenceName.SimpleName, entityGroup);
                     _binder.SetSemanticInfo(node.EntityGroupReferenceName, new SemanticInfo(scopeSymbol, scopeSymbol));
                 }
 

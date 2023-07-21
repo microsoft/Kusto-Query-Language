@@ -41,7 +41,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol StoredQueryResult =
             new FunctionSymbol("stored_query_result",
-                context => TableSymbol.Empty, // we don't want to resolve schema of SQR for now
+                context => TableSymbol.Empty.WithIsOpen(true), // we don't want to resolve schema of SQR for now
                 Tabularity.Tabular,
                 new Parameter("name", ScalarTypes.String));
 

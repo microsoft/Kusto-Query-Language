@@ -147,7 +147,7 @@ namespace Kusto.Language.Binding
                     {
                         // it is an implicit syntax of macro-expand
                         var egName = entityGroupName.SimpleName;
-                        scopeSymbol = GetMacroExpandScope(egName, egSymbol);
+                        scopeSymbol = new EntityGroupElementSymbol(egName, egSymbol);
                         _binder._localScope.AddSymbol(scopeSymbol);
                     }
                 }

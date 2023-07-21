@@ -8070,7 +8070,7 @@ namespace Kusto.Language.Syntax
     #region class EntityGroup
     public sealed partial class EntityGroup : Expression
     {
-        public override SyntaxKind Kind => SyntaxKind.EntityGroupKeyword;
+        public override SyntaxKind Kind => SyntaxKind.EntityGroupExpression;
         
         public SyntaxToken EntityGroupKeyword { get; }
         
