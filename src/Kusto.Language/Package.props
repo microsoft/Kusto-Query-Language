@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup Label="General">
+    <Version>$(BUILD_BUILDNUMBER)</Version>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp2.1;net472;netstandard2.0</TargetFrameworks>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <KustoDir>$([System.IO.Path]::GetFullPath("$(MSBuildThisFileDirectory)..\..\.."))</KustoDir>
+    <OutputPath>$(KustoDir)\bin\$(Configuration)\Projects\$(MSBuildProjectName)</OutputPath>
+    <IntermediateOutputPath>$(KustoDir)\obj\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
+    <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\Kusto.Packages\EULA-agreement.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\Kusto.Packages\MSFT.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <PropertyGroup Label="NuGet">
+    <Authors>Microsoft</Authors>
+    <Owners>microsoft,microsoft_kusto</Owners>
+    <PackageTags>kusto</PackageTags>
+    <PackageId>Microsoft.Azure.Kusto.Language</PackageId>
+    <Product>Azure Data Explorer (Kusto) language service</Product>
+    <Description>Language service (parser, syntax model, and intellisense API) for Azure Data Explorer (Kusto)</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>EULA-agreement.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://aka.ms/kdocs</PackageProjectUrl>
+    <PackageIcon>MSFT.png</PackageIcon>
+    <GeneratePackageOnBuild Condition="'$(KUSTO_PACKAGES_DISABLE_PACKAGING)' != '1'">true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(KustoDir)\bin\$(Configuration)\Packages</PackageOutputPath>
+  </PropertyGroup>
+</Project>

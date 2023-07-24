@@ -1876,6 +1876,9 @@ namespace Kusto.Language
                 "ShowDatabasesEntities",
                 "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, Details:dynamic)");
 
+        public static readonly CommandSymbol ReplaceDatabaseKeyVaultSecrets =
+            new CommandSymbol("ReplaceDatabaseKeyVaultSecrets", _schema18);
+
         public static readonly IReadOnlyList<CommandSymbol> All = new CommandSymbol[]
         {
             ShowDatabase,
@@ -2449,7 +2452,8 @@ namespace Kusto.Language
             PatchExtentCorruptedDatetime,
             ClearClusterCredStoreCache,
             ClearExternalArtifactsCache,
-            ShowDatabasesEntities
+            ShowDatabasesEntities,
+            ReplaceDatabaseKeyVaultSecrets
         };
     }
 }
