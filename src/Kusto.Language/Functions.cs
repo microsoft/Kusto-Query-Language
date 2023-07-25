@@ -1488,7 +1488,10 @@ namespace Kusto.Language
                 {
                     var whenTrue = context.GetArgument("when_true");
                     var whenFalse = context.GetArgument("when_true");
-                    return TypeFacts.GetCommonResultType(whenTrue, whenFalse) ?? ScalarTypes.DynamicArray;
+                    var commonResult = TypeFacts.GetCommonResultType(whenTrue, whenFalse);
+                    if (!(commonResult is DynamicSymbol))
+                        commonResult = ScalarTypes.GetDynamicArray(commonResult);
+                    return commonResult;
                 },
                 Tabularity.Scalar,
                 new Parameter("condition_array", ParameterTypeKind.DynamicArray),
@@ -1503,7 +1506,10 @@ namespace Kusto.Language
                 {
                     var whenTrue = context.GetArgument("when_true");
                     var whenFalse = context.GetArgument("when_true");
-                    return TypeFacts.GetCommonResultType(whenTrue, whenFalse) ?? ScalarTypes.DynamicArray;
+                    var commonResult = TypeFacts.GetCommonResultType(whenTrue, whenFalse);
+                    if (!(commonResult is DynamicSymbol))
+                        commonResult = ScalarTypes.GetDynamicArray(commonResult);
+                    return commonResult;
                 },
                 Tabularity.Scalar,
                 new Parameter("condition_array", ParameterTypeKind.DynamicArray),
