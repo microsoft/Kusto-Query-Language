@@ -7,7 +7,7 @@ namespace Kusto.Language
     using Syntax;
 
     [System.Diagnostics.DebuggerDisplay("{Severity}: ({Start}..{Start+Length}): {Message}")]
-    public sealed class Diagnostic
+    public sealed class Diagnostic : IEquatable<Diagnostic>
     {
         /// <summary>
         /// The code that uniquely identifies the specific kind of diagnostic.
@@ -166,6 +166,22 @@ namespace Kusto.Language
         }
 
         public static IReadOnlyList<Diagnostic> NoDiagnostics = new Diagnostic[0];
+
+        public bool Equals(Diagnostic other) =>
+            this.Code == other.Code
+            && this.Message == other.Message
+            && this.HasLocation 
+            && other.HasLocation
+            && this.Start == other.Start
+            && this.Length == other.Length;
+
+        public override bool Equals(object obj) =>
+            obj is Diagnostic d && Equals(d);
+
+        public override int GetHashCode() =>
+            this.Code.GetHashCode()
+            + this.Message.GetHashCode()
+            + this.Start;
     }
 
     public static class DiagnosticCategory

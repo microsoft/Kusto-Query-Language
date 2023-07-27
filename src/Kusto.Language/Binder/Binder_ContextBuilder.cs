@@ -146,8 +146,7 @@ namespace Kusto.Language.Binding
                         && node.EntityGroup is NameReference entityGroupName)
                     {
                         // it is an implicit syntax of macro-expand
-                        var egName = entityGroupName.SimpleName;
-                        scopeSymbol = new EntityGroupElementSymbol(egName, egSymbol);
+                        scopeSymbol = new EntityGroupElementSymbol(entityGroupName.SimpleName, egSymbol);
                         _binder._localScope.AddSymbol(scopeSymbol);
                     }
                 }

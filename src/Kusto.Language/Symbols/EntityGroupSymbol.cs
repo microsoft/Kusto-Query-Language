@@ -3,9 +3,6 @@ using System.Text;
 
 namespace Kusto.Language.Symbols
 {
-    using Syntax;
-    using System;
-    using System.Linq;
     using Utils;
 
     /// <summary>
@@ -93,5 +90,7 @@ namespace Kusto.Language.Symbols
         public override Tabularity Tabularity => Tabularity.None;
 
         public override SymbolKind Kind => SymbolKind.EntityGroup;
+
+        public static readonly EntityGroupSymbol Empty = new EntityGroupSymbol();
     }
 }

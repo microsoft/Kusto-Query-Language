@@ -255,6 +255,7 @@ namespace Kusto.Language.Binding
 
             public override void VisitMacroExpandOperator(MacroExpandOperator node)
             {
+                // analyze parameters
                 node.Parameters.Accept(this);
 
                 // set fuzziness of entity evaluation
@@ -265,29 +266,118 @@ namespace Kusto.Language.Binding
                     _binder._isFuzzy = isFuzzy.Value;
                 }
 
+                // analyze entity group
                 node.EntityGroup.Accept(this);
+                _binder._isFuzzy = false;
+
+                // define scope symbol
                 node.ScopeReferenceName?.Accept(this);
 
-                // put entity group scope reference symbol into scope...
-                if (node.ScopeReferenceName?.EntityGroupReferenceName?.ReferencedSymbol is EntityGroupElementSymbol scopeSymbol)
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
                 {
-                    // scope symbol was set on scope reference name
-                    _binder._localScope.AddSymbol(node.ScopeReferenceName.EntityGroupReferenceName.ReferencedSymbol);
+                    var resultTables = new List<TableSymbol>();
+                    var alternateStatementLists = new List<SyntaxNode>();
+
+                    var egSymbol = node.EntityGroup.ResultType as EntityGroupSymbol;
+                    var declaredScope = node.ScopeReferenceName?.EntityGroupReferenceName?.ReferencedSymbol as EntityGroupElementSymbol;
+                    var entityGroupNameReference = node.EntityGroup as NameReference;
+                    var scopeName = 
+                        node.ScopeReferenceName?.EntityGroupReferenceName?.SimpleName
+                        ?? entityGroupNameReference?.SimpleName
+                        ?? egSymbol?.Name
+                        ?? "$scope";
+
+                    var oldScope = _binder._localScope;
+
+                    if (egSymbol != null)
+                    {
+                        // evaluate statement list once per entity group member
+                        foreach (var entitySymbol in egSymbol.Members.OfType<TypeSymbol>())
+                        {
+                            _binder._localScope = new LocalScope(oldScope);
+
+                            SyntaxList<SeparatedElement<Statement>> statements;
+
+                            // the primary entity is the one associated with the declared scope
+                            var isPrimaryEntity = declaredScope?.UnderlyingSymbol == entitySymbol;
+                            if (isPrimaryEntity)
+                            {
+                                // associate declared scope with original statement list
+                                _binder._localScope.AddSymbol(declaredScope);
+                                statements = node.StatementList;
+                            }
+                            else
+                            {
+                                // use alternate scopes for other entity group members 
+                                var alternateScope = new EntityGroupElementSymbol(scopeName, egSymbol, entitySymbol);
+                                _binder._localScope.AddSymbol(alternateScope);
+
+                                // make copy of statement list to hold alternate semantic evaluation
+                                statements = node.StatementList.CopyAsFragment();
+
+                                // remember alternate evaluated statement lists
+                                alternateStatementLists.Add(statements);
+                            }
+
+                            statements.Accept(this);
+
+                            if (GetFirstExpressionStatement(statements) is ExpressionStatement es)
+                            {
+                                _binder.CheckIsTabular(es.Expression, diagnostics);
+                                if (GetResultType(es.Expression) is TableSymbol ts)
+                                {
+                                    resultTables.Add(ts);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // no valid entity group, so evaluate statements just once with temp scope.
+                        if (declaredScope != null)
+                        {
+                            _binder._localScope.AddSymbol(declaredScope);
+                        }
+                        else
+                        {
+                            var tempScopeSymbol = new EntityGroupElementSymbol(scopeName);
+                            _binder._localScope.AddSymbol(tempScopeSymbol);
+                        }
+
+                        node.StatementList.Accept(this);
+                    }
+
+                    _binder._localScope = oldScope;
+                    _binder._isFuzzy = oldIsFuzzy;
+
+                    var resultType = TableSymbol.Combine(CombineKind.UnifySameNameAndType, resultTables);
+                    var info = new SemanticInfo(resultType, diagnostics);
+                    _binder.SetSemanticInfo(node, info);
+
+                    if (alternateStatementLists.Count > 0)
+                    {
+                        var statementsInfo = new SemanticInfo(null).WithAlternates(alternateStatementLists);
+                        _binder.SetSemanticInfo(node.StatementList, statementsInfo);
+                    }
                 }
-                else if (node.EntityGroup.ResultType is EntityGroupSymbol egSymbol
-                    && node.EntityGroup is NameReference entityGroupName)
-                {    
-                    // it is an implicit syntax of macro-expand
-                    var egName = entityGroupName.SimpleName;
-                    scopeSymbol = new EntityGroupElementSymbol(egName, egSymbol);
-                    _binder._localScope.AddSymbol(scopeSymbol);
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            private static ExpressionStatement GetFirstExpressionStatement(SyntaxList<SeparatedElement<Statement>> statements)
+            {
+                for (int i = 0; i < statements.Count; i++)
+                {
+                    if (statements[i].Element is ExpressionStatement es)
+                    {
+                        return es;
+                    }
                 }
 
-                _binder._isFuzzy = false;
-                node.StatementList.Accept(this);
-                _binder._isFuzzy = oldIsFuzzy;
-
-                BindNode(node);
+                return null;
             }
 
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)

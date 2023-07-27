@@ -352,6 +352,14 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified cluster list.
+        /// </summary>
+        public GlobalState WithClusterList(params ClusterSymbol[] clusters)
+        {
+            return WithClusterList((IReadOnlyList<ClusterSymbol>)clusters);
+        }
+
+        /// <summary>
         /// Constructs a new <see cref="GlobalState"/> with either
         /// the cluster with the same name replaced with the new cluster
         /// or the new cluster added.
@@ -396,6 +404,14 @@ namespace Kusto.Language
                 var newClusters = AddOrReplace(this.Clusters, cluster);
                 return WithClusterList(newClusters).WithCluster(cluster);
             }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified default cluster.
+        /// </summary>
+        public GlobalState WithCluster(string clusterName)
+        {
+            return WithCluster(GetCluster(clusterName) ?? ClusterSymbol.Unknown);
         }
 
         /// <summary>
@@ -471,6 +487,14 @@ namespace Kusto.Language
                     return WithCluster(cluster).WithDatabase(database);
                 }
             }
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified default database.
+        /// </summary>
+        public GlobalState WithDatabase(string databaseName)
+        {
+            return WithDatabase(this.Cluster.GetDatabase(databaseName) ?? DatabaseSymbol.Unknown);
         }
 
         /// <summary>

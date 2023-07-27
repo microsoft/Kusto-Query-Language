@@ -63,6 +63,14 @@ namespace Kusto.Language.Syntax
             GetSemanticInfo()?.CalledFunctionInfo?.HasErrors ?? false;
 
         /// <summary>
+        /// A list of alternate versions of this node with differing semantics.
+        /// For example, macro-expand statement lists may have multiple different 
+        /// semantic evaluations based on entity group elements.
+        /// </summary>
+        public IReadOnlyList<SyntaxNode> Alternates =>
+            GetSemanticInfo()?.Alternates;
+
+        /// <summary>
         /// Semantic diagnostics associated with this location.
         /// </summary>
         public IReadOnlyList<Diagnostic> SemanticDiagnostics =>
@@ -87,9 +95,9 @@ namespace Kusto.Language.Syntax
     [Flags]
     public enum DiagnosticsInclude
     {
-        Syntactic = 0b0001,
-        Semantic  = 0b0010,
-        Expansion = 0b0100
+        Syntactic  = 0b0001,
+        Semantic   = 0b0010,
+        Expansion  = 0b0100
     }
 
     public abstract partial class SyntaxElement
@@ -97,11 +105,13 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Gets diagnostics for this <see cref="SyntaxNode"/> an all child elements.
         /// </summary>
-        public IReadOnlyList<Diagnostic> GetContainedDiagnostics(DiagnosticsInclude include = DiagnosticsInclude.Syntactic | DiagnosticsInclude.Semantic, CancellationToken cancellationToken = default(CancellationToken))
+        public IReadOnlyList<Diagnostic> GetContainedDiagnostics(
+            DiagnosticsInclude include = DiagnosticsInclude.Syntactic | DiagnosticsInclude.Semantic,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var list = new List<Diagnostic>();
             GatherDiagnostics(this, list, include, cancellationToken: cancellationToken);
-            return list.AsReadOnly();
+            return list.Distinct().ToReadOnly();
         }
 
         protected static void GatherDiagnostics(
@@ -119,7 +129,7 @@ namespace Kusto.Language.Syntax
                 ? (Func<SyntaxElement, bool>)((SyntaxElement e) => e.ContainsSyntaxDiagnostics)
                 : null;
 
-            SyntaxElement.WalkElements(root, 
+            SyntaxElement.WalkElements(root,
                 fnBefore: element =>
                 {
                     if (element.HasSyntaxDiagnostics && includeSyntax)
@@ -132,10 +142,12 @@ namespace Kusto.Language.Syntax
                     {
                         diagnostics.AddRange(node.SemanticDiagnostics);
                     }
-                }, 
+                },
                 fnAfter: element =>
                 {
-                    if (includeExpansion && element is Expression expr && expr.GetCalledFunctionBody() is SyntaxNode calledBody)
+                    if (includeExpansion 
+                        && element is Expression expr 
+                        && expr.GetCalledFunctionBody() is SyntaxNode calledBody)
                     {
                         var originalCount = diagnostics.Count;
                         GatherDiagnostics(calledBody, diagnostics, include, cancellationToken);
@@ -154,9 +166,37 @@ namespace Kusto.Language.Syntax
                             }
                         }
                     }
+
+                    if (includeSemantic
+                        && element is SyntaxNode node
+                        && node.Alternates != null)
+                    {
+                        var tmpDiagnostics = _diagnosticListPool.AllocateFromPool();
+                        try
+                        {
+                            foreach (var alternate in node.Alternates)
+                            {
+                                tmpDiagnostics.Clear();
+                                GatherDiagnostics(alternate, tmpDiagnostics, include, cancellationToken);
+           
+                                // add adjusted diagnostics
+                                diagnostics.AddRange(
+                                    tmpDiagnostics
+                                    .Where(d => d.HasLocation)
+                                    .Select(d => d.WithLocation(alternate.GetPositionInOriginalTree(d.Start), d.Length)));
+                            }
+                        }
+                        finally
+                        {
+                            _diagnosticListPool.ReturnToPool(tmpDiagnostics);
+                        }
+                    }
                 },
                 fnDescend: fnDescend);
         }
+
+        private static readonly ObjectPool<List<Diagnostic>> _diagnosticListPool =
+            new ObjectPool<List<Diagnostic>>(() => new List<Diagnostic>(), list => list.Clear());
 
         private static Diagnostic SetLocation(Diagnostic d, SyntaxElement element)
         {

@@ -3382,7 +3382,9 @@ namespace Kusto.Language.Binding
                 if (node.Parent is MacroExpandOperator macroExpand
                     && macroExpand.EntityGroup?.ResultType is EntityGroupSymbol entityGroup)
                 {
-                    var scopeSymbol = new EntityGroupElementSymbol(node.EntityGroupReferenceName.SimpleName, entityGroup);
+                    var scopeSymbol = new EntityGroupElementSymbol(
+                        node.EntityGroupReferenceName.SimpleName, 
+                        entityGroup);
                     _binder.SetSemanticInfo(node.EntityGroupReferenceName, new SemanticInfo(scopeSymbol, scopeSymbol));
                 }
 
@@ -3391,29 +3393,8 @@ namespace Kusto.Language.Binding
 
             public override SemanticInfo VisitMacroExpandOperator(MacroExpandOperator node)
             {
-                var diagnostics = s_diagnosticListPool.AllocateFromPool();
-                TableSymbol tableSymbol = null;
-                try
-                {
-                    for (int i = 0, n = node.StatementList.Count; i < n; i++)
-                    {
-                        // we must find exactly one like this.
-                        if (node.StatementList[i].Element is ExpressionStatement exprStatement)
-                        {
-                            _binder.CheckIsTabular(exprStatement.Expression, diagnostics);
-                            tableSymbol = GetResultType(exprStatement.Expression) as TableSymbol;
-                            
-                            // skipping the loop, we found the required expression.
-                            break;
-                        }
-                    }
-
-                    return new SemanticInfo(tableSymbol, diagnostics);
-                }
-                finally
-                {
-                    s_diagnosticListPool.ReturnToPool(diagnostics);
-                }
+                // handled in TreeBinder
+                return null;
             }
 
             public override SemanticInfo VisitMakeGraphOperator(MakeGraphOperator node)
@@ -3670,7 +3651,7 @@ namespace Kusto.Language.Binding
                 // handled by containing node
                 return null;
             }
-            #endregion
+#endregion
 
             #region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics

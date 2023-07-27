@@ -47,7 +47,7 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// Returns the original <see cref="SyntaxNode"/> in the original <see cref="SyntaxTree"/>
+        /// Returns the corresponding node in the original syntax tree
         /// for a node in a copied tree fragment.
         /// </summary>
         public SyntaxNode GetOriginalNode()
@@ -67,6 +67,39 @@ namespace Kusto.Language.Syntax
             }
 
             return node;
+        }
+
+        /// <summary>
+        /// Gets the equivalent position in the original syntax tree
+        /// as the position within this copied tree fragment.
+        /// </summary>
+        public int GetPositionInOriginalTree(int position)
+        {
+            var originalPosition = position;
+            var tree = this.Tree;
+
+            while (tree.Original != null)
+            {
+                originalPosition += tree.OffsetInOriginal;
+                tree = tree.Original;
+            }
+
+            return originalPosition;
+        }
+    }
+
+    public static class SyntaxNodeExtensions
+    {
+        /// <summary>
+        /// Copies this node as the root of a separate syntax tree fragment.
+        /// </summary>
+        public static T CopyAsFragment<T>(this T node)
+            where T : SyntaxNode
+        {
+            var cloned = node.Clone();
+            // creating new tree attaches to cloned node
+            var _= new SyntaxTree(cloned, node.Tree, node.TriviaStart);
+            return (T)cloned;
         }
     }
 

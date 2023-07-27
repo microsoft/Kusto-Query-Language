@@ -10,22 +10,47 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class EntityGroupElementSymbol : TypeSymbol
     {
+        /// <summary>
+        /// The associated <see cref="EntityGroupSymbol"/>.
+        /// </summary>
         public EntityGroupSymbol EntityGroup { get; }
+
+        /// <summary>
+        /// The actual entity symbol within the entity group that is currently being referenced.
+        /// </summary>
         public TypeSymbol UnderlyingSymbol { get; }
 
-        public EntityGroupElementSymbol(string name, EntityGroupSymbol entityGroup)
+        public EntityGroupElementSymbol(string name, EntityGroupSymbol entityGroup, TypeSymbol underlyingSymbol)
             : base(name)
         {
-            this.EntityGroup = entityGroup.CheckArgumentNull(nameof(entityGroup));
+            this.EntityGroup = entityGroup ?? EntityGroupSymbol.Empty;
 
-            // currently, the underlying symbol is just this first symbol in the group
-            this.UnderlyingSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault(s => s.Members.Count > 0);
+            if (underlyingSymbol == null)
+            {
+                // Use the first entity in the group with members, otherwise the first entity.
+                underlyingSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault(entity => entity.Members.Count > 0)
+                    ?? entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault();
+            }
+            else
+            {
+                // if specified in constructor, must be one of symbols in group.
+                System.Diagnostics.Debug.Assert(entityGroup.Members.Any(m => m == underlyingSymbol));
+            }
 
-            if (this.UnderlyingSymbol == null)
-                this.UnderlyingSymbol = entityGroup?.Members.OfType<TypeSymbol>().FirstOrDefault();
+            if (underlyingSymbol == null)
+                underlyingSymbol = ErrorSymbol.Instance;
 
-            if (this.UnderlyingSymbol == null)
-                this.UnderlyingSymbol = ErrorSymbol.Instance;
+            this.UnderlyingSymbol = underlyingSymbol;
+        }
+
+        public EntityGroupElementSymbol(string name, EntityGroupSymbol entityGroup)
+            : this(name, entityGroup, null)
+        {
+        }
+
+        public EntityGroupElementSymbol(string name)
+            : this(name, null, null)
+        {
         }
 
         public override IReadOnlyList<Symbol> Members => SpecialMembers;

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
@@ -14,7 +10,7 @@ namespace Kusto.Language.Binding
     /// <summary>
     /// The semantic information associated with a <see cref="SyntaxNode"/>.
     /// </summary>
-    internal class SemanticInfo
+    internal sealed class SemanticInfo
     {
         private readonly object _referencedSymbolOrSignature;
 
@@ -86,18 +82,25 @@ namespace Kusto.Language.Binding
         /// </summary>
         public FunctionCallInfo CalledFunctionInfo { get; }
 
+        /// <summary>
+        /// A list of alternate versions of the associated node with differing semantics (or null).
+        /// </summary>
+        public IReadOnlyList<SyntaxNode> Alternates { get; }
+
         private SemanticInfo(
             object referenced,
             TypeSymbol result,
             IEnumerable<Diagnostic> diagnostics,
             bool isConstant,
-            FunctionCallInfo calledFunctionInfo)
+            FunctionCallInfo calledFunctionInfo,
+            IReadOnlyList<SyntaxNode> alternates)
         {
             _referencedSymbolOrSignature = referenced;
             this.ResultType = result;
             this.Diagnostics = diagnostics != null ? diagnostics.ToReadOnly() : Diagnostic.NoDiagnostics;
             this.IsConstant = isConstant;
             this.CalledFunctionInfo = calledFunctionInfo;
+            this.Alternates = alternates;
         }
 
         public SemanticInfo(
@@ -106,7 +109,7 @@ namespace Kusto.Language.Binding
             IEnumerable<Diagnostic> diagnostics = null,
             bool isConstant = false,
             FunctionCallInfo calledFunctionInfo = null)
-            : this((object)referencedSymbol, result, diagnostics, isConstant, calledFunctionInfo)
+            : this((object)referencedSymbol, result, diagnostics, isConstant, calledFunctionInfo, null)
         {
         }
 
@@ -116,7 +119,7 @@ namespace Kusto.Language.Binding
             IEnumerable<Diagnostic> diagnostics = null,
             bool isConstant = false,
             FunctionCallInfo calledFunctionInfo = null)
-            : this((object)referencedSignature, result, diagnostics, isConstant, calledFunctionInfo)
+            : this((object)referencedSignature, result, diagnostics, isConstant, calledFunctionInfo, null)
         {
         }
 
@@ -149,7 +152,7 @@ namespace Kusto.Language.Binding
         {
             if (this.ReferencedSymbol != symbol)
             {
-                return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+                return new SemanticInfo(symbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo, this.Alternates);
             }
             else
             {
@@ -161,7 +164,7 @@ namespace Kusto.Language.Binding
         {
             if (this.ReferencedSignature != signature)
             {
-                return new SemanticInfo(signature, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+                return new SemanticInfo(signature, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo, this.Alternates);
             }
             else
             {
@@ -173,7 +176,7 @@ namespace Kusto.Language.Binding
         {
             if (this.ResultType != type)
             {
-                return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo);
+                return new SemanticInfo(this.ReferencedSymbol, type, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo, this.Alternates);
             }
             else
             {
@@ -185,7 +188,7 @@ namespace Kusto.Language.Binding
         {
             if (this.Diagnostics != diagnostics)
             {
-                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.CalledFunctionInfo);
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, diagnostics, this.IsConstant, this.CalledFunctionInfo, this.Alternates);
             }
             else
             {
@@ -197,7 +200,7 @@ namespace Kusto.Language.Binding
         {
             if (this.IsConstant != isConstant)
             {
-                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.CalledFunctionInfo);
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, isConstant, this.CalledFunctionInfo, this.Alternates);
             }
             else
             {
@@ -209,7 +212,19 @@ namespace Kusto.Language.Binding
         {
             if (this.CalledFunctionInfo != calledFunctionInfo)
             {
-                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, calledFunctionInfo);
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, calledFunctionInfo, this.Alternates);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        public SemanticInfo WithAlternates(IReadOnlyList<SyntaxNode> alternates)
+        {
+            if (this.Alternates != alternates)
+            {
+                return new SemanticInfo(this.ReferencedSymbol, this.ResultType, this.Diagnostics, this.IsConstant, this.CalledFunctionInfo, alternates);
             }
             else
             {

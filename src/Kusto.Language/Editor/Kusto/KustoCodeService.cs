@@ -708,36 +708,49 @@ namespace Kusto.Language.Editor
 
         private void GetDatabaseReferences(SyntaxNode root, SyntaxNode location, ClusterSymbol defaultCluster, DatabaseSymbol defaultDatabase, List<DatabaseReference> refs, CancellationToken cancellationToken)
         {
-            root.WalkElements(element =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (element is Expression ex)
+            SyntaxElement.WalkNodes(
+                root,
+                fnBefore: node =>
                 {
-                    if (element is FunctionCallExpression fc
-                        && ex.ReferencedSymbol == Functions.Database)
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (node is Expression ex)
                     {
-                        // this is a call to database('xxx').. record 'xxx' as a database referenced
-                        var dbref = GetDatabaseReference(fc, location, defaultCluster);
-                        if (dbref != null)
+                        if (ex is FunctionCallExpression fc
+                            && ex.ReferencedSymbol == Functions.Database)
                         {
-                            refs.Add(dbref);
+                            // this is a call to database('xxx').. record 'xxx' as a database referenced
+                            var dbref = GetDatabaseReference(fc, location, defaultCluster);
+                            if (dbref != null)
+                            {
+                                refs.Add(dbref);
+                            }
                         }
-                    }
-                    else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts
-                            && funFacts.HasDatabaseCall)
-                    {
-                        // also get all database references inside the bodies of called functions
-                        var calledBody = ex.GetCalledFunctionBody();
-                        if (calledBody != null)
+                        else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts
+                                && funFacts.HasDatabaseCall)
                         {
-                            var db = this.globals.GetDatabase(ex.ReferencedSymbol) ?? defaultDatabase;
-                            var cluster = this.globals.GetCluster(db) ?? defaultCluster;
-                            GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
+                            // also get all database references inside the bodies of called functions
+                            var calledBody = ex.GetCalledFunctionBody();
+                            if (calledBody != null)
+                            {
+                                var db = this.globals.GetDatabase(ex.ReferencedSymbol) ?? defaultDatabase;
+                                var cluster = this.globals.GetCluster(db) ?? defaultCluster;
+                                GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
+                            }
+                        }
+                    }              
+                },
+                fnAfter: node =>
+                {
+                    if (node.Alternates != null)
+                    {
+                        foreach (var alternate in node.Alternates)
+                        {
+                            GetDatabaseReferences(alternate, location, defaultCluster, defaultDatabase, refs, cancellationToken);
                         }
                     }
                 }
-            });
+            );
         }
 
         private DatabaseReference GetDatabaseReference(FunctionCallExpression fc, SyntaxNode location, ClusterSymbol defaultCluster)
@@ -747,18 +760,22 @@ namespace Kusto.Language.Editor
             {
                 location = location ?? fc.ArgumentList.Expressions[0].Element;
 
-                // get cluster name from explicit cluster reference (if possible)
-                if (!(fc.Parent is PathExpression p 
-                    && p.Selector == fc 
-                    && p.Expression is FunctionCallExpression fcCluster 
-                    && fcCluster.ReferencedSymbol == Functions.Cluster
-                    && TryGetConstantStringArgumentValue(fcCluster, 0, out var cluster)))
+                string clusterName;
+
+                // get cluster name from path expression if possible
+                if (fc.Parent is PathExpression p
+                    && p.Selector == fc
+                    && p.Expression.ResultType is ClusterSymbol cs)
+                {
+                    clusterName = cs.Name;
+                }
+                else
                 {
                     // otherwise use the default cluster
-                    cluster = defaultCluster.Name;
+                    clusterName = defaultCluster?.Name ?? globals.Cluster.Name;
                 }
 
-                return new DatabaseReference(databaseName, cluster, location.TextStart, location.Width);
+                return new DatabaseReference(databaseName, clusterName, location.GetPositionInOriginalTree(location.TextStart), location.Width);
             }
 
             return null;
