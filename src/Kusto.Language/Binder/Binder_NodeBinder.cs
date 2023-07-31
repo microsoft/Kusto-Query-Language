@@ -3400,6 +3400,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitMakeGraphOperator(MakeGraphOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                List<TableSymbol> nodesShape = null;
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -3407,41 +3408,31 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsColumn(node.SourceColumn, diagnostics);
                     _binder.CheckIsColumn(node.TargetColumn, diagnostics);
 
-                    GraphSymbol symbol;
-
                     if (node.WithClause != null)
                     {
-                        var tables = s_tableListPool.AllocateFromPool();
-                        try
+                        nodesShape = s_tableListPool.AllocateFromPool();
+                        for (int i = 0; i < node.WithClause.TablesAndKeys.Count; i++)
                         {
-                            for (int i = 0; i < node.WithClause.TablesAndKeys.Count; i++)
+                            var tableAndKey = node.WithClause.TablesAndKeys[i].Element;
+                            _binder.CheckIsTabular(tableAndKey.Table, diagnostics);
+
+                            if (tableAndKey.Table.ResultType is TableSymbol table)
                             {
-                                var tableAndKey = node.WithClause.TablesAndKeys[i].Element;
-                                _binder.CheckIsTabular(tableAndKey.Table, diagnostics);
-
-                                if (tableAndKey.Table.ResultType is TableSymbol table)
-                                {
-                                    tables.Add(table);
-                                }
+                                nodesShape.Add(table);
                             }
-
-                            symbol = new GraphSymbol(this.RowScopeOrEmpty, tables);
-                        }
-                        finally
-                        {
-                            s_tableListPool.ReturnToPool(tables);
                         }
                     }
-                    else
-                    {
-                        symbol = new GraphSymbol(this.RowScopeOrEmpty);
-                    }
 
+                    var symbol = new GraphSymbol(this.RowScopeOrEmpty, nodesShape);
                     return new SemanticInfo(symbol, diagnostics);
                 }
                 finally
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
+                    if (nodesShape != null)
+                    {
+                        s_tableListPool.ReturnToPool(nodesShape);
+                    }
                 }
             }
 
@@ -3509,7 +3500,29 @@ namespace Kusto.Language.Binding
 
                     if (node.ProjectClause != null)
                     {
-                        _binder.CreateProjectionColumns(node.ProjectClause.Expressions, builder, diagnostics, ProjectionStyle.GraphMatch);
+                        // Getting all edges that are variable edges and has name
+                        var variableEdges = new List<NameDeclaration>();
+                        node.Patterns.WalkElements(element =>
+                        {
+                            if (element is GraphMatchPatternEdge edge && edge.Range != null && edge.Name != null)
+                            {
+                                variableEdges.Add(edge.Name);
+                            }
+                        });
+
+                        foreach (var expr in node.ProjectClause.Expressions)
+                        {
+                            TypeSymbol columnType = null;
+                            var nameRef = GetGraphPatternElementExpression(expr.Element);
+                            if (variableEdges.Any(ve => nameRef is NameReference nr && ve.SimpleName == nr.SimpleName))
+                            {
+                                var colType = GetResultTypeOrError(expr.Element);
+                                columnType = ScalarTypes.GetDynamicArray(colType);
+                            }
+                            
+                            _binder.CreateProjectionColumns(expr.Element, builder, diagnostics, ProjectionStyle.GraphMatch, columnType: columnType);
+                        }
+
                         symbol = new TableSymbol(builder.GetProjection());
                     }
                     else
@@ -3612,32 +3625,26 @@ namespace Kusto.Language.Binding
 
             private TableSymbol VisitGraphToTableEdgesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var edgeShape = graph.EdgeShape.WithName(node.AsClause?.Name?.SimpleName);
-                var withSourceId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithSourceId);
-                if (!string.IsNullOrEmpty(withSourceId))
-                {
-                    edgeShape.AddColumns(new ColumnSymbol(withSourceId, ScalarTypes.Long));
-                }
-
-                var withTargetId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithTargetId);
-                if (!string.IsNullOrEmpty(withTargetId))
-                {
-                    edgeShape.AddColumns(new ColumnSymbol(withTargetId, ScalarTypes.Long));
-                }
-
-                return edgeShape;
+                var edgesShape = (graph.EdgeShape ?? this.RowScopeOrEmpty).WithName(node.AsClause?.Name?.SimpleName);
+                edgesShape = AddGraphToTableHashColumn(node, edgesShape, QueryOperatorParameters.WithSourceId);
+                return AddGraphToTableHashColumn(node, edgesShape, QueryOperatorParameters.WithTargetId);
             }
 
             private TableSymbol VisitGraphToTableNodesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var nodesShape = graph.NodeShape.WithName(node.AsClause?.Name?.SimpleName);
-                var withNodeId = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithNodeId);
-                if (!string.IsNullOrEmpty(withNodeId))
+                var nodesShape = (graph.NodeShape ?? this.RowScopeOrEmpty).WithName(node.AsClause?.Name?.SimpleName);
+                return AddGraphToTableHashColumn(node, nodesShape, QueryOperatorParameters.WithNodeId);
+            }
+
+            private TableSymbol AddGraphToTableHashColumn(GraphToTableOutputClause node, TableSymbol table, QueryOperatorParameter parameter)
+            {
+                var hashColumn = node.Parameters.GetParameterNameValue(parameter);
+                if (!string.IsNullOrEmpty(hashColumn))
                 {
-                    nodesShape.AddColumns(new ColumnSymbol(withNodeId, ScalarTypes.Long));
+                    return table.AddColumns(new ColumnSymbol(hashColumn, ScalarTypes.Long));
                 }
 
-                return nodesShape;
+                return table;
             }
 
             public override SemanticInfo VisitGraphToTableOutputClause(GraphToTableOutputClause node)

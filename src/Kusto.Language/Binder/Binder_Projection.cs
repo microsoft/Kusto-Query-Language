@@ -742,5 +742,34 @@ namespace Kusto.Language.Binding
             
             return !string.IsNullOrWhiteSpace(left) ? $"{left}_{right}" : right;
         }
+
+        public static Expression GetGraphPatternElementExpression(Expression expression)
+        {
+            if (expression == null)
+            {
+                return null;
+            }
+
+            Expression patternExpression;
+            if (expression is PathExpression pathExpression)
+            {
+                patternExpression = pathExpression.Expression;
+            }
+            else if (expression is ElementExpression elementExpression)
+            {
+                patternExpression = elementExpression.Expression;
+            }
+            else
+            {
+                patternExpression = GetUnderlyingExpression(expression);
+            }
+            
+            if (patternExpression.Kind == SyntaxKind.ElementExpression || patternExpression.Kind == SyntaxKind.PathExpression)
+            {
+                patternExpression = GetGraphPatternElementExpression(patternExpression);
+            }
+
+            return patternExpression;
+        }
     }
 }
