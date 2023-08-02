@@ -209,11 +209,11 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExtractAll_Deprecated =
              new FunctionSymbol("extractall",
                 new Signature(
-                    ScalarTypes.DynamicArrayOfString,
+                    ScalarTypes.DynamicArray,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("source", ScalarTypes.String)),
                 new Signature(
-                    ScalarTypes.DynamicArrayOfString,
+                    ScalarTypes.DynamicArray,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroups", ParameterTypeKind.DynamicArray),
                     new Parameter("source", ScalarTypes.String)))
@@ -224,11 +224,11 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ExtractAll =
             new FunctionSymbol("extract_all",
                 new Signature(
-                    ScalarTypes.DynamicArrayOfString,
+                    ScalarTypes.DynamicArray,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("source", ScalarTypes.String)),
                 new Signature(
-                    ScalarTypes.DynamicArrayOfString,
+                    ScalarTypes.DynamicArray,
                     new Parameter("regex", ScalarTypes.String, ArgumentKind.Constant),
                     new Parameter("captureGroups", ParameterTypeKind.DynamicArray),
                     new Parameter("source", ScalarTypes.String)))
