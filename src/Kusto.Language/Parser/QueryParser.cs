@@ -5326,33 +5326,36 @@ namespace Kusto.Language.Parsing
             if (ParseToken(SyntaxKind.GraphMatchKeyword) is SyntaxToken keyword)
             {
                 var parameters = ParseQueryOperatorParameterList(s_graphMatchParameterMap, equalsNeeded: true);
-                var patterns = ParseCommaList(qp => 
-                    qp.ParseList(FnParseGraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, FnScanCommonListEnd, oneOrMore: true),
-                    () => new SyntaxList<GraphMatchPatternNotation>(CreateMissingGraphMatchPatternNotation()),
-                    oneOrMore: true);
+                var patterns = ParseCommaList(FnParseGraphMatchPattern, FnCreateMissingGraphMatchPattern, oneOrMore: true);
                 var whereClause = ParseWhereClause();
                 var projectClause = ParseProjectClause();
+
                 return new GraphMatchOperator(keyword, parameters, patterns, whereClause, projectClause);
             }
 
             return null;
         }
 
-        private static Func<GraphMatchPatternNotation> CreateMissingGraphMatchPatternNotation = () =>
-            new GraphMatchPatternNode(
+        private static readonly SyntaxKind[] s_rangeEndTokens = new SyntaxKind[]
+        {
+            SyntaxKind.BracketDashGreaterThanToken,
+            SyntaxKind.BracketDashToken
+        };
+
+        private static Func<GraphMatchPatternNotation> FnCreateMissingGraphMatchPatternNotation = 
+            () => new GraphMatchPatternNode(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
-                new Diagnostic[] { DiagnosticFacts.GetMissingGraphMatchPattern() });
+                new Diagnostic[] { DiagnosticFacts.GetMissingGraphMatchPattern() }
+            );
 
-        private static Func<QueryParser, GraphMatchPatternNotation> FnParseGraphMatchPatternNotation =
-            qp => qp.ParseGraphMatchPatternNotation();
+        private static Func<GraphMatchPattern> FnCreateMissingGraphMatchPattern =
+            () => new GraphMatchPattern(new SyntaxList<GraphMatchPatternNotation>(FnCreateMissingGraphMatchPatternNotation()));
 
-        private GraphMatchPatternNotation ParseGraphMatchPatternNotation()
-        {
-            return ParseGraphMatchPatternNode()
-                ?? ParseGraphMatchPatternEdge();
-        }
+        private static Func<QueryParser, GraphMatchPatternNotation> FnParseGraphMatchPatternNotation = qp => qp.ParseGraphMatchPatternNode() ?? qp.ParseGraphMatchPatternEdge();
+
+        private static Func<QueryParser, GraphMatchPattern> FnParseGraphMatchPattern = qp => new GraphMatchPattern(qp.ParseList(FnParseGraphMatchPatternNotation, FnCreateMissingGraphMatchPatternNotation, oneOrMore: true));
 
         private GraphMatchPatternNotation ParseGraphMatchPatternNode()
         {
@@ -5397,13 +5400,6 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-
-        private static readonly SyntaxKind[] s_rangeEndTokens = new SyntaxKind[]
-        {
-            SyntaxKind.BracketDashGreaterThanToken, 
-            SyntaxKind.BracketDashToken
-        };
-
 
         private GraphMatchPatternEdgeRange ParseGraphMatchPatternEdgeRange()
         {

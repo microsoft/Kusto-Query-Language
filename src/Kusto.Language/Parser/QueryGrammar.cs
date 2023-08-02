@@ -2768,16 +2768,21 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.CloseParenToken),
                     (open, name, close) => 
                         (GraphMatchPatternNotation) new GraphMatchPatternNode(open, name, close));
-
-            var GraphMatchPatternNotation =
-                First(
-                    GraphMatchPatternNode,
-                    GraphMatchPatternEdge);
+            
+            var GraphMatchPattern = Rule(
+                List(
+                    First(GraphMatchPatternNode, GraphMatchPatternEdge),
+                    CreateMissingGraphMatchPatternNotation,
+                    oneOrMore: true
+                ),
+                (elements) => new GraphMatchPattern(elements))
+                .WithCompletion(
+                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"), 
+                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)"));
 
             var GraphMatchPatternClause =
                 CommaList(
-                    List(GraphMatchPatternNotation, CreateMissingGraphMatchPatternNotation, oneOrMore: true)
-                        .WithCompletion(new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"), new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)")),
+                   GraphMatchPattern,
                     CreateMissingGraphMatchPattern,
                     oneOrMore: true,
                     endKinds: new[] { SyntaxKind.WhereKeyword, SyntaxKind.ProjectKeyword }
@@ -3533,10 +3538,12 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingGraphMatchPatternElement() });
 
-        private static SyntaxList<GraphMatchPatternNotation> CreateMissingGraphMatchPattern(Source<LexicalToken> source, int start) =>
-            new SyntaxList<GraphMatchPatternNotation>(
-                new[] { CreateMissingGraphMatchPatternNotation(source, start) },
-                new[] { DiagnosticFacts.GetMissingGraphMatchPattern() }
+        private static GraphMatchPattern CreateMissingGraphMatchPattern(Source<LexicalToken> source, int start) =>
+            new GraphMatchPattern(
+                new SyntaxList<GraphMatchPatternNotation>(
+                    new[] { CreateMissingGraphMatchPatternNotation(source, start) },
+                    new[] { DiagnosticFacts.GetMissingGraphMatchPattern() }
+                )
             );
 
         private static GraphToTableOutputClause CreateMissingGraphToTableOutputClause(Source<LexicalToken> source, int start) =>

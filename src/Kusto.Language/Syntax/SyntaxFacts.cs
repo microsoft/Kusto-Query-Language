@@ -573,6 +573,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GetSchemaOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.GraphMatchOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphMatchPattern, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternNode, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdge, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdgeRange, "", SyntaxCategory.Node),

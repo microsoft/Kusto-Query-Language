@@ -10517,7 +10517,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxList<NamedParameter> Parameters { get; }
         
-        public SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>> Patterns { get; }
+        public SyntaxList<SeparatedElement<GraphMatchPattern>> Patterns { get; }
         
         public WhereClause WhereClause { get; }
         
@@ -10526,7 +10526,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="GraphMatchOperator"/>.
         /// </summary>
-        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>> patterns, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal GraphMatchOperator(SyntaxToken graphMatchKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<SeparatedElement<GraphMatchPattern>> patterns, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.GraphMatchKeyword = Attach(graphMatchKeyword);
             this.Parameters = Attach(parameters);
@@ -10600,10 +10600,71 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<SyntaxList<GraphMatchPatternNotation>>>)Patterns?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new GraphMatchOperator((SyntaxToken)GraphMatchKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<GraphMatchPattern>>)Patterns?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class GraphMatchOperator */
+    
+    #region class GraphMatchPattern
+    public sealed partial class GraphMatchPattern : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMatchPattern;
+        
+        public SyntaxList<GraphMatchPatternNotation> PatternElements { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMatchPattern"/>.
+        /// </summary>
+        internal GraphMatchPattern(SyntaxList<GraphMatchPatternNotation> patternElements, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PatternElements = Attach(patternElements);
+            this.Init();
+        }
+        
+        public override int ChildCount => 1;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PatternElements;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PatternElements);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMatchPattern(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMatchPattern(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMatchPattern((SyntaxList<GraphMatchPatternNotation>)PatternElements?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMatchPattern */
     
     #region class GraphMatchPatternNotation
     public abstract partial class GraphMatchPatternNotation : SyntaxNode
@@ -15213,6 +15274,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract void VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract void VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract void VisitGraphMatchPattern(GraphMatchPattern node);
         public abstract void VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract void VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
         public abstract void VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node);
@@ -15809,6 +15871,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitGraphMatchPattern(GraphMatchPattern node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitGraphMatchPatternNode(GraphMatchPatternNode node)
         {
             this.DefaultVisit(node);
@@ -16169,6 +16235,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract TResult VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract TResult VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract TResult VisitGraphMatchPattern(GraphMatchPattern node);
         public abstract TResult VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract TResult VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
         public abstract TResult VisitGraphMatchPatternEdgeRange(GraphMatchPatternEdgeRange node);
@@ -16762,6 +16829,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitGraphMatchOperator(GraphMatchOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMatchPattern(GraphMatchPattern node)
         {
             return this.DefaultVisit(node);
         }

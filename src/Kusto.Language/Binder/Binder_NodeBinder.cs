@@ -3493,6 +3493,18 @@ namespace Kusto.Language.Binding
                         diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMatchKeyword));
                     }
 
+                    if (node.Patterns == null || node.Patterns.Count == 0)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetMissingGraphMatchPattern().WithLocation(node.Patterns));
+                    }
+                    else
+                    {
+                        foreach ( var pattern in node.Patterns)
+                        {
+                            CheckGraphMatchPattern(pattern.Element, diagnostics);
+                        }
+                    }
+
                     if (node.WhereClause != null)
                     {
                         _binder.CheckIsExactType(node.WhereClause.Condition, ScalarTypes.Bool, diagnostics);
@@ -3537,6 +3549,44 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_projectionBuilderPool.ReturnToPool(builder);
                 }
+            }
+
+            private void CheckGraphMatchPattern(GraphMatchPattern node, List<Diagnostic> diagnostics)
+            {
+                if (node.PatternElements == null || node.PatternElements.Count == 0)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetMissingGraphMatchPatternElement().WithLocation(node));
+                    return;
+                }
+
+                for (int i = 0; i < node.PatternElements.Count; i++)
+                {
+                    var element = node.PatternElements[i];
+                    var expectNode = i % 2 == 0;
+
+                    // Validate every element is the expected type
+                    if (expectNode && !(element is GraphMatchPatternNode))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetGraphMatchPatternSyntaxError("node", "edge").WithLocation(element));
+                    }
+                    else if (!expectNode && !(element is GraphMatchPatternEdge))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetGraphMatchPatternSyntaxError("edge", "node").WithLocation(element));
+                    }
+                }
+
+                // Validating pattern ends with node
+                var lastElement = node.PatternElements[node.PatternElements.Count - 1];
+                if (!(lastElement is GraphMatchPatternNode))
+                {
+                    diagnostics.Add(DiagnosticFacts.GetMissingGraphMatchPatternElement().WithLocation(lastElement));
+                }
+            }
+
+            public override SemanticInfo VisitGraphMatchPattern(GraphMatchPattern node)
+            {
+                // handled by VisitGraphMatchOperator
+                return null;
             }
 
             public override SemanticInfo VisitGraphMatchPatternNode(GraphMatchPatternNode node)

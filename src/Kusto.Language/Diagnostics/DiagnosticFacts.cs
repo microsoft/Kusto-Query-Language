@@ -900,6 +900,11 @@ namespace Kusto.Language
             return new Diagnostic("KS238", "Missing graph-match pattern element.");
         }
 
+        public static Diagnostic GetGraphMatchPatternSyntaxError(string expectedElementType, string actualElementType)
+        {
+            return new Diagnostic("KS239", $"graph-match element expected type is '{expectedElementType}', but received '{actualElementType}' type.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

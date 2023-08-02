@@ -547,7 +547,7 @@ namespace Kusto.Language.Binding
 
             foreach (var pattern in graphMatch.Patterns)
             {
-                foreach (var notation in pattern.Element)
+                foreach (var notation in pattern.Element.PatternElements)
                 {
                     if (notation is GraphMatchPatternNode node && node.Name != null)
                     {
@@ -567,7 +567,7 @@ namespace Kusto.Language.Binding
         {
             foreach (var pattern in graphMatch.Patterns)
             {
-                foreach (var notation in pattern.Element)
+                foreach (var notation in pattern.Element.PatternElements)
                 {
                     if (notation is GraphMatchPatternNode node && node.Name != null)
                     {

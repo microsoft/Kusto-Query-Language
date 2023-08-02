@@ -541,6 +541,7 @@
 
         GetSchemaOperator,
         GraphMatchOperator,
+        GraphMatchPattern,
         GraphMatchPatternNode,
         GraphMatchPatternEdge,
         GraphMatchPatternEdgeRange,
