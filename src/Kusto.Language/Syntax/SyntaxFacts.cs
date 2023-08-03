@@ -291,7 +291,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.TypeOfKeyword, "typeof", canBeIdentifier: true),
 
                 new SyntaxData(SyntaxKind.UnionKeyword, "union"),
-                new SyntaxData(SyntaxKind.UniqueKeyword, "__unique"),
                 new SyntaxData(SyntaxKind.UnrestrictedViewersKeyword, "unrestrictedviewers"),
 
                 new SyntaxData(SyntaxKind.VerboseKeyword, "verbose"),

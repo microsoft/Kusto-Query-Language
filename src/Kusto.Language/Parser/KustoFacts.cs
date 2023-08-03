@@ -241,7 +241,7 @@ namespace Kusto.Language
             "inner", "outer"
         };
 
-        public static readonly IReadOnlyList<string> UniqueKinds = new string[]
+        public static readonly IReadOnlyList<string> CyclesKinds = new string[]
         {
             "none", "edges", "nodes"
         };
