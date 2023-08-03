@@ -10077,11 +10077,36 @@ namespace Kusto.Language.Parsing
                     RequiredToken("policy"),
                     RequiredToken("update")));
 
+            var ShowTableUsageStatistics = Command("ShowTableUsageStatistics", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("usage"),
+                    RequiredToken("statistics"),
+                    RequiredToken("by"),
+                    Required(rules.Value, rules.MissingValue),
+                    new [] {CD(), CD(), CD(), CD(), CD(), CD("partitionBy", CompletionHint.Literal)}));
+
+            var ShowTableUsageStatisticsDetails = Command("ShowTableUsageStatisticsDetails", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("usage"),
+                    Token("statistics"),
+                    Token("details")));
+
+            var ShowTableUsageStatistics2 = Command("ShowTableUsageStatistics", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("usage"),
+                    RequiredToken("statistics")));
+
             var ShowTablePolicyAutoDelete = Command("ShowTablePolicyAutoDelete", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("auto_delete"),
                     shape195));
@@ -10090,7 +10115,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("caching"),
                     shape195));
@@ -10099,7 +10124,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("encoding"),
                     shape195));
@@ -10108,7 +10133,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("extent_tags_retention"),
                     shape195));
@@ -10117,7 +10142,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("ingestionbatching"),
                     shape195));
@@ -10126,7 +10151,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("merge"),
                     shape195));
@@ -10135,7 +10160,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("mirroring"),
                     shape195));
@@ -10144,7 +10169,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("partitioning"),
                     shape195));
@@ -10153,7 +10178,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("restricted_view_access"),
                     shape195));
@@ -10162,7 +10187,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("retention"),
                     shape195));
@@ -10171,7 +10196,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("roworder"),
                     shape195));
@@ -10180,7 +10205,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("sharding"),
                     shape195));
@@ -10189,7 +10214,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     Token("streamingingestion"),
                     shape195));
@@ -10198,7 +10223,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("policy"),
                     RequiredToken("update"),
                     shape195));
@@ -10207,7 +10232,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("rowstore_references"),
                     shape223));
 
@@ -10215,7 +10240,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     Token("rowstore_sealinfo"),
                     shape280));
 
@@ -10223,7 +10248,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.DatabaseTableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.DatabaseTableNameReference),
                     RequiredToken("rowstores"),
                     shape280));
 
@@ -10231,7 +10256,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("columns"),
                     RequiredToken("classification"),
                     shape195));
@@ -10240,7 +10265,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("column"),
                     RequiredToken("statistics"),
                     shape195));
@@ -10249,7 +10274,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("cslschema"),
                     shape223));
 
@@ -10257,7 +10282,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("data"),
                     RequiredToken("statistics"),
                     Optional(
@@ -10284,7 +10309,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("details"),
                     shape223));
 
@@ -10292,7 +10317,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("dimensions"),
                     shape223));
 
@@ -10300,7 +10325,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("extents"),
                     Required(
                         fragment58,
@@ -10311,7 +10336,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("extents"),
                     Optional(
                         fragment46),
@@ -10327,7 +10352,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("extents"),
                     Optional(
                         fragment45),
@@ -10347,7 +10372,7 @@ namespace Kusto.Language.Parsing
                     new Parser<LexicalToken>[] {
                         Token("show", CompletionKind.CommandPrefix),
                         Token("table"),
-                        If(Not(Token("*")), rules.TableNameReference),
+                        If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                         Token("extents"),
                         Optional(
                             fragment45),
@@ -10365,7 +10390,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("extents"),
                     Optional(
                         fragment45),
@@ -10376,7 +10401,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("ingestion"),
                     Optional(
                         Custom(
@@ -10389,7 +10414,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("ingestion"),
                     Optional(
                         Custom(
@@ -10403,7 +10428,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("kqlschema"),
                     shape223));
 
@@ -10411,7 +10436,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("mirroring"),
                     Token("operations"),
                     Token("exported-artifacts"),
@@ -10421,7 +10446,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("mirroring"),
                     Token("operations"),
                     Token("failures"),
@@ -10431,7 +10456,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("mirroring"),
                     RequiredToken("operations"),
                     RequiredToken("status"),
@@ -10441,7 +10466,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("policy"),
                     Token("ingestiontime"),
                     shape195));
@@ -10450,7 +10475,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("policy"),
                     RequiredToken("row_level_security"),
                     shape195));
@@ -10459,7 +10484,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("principals"),
                     shape223));
 
@@ -10467,7 +10492,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("principal"),
                     Required(
                         First(
@@ -10482,7 +10507,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("schema"),
                     RequiredToken("as"),
                     RequiredToken("json"),
@@ -10492,7 +10517,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("shard-groups").Hide(),
                     Token("statistics").Hide(),
                     shape195));
@@ -10501,7 +10526,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("shard-groups").Hide(),
                     shape223));
 
@@ -10509,7 +10534,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("shards-group").Hide(),
                     rules.AnyGuidLiteralOrString,
                     Token("shards").Hide(),
@@ -10520,7 +10545,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    If(Not(Token("*")), rules.TableNameReference),
+                    If(Not(And(Token("*", "usage"))), rules.TableNameReference),
                     Token("shards-group").Hide(),
                     Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
                     RequiredToken("shards").Hide(),
@@ -10530,7 +10555,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
-                    Required(If(Not(Token("*")), rules.TableNameReference), rules.MissingNameReference),
+                    Required(If(Not(And(Token("*", "usage"))), rules.TableNameReference), rules.MissingNameReference),
                     shape283));
 
             var ShowTcpConnections = Command("ShowTcpConnections", 
@@ -11346,6 +11371,9 @@ namespace Kusto.Language.Parsing
                 ShowTableStarPolicyRowOrder,
                 ShowTableStarPolicySharding,
                 ShowTableStarPolicyUpdate,
+                ShowTableUsageStatistics,
+                ShowTableUsageStatisticsDetails,
+                ShowTableUsageStatistics2,
                 ShowTablePolicyAutoDelete,
                 ShowTablePolicyCaching,
                 ShowTablePolicyEncoding,
