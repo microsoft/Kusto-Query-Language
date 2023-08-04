@@ -1888,103 +1888,94 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private static IEnumerable<TElement> GetMainBodyOnlyDescendants<TElement>(SyntaxNode body, Func<TElement, bool> predicate)
-            where TElement : SyntaxElement
-        {
-            List<TElement> list = null;
-
-            SyntaxElement.WalkElements(body,
-                fnAfter: element =>
-                {
-                    if (element is TElement te && predicate(te))
-                    {
-                        if (list == null)
-                            list = new List<TElement>();
-                        list.Add(te);
-                    }
-                },
-
-                // do not consider nested function declaration elements
-                fnDescend:
-                    element => element == body
-                            || (!(element is FunctionDeclaration) && !(element is FunctionBody))
-                );
-
-            return list ?? EmptyReadOnlyList<TElement>.Instance;
-        }
-
         private FunctionBodyFlags ComputeFunctionBodyFlags(Signature signature, SyntaxNode body)
         {
             var result = FunctionBodyFlags.None;
             var isTabular = GetBodyResultType(body) is TableSymbol;
 
             // look for explicit calls to table(), database() or cluster() like functions
-            foreach (var fc in GetMainBodyOnlyDescendants<FunctionCallExpression>(body,
-                _fc => IsSymbolLookupFunction(_fc.ReferencedSymbol)))
-            {
-                if (fc.ReferencedSymbol == Functions.Table)
+            SyntaxElement.WalkNodes(
+                body,
+                fnBefore: node =>
                 {
-                    // distinguish between database(d).table(t) vs just table(t)
-                    // since table(t) can see variables in dynamic scope
-                    if (fc.Parent is PathExpression p && p.Selector == fc)
+                    if (node is FunctionCallExpression fc
+                        && IsSymbolLookupFunction(fc.ReferencedSymbol))
                     {
-                        result |= FunctionBodyFlags.QualifiedTable;
-                    }
-                    else
-                    {
-                        // unqualified table calls (even with literal arguments) can be dependent on the call site since
-                        // the names can reference local tabular variables in outer scopes
-                        result |= FunctionBodyFlags.UnqualifiedTable | FunctionBodyFlags.VariableReturn;
-                    }
-                }
-                else if (fc.ReferencedSymbol == Functions.ExternalTable)
-                {
-                    result |= FunctionBodyFlags.ExternalTable;
-                }
-                else if (fc.ReferencedSymbol == Functions.MaterializedView)
-                {
-                    result |= FunctionBodyFlags.MaterializedView;
-                }
-                else if (fc.ReferencedSymbol == Functions.Database)
-                {
-                    result |= FunctionBodyFlags.Database;
-                }
-                else if (fc.ReferencedSymbol == Functions.Cluster)
-                {
-                    result |= FunctionBodyFlags.Cluster;
-                }
+                        if (fc.ReferencedSymbol == Functions.Table)
+                        {
+                            // distinguish between database(d).table(t) vs just table(t)
+                            // since table(t) can see variables in dynamic scope
+                            if (fc.Parent is PathExpression p && p.Selector == fc)
+                            {
+                                result |= FunctionBodyFlags.QualifiedTable;
+                            }
+                            else
+                            {
+                                // unqualified table calls (even with literal arguments) can be dependent on the call site since
+                                // the names can reference local tabular variables in outer scopes
+                                result |= FunctionBodyFlags.UnqualifiedTable | FunctionBodyFlags.VariableReturn;
+                            }
+                        }
+                        else if (fc.ReferencedSymbol == Functions.ExternalTable)
+                        {
+                            result |= FunctionBodyFlags.ExternalTable;
+                        }
+                        else if (fc.ReferencedSymbol == Functions.MaterializedView)
+                        {
+                            result |= FunctionBodyFlags.MaterializedView;
+                        }
+                        else if (fc.ReferencedSymbol == Functions.Database)
+                        {
+                            result |= FunctionBodyFlags.Database;
+                        }
+                        else if (fc.ReferencedSymbol == Functions.Cluster)
+                        {
+                            result |= FunctionBodyFlags.Cluster;
+                        }
 
-                // if the argument is not a literal, then the function likely has a variable return schema
-                // note: it might not, but that would require full flow analysis of result type back to inputs.
-                var isLiteral = fc.ArgumentList.Expressions.Count > 0 && fc.ArgumentList.Expressions[0].Element.IsLiteral;
-                if (!isLiteral && isTabular)
+                        // if the argument is not a literal, then the function likely has a variable return schema
+                        // note: it might not, but that would require full flow analysis of result type back to inputs.
+                        var isLiteral = fc.ArgumentList.Expressions.Count > 0 && fc.ArgumentList.Expressions[0].Element.IsLiteral;
+                        if (!isLiteral && isTabular)
+                        {
+                            result |= FunctionBodyFlags.VariableReturn;
+                        }
+                    }
+                    else if (
+                        node is Expression ex
+                        && ex.ReferencedSignature is Signature sig
+                        && !IsSymbolLookupFunction(sig.Symbol))
+                    {
+                        var flags = GetFunctionBodyFlags(ex);
+
+                        // if the calling function has no parameters and the called function does not contain unqualified calls to table() function, then don't considered it having a variable return
+                        if (signature.Parameters.Count == 0 && (flags & FunctionBodyFlags.UnqualifiedTable) == 0)
+                        {
+                            flags &= ~FunctionBodyFlags.VariableReturn;
+                        }
+
+                        result |= flags;
+                    }
+                },
+                fnAfter: node =>
                 {
-                    result |= FunctionBodyFlags.VariableReturn;
-                }
-            }
+                    if (node.Alternates != null)
+                    {
+                        foreach (var alt in node.Alternates)
+                        {
+                            result |= ComputeFunctionBodyFlags(signature, alt);
+                        }
+                    }
+                },
+                fnDescend: node => 
+                    node == body 
+                    || (!(node is FunctionDeclaration) && !(node is FunctionBody))
+                );
 
             // the function returns a table and at least one parameter is a tabular
             if (isTabular && signature.Parameters.Any(p => p.IsTabular))
             {
                 result |= FunctionBodyFlags.VariableReturn;
-            }
-
-            // also consider any facts from other calls to user functions
-            foreach (var fce in GetMainBodyOnlyDescendants<Expression>(body, ex =>
-                ex.ReferencedSymbol is FunctionSymbol fs
-                && !IsSymbolLookupFunction(fs)
-                && (ex is FunctionCallExpression
-                    || (ex is NameReference && !(ex.Parent is FunctionCallExpression)))))
-            {
-                var flags = GetFunctionBodyFlags(fce);
-
-                // if the calling function has no parameters and the called function does not contain unqualified calls to table() function, then don't considered it having a variable return
-                if (signature.Parameters.Count == 0 && (flags & FunctionBodyFlags.UnqualifiedTable) == 0)
-                {
-                    flags &= ~FunctionBodyFlags.VariableReturn;
-                }
-
-                result |= flags;
             }
 
             return result;
@@ -2002,10 +1993,8 @@ namespace Kusto.Language.Binding
         /// </summary>
         private FunctionBodyFlags GetFunctionBodyFlags(Expression expr)
         {
-            if (expr.ReferencedSymbol is FunctionSymbol fs)
+            if (expr.ReferencedSignature is Signature signature)
             {
-                var signature = fs.Signatures[0];
-
                 if (!TryGetFunctionBodyFacts(signature, out var funFacts)
                     && signature.ReturnKind == ReturnTypeKind.Computed)
                 {

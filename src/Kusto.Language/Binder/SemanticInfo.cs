@@ -54,6 +54,10 @@ namespace Kusto.Language.Binding
                 {
                     return vfn.Signatures[0];
                 }
+                else if (_referencedSymbolOrSignature is EntityGroupSymbol eg)
+                {
+                    return eg.Signature;
+                }
                 else
                 {
                     return null;
