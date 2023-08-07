@@ -1068,6 +1068,28 @@ namespace Kusto.Language.Binding
 
                 BindNode(node);
             }
+
+            public override void VisitGraphToTableOperator(GraphToTableOperator node)
+            {
+                base.VisitGraphToTableOperator(node);
+                var oldScope = _binder._rowScope;
+                _binder._rowScope = null;
+
+                try
+                {                                        
+                    if (node.OutputClause.Count > 1 && node.ResultType is GroupSymbol group)
+                    {
+                        var tables = group.Members.Where(m => m is TableSymbol);
+                        _binder._localScope.AddSymbols(tables);
+                    }
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                }
+
+                BindNode(node);
+            }
         }
     }
 }

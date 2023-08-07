@@ -3659,8 +3659,9 @@ namespace Kusto.Language.Binding
                             return new SemanticInfo(diagnostics);
                         }
 
-                        var nodesTable = VisitGraphToTableEdgesClause(nodesTableClause, leftGraph);
+                        var nodesTable = VisitGraphToTableNodesClause(nodesTableClause, leftGraph);
                         var edgesTable = VisitGraphToTableEdgesClause(edgesTableClause, leftGraph);
+                                                
                         return new SemanticInfo(new GroupSymbol(nodesTable, edgesTable), diagnostics);
                     }
 
@@ -3675,26 +3676,34 @@ namespace Kusto.Language.Binding
 
             private TableSymbol VisitGraphToTableEdgesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var edgesShape = (graph.EdgeShape ?? this.RowScopeOrEmpty).WithName(node.AsClause?.Name?.SimpleName);
-                edgesShape = AddGraphToTableHashColumn(node, edgesShape, QueryOperatorParameters.WithSourceId);
-                return AddGraphToTableHashColumn(node, edgesShape, QueryOperatorParameters.WithTargetId);
+                var edges = graph.EdgeShape ?? this.RowScopeOrEmpty;
+                var name = node.AsClause?.Name?.SimpleName;
+                var columns = new List<ColumnSymbol>(edges.Columns.Count);
+                AddGraphToTableHashColumn(node, columns, QueryOperatorParameters.WithSourceId);
+                AddGraphToTableHashColumn(node, columns, QueryOperatorParameters.WithTargetId);
+                columns.AddRange(edges.Columns);
+
+                return new TableSymbol(name, columns);
             }
 
             private TableSymbol VisitGraphToTableNodesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var nodesShape = (graph.NodeShape ?? this.RowScopeOrEmpty).WithName(node.AsClause?.Name?.SimpleName);
-                return AddGraphToTableHashColumn(node, nodesShape, QueryOperatorParameters.WithNodeId);
+                var nodes = graph.NodeShape ?? this.RowScopeOrEmpty;
+                var name = node.AsClause?.Name?.SimpleName;
+                var columns = new List<ColumnSymbol>(nodes.Columns.Count);
+                AddGraphToTableHashColumn(node, columns, QueryOperatorParameters.WithNodeId);
+                columns.AddRange(nodes.Columns);
+
+                return new TableSymbol(name, columns);
             }
 
-            private TableSymbol AddGraphToTableHashColumn(GraphToTableOutputClause node, TableSymbol table, QueryOperatorParameter parameter)
+            private void AddGraphToTableHashColumn(GraphToTableOutputClause node, List<ColumnSymbol> columns, QueryOperatorParameter parameter)
             {
                 var hashColumn = node.Parameters.GetParameterNameValue(parameter);
                 if (!string.IsNullOrEmpty(hashColumn))
                 {
-                    return table.AddColumns(new ColumnSymbol(hashColumn, ScalarTypes.Long));
+                    columns.Add(new ColumnSymbol(hashColumn, ScalarTypes.Long));
                 }
-
-                return table;
             }
 
             public override SemanticInfo VisitGraphToTableOutputClause(GraphToTableOutputClause node)
