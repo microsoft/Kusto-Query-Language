@@ -3940,8 +3940,8 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("clear", CompletionKind.CommandPrefix),
                     Token("cluster"),
-                    RequiredToken("cache"),
-                    RequiredToken("external-artifacts"),
+                    Token("cache"),
+                    Token("external-artifacts"),
                     Required(
                         Custom(
                             Token("("),
@@ -3955,6 +3955,16 @@ namespace Kusto.Language.Parsing
                             RequiredToken(")"),
                             shape226),
                         missing40)));
+
+            var ClearClusterGroupMembershipCache = Command("ClearClusterGroupMembershipCache", 
+                Custom(
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("cache"),
+                    RequiredToken("groupmembership"),
+                    Optional(
+                        fragment4),
+                    shape243));
 
             var ClearDatabaseCacheQueryResults = Command("ClearDatabaseCacheQueryResults", 
                 Custom(
@@ -10869,6 +10879,7 @@ namespace Kusto.Language.Parsing
                 ClearRemoteClusterDatabaseSchema,
                 ClearClusterCredStoreCache,
                 ClearExternalArtifactsCache,
+                ClearClusterGroupMembershipCache,
                 ClearDatabaseCacheQueryResults,
                 ClearDatabaseCacheQueryWeakConsistency,
                 ClearDatabaseCacheStreamingIngestionSchema,
