@@ -2662,7 +2662,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         First(
                             Token("-->", SyntaxKind.DashDashGreaterThanToken),
-                            Token("--", SyntaxKind.DashDashToken)),
+                            Token("--", SyntaxKind.DashDashToken).Hide()),
                         () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
                     Required(SimpleNameReference, CreateMissingNameReference),
                     Optional(MakeGraphWithClause),
