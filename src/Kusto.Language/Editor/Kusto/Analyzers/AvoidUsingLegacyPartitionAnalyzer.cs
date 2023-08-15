@@ -26,29 +26,36 @@ namespace Kusto.Language.Editor
         {
             foreach (var node in code.Syntax.GetDescendants<PartitionOperator>())
             {
-                bool isUsingLegacyStrategy = true;
-                if (node.Parameters.Count > 0)
+                if (node.Operand is PartitionSubquery)
                 {
-                    foreach (var parameter in node.Parameters)
+                    bool isUsingLegacyStrategy = true;
+                    if (node.Parameters.Count > 0)
                     {
-                        if (parameter.Name.SimpleName.Equals(SyntaxKind.HintDotStrategyKeyword.GetText()))
+                        foreach (var parameter in node.Parameters)
                         {
-                            if (parameter.Expression.IsLiteral)
+                            if (parameter.Name.SimpleName.Equals(SyntaxKind.HintDotStrategyKeyword.GetText()))
                             {
-                                isUsingLegacyStrategy = parameter.Expression.LiteralValue.Equals("legacy");
+                                if (parameter.Expression.IsLiteral)
+                                {
+                                    isUsingLegacyStrategy = parameter.Expression.LiteralValue.Equals("legacy");
+                                }
+                                else
+                                {
+                                    // invalid value is provided to the hint.strategy. it will fail anyway. no need to produce a warning message.
+                                    return;
+                                }
                             }
-                            else
+                            else if (parameter.Name.SimpleName.Equals(SyntaxKind.HintDotShuffleKeyKeyword.GetText()))
                             {
-                                // invalid value is provided to the hint.strategy. it will fail anyway. no need to produce a warning message.
-                                return;
+                                isUsingLegacyStrategy = false;
                             }
                         }
                     }
-                }
 
-                if (isUsingLegacyStrategy)
-                {
-                    diagnostics.Add(_diagnostic.WithLocation(node));
+                    if (isUsingLegacyStrategy)
+                    {
+                        diagnostics.Add(_diagnostic.WithLocation(node));
+                    }
                 }
             }
         }
