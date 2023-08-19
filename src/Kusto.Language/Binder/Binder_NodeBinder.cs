@@ -3633,8 +3633,7 @@ namespace Kusto.Language.Binding
                     {
                         diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphToTableKeyword));
                     }
-
-                    if (node.OutputClause.Count == 1)
+                    else if (node.OutputClause.Count == 1)
                     {
                         var clause = node.OutputClause[0].Element;
                         if (clause.EntityKeyword.Kind == SyntaxKind.GraphEdgesKeyword)
@@ -3645,8 +3644,6 @@ namespace Kusto.Language.Binding
                         {
                             symbol = VisitGraphToTableNodesClause(clause, leftGraph);
                         }
-                        
-                        return new SemanticInfo(symbol, diagnostics);
                     }
                     else if (node.OutputClause.Count == 2)
                     {
@@ -3661,12 +3658,14 @@ namespace Kusto.Language.Binding
 
                         var nodesTable = VisitGraphToTableNodesClause(nodesTableClause, leftGraph);
                         var edgesTable = VisitGraphToTableEdgesClause(edgesTableClause, leftGraph);
-                                                
-                        return new SemanticInfo(new GroupSymbol(nodesTable, edgesTable), diagnostics);
+                        symbol = new GroupSymbol(nodesTable, edgesTable);
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities().WithLocation(node.OutputClause));
                     }
 
-                    diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities().WithLocation(node.OutputClause));
-                    return new SemanticInfo(diagnostics);
+                    return new SemanticInfo(symbol, diagnostics);
                 }
                 finally
                 {
@@ -3676,7 +3675,7 @@ namespace Kusto.Language.Binding
 
             private TableSymbol VisitGraphToTableEdgesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var edges = graph.EdgeShape ?? this.RowScopeOrEmpty;
+                var edges = graph?.EdgeShape ?? this.RowScopeOrEmpty;
                 var name = node.AsClause?.Name?.SimpleName;
                 var columns = new List<ColumnSymbol>(edges.Columns.Count);
                 AddGraphToTableHashColumn(node, columns, QueryOperatorParameters.WithSourceId);
@@ -3688,7 +3687,7 @@ namespace Kusto.Language.Binding
 
             private TableSymbol VisitGraphToTableNodesClause(GraphToTableOutputClause node, GraphSymbol graph)
             {
-                var nodes = graph.NodeShape ?? this.RowScopeOrEmpty;
+                var nodes = graph?.NodeShape ?? this.RowScopeOrEmpty;
                 var name = node.AsClause?.Name?.SimpleName;
                 var columns = new List<ColumnSymbol>(nodes.Columns.Count);
                 AddGraphToTableHashColumn(node, columns, QueryOperatorParameters.WithNodeId);
