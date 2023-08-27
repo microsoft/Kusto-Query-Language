@@ -114,7 +114,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ToUtf8_Deprecated =
-            new FunctionSymbol("to_utf8", 
+            new FunctionSymbol("to_utf8",
                 ScalarTypes.DynamicArray,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
@@ -122,7 +122,7 @@ namespace Kusto.Language
             .Obsolete("unicode_codepoints_from_string");
 
         public static readonly FunctionSymbol UnicodeCodepointsFromString =
-            new FunctionSymbol("unicode_codepoints_from_string", 
+            new FunctionSymbol("unicode_codepoints_from_string",
                 ScalarTypes.DynamicArray,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
@@ -176,7 +176,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Split =
-            new FunctionSymbol("split", 
+            new FunctionSymbol("split",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("source", ParameterTypeKind.Scalar),
                 new Parameter("delimiter", ScalarTypes.String),
@@ -185,7 +185,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseCommandLine =
-            new FunctionSymbol("parse_command_line", 
+            new FunctionSymbol("parse_command_line",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("command", ParameterTypeKind.Scalar),
                 new Parameter("parser", ScalarTypes.String))
@@ -360,14 +360,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDynamic_ =  // use _ because build fails claiming ToDynamic exists on object.
-            new FunctionSymbol("todynamic", 
+            new FunctionSymbol("todynamic",
                 ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToObject_Deprecated =
-            new FunctionSymbol("toobject", 
+            new FunctionSymbol("toobject",
                 ScalarTypes.Dynamic,
                 new Parameter("value", ScalarTypes.String))
             .ConstantFoldable()
@@ -375,49 +375,49 @@ namespace Kusto.Language
             .Obsolete("todynamic");
 
         public static readonly FunctionSymbol ToLong =
-            new FunctionSymbol("tolong", 
+            new FunctionSymbol("tolong",
                 ScalarTypes.Long,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToInt =
-            new FunctionSymbol("toint", 
+            new FunctionSymbol("toint",
                 ScalarTypes.Int,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToReal =
-            new FunctionSymbol("toreal", 
+            new FunctionSymbol("toreal",
                 ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDouble =
-            new FunctionSymbol("todouble", 
+            new FunctionSymbol("todouble",
                 ScalarTypes.Real,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDateTime =
-            new FunctionSymbol("todatetime", 
+            new FunctionSymbol("todatetime",
                 ScalarTypes.DateTime,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTimespan =
-            new FunctionSymbol("totimespan", 
+            new FunctionSymbol("totimespan",
                 ScalarTypes.TimeSpan,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToTime =
-           new FunctionSymbol("totime", 
+           new FunctionSymbol("totime",
                ScalarTypes.TimeSpan,
                new Parameter("value", ParameterTypeKind.Scalar))
            .Obsolete("totimespan")
@@ -425,35 +425,35 @@ namespace Kusto.Language
            .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBool =
-            new FunctionSymbol("tobool", 
+            new FunctionSymbol("tobool",
                 ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToBoolean =
-            new FunctionSymbol("toboolean", 
+            new FunctionSymbol("toboolean",
                 ScalarTypes.Bool,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToDecimal =
-            new FunctionSymbol("todecimal", 
+            new FunctionSymbol("todecimal",
                 ScalarTypes.Decimal,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol ToGuid =
-            new FunctionSymbol("toguid", 
+            new FunctionSymbol("toguid",
                 ScalarTypes.Guid,
                 new Parameter("value", ParameterTypeKind.StringOrDynamic))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly new FunctionSymbol GetType =
-            new FunctionSymbol("gettype", 
+            new FunctionSymbol("gettype",
                 ScalarTypes.String,
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable()
@@ -501,14 +501,14 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToString =
-            new FunctionSymbol("base64_decode_tostring", 
+            new FunctionSymbol("base64_decode_tostring",
                 ScalarTypes.String,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64DecodeToArray =
-            new FunctionSymbol("base64_decode_toarray", 
+            new FunctionSymbol("base64_decode_toarray",
                 ScalarTypes.DynamicArray,
                 new Parameter("base64_string", ScalarTypes.String))
             .ConstantFoldable()
@@ -529,42 +529,42 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Base64EncodeFromArray =
-            new FunctionSymbol("base64_encode_fromarray", 
+            new FunctionSymbol("base64_encode_fromarray",
                 ScalarTypes.String,
                 new Parameter("base64_string_decoded_as_array", ParameterTypeKind.DynamicArray))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ZlibDecompressString =
-            new FunctionSymbol("zlib_decompress_from_base64_string", 
+            new FunctionSymbol("zlib_decompress_from_base64_string",
                 ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ZlibCompressString =
-            new FunctionSymbol("zlib_compress_to_base64_string", 
+            new FunctionSymbol("zlib_compress_to_base64_string",
                 ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol GzipDecompressString =
-            new FunctionSymbol("gzip_decompress_from_base64_string", 
+            new FunctionSymbol("gzip_decompress_from_base64_string",
                 ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol GzipCompressString =
-            new FunctionSymbol("gzip_compress_to_base64_string", 
+            new FunctionSymbol("gzip_compress_to_base64_string",
                 ScalarTypes.String,
                 new Parameter("string", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol Lz4CompressDynamicArray =
-            new FunctionSymbol("__lz4_compress_dynamic_array_to_base64_string", 
+            new FunctionSymbol("__lz4_compress_dynamic_array_to_base64_string",
                 ScalarTypes.String,
                 new Parameter("dynamic", ParameterTypeKind.DynamicArray))
             .ConstantFoldable()
@@ -574,14 +574,14 @@ namespace Kusto.Language
 
         #region parsing functions
         public static readonly FunctionSymbol ParseCsv =
-            new FunctionSymbol("parse_csv", 
+            new FunctionSymbol("parse_csv",
                 ScalarTypes.DynamicArray,
                 new Parameter("csv_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseJson_Deprecated =
-            new FunctionSymbol("parsejson", 
+            new FunctionSymbol("parsejson",
                 ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
@@ -589,14 +589,14 @@ namespace Kusto.Language
             .Obsolete("parse_json");
 
         public static readonly FunctionSymbol ParseJson =
-            new FunctionSymbol("parse_json", 
+            new FunctionSymbol("parse_json",
                 ScalarTypes.Dynamic,
                 new Parameter("json_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseXml =
-            new FunctionSymbol("parse_xml", 
+            new FunctionSymbol("parse_xml",
                 ScalarTypes.DynamicBag,
                 new Parameter("xml_text", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.FirstArgument)
@@ -721,7 +721,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Ipv4RangeToCidrList =
-            new FunctionSymbol("ipv4_range_to_cidr_list", 
+            new FunctionSymbol("ipv4_range_to_cidr_list",
                 ScalarTypes.DynamicArray,
                 new Parameter("start_ip", ScalarTypes.String),
                 new Parameter("end_ip", ScalarTypes.String))
@@ -788,7 +788,7 @@ namespace Kusto.Language
                 new ColumnSymbol("AlternateDataStreamName", ScalarTypes.String));
 
         public static readonly FunctionSymbol ParsePath =
-            new FunctionSymbol("parse_path", 
+            new FunctionSymbol("parse_path",
                 ParsePathResult,
                 new Parameter("path", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -796,7 +796,7 @@ namespace Kusto.Language
 
         private static readonly TypeSymbol ParseUserAgentResult =
             ScalarTypes.GetDynamicBag(
-                new ColumnSymbol("Browser", 
+                new ColumnSymbol("Browser",
                     ScalarTypes.GetDynamicBag(
                         new ColumnSymbol("Family", ScalarTypes.String),
                         new ColumnSymbol("MajorVersion", ScalarTypes.String),
@@ -809,7 +809,7 @@ namespace Kusto.Language
                         new ColumnSymbol("MinorVersion", ScalarTypes.String),
                         new ColumnSymbol("Patch", ScalarTypes.String),
                         new ColumnSymbol("PatchMinor", ScalarTypes.String))),
-                new ColumnSymbol("Device", 
+                new ColumnSymbol("Device",
                     ScalarTypes.GetDynamicBag(
                         new ColumnSymbol("Family", ScalarTypes.String),
                         new ColumnSymbol("Brand", ScalarTypes.String),
@@ -824,7 +824,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseVersion =
-            new FunctionSymbol("parse_version", 
+            new FunctionSymbol("parse_version",
                 ScalarTypes.Decimal,
                 new Parameter("version", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -1071,7 +1071,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol DateTimeListTimezones =
-            new FunctionSymbol("datetime_list_timezones", 
+            new FunctionSymbol("datetime_list_timezones",
                 ScalarTypes.DynamicArray)
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
@@ -1425,7 +1425,7 @@ namespace Kusto.Language
 
         #region dynamic array/object functions
         public static readonly FunctionSymbol TreePath =
-            new FunctionSymbol("treepath", 
+            new FunctionSymbol("treepath",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("object", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
@@ -1433,7 +1433,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Repeat =
-            new FunctionSymbol("repeat", 
+            new FunctionSymbol("repeat",
                 ReturnTypeKind.Parameter0Array,
                 new Parameter("value", ParameterTypeKind.Scalar),
                 new Parameter("count", ScalarTypes.Long))
@@ -1455,14 +1455,14 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayReverse =
-            new FunctionSymbol("array_reverse", 
+            new FunctionSymbol("array_reverse",
                 ReturnTypeKind.Parameter0,
                 new Parameter("value", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Range =
-            new FunctionSymbol("range", 
+            new FunctionSymbol("range",
                 ReturnTypeKind.Parameter0Array,
                 new Parameter("start", ParameterTypeKind.Summable),
                 new Parameter("stop", ParameterTypeKind.Summable),
@@ -1519,7 +1519,7 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol ArrayIndexOf =
-            new FunctionSymbol("array_index_of", 
+            new FunctionSymbol("array_index_of",
                 ScalarTypes.Long,
                 new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar),
@@ -1529,14 +1529,14 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol SetHasElement =
-            new FunctionSymbol("set_has_element", 
+            new FunctionSymbol("set_has_element",
                 ScalarTypes.Bool,
                 new Parameter("set", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArraySlice =
-            new FunctionSymbol("array_slice", 
+            new FunctionSymbol("array_slice",
                 ReturnTypeKind.Parameter0,
                 new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("start", ParameterTypeKind.Integer),
@@ -1558,7 +1558,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayShiftLeft =
-            new FunctionSymbol("array_shift_left", 
+            new FunctionSymbol("array_shift_left",
                 ReturnTypeKind.Parameter0,
                 new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("shift_count", ParameterTypeKind.Integer),
@@ -1567,7 +1567,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayShiftRight =
-            new FunctionSymbol("array_shift_right", 
+            new FunctionSymbol("array_shift_right",
                 ReturnTypeKind.Parameter0,
                 new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("shift_count", ParameterTypeKind.Integer),
@@ -1576,7 +1576,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayRotateLeft =
-             new FunctionSymbol("array_rotate_left", 
+             new FunctionSymbol("array_rotate_left",
                  ReturnTypeKind.Parameter0,
                  new Parameter("array", ParameterTypeKind.DynamicArray),
                  new Parameter("rotate_count", ParameterTypeKind.Integer))
@@ -1584,17 +1584,17 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol ArrayRotateRight =
-            new FunctionSymbol("array_rotate_right", 
+            new FunctionSymbol("array_rotate_right",
                 ReturnTypeKind.Parameter0,
                 new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("rotate_count", ParameterTypeKind.Integer))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
-        private static readonly Parameter m_ArraySort_ArraysArg = 
+        private static readonly Parameter m_ArraySort_ArraysArg =
             new Parameter("arrays", ParameterTypeKind.DynamicArray, minOccurring: 1, maxOccurring: 64);
 
-        private static readonly Parameter m_ArraySort_NullsLastArg = 
+        private static readonly Parameter m_ArraySort_NullsLastArg =
             new Parameter("nulls_last", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0, maxOccurring: 1);
 
         public static readonly FunctionSymbol ArraySortAsc =
@@ -1633,8 +1633,8 @@ namespace Kusto.Language
         private static TypeSymbol GetArraySortResult(CustomReturnTypeContext context)
         {
             var result = new List<ColumnSymbol>();
-            
-            for (int i = 0; 
+
+            for (int i = 0;
                 (i < context.Arguments.Count) && (context.Arguments[i].ResultType.IsDynamicArray()); i++)
             {
                 var argument = context.Arguments[i];
@@ -1648,14 +1648,14 @@ namespace Kusto.Language
         }
 
         public static readonly FunctionSymbol BagKeys =
-            new FunctionSymbol("bag_keys", 
+            new FunctionSymbol("bag_keys",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("object", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Zip =
-            new FunctionSymbol("zip", 
+            new FunctionSymbol("zip",
                 ScalarTypes.DynamicArrayOfArray,
                 new Parameter("array", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None)
@@ -1739,7 +1739,7 @@ namespace Kusto.Language
         }
 
         public static readonly FunctionSymbol PackAll =
-            new FunctionSymbol("pack_all", 
+            new FunctionSymbol("pack_all",
                 context => ScalarTypes.GetDynamicBag(context.RowScope?.Columns),
                 Tabularity.Scalar,
                 new Parameter("ignore_null_empty", ParameterTypeKind.Scalar, ArgumentKind.Literal, minOccurring: 0, maxOccurring: 1))
@@ -1777,7 +1777,7 @@ namespace Kusto.Language
         }
 
         public static readonly FunctionSymbol SetUnion =
-            new FunctionSymbol("set_union", 
+            new FunctionSymbol("set_union",
                 GetSetType,
                 Tabularity.Scalar,
                 new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 64))
@@ -1800,8 +1800,17 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol SetEquals =
+            new FunctionSymbol("set_equals",
+                ScalarTypes.Bool,
+                new Parameter("set1", ParameterTypeKind.DynamicArray),
+                new Parameter("set2", ParameterTypeKind.DynamicArray))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide() // TODO: Unhide by Sep-15-2023
+            .ConstantFoldable();
+
         public static readonly FunctionSymbol BagMerge =
-            new FunctionSymbol("bag_merge", 
+            new FunctionSymbol("bag_merge",
                 context =>
                 {
                     var bags = context.GetArguments("bag");
@@ -1827,14 +1836,14 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol DynamicToJson =
-            new FunctionSymbol("dynamic_to_json", 
+            new FunctionSymbol("dynamic_to_json",
                 ScalarTypes.String,
                 new Parameter("dynamic", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagRemoveKeys =
-            new FunctionSymbol("bag_remove_keys", 
+            new FunctionSymbol("bag_remove_keys",
                 context =>
                 {
                     var bag = context.GetArgument("bag");
@@ -1858,7 +1867,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagZip =
-            new FunctionSymbol("bag_zip", 
+            new FunctionSymbol("bag_zip",
                 ScalarTypes.DynamicBag,
                 new Parameter("keys", ParameterTypeKind.DynamicArray),
                 new Parameter("values", ParameterTypeKind.DynamicArray))
@@ -1866,14 +1875,14 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol JaccardIndex =
-            new FunctionSymbol("jaccard_index", 
+            new FunctionSymbol("jaccard_index",
                 ScalarTypes.DynamicArrayOfReal,
                 new Parameter("set", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 2))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagHasKey =
-            new FunctionSymbol("bag_has_key", 
+            new FunctionSymbol("bag_has_key",
                 ScalarTypes.Bool,
                 new Parameter("bag", ParameterTypeKind.DynamicBag),
                 new Parameter("key", ScalarTypes.String))
@@ -1881,14 +1890,14 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagSetKey =
-            new FunctionSymbol("bag_set_key", 
-                context => 
+            new FunctionSymbol("bag_set_key",
+                context =>
                 {
                     var bag = context.GetArgument("bag");
                     var key = context.GetArgument("key");
                     var value = context.GetArgument("value");
 
-                    if (bag != null 
+                    if (bag != null
                         && key != null
                         && key.ConstantValue is string name
                         && !string.IsNullOrWhiteSpace(name)
@@ -1948,21 +1957,21 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument);
 
         public static readonly FunctionSymbol PercentRankTDigest =
-            new FunctionSymbol("percentrank_tdigest", 
+            new FunctionSymbol("percentrank_tdigest",
                 ScalarTypes.Real,
                 new Parameter("digest", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RankTDigest =
-            new FunctionSymbol("rank_tdigest", 
+            new FunctionSymbol("rank_tdigest",
                 ScalarTypes.Real,
                 new Parameter("digest", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol TdigestIsValid =
-            new FunctionSymbol("tdigest_isvalid", 
+            new FunctionSymbol("tdigest_isvalid",
                 ScalarTypes.Bool,
                 new Parameter("digest", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
@@ -1970,7 +1979,7 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol HllIsValid =
-            new FunctionSymbol("hll_isvalid", 
+            new FunctionSymbol("hll_isvalid",
                 ScalarTypes.Bool,
                 new Parameter("hll", ParameterTypeKind.DynamicArray),
                 new Parameter("value", ParameterTypeKind.Scalar))
@@ -1978,28 +1987,28 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol TDigestMerge =
-            new FunctionSymbol("tdigest_merge", 
+            new FunctionSymbol("tdigest_merge",
                 ScalarTypes.DynamicArray,
                 new Parameter("tdigest", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("tdigests_merge_result");
 
         public static readonly FunctionSymbol MergeTDigest =
-            new FunctionSymbol("merge_tdigest", 
+            new FunctionSymbol("merge_tdigest",
                 ScalarTypes.DynamicArray,
                 new Parameter("tdigest", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("tdigests_merge_result");
 
         public static readonly FunctionSymbol HllMerge =
-            new FunctionSymbol("hll_merge", 
+            new FunctionSymbol("hll_merge",
                 ScalarTypes.DynamicArray,
                 new Parameter("hll", ParameterTypeKind.DynamicArray, minOccurring: 2, maxOccurring: 16))
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("hll_merged_result");
 
         public static readonly FunctionSymbol DCountHll =
-            new FunctionSymbol("dcount_hll", 
+            new FunctionSymbol("dcount_hll",
                 ScalarTypes.Long,
                 new Parameter("hll", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.NameAndFirstArgument);
@@ -2011,7 +2020,7 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol SeriesFir =
-            new FunctionSymbol("series_fir", 
+            new FunctionSymbol("series_fir",
                 ScalarTypes.DynamicArrayOfReal,
                 new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("filter", ParameterTypeKind.DynamicArray),
@@ -2039,7 +2048,7 @@ namespace Kusto.Language
                 new Parameter("ignore_nonfinite", ScalarTypes.Bool, ArgumentKind.Constant, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesStatsDynamic =
-            new FunctionSymbol("series_stats_dynamic", 
+            new FunctionSymbol("series_stats_dynamic",
                 context =>
                 {
                     var source = context.GetArgument("series");
@@ -2058,7 +2067,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol ArraySum =
-           new FunctionSymbol("array_sum", 
+           new FunctionSymbol("array_sum",
                ScalarTypes.Real,
                new Parameter("array", ParameterTypeKind.DynamicArray))
            .WithResultNameKind(ResultNameKind.None);
@@ -2127,7 +2136,7 @@ namespace Kusto.Language
                 new Parameter("series", ParameterTypeKind.DynamicArray));
 
         public static readonly FunctionSymbol SeriesFitLineDynamic =
-            new FunctionSymbol("series_fit_line_dynamic", 
+            new FunctionSymbol("series_fit_line_dynamic",
                 context =>
                 {
                     var source = context.GetArgument("series");
@@ -2212,7 +2221,7 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesIIR =
-            new FunctionSymbol("series_iir", 
+            new FunctionSymbol("series_iir",
                 ScalarTypes.DynamicArrayOfReal,
                 new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("numerators", ParameterTypeKind.DynamicArray),
@@ -2250,14 +2259,14 @@ namespace Kusto.Language
                 new Parameter("period", ParameterTypeKind.Number, maxOccurring: 16));
 
         public static readonly FunctionSymbol SeriesFillBackwards =
-            new FunctionSymbol("series_fill_backward", 
+            new FunctionSymbol("series_fill_backward",
                 ReturnTypeKind.Parameter0,
                 new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol SeriesFillForward =
-            new FunctionSymbol("series_fill_forward", 
+            new FunctionSymbol("series_fill_forward",
                 ReturnTypeKind.Parameter0,
                 new Parameter("series", ParameterTypeKind.DynamicArray),
                 new Parameter("missing_value_placeholder", ParameterTypeKind.Number, minOccurring: 0))
@@ -2561,7 +2570,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesDecompose =
              new FunctionSymbol("series_decompose",
-                    SeriesDecomposeResult, 
+                    SeriesDecomposeResult,
                     Tabularity.Scalar,
                     new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("period", ParameterTypeKind.Integer, minOccurring: 0),
@@ -2571,7 +2580,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesDecomposeForecast =
              new FunctionSymbol("series_decompose_forecast",
-                    SeriesDecomposeResult, 
+                    SeriesDecomposeResult,
                     Tabularity.Scalar,
                     new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("test_points", ParameterTypeKind.Integer),
@@ -2581,7 +2590,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol SeriesDecomposeAnomalies =
              new FunctionSymbol("series_decompose_anomalies",
-                    SeriesDecomposeAnomaliesResult, 
+                    SeriesDecomposeAnomaliesResult,
                     Tabularity.Scalar,
                     new Parameter("series", ParameterTypeKind.DynamicArray),
                     new Parameter("threshold", ParameterTypeKind.Number, minOccurring: 0),
@@ -2592,7 +2601,7 @@ namespace Kusto.Language
                     new Parameter("seasonality_threshold", ParameterTypeKind.Number, minOccurring: 0));
 
         public static readonly FunctionSymbol SeriesPearsonCorrelation =
-            new FunctionSymbol("series_pearson_correlation", 
+            new FunctionSymbol("series_pearson_correlation",
                 ScalarTypes.Real,
                 new Parameter("series1", ParameterTypeKind.DynamicArray),
                 new Parameter("series2", ParameterTypeKind.DynamicArray))
@@ -2846,7 +2855,7 @@ namespace Kusto.Language
         #region geospatial functions
 
         public static readonly FunctionSymbol GeoDistance2Points =
-            new FunctionSymbol("geo_distance_2points", 
+            new FunctionSymbol("geo_distance_2points",
                 ScalarTypes.Real,
                 new Parameter("p1_longitude", ParameterTypeKind.Number),
                 new Parameter("p1_latitude", ParameterTypeKind.Number),
@@ -2856,7 +2865,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoDistancePointToLine =
-            new FunctionSymbol("geo_distance_point_to_line", 
+            new FunctionSymbol("geo_distance_point_to_line",
                 ScalarTypes.Real,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
@@ -2874,7 +2883,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInCircle =
-            new FunctionSymbol("geo_point_in_circle", 
+            new FunctionSymbol("geo_point_in_circle",
                 ScalarTypes.Bool,
                 new Parameter("p_longitude", ParameterTypeKind.Number),
                 new Parameter("p_latitude", ParameterTypeKind.Number),
@@ -2885,7 +2894,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointInPolygon =
-            new FunctionSymbol("geo_point_in_polygon", 
+            new FunctionSymbol("geo_point_in_polygon",
                 ScalarTypes.Bool,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
@@ -2894,7 +2903,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPointBuffer =
-            new FunctionSymbol("geo_point_buffer", 
+            new FunctionSymbol("geo_point_buffer",
                 ScalarTypes.GeoShape,
                 new Parameter("longitude", ParameterTypeKind.Number),
                 new Parameter("latitude", ParameterTypeKind.Number),
@@ -2904,7 +2913,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineBuffer =
-            new FunctionSymbol("geo_line_buffer", 
+            new FunctionSymbol("geo_line_buffer",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("radius", ParameterTypeKind.Number),
@@ -2913,7 +2922,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonBuffer =
-            new FunctionSymbol("geo_polygon_buffer", 
+            new FunctionSymbol("geo_polygon_buffer",
                 ScalarTypes.GeoShape,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("radius", ParameterTypeKind.Number),
@@ -2922,7 +2931,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Lines =
-            new FunctionSymbol("geo_intersects_2lines", 
+            new FunctionSymbol("geo_intersects_2lines",
                 ScalarTypes.Bool,
                 new Parameter("lineString1", ParameterTypeKind.DynamicBag),
                 new Parameter("lineString2", ParameterTypeKind.DynamicBag))
@@ -2930,7 +2939,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersection2Lines =
-            new FunctionSymbol("geo_intersection_2lines", 
+            new FunctionSymbol("geo_intersection_2lines",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString1", ParameterTypeKind.DynamicBag),
                 new Parameter("lineString2", ParameterTypeKind.DynamicBag))
@@ -2938,7 +2947,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersectsLineWithPolygon =
-            new FunctionSymbol("geo_intersects_line_with_polygon", 
+            new FunctionSymbol("geo_intersects_line_with_polygon",
                 ScalarTypes.Bool,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("polygon", ParameterTypeKind.DynamicBag))
@@ -2946,7 +2955,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersectionLineWithPolygon =
-            new FunctionSymbol("geo_intersection_line_with_polygon", 
+            new FunctionSymbol("geo_intersection_line_with_polygon",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("polygon", ParameterTypeKind.DynamicBag))
@@ -2954,7 +2963,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersects2Polygons =
-            new FunctionSymbol("geo_intersects_2polygons", 
+            new FunctionSymbol("geo_intersects_2polygons",
                 ScalarTypes.Bool,
                 new Parameter("polygon1", ParameterTypeKind.DynamicBag),
                 new Parameter("polygon2", ParameterTypeKind.DynamicBag))
@@ -2962,7 +2971,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoIntersection2Polygons =
-            new FunctionSymbol("geo_intersection_2polygons", 
+            new FunctionSymbol("geo_intersection_2polygons",
                 ScalarTypes.GeoShape,
                 new Parameter("polygon1", ParameterTypeKind.DynamicBag),
                 new Parameter("polygon2", ParameterTypeKind.DynamicBag))
@@ -2970,21 +2979,21 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonsUnion =
-            new FunctionSymbol("geo_union_polygons_array", 
+            new FunctionSymbol("geo_union_polygons_array",
                 ScalarTypes.GeoShape,
                 new Parameter("polygons", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLinesUnion =
-            new FunctionSymbol("geo_union_lines_array", 
+            new FunctionSymbol("geo_union_lines_array",
                 ScalarTypes.GeoShape,
                 new Parameter("lineStrings", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonToS2Cells =
-            new FunctionSymbol("geo_polygon_to_s2cells", 
+            new FunctionSymbol("geo_polygon_to_s2cells",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("level", ParameterTypeKind.Number, minOccurring: 0),
@@ -3026,7 +3035,7 @@ namespace Kusto.Language
             .Hide();
 
         public static readonly FunctionSymbol GeoPolygonDensify =
-            new FunctionSymbol("geo_polygon_densify", 
+            new FunctionSymbol("geo_polygon_densify",
                 ScalarTypes.GeoShape,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
@@ -3035,42 +3044,42 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonArea =
-            new FunctionSymbol("geo_polygon_area", 
+            new FunctionSymbol("geo_polygon_area",
                 ScalarTypes.Real,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonCentroid =
-            new FunctionSymbol("geo_polygon_centroid", 
+            new FunctionSymbol("geo_polygon_centroid",
                 ScalarTypes.GeoShape,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonPerimeter =
-            new FunctionSymbol("geo_polygon_perimeter", 
+            new FunctionSymbol("geo_polygon_perimeter",
                 ScalarTypes.Real,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineLength =
-            new FunctionSymbol("geo_line_length", 
+            new FunctionSymbol("geo_line_length",
                 ScalarTypes.Real,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineCentroid =
-            new FunctionSymbol("geo_line_centroid", 
+            new FunctionSymbol("geo_line_centroid",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineDensify =
-            new FunctionSymbol("geo_line_densify", 
+            new FunctionSymbol("geo_line_densify",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0),
@@ -3079,7 +3088,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoLineSimplify =
-            new FunctionSymbol("geo_line_simplify", 
+            new FunctionSymbol("geo_line_simplify",
                 ScalarTypes.GeoShape,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
@@ -3087,7 +3096,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoPolygonSimplify =
-            new FunctionSymbol("geo_polygon_simplify", 
+            new FunctionSymbol("geo_polygon_simplify",
                 ScalarTypes.GeoShape,
                 new Parameter("polygon", ParameterTypeKind.DynamicBag),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
@@ -3095,7 +3104,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoSimplifyPolygonsArray =
-            new FunctionSymbol("geo_simplify_polygons_array", 
+            new FunctionSymbol("geo_simplify_polygons_array",
                 ScalarTypes.GeoShape,
                 new Parameter("polygons", ParameterTypeKind.DynamicArray),
                 new Parameter("tolerance", ParameterTypeKind.Number, minOccurring: 0))
@@ -3125,21 +3134,21 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashToCentralPoint =
-            new FunctionSymbol("geo_geohash_to_central_point", 
+            new FunctionSymbol("geo_geohash_to_central_point",
                 ScalarTypes.GeoShape,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashToPolygon =
-            new FunctionSymbol("geo_geohash_to_polygon", 
+            new FunctionSymbol("geo_geohash_to_polygon",
                 ScalarTypes.GeoShape,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeohashNeighbors =
-            new FunctionSymbol("geo_geohash_neighbors", 
+            new FunctionSymbol("geo_geohash_neighbors",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("geohash", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -3154,21 +3163,21 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellToCentralPoint =
-            new FunctionSymbol("geo_s2cell_to_central_point", 
+            new FunctionSymbol("geo_s2cell_to_central_point",
                 ScalarTypes.GeoShape,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellNeighbors =
-            new FunctionSymbol("geo_s2cell_neighbors", 
+            new FunctionSymbol("geo_s2cell_neighbors",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoS2CellToPolygon =
-            new FunctionSymbol("geo_s2cell_to_polygon", 
+            new FunctionSymbol("geo_s2cell_to_polygon",
                 ScalarTypes.GeoShape,
                 new Parameter("s2cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
@@ -3183,28 +3192,28 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToCentralPoint =
-            new FunctionSymbol("geo_h3cell_to_central_point", 
+            new FunctionSymbol("geo_h3cell_to_central_point",
                 ScalarTypes.GeoShape,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellToPolygon =
-            new FunctionSymbol("geo_h3cell_to_polygon", 
+            new FunctionSymbol("geo_h3cell_to_polygon",
                 ScalarTypes.GeoShape,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellNeighbors =
-            new FunctionSymbol("geo_h3cell_neighbors", 
+            new FunctionSymbol("geo_h3cell_neighbors",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellChildren =
-            new FunctionSymbol("geo_h3cell_children", 
+            new FunctionSymbol("geo_h3cell_children",
                 ScalarTypes.DynamicArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0))
@@ -3219,7 +3228,7 @@ namespace Kusto.Language
             .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoH3CellRings =
-            new FunctionSymbol("geo_h3cell_rings", 
+            new FunctionSymbol("geo_h3cell_rings",
                 ScalarTypes.DynamicArrayOfArrayOfString,
                 new Parameter("h3cell", ScalarTypes.String),
                 new Parameter("distance", ParameterTypeKind.Number))
@@ -3257,12 +3266,12 @@ namespace Kusto.Language
                 new ColumnSymbol("Notes", ScalarTypes.String));
 
         public static readonly FunctionSymbol CurrentPrincipalDetails =
-            new FunctionSymbol("current_principal_details", 
+            new FunctionSymbol("current_principal_details",
                 CurrentPrincipalDetailsResult)
             .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol CurrentPrincipalIsMemberOf =
-          new FunctionSymbol("current_principal_is_member_of", 
+          new FunctionSymbol("current_principal_is_member_of",
               ScalarTypes.Bool,
               new Parameter("group", ParameterTypeKind.StringOrArray, minOccurring: 1, maxOccurring: 64))
             .WithResultNameKind(ResultNameKind.None);
@@ -3276,7 +3285,7 @@ namespace Kusto.Language
             .Obsolete("extent_id");
 
         public static readonly FunctionSymbol ExtentTags =
-            new FunctionSymbol("extent_tags", 
+            new FunctionSymbol("extent_tags",
                 ScalarTypes.DynamicArrayOfString)
             .WithResultNameKind(ResultNameKind.None);
 
@@ -3366,7 +3375,7 @@ namespace Kusto.Language
            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol RowstoreOrdinalRange =
-            new FunctionSymbol("rowstore_ordinal_range", 
+            new FunctionSymbol("rowstore_ordinal_range",
                 ScalarTypes.Dynamic)
             .WithResultNameKind(ResultNameKind.None)
             .Hide();
@@ -3381,7 +3390,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol NewGuid = new FunctionSymbol("new_guid", ScalarTypes.Guid)
             .WithResultNameKind(ResultNameKind.None);
-       
+
         public static readonly FunctionSymbol HasIpv4 =
             new FunctionSymbol("has_ipv4", ScalarTypes.Bool,
                 new Parameter("source", ParameterTypeKind.StringOrDynamic),
@@ -3667,6 +3676,7 @@ namespace Kusto.Language
             SetUnion,
             SetIntersect,
             SetDifference,
+            SetEquals,
             BagMerge,
             DynamicToJson,
             BagRemoveKeys,
