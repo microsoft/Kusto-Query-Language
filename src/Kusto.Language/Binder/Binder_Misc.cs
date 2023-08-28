@@ -556,11 +556,28 @@ namespace Kusto.Language.Binding
                     }
                     else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
                     {
-                        var local = new VariableSymbol(edge.Name.SimpleName, edgeTuple);
+                        var local = CreateGraphMatchEdgeVariableSymbol(edge, edgeTuple);
                         SetSemanticInfo(edge.Name, new SemanticInfo(local, edgeTuple));
                     }
                 }
             }
+        }
+
+        private VariableSymbol CreateGraphMatchEdgeVariableSymbol(GraphMatchPatternEdge edge, TupleSymbol edgeTuple)
+        {
+            if (edge.Range == null)
+            {
+                return new VariableSymbol(edge.Name.SimpleName, edgeTuple);
+            }
+
+            var newColumns = new ColumnSymbol[edgeTuple.Columns.Count];
+            for (int i = 0; i < edgeTuple.Columns.Count; i++)
+            {
+                var column = edgeTuple.Columns[i];
+                newColumns[i] = column.WithType(ScalarTypes.GetDynamicArray(column.Type));
+            }
+
+            return new VariableSymbol(edge.Name.SimpleName, new TupleSymbol(newColumns));
         }
 
         private void AddGraphMatchPatternDeclarationsToLocalScope(GraphMatchOperator graphMatch)
