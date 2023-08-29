@@ -2778,7 +2778,8 @@ namespace Kusto.Language.Parsing
                 (elements) => new GraphMatchPattern(elements))
                 .WithCompletion(
                     new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"), 
-                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)-[e2]->(n3)"));
+                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e1]->(n2)-[e2]->(n3)"),
+                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e*1..3]->(n2)"));
 
             var GraphMatchPatternClause =
                 CommaList(
@@ -2791,7 +2792,7 @@ namespace Kusto.Language.Parsing
             var GraphMatchOperator =
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword).Hide(),
-                    QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true),
+                    QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true).Hide(),
                     GraphMatchPatternClause,
                     Optional(WhereClause),
                     Optional(ProjectClause),
