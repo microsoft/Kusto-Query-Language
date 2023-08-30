@@ -2657,7 +2657,7 @@ namespace Kusto.Language.Parsing
 
             var MakeGraphOperator =
                 Rule(
-                    Token(SyntaxKind.MakeGraphKeyword).Hide(),
+                    Token(SyntaxKind.MakeGraphKeyword, CompletionKind.QueryPrefix),
                     Required(SimpleNameReference, CreateMissingNameReference),
                     Required(
                         First(
@@ -2674,7 +2674,7 @@ namespace Kusto.Language.Parsing
 
             var GraphMergeOperaor =
                 Rule(
-                    Token(SyntaxKind.GraphMergeKeyword).Hide(),
+                    Token(SyntaxKind.GraphMergeKeyword, CompletionKind.QueryPrefix),
                     Required(InvocationExpression, CreateMissingExpression),
                     Optional(JoinOnClause),
                     (keyword, graph, onClause) =>
@@ -2712,7 +2712,7 @@ namespace Kusto.Language.Parsing
 
             var GraphToTableOperator =
                 Rule(
-                    Token(SyntaxKind.GraphToTableKeyword).Hide(),
+                    Token(SyntaxKind.GraphToTableKeyword, CompletionKind.QueryPrefix),
                     CommaList(GraphToTableOutputClause, CreateMissingGraphToTableOutputClause, oneOrMore: true),
                     (keyword, outputClause) => (QueryOperator)new GraphToTableOperator(keyword, outputClause))
                 .WithTag("<graph-to-table>");
@@ -2791,7 +2791,7 @@ namespace Kusto.Language.Parsing
 
             var GraphMatchOperator =
                 Rule(
-                    Token(SyntaxKind.GraphMatchKeyword).Hide(),
+                    Token(SyntaxKind.GraphMatchKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true).Hide(),
                     GraphMatchPatternClause,
                     Optional(WhereClause),
