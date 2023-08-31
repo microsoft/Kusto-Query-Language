@@ -765,7 +765,7 @@ namespace Kusto.Language.Binding
                         return new SemanticInfo(ScalarTypes.GetDynamic(prop.Type));
                     }
                     else
-                    { 
+                    {
                         // you've successfully accessed an element of a dynamic value
                         // you get another dynamic value.
                         return new SemanticInfo(ScalarTypes.Dynamic);
@@ -786,7 +786,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (collectionType is TupleSymbol ts)
                 {
-                    if (TypeFacts.IsInteger(indexerType) 
+                    if (TypeFacts.IsInteger(indexerType)
                         && selector.Expression.IsConstant
                         && TryGetIntValue(selector.Expression.ConstantValue, out var index))
                     {
@@ -842,17 +842,17 @@ namespace Kusto.Language.Binding
                 // same as selector (without repeating diagnostics)
                 return new SemanticInfo(GetReferencedSymbol(node.Selector), GetResultTypeOrError(node.Selector));
             }
-#endregion
+            #endregion
 
-#region function calls
+            #region function calls
             public override SemanticInfo VisitFunctionCallExpression(FunctionCallExpression node)
             {
                 return _binder.BindFunctionCallOrPattern(node);
             }
 
-#endregion
+            #endregion
 
-#region other nodes
+            #region other nodes
             public override SemanticInfo VisitParenthesizedExpression(ParenthesizedExpression node)
             {
                 return new SemanticInfo(GetResultTypeOrError(node.Expression));
@@ -1224,9 +1224,9 @@ namespace Kusto.Language.Binding
                 // handled by VisitMaterializedViewCombineExpression
                 return null;
             }
-#endregion
+            #endregion
 
-#region query operators
+            #region query operators
             private void CheckFirstInPipe(QueryOperator queryOp, List<Diagnostic> diagnostics)
             {
                 if (KustoFacts.HasPipedInput(queryOp))
@@ -1560,7 +1560,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DistinctParameters, diagnostics);
 
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
-                    
+
                     var resultTable = new TableSymbol(builder.GetProjection())
                         .WithInheritableProperties(RowScopeOrEmpty)
                         .WithIsSorted(false);
@@ -1860,7 +1860,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.AsParameters, diagnostics);
-                    
+
                     var resultTable = new TableSymbol(RowScopeOrEmpty.Columns)
                         .WithInheritableProperties(RowScopeOrEmpty);
 
@@ -1929,7 +1929,7 @@ namespace Kusto.Language.Binding
             private static void CheckQueryOperator(QueryOperator queryOperator, IReadOnlyList<SyntaxKind> validQueryOperators, List<Diagnostic> diagnostics)
             {
                 var keyword = queryOperator.GetFirstToken();
-                if (keyword != null 
+                if (keyword != null
                     && !validQueryOperators.Contains(queryOperator.Kind)
                     && !queryOperator.ContainsSyntaxDiagnostics)
                 {
@@ -2162,7 +2162,7 @@ namespace Kusto.Language.Binding
                                     if (GetReferencedSymbol(tc.Column) is ColumnSymbol c)
                                     {
                                         var type = _binder.GetTypeFromTypeExpression(tc.Type, diagnostics);
-                                        columns.Add(new ColumnSymbol(c.Name, type, originalColumns: new[] { c } ));
+                                        columns.Add(new ColumnSymbol(c.Name, type, originalColumns: new[] { c }));
                                     }
                                     break;
 
@@ -2329,7 +2329,7 @@ namespace Kusto.Language.Binding
                 var columns = s_columnListPool.AllocateFromPool();
                 var exprColumns = s_columnListPool.AllocateFromPool();
                 var joinColumns = s_joinColumnsPool.AllocateFromPool();
-                
+
                 try
                 {
                     CheckNotFirstInPipe(node, diagnostics);
@@ -2501,7 +2501,7 @@ namespace Kusto.Language.Binding
             }
 
             private void CheckJoinOnExpression(
-                Expression condition, 
+                Expression condition,
                 List<Diagnostic> diagnostics,
                 List<JoinColumnPair> joinColumns = null)
             {
@@ -2581,7 +2581,7 @@ namespace Kusto.Language.Binding
             }
 
             private bool CheckJoinEquality(
-                Expression condition, 
+                Expression condition,
                 List<Diagnostic> diagnostics,
                 out ColumnSymbol leftColumn,
                 out ColumnSymbol rightColumn)
@@ -2842,7 +2842,7 @@ namespace Kusto.Language.Binding
                         var expr = node.Expressions[i].Element;
 
                         _binder.CheckIsDynamic(expr.Expression, diagnostics);
-                        
+
                         TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
                             ?? TypeFacts.GetElementType(expr.Expression.ResultType)
                             ?? expr.Expression.ResultType;
@@ -3324,7 +3324,7 @@ namespace Kusto.Language.Binding
                             columns.Add(new ColumnSymbol(decl.NameAndType.Name.SimpleName, GetDeclaredType(decl.NameAndType.Type), source: decl.NameAndType.Name));
                         }
                     }
-                    
+
                     var matchIdParam = node.Parameters.FirstOrDefault(np => np.Name.SimpleName == QueryOperatorParameters.WithMatchId.Name);
                     var matchIdColumnName = (matchIdParam != null && matchIdParam.Expression is NameDeclaration matchNd) ? matchNd.SimpleName : "match_id";
                     columns.Add(new ColumnSymbol(matchIdColumnName, ScalarTypes.Long));
@@ -3383,7 +3383,7 @@ namespace Kusto.Language.Binding
                     && macroExpand.EntityGroup?.ResultType is EntityGroupSymbol entityGroup)
                 {
                     var scopeSymbol = new EntityGroupElementSymbol(
-                        node.EntityGroupReferenceName.SimpleName, 
+                        node.EntityGroupReferenceName.SimpleName,
                         entityGroup);
                     _binder.SetSemanticInfo(node.EntityGroupReferenceName, new SemanticInfo(scopeSymbol, scopeSymbol));
                 }
@@ -3499,7 +3499,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        foreach ( var pattern in node.Patterns)
+                        foreach (var pattern in node.Patterns)
                         {
                             CheckGraphMatchPattern(pattern.Element, diagnostics);
                         }
@@ -3513,25 +3513,32 @@ namespace Kusto.Language.Binding
                     if (node.ProjectClause != null)
                     {
                         // Getting all edges that are variable edges and has name
-                        var variableEdges = new List<NameDeclaration>();
+                        var variableEdges = new HashSet<string>();
                         node.Patterns.WalkElements(element =>
                         {
                             if (element is GraphMatchPatternEdge edge && edge.Range != null && edge.Name != null)
                             {
-                                variableEdges.Add(edge.Name);
+                                variableEdges.Add(edge.Name.SimpleName);
                             }
                         });
 
                         foreach (var expr in node.ProjectClause.Expressions)
                         {
                             TypeSymbol columnType = null;
-                            var nameRef = GetGraphPatternElementExpression(expr.Element);
-                            if (variableEdges.Any(ve => nameRef is NameReference nr && ve.SimpleName == nr.SimpleName))
+                            var referencedElements = new HashSet<string>();
+                            expr.Element.WalkNodes(elementNode =>
+                            {
+                                if (elementNode is NameReference nameRef)
+                                {
+                                    referencedElements.Add(nameRef.SimpleName);
+                                }
+                            });
+                            if (variableEdges.Any(e => referencedElements.Contains(e)))
                             {
                                 var colType = GetResultTypeOrError(expr.Element);
                                 columnType = ScalarTypes.GetDynamicArray(colType);
                             }
-                            
+
                             _binder.CreateProjectionColumns(expr.Element, builder, diagnostics, ProjectionStyle.GraphMatch, columnType: columnType);
                         }
 
@@ -3716,7 +3723,7 @@ namespace Kusto.Language.Binding
                 // handled by containing node
                 return null;
             }
-#endregion
+            #endregion
 
             #region clauses 
             // Clauses don't have semantics on their own but may influence their parent node's semantics
@@ -3799,7 +3806,7 @@ namespace Kusto.Language.Binding
             public override SemanticInfo VisitMakeSeriesFromToStepClause(MakeSeriesFromToStepClause node)
             {
                 return null;
-            }            
+            }
 
             public override SemanticInfo VisitMakeSeriesOnClause(MakeSeriesOnClause node)
             {
@@ -3875,9 +3882,9 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
+            #endregion
 
-#region statements
+            #region statements
             public override SemanticInfo VisitAliasStatement(AliasStatement node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -3983,9 +3990,9 @@ namespace Kusto.Language.Binding
                 // handled by VisitSetOptionStatement
                 return null;
             }
-#endregion
+            #endregion
 
-#region commands
+            #region commands
             public override SemanticInfo VisitCommandWithValueClause(CommandWithValueClause node)
             {
                 return null;
@@ -4026,14 +4033,14 @@ namespace Kusto.Language.Binding
             {
                 return null;
             }
-#endregion
+            #endregion
 
-#region Directives
+            #region Directives
             public override SemanticInfo VisitDirectiveBlock(DirectiveBlock node)
             {
                 return null;
             }
-#endregion
+            #endregion
         }
     }
 }
