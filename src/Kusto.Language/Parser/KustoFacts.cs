@@ -327,6 +327,7 @@ namespace Kusto.Language
             "__rowstore_ref",
             "__search_wildcard",
             "__search_wildcard_explicit_cols",
+            "__search_wildcard_explicit_cols_v35",
             "__shard_record_position",
             "__sql_add",
             "__sql_divide",
