@@ -38,7 +38,7 @@ namespace Kusto.Language.Binding
             {
                 return new SemanticInfo(
                     new TableSymbol().WithIsOpen(true),
-                    DiagnosticFacts.GetFuzzyEntityNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
+                    DiagnosticFacts.GetFuzzyFunctionNotDefined(functionCall.Name.SimpleName).WithLocation(functionCall));
             }
             else
             {
@@ -616,7 +616,7 @@ namespace Kusto.Language.Binding
                 {
                     if (_isFuzzy)
                     {
-                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(name).WithLocation(location));
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyClusterNotDefined(name).WithLocation(location));
                     }
                     else
                     {
@@ -643,7 +643,7 @@ namespace Kusto.Language.Binding
                 {
                     if (_isFuzzy)
                     {
-                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(nameOrPattern).WithLocation(location));
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyDatabaseNotDefined(nameOrPattern).WithLocation(location));
                     }
                     else
                     {
@@ -823,7 +823,7 @@ namespace Kusto.Language.Binding
                 {
                     if (_isFuzzy)
                     {
-                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(nameOrPattern).WithLocation(location));
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyTableNotDefined(nameOrPattern).WithLocation(location));
                     }
                     else
                     {
@@ -952,7 +952,7 @@ namespace Kusto.Language.Binding
                 {
                     if (_isFuzzy)
                     {
-                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyExternalTableNotDefined(name).WithLocation(location));
                     }
                     else
                     {
@@ -980,7 +980,7 @@ namespace Kusto.Language.Binding
                 {
                     if (_isFuzzy)
                     {
-                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyMaterializedViewNotDefined(name).WithLocation(location));
                     }
                     else
                     {

@@ -713,21 +713,39 @@ namespace Kusto.Language
             return new Diagnostic("KS204", $"The name '{name}' does not refer to any known table, tabular variable or function.");
         }
 
-        public static Diagnostic GetFuzzyEntityNotDefined(string name = null)
+        public static Diagnostic GetFuzzyEntityNotDefined(string name = null, string kind = "entity")
         {
             if (string.IsNullOrEmpty(name))
             {
                 return new Diagnostic("KS205",
-                    $"The fuzzy expression does not refer to any known entity.")
+                    $"The fuzzy expression does not refer to any known or currently accessible {kind}.")
                     .WithSeverity(DiagnosticSeverity.Warning);
             }
             else
             {
                 return new Diagnostic("KS205",
-                    $"The fuzzy name '{name}' does not refer to any known entity.")
+                    $"The fuzzy name '{name}' does not refer to any known or currently accessible {kind}.")
                     .WithSeverity(DiagnosticSeverity.Warning);
             }
         }
+
+        public static Diagnostic GetFuzzyClusterNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "cluster");
+
+        public static Diagnostic GetFuzzyDatabaseNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "database");
+
+        public static Diagnostic GetFuzzyTableNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "table");
+
+        public static Diagnostic GetFuzzyExternalTableNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "external table");
+
+        public static Diagnostic GetFuzzyMaterializedViewNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "materialized view");
+
+        public static Diagnostic GetFuzzyFunctionNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "function");
 
         public static Diagnostic GetExpressionMustBeOrderable()
         {

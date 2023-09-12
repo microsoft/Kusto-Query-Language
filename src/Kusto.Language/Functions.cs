@@ -63,7 +63,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol ArrayStrcat =
             new FunctionSymbol("array_strcat", ScalarTypes.String,
-                new Parameter("array", ScalarTypes.DynamicArray),
+                new Parameter("array", ParameterTypeKind.DynamicArray),
                 new Parameter("delimiter", ParameterTypeKind.Scalar))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
@@ -165,7 +165,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol HasAnyIndex =
             new FunctionSymbol("has_any_index", ScalarTypes.Long,
                 new Parameter("source", ParameterTypeKind.StringOrDynamic),
-                new Parameter("values", ScalarTypes.DynamicArray))
+                new Parameter("values", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 

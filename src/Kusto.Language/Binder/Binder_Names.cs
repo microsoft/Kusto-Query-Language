@@ -674,7 +674,7 @@ namespace Kusto.Language.Binding
                         // unknown table name in fuzzy context?
                         return new SemanticInfo(
                             new TableSymbol().WithIsOpen(true),
-                            DiagnosticFacts.GetFuzzyEntityNotDefined(name).WithLocation(location));
+                            DiagnosticFacts.GetFuzzyTableNotDefined(name).WithLocation(location));
                     }
                     else if (_pathScope is DatabaseSymbol ds
                         && ds.IsOpen)
