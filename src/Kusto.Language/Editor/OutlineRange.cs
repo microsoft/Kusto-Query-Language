@@ -1,6 +1,6 @@
 ﻿namespace Kusto.Language.Editor
 {
-    public class OutlineRange
+    public sealed class OutlineRange
     {
         /// <summary>
         /// The start of the outline range.

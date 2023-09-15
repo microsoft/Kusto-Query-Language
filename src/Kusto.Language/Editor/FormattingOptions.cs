@@ -1,6 +1,6 @@
 ﻿namespace Kusto.Language.Editor
 {
-    public class FormattingOptions
+    public sealed class FormattingOptions
     {
         /// <summary>
         /// The number of spaces used per indentation level.

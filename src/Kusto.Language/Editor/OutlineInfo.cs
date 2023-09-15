@@ -4,8 +4,11 @@ namespace Kusto.Language.Editor
 {
     using Utils;
 
-    public class OutlineInfo
+    public sealed class OutlineInfo
     {
+        /// <summary>
+        /// The ranges that can be collapsed.
+        /// </summary>
         public IReadOnlyList<OutlineRange> Ranges { get; }
 
         public OutlineInfo(IReadOnlyList<OutlineRange> ranges)

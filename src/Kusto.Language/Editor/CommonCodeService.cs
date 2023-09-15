@@ -239,7 +239,7 @@ namespace Kusto.Language.Editor
             return list;
         }
 
-        public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
+        public override OutlineInfo GetOutlines(OutliningOptions options, CancellationToken cancellationToken)
         {
             var firstToken = Parsing.TokenParser.ParseToken(this.Text, 0);
             if (firstToken != null && firstToken.Text.Length > 0)
@@ -254,7 +254,7 @@ namespace Kusto.Language.Editor
                 // trim off any extra trailing whitespace from collapsed text
                 var collapsedTextLength = Parsing.TextFacts.TrimEnd(this.Text, firstToken.Trivia.Length, collapsedTextEnd - firstToken.Trivia.Length);
 
-                var collapsedText = this.Text.Substring(firstToken.Trivia.Length, collapsedTextLength);
+                var collapsedText = this.Text.Substring(firstToken.Trivia.Length, collapsedTextLength) + " ...";
 
                 return new OutlineInfo(new[] { new OutlineRange(start, end - start, collapsedText) });
             }

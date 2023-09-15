@@ -208,9 +208,9 @@ namespace Kusto.Language.Editor
             return _service.GetMinimalText(kind, cancellationToken);
         }
 
-        public override OutlineInfo GetOutlines(CancellationToken cancellationToken)
+        public override OutlineInfo GetOutlines(OutliningOptions options, CancellationToken cancellationToken)
         {
-            var result = _service.GetOutlines(cancellationToken);
+            var result = _service.GetOutlines(options, cancellationToken);
             if (result.Ranges.Count > 0 && _offset > 0)
             {
                 return new OutlineInfo(result.Ranges.Select(o => new OutlineRange(o.Start + _offset, o.Length, o.CollapsedText)).ToReadOnly());

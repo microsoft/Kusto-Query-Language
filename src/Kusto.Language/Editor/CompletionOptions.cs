@@ -2,7 +2,7 @@
 
 namespace Kusto.Language.Editor
 {
-    public class CompletionOptions
+    public sealed class CompletionOptions
     {
         [Flags]
         private enum OptionFlags

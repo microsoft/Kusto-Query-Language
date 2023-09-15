@@ -97,27 +97,45 @@ namespace Kusto.Language.Editor
             switch (token.Text)
             {
                 case "{":
-                    GetNextTokenReference(token, "}", elements);
+                    GetRelatedBracketsNext(token, "}", elements);
                     break;
                 case "}":
-                    GetPreviousTokenReference(token, "{", elements);
+                    GetRelatedBracketsPrevious(token, "{", elements);
                     break;
                 case "(":
-                    GetNextTokenReference(token, ")", elements);
+                    GetRelatedBracketsNext(token, ")", elements);
                     break;
                 case ")":
-                    GetPreviousTokenReference(token, "(", elements);
+                    GetRelatedBracketsPrevious(token, "(", elements);
                     break;
                 case "[":
-                    GetNextTokenReference(token, "]", elements);
+                    GetRelatedBracketsNext(token, "]", elements);
                     break;
                 case "]":
-                    GetPreviousTokenReference(token, "[", elements);
+                    GetRelatedBracketsPrevious(token, "[", elements);
                     break;
             }
         }
 
-        private void GetNextTokenReference(SyntaxToken token, string matchingText, List<RelatedElement> elements)
+        private void GetRelatedBracketsNext(SyntaxToken token, string matchingText, List<RelatedElement> elements)
+        {
+            if (GetNextMatchingToken(token, matchingText) is SyntaxToken t)
+            {
+                elements.Add(new RelatedElement(token.TextStart, token.Text.Length, RelatedElementKind.Syntax));
+                elements.Add(new RelatedElement(t.TextStart, t.Text.Length, RelatedElementKind.Syntax));
+            }
+        }
+
+        private void GetRelatedBracketsPrevious(SyntaxToken token, string matchingText, List<RelatedElement> elements)
+        {
+            if (GetPreviousMatchingToken(token, matchingText) is SyntaxToken t)
+            {
+                elements.Add(new RelatedElement(t.TextStart, t.Text.Length, RelatedElementKind.Syntax));
+                elements.Add(new RelatedElement(token.TextStart, token.Text.Length, RelatedElementKind.Syntax));
+            }
+        }
+
+        internal static SyntaxToken GetNextMatchingToken(SyntaxToken token, string matchingText)
         {
             var parent = token.Parent;
             var index = parent.GetChildIndex(token);
@@ -127,14 +145,14 @@ namespace Kusto.Language.Editor
                 var child = parent.GetChild(i);
                 if (child is SyntaxToken t && t.Text == matchingText)
                 {
-                    elements.Add(new RelatedElement(token.TextStart, token.Text.Length, RelatedElementKind.Syntax));
-                    elements.Add(new RelatedElement(t.TextStart, t.Text.Length, RelatedElementKind.Syntax));
-                    return;
+                    return t;
                 }
             }
+
+            return null;
         }
 
-        private void GetPreviousTokenReference(SyntaxToken token, string matchingText, List<RelatedElement> elements)
+        internal static SyntaxToken GetPreviousMatchingToken(SyntaxToken token, string matchingText)
         {
             var parent = token.Parent;
             var index = parent.GetChildIndex(token);
@@ -144,12 +162,13 @@ namespace Kusto.Language.Editor
                 var child = parent.GetChild(i);
                 if (child is SyntaxToken t && t.Text == matchingText)
                 {
-                    elements.Add(new RelatedElement(t.TextStart, t.Text.Length, RelatedElementKind.Syntax));
-                    elements.Add(new RelatedElement(token.TextStart, token.Text.Length, RelatedElementKind.Syntax));
-                    return;
+                    return t;
                 }
             }
+
+            return null;
         }
+
 
         private static bool IsPartOfNameReferenceOrDeclaration(SyntaxToken token)
         {

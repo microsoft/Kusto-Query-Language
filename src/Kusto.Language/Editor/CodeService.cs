@@ -115,8 +115,16 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the ranges of the text that can be expanded or collapsed.
         /// </summary>
+        /// <param name="options">Options for how outlining behaves.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
-        public abstract OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken));
+        public abstract OutlineInfo GetOutlines(OutliningOptions options, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets the ranges of the text that can be expanded or collapsed.
+        /// </summary>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        public OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken)) =>
+            GetOutlines(OutliningOptions.Default, cancellationToken);
 
         /// <summary>
         /// Determines if a completion list should be shown automatically during typing.

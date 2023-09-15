@@ -417,15 +417,13 @@ namespace Kusto.Language.Editor
             return cps;
         }
 
-        public override OutlineInfo GetOutlines(CancellationToken cancellationToken = default(CancellationToken))
+        public override OutlineInfo GetOutlines(OutliningOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundOrUnboundCode(cancellationToken, true, out var code))
             {
                 try
                 {
-                    var collapsedText = GetOutlineCollapsedText(code);
-                    var length = TextFacts.TrimEnd(this.Text, 0, this.Text.Length);
-                    return new OutlineInfo(new[] { new OutlineRange(0, length, collapsedText) });
+                    return KustoOutliner.GetOutlines(code, options);
                 }
                 catch (Exception)
                 {
@@ -433,33 +431,6 @@ namespace Kusto.Language.Editor
             }
 
             return base.GetOutlines(cancellationToken);
-        }
-
-        private static string GetOutlineCollapsedText(KustoCode code)
-        {
-            var builder = new StringBuilder();
-
-            for (var token = code.Syntax.GetFirstToken(); token != null; token = token.GetNextToken())
-            {
-                if (token.Text == "|" || token.Text == ";")
-                    break;
-
-                if (token.Trivia.Length > 0)
-                {
-                    if (builder.Length == 0)
-                    {
-                        builder.Append(token.Trivia);
-                    }
-                    else
-                    {
-                        builder.Append(" ");
-                    }
-                }
-
-                builder.Append(token.Text);
-            }
-
-            return builder.ToString();
         }
 
         public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
