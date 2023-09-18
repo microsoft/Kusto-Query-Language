@@ -1181,14 +1181,14 @@ namespace Kusto.Language
 
         #region iif / case
         public static readonly FunctionSymbol Iif =
-            new FunctionSymbol("iif", ReturnTypeKind.Common,
+            new FunctionSymbol("iif", ReturnTypeKind.CommonNonDynamic,
                 new Parameter("if", ScalarTypes.Bool),
                 new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic),
                 new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
             .ConstantFoldable();
 
         public static readonly FunctionSymbol Iff =
-            new FunctionSymbol("iff", ReturnTypeKind.Common,
+            new FunctionSymbol("iff", ReturnTypeKind.CommonNonDynamic,
                 new Parameter("if", ScalarTypes.Bool),
                 new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic),
                 new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))
@@ -1196,7 +1196,7 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol Case =
             new FunctionSymbol("case",
-                new Signature(ReturnTypeKind.Common,
+                new Signature(ReturnTypeKind.CommonNonDynamic,
                     new Parameter("predicate", ScalarTypes.Bool, maxOccurring: MaxRepeat),
                     new Parameter("then", ParameterTypeKind.CommonScalarOrDynamic, maxOccurring: MaxRepeat),
                     new Parameter("else", ParameterTypeKind.CommonScalarOrDynamic))

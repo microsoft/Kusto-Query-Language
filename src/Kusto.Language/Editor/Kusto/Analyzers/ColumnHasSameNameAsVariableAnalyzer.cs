@@ -8,6 +8,11 @@ namespace Kusto.Language.Editor
     using Symbols;
     using Utils;
 
+    /// <summary>
+    /// An analyzer that warns if any column reference is hiding a possible reference to
+    /// a local variable or parameter in scope, so the user is aware and can choose
+    /// to change the name of the variable or parameter to not conflict.
+    /// </summary>
     internal class ColumnHasSameNameAsVariableAnalyzer : KustoAnalyzer
     {
         private static readonly Diagnostic _diagnostic =
@@ -24,36 +29,39 @@ namespace Kusto.Language.Editor
 
         public override void Analyze(KustoCode code, List<Diagnostic> diagnostics, CancellationToken cancellationToken)
         {
-            var variableNames = new HashSet<string>();
+            var localNames = new HashSet<string>();
 
             SyntaxNode.WalkNodes(code.Syntax, node =>
             {
-                if (node is LetStatement ls
-                    && ls.Name.ReferencedSymbol is VariableSymbol vs
-                    && vs.Type is ScalarSymbol)
+                if (node is NameDeclaration nd
+                    && (nd.ReferencedSymbol is VariableSymbol || nd.ReferencedSymbol is ParameterSymbol)
+                    && nd.ReferencedSymbol.IsScalar)
                 {
-                    variableNames.Add(ls.Name.SimpleName);
+                    localNames.Add(nd.SimpleName);
                 }
-                else if (node is FunctionParameter fp
-                    && fp.NameAndType.Name.ResultType is ScalarSymbol)
+                else if (node is NameReference name
+                    && !IsPathSelector(name))  // locals are not accessible by paths
                 {
-                    variableNames.Add(fp.NameAndType.Name.SimpleName);
-                }
-                else if (node is NameReference name)
-                {
-                    // check if a column reference has the same name as a variable
+                    // Check if a column reference has the same name as a known local
+                    // note: this is merely to improve performance by reducing the number of
+                    // speculative lookups to only those that match known local names.
                     if (name.ReferencedSymbol is ColumnSymbol c
-                        && variableNames.Contains(c.Name))
+                        && localNames.Contains(c.Name))
                     {
-                        // if the name would have bound to a variable or parameter then add a warning
+                        // search for an otherwise matching local symbol in scope
                         var symbol = code.GetSpeculativeReferencedSymbol(name.TextStart, c.Name, SymbolMatch.Local, cancellationToken);
                         if (symbol != null)
                         {
+                            // since this name would have bound to a local symbol in scope if a column did not have the same name
+                            // add a warning so the user 
                             diagnostics.Add(_diagnostic.WithLocation(name));
                         }
                     }
                 }
             });
         }
+
+        private static bool IsPathSelector(NameReference name) =>
+            name.Parent is PathExpression p && p.Selector == name;
     }
 }

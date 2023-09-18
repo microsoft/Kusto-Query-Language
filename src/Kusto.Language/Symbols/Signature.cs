@@ -703,6 +703,9 @@ namespace Kusto.Language.Symbols
                 case ReturnTypeKind.Common:
                     return TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes) ?? ErrorSymbol.Instance;
 
+                case ReturnTypeKind.CommonNonDynamic:
+                    return TypeFacts.GetCommonArgumentType(argumentParameters, argumentTypes, ignoreDynamic: true) ?? ErrorSymbol.Instance;
+
                 case ReturnTypeKind.Widest:
                     return TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance;
 

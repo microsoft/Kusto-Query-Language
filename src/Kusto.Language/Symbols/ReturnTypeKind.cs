@@ -96,6 +96,12 @@ namespace Kusto.Language.Symbols
         Common,
 
         /// <summary>
+        /// The return type is the common scalar type of all the parameters marked as Common, 
+        /// ignoring dynamic types unless only dynamic types exist.
+        /// </summary>
+        CommonNonDynamic,
+
+        /// <summary>
         /// The return type is the widest numeric scalar type of all the arguments.  
         /// Int is promoted to Long.
         /// </summary>

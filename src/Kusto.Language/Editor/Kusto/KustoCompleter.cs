@@ -2515,6 +2515,7 @@ namespace Kusto.Language.Editor
             switch (signature.ReturnKind)
             {
                 case ReturnTypeKind.Common:
+                case ReturnTypeKind.CommonNonDynamic:
                 case ReturnTypeKind.Widest:
                 case ReturnTypeKind.Parameter0:
                     return arg0Type is ScalarSymbol s && s == ScalarTypes.Bool;
@@ -2530,6 +2531,7 @@ namespace Kusto.Language.Editor
             switch (signature.ReturnKind)
             {
                 case ReturnTypeKind.Common:
+                case ReturnTypeKind.CommonNonDynamic:
                 case ReturnTypeKind.Widest:
                 case ReturnTypeKind.Parameter0:
                     return arg0Type is ScalarSymbol s && s != ScalarTypes.Bool;
@@ -2545,6 +2547,7 @@ namespace Kusto.Language.Editor
             switch (signature.ReturnKind)
             {
                 case ReturnTypeKind.Common:
+                case ReturnTypeKind.CommonNonDynamic:
                 case ReturnTypeKind.Widest:
                 case ReturnTypeKind.Parameter0:
                     return arg0Type is ScalarSymbol s && s.IsNumeric;

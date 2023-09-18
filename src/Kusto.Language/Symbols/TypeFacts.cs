@@ -142,7 +142,8 @@ namespace Kusto.Language.Symbols
         public static TypeSymbol GetCommonResultType(
             SyntaxList<SeparatedElement<Expression>> expressions,
             Conversion allowedConversions = Conversion.Promotable,
-            TypeSymbol defaultType = null)
+            TypeSymbol defaultType = null,
+            bool ignoreDynamic = false)
         {
             TypeSymbol commonType = null;
 
@@ -151,10 +152,15 @@ namespace Kusto.Language.Symbols
                 for (int i = 0; i < expressions.Count; i++)
                 {
                     var expr = expressions[i].Element;
+                    if (ignoreDynamic && expr.ResultType is DynamicSymbol)
+                        continue;
                     if (!TryGetCommonType(commonType, expr.ResultType, allowedConversions, out commonType))
                         return defaultType;
                 }
             }
+
+            if (commonType == null && ignoreDynamic)
+                return GetCommonResultType(expressions, allowedConversions, defaultType, false);
 
             return commonType ?? defaultType;
         }
@@ -315,7 +321,8 @@ namespace Kusto.Language.Symbols
         public static TypeSymbol GetCommonArgumentType(
             IReadOnlyList<Parameter> argumentParameters, 
             IReadOnlyList<TypeSymbol> argumentTypes,
-            TypeSymbol defaultType = null)
+            TypeSymbol defaultType = null,
+            bool ignoreDynamic = false)
         {
             TypeSymbol commonType = null;
 
@@ -325,6 +332,9 @@ namespace Kusto.Language.Symbols
                 if (parameter != null)
                 {
                     var argType = argumentTypes[i];
+
+                    if (ignoreDynamic && argType is DynamicSymbol)
+                        continue;
 
                     if ((parameter.TypeKind == ParameterTypeKind.CommonScalar && argType.IsScalar)
                         || (parameter.TypeKind == ParameterTypeKind.CommonNumber && IsNumeric(argType))
@@ -341,6 +351,9 @@ namespace Kusto.Language.Symbols
                     }
                 }
             }
+
+            if (commonType == null && ignoreDynamic)
+                return GetCommonArgumentType(argumentParameters, argumentTypes, defaultType, false);
 
             return commonType ?? defaultType;
         }
