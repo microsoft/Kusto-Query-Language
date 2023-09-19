@@ -51,6 +51,7 @@
         Contains_CsKeyword,
         ContextualDataTableKeyword,
         CountKeyword,
+        CyclesKeyword,
 
         DatabaseKeyword,
         DataExportKeyword,

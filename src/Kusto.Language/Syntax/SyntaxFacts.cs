@@ -83,6 +83,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.Contains_CsKeyword, "contains_cs", opKind: OperatorKind.ContainsCs),
                 new SyntaxData(SyntaxKind.ContextualDataTableKeyword, "__contextual_datatable"),
                 new SyntaxData(SyntaxKind.CountKeyword, "count"),
+                new SyntaxData(SyntaxKind.CyclesKeyword, "cycles"),
 
                 new SyntaxData(SyntaxKind.DatabaseKeyword, "database", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.DataExportKeyword, "dataexport"),
@@ -850,7 +851,6 @@ namespace Kusto.Language.Syntax
         /// </summary>
         public static bool CanBeIdentifier(this SyntaxKind kind)
             => kindToDataMap[(int)kind].CanBeIdentifier;
-
 
         /// <summary>
         /// All the keywords in Kusto
