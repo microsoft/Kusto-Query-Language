@@ -41,17 +41,19 @@ namespace Kusto.Language.Editor
 
         private static void AddRootOutline(KustoCode code, OutliningOptions options, List<OutlineRange> outlines)
         {
-            var collapsedText = GetRootCollapsedText(code, options);
-            var length = TextFacts.TrimEnd(code.Text, 0, code.Text.Length);
-            outlines.Add(new OutlineRange(0, length, collapsedText));
+            if (TryGetRootCollapsedText(code, options, out var collapsedText))
+            {
+                var length = TextFacts.TrimEnd(code.Text, 0, code.Text.Length);
+                outlines.Add(new OutlineRange(0, length, collapsedText));
+            }
         }
 
-        private static string GetRootCollapsedText(KustoCode code, OutliningOptions options)
+        private static bool TryGetRootCollapsedText(KustoCode code, OutliningOptions options, out string collapsedText)
         {
-            return GetCollapsedText(code, 0, code.Text.Length, options);
+            return TryGetCollapsedText(code, 0, code.Text.Length, options, out collapsedText);
         }
 
-        private static string GetCollapsedText(KustoCode code, int start, int length, OutliningOptions options)
+        private static bool TryGetCollapsedText(KustoCode code, int start, int length, OutliningOptions options, out string collapsedText)
         {
             var builder = new StringBuilder();
 
@@ -95,16 +97,25 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            if (braces)
+            var newText = builder.ToString();
+
+            if (!TextFacts.IsWhitespaceOnly(newText))
             {
-                builder.Append(" { ... }");
+                if (braces)
+                {
+                    collapsedText = newText + " { ... }";
+                }
+                else
+                {
+                    collapsedText = newText + " ...";
+                }
+                return true;
             }
             else
             {
-                builder.Append(" ...");
+                collapsedText = null;
+                return false;
             }
-
-            return builder.ToString();
         }
 
         private static void AddStatementOutline(KustoCode code, Statement statement, OutliningOptions options, List<OutlineRange> outlines)
@@ -119,40 +130,10 @@ namespace Kusto.Language.Editor
                 return;
             }
 
-            var collapsed = GetCollapsedText(code, firstToken.TextStart, lastToken.End - firstToken.TextStart, options);
-            outlines.Add(new OutlineRange(firstToken.TextStart, lastToken.End - firstToken.TextStart, collapsed));
-        }
-
-#if false
-        private static void AddBracketOutline(KustoCode code, SyntaxToken startToken, List<OutlineRange> outlines)
-        {
-            switch (startToken.Text)
+            if (TryGetCollapsedText(code, firstToken.TextStart, lastToken.End - firstToken.TextStart, options, out var collapsedText))
             {
-                case "{":
-                    AddBracketOutline(code, startToken, "}", outlines);
-                    break;
-                case "[":
-                    AddBracketOutline(code, startToken, "]", outlines);
-                    break;
-                case "(":
-                    AddBracketOutline(code, startToken, ")", outlines);
-                    break;
+                outlines.Add(new OutlineRange(firstToken.TextStart, lastToken.End - firstToken.TextStart, collapsedText));
             }
         }
-
-        private static void AddBracketOutline(KustoCode code, SyntaxToken startToken, string endTokenText, List<OutlineRange> outlines)
-        {
-            if (KustoRelatedElementFinder.GetNextMatchingToken(startToken, endTokenText) is SyntaxToken endToken
-                && !OnSameLine(code, startToken, endToken))
-            {
-                var outline =
-                    new OutlineRange(
-                        startToken.TextStart,
-                        endToken.End - startToken.TextStart,
-                        startToken.Text + " ... " + endToken.Text);
-                outlines.Add(outline);
-            }
-        }
-#endif
     }
 }
