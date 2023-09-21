@@ -2805,6 +2805,20 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol Erf =
+           new FunctionSymbol("erf", ScalarTypes.Real,
+               new Parameter("number", ParameterTypeKind.Number))
+           .WithResultNameKind(ResultNameKind.FirstArgument)
+           .Hide() // TODO: Unhide on Oct'15th 2023 
+           .ConstantFoldable();
+
+        public static readonly FunctionSymbol Erfc =
+           new FunctionSymbol("erfc", ScalarTypes.Real,
+               new Parameter("number", ParameterTypeKind.Number))
+           .WithResultNameKind(ResultNameKind.FirstArgument)
+           .Hide() // TODO: Unhide on Oct'15th 2023 
+           .ConstantFoldable();
+
         public static readonly FunctionSymbol IsNan =
             new FunctionSymbol("isnan", ScalarTypes.Bool,
                 new Parameter("number", ScalarTypes.Real))
@@ -3782,6 +3796,8 @@ namespace Kusto.Language
             BetaPdf,
             Gamma,
             LogGamma,
+            Erf,
+            Erfc,
             IsNan,
             IsInf,
             IsFinite,
