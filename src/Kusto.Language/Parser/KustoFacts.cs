@@ -232,7 +232,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> CyclesKinds = new string[]
         {
-            "none", "edges", "nodes"
+            "none", "all", "unique_edges"
         };
 
         public static readonly IReadOnlyList<string> UnionHintConcurrencies = HintConcurrencies;
