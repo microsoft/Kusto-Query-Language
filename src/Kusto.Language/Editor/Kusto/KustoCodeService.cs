@@ -430,7 +430,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            return base.GetOutlines(cancellationToken);
+            return base.GetOutlines(options, cancellationToken);
         }
 
         public override bool ShouldAutoComplete(int position, char key, CancellationToken cancellationToken = default(CancellationToken))
