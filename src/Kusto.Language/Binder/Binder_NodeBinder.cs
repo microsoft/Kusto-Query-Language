@@ -3408,6 +3408,16 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsColumn(node.SourceColumn, diagnostics);
                     _binder.CheckIsColumn(node.TargetColumn, diagnostics);
 
+                    if (!node.SourceColumn.ResultType.IsAnyScalarExceptDynamic())
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetMakeGraphDynamicNodeIdColumnNotSupported().WithLocation(node.SourceColumn));
+                    }
+
+                    if (!node.TargetColumn.ResultType.IsAnyScalarExceptDynamic())
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetMakeGraphDynamicNodeIdColumnNotSupported().WithLocation(node.TargetColumn));
+                    }
+
                     if (node.WithClause != null)
                     {
                         nodesShape = s_tableListPool.AllocateFromPool();
@@ -3415,6 +3425,10 @@ namespace Kusto.Language.Binding
                         {
                             var tableAndKey = node.WithClause.TablesAndKeys[i].Element;
                             _binder.CheckIsTabular(tableAndKey.Table, diagnostics);
+                            if (!tableAndKey.Column.ResultType.IsAnyScalarExceptDynamic())
+                            {
+                                diagnostics.Add(DiagnosticFacts.GetMakeGraphDynamicNodeIdColumnNotSupported().WithLocation(tableAndKey.Column));
+                            }
 
                             if (tableAndKey.Table.ResultType is TableSymbol table)
                             {

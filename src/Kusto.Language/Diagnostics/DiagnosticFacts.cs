@@ -923,6 +923,11 @@ namespace Kusto.Language
             return new Diagnostic("KS239", $"graph-match element expected type is '{expectedElementType}', but received '{actualElementType}' type.");
         }
 
+        public static Diagnostic GetMakeGraphDynamicNodeIdColumnNotSupported()
+        {
+            return new Diagnostic("KS240", $"source, target and node id columns can't be of type dynamic, consider using explicit cast");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {
