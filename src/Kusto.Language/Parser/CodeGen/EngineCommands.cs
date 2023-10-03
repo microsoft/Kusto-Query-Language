@@ -1826,12 +1826,6 @@ namespace Kusto.Language
                 "ShowTableDataStatistics",
                 "(ColumnName: string, ColumnType: string, ColumnId: guid, OriginalSize: long, ExtentSize: long, CompressionRatio: real, DataCompressionSize: long, SharedIndexSize: long, IndexSize: long, IndexSizePercent: real,StorageEngineVersion: string, PresentRowCount: long, DeletedRowCount: long, SamplePercent: real, IncludeColdData: bool)");
 
-        public static readonly CommandSymbol ShowTableUsageStatistics =
-            new CommandSymbol("ShowTableUsageStatistics", _schema18);
-
-        public static readonly CommandSymbol ShowTableUsageStatisticsDetails =
-            new CommandSymbol("ShowTableUsageStatisticsDetails", _schema18);
-
         public static readonly CommandSymbol CreateTempStorage =
             new CommandSymbol("CreateTempStorage", _schema18);
 
@@ -2440,8 +2434,6 @@ namespace Kusto.Language
             ShowTableRowStoreSealInfo,
             ShowTablesColumnStatistics,
             ShowTableDataStatistics,
-            ShowTableUsageStatistics,
-            ShowTableUsageStatisticsDetails,
             CreateTempStorage,
             DropTempStorage,
             DropStoredQueryResultContainers,
