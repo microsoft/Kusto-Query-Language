@@ -1806,7 +1806,6 @@ namespace Kusto.Language
                 new Parameter("set1", ParameterTypeKind.DynamicArray),
                 new Parameter("set2", ParameterTypeKind.DynamicArray))
             .WithResultNameKind(ResultNameKind.None)
-            .Hide() // TODO: Unhide by Sep-15-2023
             .ConstantFoldable();
 
         public static readonly FunctionSymbol BagMerge =

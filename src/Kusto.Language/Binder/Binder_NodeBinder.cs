@@ -2843,11 +2843,8 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsDynamic(expr.Expression, diagnostics);
 
-                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
-                            ?? TypeFacts.GetElementType(expr.Expression.ResultType)
-                            ?? expr.Expression.ResultType;
-
-                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, style: ProjectionStyle.Replace, columnType: type);
+                        var newType = GetMvExpandResultType(node.Parameters, expr.Expression, expr.ToTypeOf);
+                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, style: ProjectionStyle.Replace, columnType: newType);
                     }
 
                     if (node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithItemIndex) is string indexName)
@@ -2870,6 +2867,52 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_projectionBuilderPool.ReturnToPool(builder);
                 }
+            }
+
+            private static TypeSymbol GetMvExpandResultType(SyntaxList<NamedParameter> parameters, Expression expression, ToTypeOfClause toTypeOf)
+            {
+                TypeSymbol newType;
+
+                if (toTypeOf?.TypeOf?.ReferencedSymbol is TypeSymbol toTypeOfType)
+                {
+                    // to type of clause gives result type
+                    newType = toTypeOfType;
+                }
+                else if (expression.ResultType is DynamicArraySymbol arrayType)
+                {
+                    // initial expression is known to be an array, so each item will be an element of the array
+                    newType = TypeFacts.GetElementType(expression.ResultType);
+                }
+                else if (expression.ResultType is DynamicBagSymbol)
+                {
+                    var bagexpKind = parameters.GetParameterNameValue(QueryOperatorParameters.BagExpansion)
+                                  ?? parameters.GetParameterNameValue(QueryOperatorParameters.Kind);
+
+                    // initial expression is known to be a bag, so give better result type than just 'dynamic'.
+                    if (bagexpKind == "array")
+                    {
+                        // each row of expansion of bag gets an array for each name:value pair containing the name and value.
+                        newType = ScalarTypes.DynamicArray;
+                    }
+                    else
+                    {
+                        // each row of expansion of bag gets a small bag with one name:value
+                        newType = ScalarTypes.DynamicBag;
+                    }
+                }
+                else if (expression.ResultType is DynamicSymbol)
+                {
+                    // we don't actually know if this column is a bag or array,
+                    // so must return type as dynamic.
+                    newType = ScalarTypes.Dynamic;
+                }
+                else
+                {
+                    // not even dynamic?  Error case, just return column's type.
+                    newType = expression.ResultType;
+                }
+
+                return newType;
             }
 
             public override SemanticInfo VisitMvExpandExpression(MvExpandExpression node)
@@ -2910,11 +2953,9 @@ namespace Kusto.Language.Binding
 
                         _binder.CheckIsDynamic(expr.Expression, diagnostics);
 
-                        TypeSymbol type = expr.ToTypeOf?.TypeOf?.ReferencedSymbol as TypeSymbol
-                            ?? TypeFacts.GetElementType(expr.Expression.ResultType)
-                            ?? expr.Expression.ResultType;
+                        var newType = GetMvExpandResultType(node.Parameters, expr.Expression, expr.ToTypeOf);
 
-                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: type, style: ProjectionStyle.Replace);
+                        _binder.CreateProjectionColumns(expr.Expression, builder, diagnostics, columnType: newType, style: ProjectionStyle.Replace);
                     }
 
                     if (node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithItemIndex) is string indexName)
@@ -2928,7 +2969,7 @@ namespace Kusto.Language.Binding
                     }
 
                     // ignore Subquery value here (see TreeBinder)
-                    // return info for type flowing into subquery
+                    // the schema returned here is used for the type flowing into the subquery
                     var result = new TableSymbol(builder.GetProjection())
                         .WithInheritableProperties(RowScopeOrEmpty);
 
