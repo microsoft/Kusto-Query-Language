@@ -8470,6 +8470,13 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD(), CD(), CD("databaseVersion", CompletionHint.Literal)}));
 
+            var ShowDatabaseSchemaViolations = Command("ShowDatabaseSchemaViolations", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    Token("schema"),
+                    Token("violations")));
+
             var ShowDatabaseSchema3 = Command("ShowDatabaseSchema", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -8974,7 +8981,7 @@ namespace Kusto.Language.Parsing
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
                     new [] {CD(), CD(), CD("databaseName", CompletionHint.Database), CD(), CD(), CD("databaseVersion", CompletionHint.Literal)}));
 
-            var ShowDatabaseSchemaViolations = Command("ShowDatabaseSchemaViolations", 
+            var ShowDatabaseSchemaViolations2 = Command("ShowDatabaseSchemaViolations", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
@@ -11203,6 +11210,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseSchemaAsJson2,
                 ShowDatabaseSchemaAsCslScript4,
                 ShowDatabaseSchema2,
+                ShowDatabaseSchemaViolations,
                 ShowDatabaseSchema3,
                 DatabaseShardGroupsStatisticsShow,
                 ShowDatabaseCslSchema3,
@@ -11244,7 +11252,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabasePurgeOperation,
                 ShowDatabaseSchema4,
                 ShowDatabaseSchema5,
-                ShowDatabaseSchemaViolations,
+                ShowDatabaseSchemaViolations2,
                 ShowDatabaseSchemaAsCslScript5,
                 ShowDatabaseSchemaAsJson3,
                 ShowDatabaseSchemaAsCslScript6,
