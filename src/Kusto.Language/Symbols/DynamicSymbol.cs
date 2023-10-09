@@ -94,6 +94,8 @@ namespace Kusto.Language.Symbols
 
         public override Tabularity Tabularity => Tabularity.Scalar;
 
+        private Dictionary<string, ColumnSymbol> _nameToPropertyMap;
+
         /// <summary>
         /// Gets the property with the specified name or null.
         /// </summary>
@@ -101,12 +103,14 @@ namespace Kusto.Language.Symbols
         {
             if (_nameToPropertyMap == null)
             {
-                _nameToPropertyMap = new Dictionary<string, ColumnSymbol>();
+                var tmp = new Dictionary<string, ColumnSymbol>();
 
                 foreach (var prop in this.Properties)
                 {
-                    _nameToPropertyMap[prop.Name] = prop;
+                    tmp[prop.Name] = prop;
                 }
+
+                Interlocked.CompareExchange(ref _nameToPropertyMap, tmp, null);
             }
 
             return _nameToPropertyMap.TryGetValue(name, out property);
@@ -127,8 +131,6 @@ namespace Kusto.Language.Symbols
                 return this;
             }
         }
-
-        private Dictionary<string, ColumnSymbol> _nameToPropertyMap;
 
         /// <summary>
         /// Returns a <see cref="DynamicBagSymbol"/> with the property added or updated.
