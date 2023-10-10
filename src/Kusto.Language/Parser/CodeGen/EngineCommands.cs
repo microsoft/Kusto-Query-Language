@@ -1871,7 +1871,7 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowDatabasesEntities =
             new CommandSymbol(
                 "ShowDatabasesEntities",
-                "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, Details:dynamic)");
+                "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)");
 
         public static readonly CommandSymbol ReplaceDatabaseKeyVaultSecrets =
             new CommandSymbol("ReplaceDatabaseKeyVaultSecrets", _schema18);
