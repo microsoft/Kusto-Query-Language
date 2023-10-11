@@ -937,11 +937,25 @@ namespace Kusto.Language.Binding
                 base.VisitNameReference(node);
 
                 // some commands have unqualified column reference relative to a previous table reference
-                bool isCommand = node.GetFirstAncestor<CustomCommand>() != null;
-                if (isCommand && node.ReferencedSymbol is TableSymbol ts)
+                if (node.ReferencedSymbol is TableSymbol ts && IsCommandButNotQueryPart(node))
                 {
                     _binder._rowScope = ts;
                 }
+            }
+
+            /// <summary>
+            /// Returns true if the node is part of a command syntax but not in the input/output query.
+            /// </summary>
+            private static bool IsCommandButNotQueryPart(SyntaxNode node)
+            {
+                // if the name/path is a part of a command expression
+                while (node.Parent is PathExpression p)
+                {
+                    node = p.Parent;
+                }
+
+                return node.Parent is Command
+                    || node.Parent is CustomNode;
             }
 
             public override void VisitCommandBlock(CommandBlock node)
