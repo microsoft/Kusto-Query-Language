@@ -1,6 +1,6 @@
 {
   "name": "@kusto/language-service-next",
-  "version": "0.0.x",
+  "version": "11.4.x",
   "description": "Azure Data Explorer (a.k.a Kusto) language service for javascript",
   "author": {
     "name": "Microsoft"
