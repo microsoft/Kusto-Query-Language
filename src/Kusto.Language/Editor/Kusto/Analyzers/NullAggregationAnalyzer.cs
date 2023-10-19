@@ -28,6 +28,7 @@ namespace Kusto.Language.Editor
             {
                 var badSums = node.Aggregates.GetDescendants<FunctionCallExpression>(fc =>
                     fc.ReferencedSymbol == Aggregates.Sum
+                    && fc.ArgumentList.Expressions.Count > 0
                     && fc.ArgumentList.Expressions[0].Element is BinaryExpression b
                     && (b.Kind == SyntaxKind.AddExpression
                      || b.Kind == SyntaxKind.SubtractExpression));
