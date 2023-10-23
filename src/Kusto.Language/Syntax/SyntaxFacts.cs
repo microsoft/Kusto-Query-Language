@@ -847,7 +847,22 @@ namespace Kusto.Language.Syntax
         }
 
         /// <summary>
-        /// True if the keyword can also be used as an identifier.
+        /// True if the text is a keyword in the SyntaxFacts table.
+        /// </summary>
+        public static bool IsKeyword(string text) =>
+            SyntaxFacts.TryGetKind(text, out var kind)
+            && kind.GetCategory() == SyntaxCategory.Keyword;
+
+        /// <summary>
+        /// True if the text is a keyword that can be an identifier as denoted by SyntaxFacts table.
+        /// </summary>
+        public static bool IsKeywordThatCanBeIdentifier(string text) =>
+            SyntaxFacts.TryGetKind(text, out var kind)
+            && kind.GetCategory() == SyntaxCategory.Keyword
+            && SyntaxFacts.CanBeIdentifier(kind);
+
+        /// <summary>
+        /// True if this keyword can also be used as an identifier.
         /// </summary>
         public static bool CanBeIdentifier(this SyntaxKind kind)
             => kindToDataMap[(int)kind].CanBeIdentifier;

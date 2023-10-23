@@ -361,13 +361,13 @@ namespace Kusto.Language
         };
 
         /// <summary>
-        /// Keywords that can always be used as identifiers
+        /// Keywords that can be used as identifiers everywhere.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> KeywordsAsIdentifiers =
             SyntaxFacts.GetKindsWithFixedText().Where(k => k.IsKeyword() && k.CanBeIdentifier()).ToArray();
 
         /// <summary>
-        /// Keywords that can sometimes be used as identifiers
+        /// Keywords that can be used as identifiers in some additional locations in queries.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> ExtendedKeywordsAsIdentifiers =
             KeywordsAsIdentifiers.Concat(
@@ -422,7 +422,7 @@ namespace Kusto.Language
             .ToArray();
 
         /// <summary>
-        /// Keywords that can be identifiers is in distinct locations.
+        /// Keywords that can be used as identifiers in some distinct locations in queries.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> SpecialKeywordsAsIdentifiers = new SyntaxKind[]
         {
@@ -537,26 +537,243 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// True if the text can be used as an identifier in all contexts that declare or reference names.
-        /// (note: some names may be legal in one context but not another)
+        /// True if the text can be used as an identifier in all contexts that declare or reference names
+        /// in queries and control commands.
         /// </summary>
         public static bool CanBeIdentifier(string text) =>
-            TokenParser.ScanIdentifier(text) == text.Length   // looks like an identifier
-            && !(TokenParser.ScanTimespanLiteral(text) == text.Length)  // does not look like a timespan literal: 10days, etc
+            text.Length > 0
+            && !TextFacts.IsDigit(text[0]) // disallow some otherwise legal identifiers that start with numbers
+            && TokenParser.ScanIdentifier(text) == text.Length   // looks like an identifier
             && !(TokenParser.ScanBooleanLiteral(text) == text.Length)   // does not look like a boolean literal: true, false
-            && (!IsKeyword(text) || IsKeywordThatCanBeIdentifier(text));
+            && (!s_keywordsThatNeedBrackets.Contains(text));
 
         /// <summary>
-        /// True if the text is a keyword.
+        /// Known identifier-like keywords from all sources (query and control commands) that cannot be identifiers everywhere.
         /// </summary>
-        public static bool IsKeyword(string text) =>
-            SyntaxFacts.TryGetKind(text, out var kind) && kind.GetCategory() == SyntaxCategory.Keyword;
-
-        /// <summary>
-        /// True if the text is a keyword that can be an identifier.
-        /// </summary>
-        public static bool IsKeywordThatCanBeIdentifier(string text) =>
-            SyntaxFacts.TryGetKind(text, out var kind) && kind.GetCategory() == SyntaxCategory.Keyword && SyntaxFacts.CanBeIdentifier(kind);
+        private static readonly HashSet<string> s_keywordsThatNeedBrackets = new HashSet<string>()
+        {
+            "__contextual_datatable",
+            "__crossCluster",
+            "__crossDB",
+            "__executeAndCache",
+            "__id",
+            "__isFuzzy",
+            "__noWithSource",
+            "__packedColumn",
+            "__projectAway",
+            "__sourceColumnIndex",
+            "__unique",
+            "3Dchart",
+            "accumulate",
+            "and",
+            "anomalychart",
+            "application",
+            "areachart",
+            "as",
+            "asc",
+            "bagexpansion",
+            "barchart",
+            "between",
+            "bin_legacy",
+            "blockedprincipals",
+            "boolean",
+            "by",
+            "byte",
+            "bytes",
+            "cachingpolicy",
+            "callout",
+            "callstacks",
+            "cancel",
+            "card",
+            "char",
+            "columnchart",
+            "concurrency",
+            "configuration",
+            "consume",
+            "container",
+            "containers",
+            "contains",
+            "contains_cs",
+            "containscs",
+            "count",
+            "cycles",
+            "dataexport",
+            "datascope",
+            "datasize",
+            "datastats",
+            "datatable",
+            "date",
+            "datetime",
+            "datetime_pattern",
+            "days",
+            "decimal",
+            "decodeblocks",
+            "desc",
+            "dimensions",
+            "disabled",
+            "distinct",
+            "double",
+            "dryrun",
+            "dynamic",
+            "earliest",
+            "empty",
+            "enabled",
+            "encodingpolicy",
+            "endswith",
+            "endswith_cs",
+            "entity_group",
+            "exclude",
+            "expandoutput",
+            "expired_tables_cleanup",
+            "extend",
+            "extent_tags_retention",
+            "extentsize",
+            "external_data",
+            "externaldata",
+            "filter",
+            "find",
+            "first",
+            "flags",
+            "float",
+            "follower",
+            "for",
+            "force_remote",
+            "format_datetime",
+            "GB",
+            "getschema",
+            "harddelete",
+            "hardretention",
+            "has",
+            "has_all",
+            "has_any",
+            "has_cs",
+            "hasprefix",
+            "hasprefix_cs",
+            "hassuffix",
+            "hassuffix_cs",
+            "hot_window",
+            "hotcache",
+            "identity",
+            "in",
+            "include",
+            "int",
+            "int16",
+            "int32",
+            "int64",
+            "int8",
+            "invoke",
+            "isfuzzy",
+            "join",
+            "journal",
+            "kind",
+            "ladderchart",
+            "last",
+            "latest",
+            "like",
+            "likecs",
+            "limit",
+            "linechart",
+            "long",
+            "materialize",
+            "MB",
+            "mdm",
+            "missing",
+            "mvapply",
+            "mvexpand",
+            "network",
+            "nooptimization",
+            "notcontains",
+            "notcontainscs",
+            "notlike",
+            "notlikecs",
+            "of",
+            "or",
+            "order",
+            "others",
+            "parse",
+            "pathformat",
+            "piechart",
+            "pivotchart",
+            "print",
+            "project",
+            "queries",
+            "query_results",
+            "real",
+            "recoverability",
+            "relaxed",
+            "restricted_view_access",
+            "row_level_security",
+            "rowstore",
+            "rowstore_references",
+            "rowstore_sealinfo",
+            "rowstorepolicy",
+            "rowstores",
+            "sample",
+            "scan",
+            "scatterchart",
+            "seal",
+            "seals",
+            "search",
+            "serialize",
+            "set",
+            "shards",
+            "simple",
+            "softdelete",
+            "softretention",
+            "sort",
+            "sql",
+            "stackedareachart",
+            "startofday",
+            "startofmonth",
+            "startofweek",
+            "startofyear",
+            "startswith",
+            "startswith_cs",
+            "statistics",
+            "stored_query_result",
+            "stored_query_results",
+            "storedqueryresultcontainers",
+            "string",
+            "summarize",
+            "tablepurge",
+            "take",
+            "time",
+            "timechart",
+            "timeline",
+            "timepivot",
+            "timespan",
+            "title",
+            "to",
+            "top",
+            "toscalar",
+            "totable",
+            "transactions",
+            "treemap",
+            "trim",
+            "uint",
+            "uint16",
+            "uint32",
+            "uint64",
+            "uint8",
+            "ulong",
+            "union",
+            "uniqueid",
+            "unrestrictedviewers",
+            "until",
+            "unused",
+            "utilization",
+            "verbose",
+            "viewers",
+            "views",
+            "violations",
+            "where",
+            "with_itemindex",
+            "with_match_id",
+            "with_source",
+            "with_step_name",
+            "withsource",
+            "writeaheadlog"
+        };
 
         /// <summary>
         /// Adds bracketting and quoting to name if necessary.

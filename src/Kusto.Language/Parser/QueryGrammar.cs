@@ -103,7 +103,8 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxList<SeparatedElement<Expression>>> LiteralList { get; private set; }
         public Parser<LexicalToken, SkippedTokens> SkippedTokens { get; private set; }
 
-        private static readonly HashSet<SyntaxKind> _extendedKeywordsAsIdentifiers = KustoFacts.ExtendedKeywordsAsIdentifiers.ToHashSetEx();
+        private static readonly HashSet<SyntaxKind> _extendedKeywordsAsIdentifiers = 
+            KustoFacts.ExtendedKeywordsAsIdentifiers.ToHashSetEx();
 
         private static bool IsExtendedKeywordAsIdentifier(LexicalToken token) =>
             token.Kind.IsKeyword() && _extendedKeywordsAsIdentifiers.Contains(token.Kind);
