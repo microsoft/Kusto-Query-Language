@@ -193,6 +193,7 @@
         PieChartKeyword,
         PivotChartKeyword,
         PlotlyKeyword,
+        GraphKeyword,
         PrintKeyword,
         ProjectKeyword,
         ProjectAwayKeyword,

@@ -224,6 +224,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PieChartKeyword, "piechart"),
                 new SyntaxData(SyntaxKind.PivotChartKeyword, "pivotchart"),
                 new SyntaxData(SyntaxKind.PlotlyKeyword, "plotly", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.GraphKeyword, "graph", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PrintKeyword, "print"),
                 new SyntaxData(SyntaxKind.ProjectKeyword, "project"),
                 new SyntaxData(SyntaxKind.ProjectAwayKeyword, "project-away"),
