@@ -554,7 +554,7 @@ namespace Kusto.Language.Editor
         private void GetCompletionItemsForSymbol(Symbol symbol, SyntaxNode contextNode, bool nameOnly, List<CompletionItem> items)
         {
             var kind = GetCompletionKind(symbol);
-            string editName = KustoFacts.BracketNameIfNecessary(symbol.Name);
+            string editName = KustoFacts.BracketNameIfNecessary(symbol.Name, code.Dialect);
             var displayText = CompletionDisplay.GetText(symbol, nameOnly);
 
             switch (symbol)
@@ -683,7 +683,7 @@ namespace Kusto.Language.Editor
                     items.Add(new CompletionItem(CompletionKind.Database, displayText, editName));
                     if (!string.IsNullOrEmpty(d.AlternateName))
                     {
-                        string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName);
+                        string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName, code.Dialect);
                         items.Add(new CompletionItem(CompletionKind.Database, d.AlternateName, altEditName));
                     }
                     break;

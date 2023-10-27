@@ -2262,7 +2262,7 @@ namespace Kusto.Language.Parsing
         private static readonly IReadOnlyList<string> s_functionsWithKeywordNames =
             Functions.All.Select(f => f.Name).Concat(
             Aggregates.All.Select(f => f.Name))
-            .Where(n => (KustoFacts.IsKeyword(n) && !KustoFacts.IsKeywordThatCanBeIdentifier(n)) 
+            .Where(n => (SyntaxFacts.IsKeyword(n) && !SyntaxFacts.IsKeywordThatCanBeIdentifier(n)) 
                      || IsMultiTokenName(n))
             .ToList();
 
@@ -3003,7 +3003,7 @@ namespace Kusto.Language.Parsing
         private static bool IsMultiTokenName(string name)
         {
             // if its not a keyword or a legal identifier, then assume it is a multi-token name like foo-bar
-            return !KustoFacts.IsKeyword(name) && !KustoFacts.CanBeIdentifier(name);
+            return !SyntaxFacts.IsKeyword(name) && !KustoFacts.CanBeIdentifier(name);
         }
 
         /// <summary>

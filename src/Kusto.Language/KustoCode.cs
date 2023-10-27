@@ -103,6 +103,37 @@ namespace Kusto.Language
         }
 
         /// <summary>
+        /// The language dialect of the code.
+        /// </summary>
+        public KustoDialect Dialect
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case CodeKinds.Command:
+                        switch (this.Globals.ServerKind)
+                        {
+                            case ServerKinds.ClusterManager:
+                                return KustoDialect.ClusterManagerCommand;
+                            case ServerKinds.DataManager:
+                                return KustoDialect.DataManagerCommand;
+                            case ServerKinds.Engine:
+                            default:
+                                return KustoDialect.EngineCommand;
+                        }
+
+                    case CodeKinds.Query:
+                    case CodeKinds.Directive:
+                        return KustoDialect.Query;
+
+                    default:
+                        return KustoDialect.Unknown;
+                }
+            }
+        }
+
+        /// <summary>
         /// Create a new <see cref="KustoCode"/> instance from the text and globals. Does not perform semantic analysis.
         /// </summary>
         /// <param name="text">The code text</param>

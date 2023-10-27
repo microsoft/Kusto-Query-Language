@@ -854,6 +854,20 @@ namespace Kusto.Language.Syntax
             => kindToDataMap[(int)kind].CanBeIdentifier;
 
         /// <summary>
+        /// True if the text is a keyword (in this table).
+        /// </summary>
+        public static bool IsKeyword(string text) =>
+            TryGetKind(text, out var kind) && kind.IsKeyword();
+
+        /// <summary>
+        /// True if the text is a keyword that can be an identifier (in this table).
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static bool IsKeywordThatCanBeIdentifier(string text) =>
+            TryGetKind(text, out var kind) && kind.IsKeyword() && kind.CanBeIdentifier();
+
+        /// <summary>
         /// All the keywords in Kusto
         /// </summary>
         public static IEnumerable<string> Keywords =>

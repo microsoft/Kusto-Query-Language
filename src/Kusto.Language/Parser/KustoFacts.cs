@@ -10,7 +10,7 @@ namespace Kusto.Language
     using System;
     using System.Text;
 
-    public static class KustoFacts
+    public static partial class KustoFacts
     {
         public static readonly IReadOnlyList<string> ParamTypes = new string[]
         {
@@ -332,43 +332,43 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> DateTimeParts = new string[]
         {
-            "year", 
-            "quarter", 
-            "month", 
-            "week_of_year", 
-            "day", 
-            "dayofyear", 
-            "hour", 
-            "minute", 
-            "second", 
-            "millisecond", 
-            "microsecond", 
-            "nanosecond" 
+            "year",
+            "quarter",
+            "month",
+            "week_of_year",
+            "day",
+            "dayofyear",
+            "hour",
+            "minute",
+            "second",
+            "millisecond",
+            "microsecond",
+            "nanosecond"
         };
 
-        public static readonly IReadOnlyList<string> DateDiffParts = new[] 
-        { 
-            "year", 
-            "quarter", 
-            "month", 
-            "week", 
-            "day", 
-            "hour", 
-            "minute", 
-            "second", 
-            "millisecond", 
-            "microsecond", 
-            "nanosecond" 
+        public static readonly IReadOnlyList<string> DateDiffParts = new[]
+        {
+            "year",
+            "quarter",
+            "month",
+            "week",
+            "day",
+            "hour",
+            "minute",
+            "second",
+            "millisecond",
+            "microsecond",
+            "nanosecond"
         };
 
         /// <summary>
-        /// Keywords that can always be used as identifiers
+        /// Keywords that can be used as identifiers everywhere.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> KeywordsAsIdentifiers =
             SyntaxFacts.GetKindsWithFixedText().Where(k => k.IsKeyword() && k.CanBeIdentifier()).ToArray();
 
         /// <summary>
-        /// Keywords that can sometimes be used as identifiers
+        /// Keywords that can be used as identifiers in some additional locations in queries.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> ExtendedKeywordsAsIdentifiers =
             KeywordsAsIdentifiers.Concat(
@@ -423,7 +423,7 @@ namespace Kusto.Language
             .ToArray();
 
         /// <summary>
-        /// Keywords that can be identifiers is in distinct locations.
+        /// Keywords that can be used as identifiers in some distinct locations in queries.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> SpecialKeywordsAsIdentifiers = new SyntaxKind[]
         {
@@ -464,7 +464,7 @@ namespace Kusto.Language
         /// <summary>
         /// Query operators that can come after a pipe 
         /// </summary>
-        public static readonly IReadOnlyList<SyntaxKind> PostPipeOperatorKinds = new SyntaxKind[]       
+        public static readonly IReadOnlyList<SyntaxKind> PostPipeOperatorKinds = new SyntaxKind[]
         {
             SyntaxKind.AsOperator,
             SyntaxKind.ConsumeOperator,
@@ -538,39 +538,75 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// True if the text can be used as an identifier in all contexts that declare or reference names.
-        /// (note: some names may be legal in one context but not another)
+        /// True if the text can be used as an identifier everywhere in the specified language dialect.
+        /// </summary>
+        public static bool CanBeIdentifier(string text, KustoDialect dialect)
+        {
+            // bad input is bad
+            if (string.IsNullOrEmpty(text))
+                return false;
+
+            // disallow some otherwise legal identifiers that start with numbers
+            if (TextFacts.IsDigit(text[0]))
+                return false;
+
+            // does it even look like an identifier?
+            if (TokenParser.ScanIdentifier(text) != text.Length)
+                return false;
+
+            // is it actually a boolean literal?
+            if (TokenParser.ScanBooleanLiteral(text) == text.Length)
+                return false;
+
+            // depends on the dialect
+            switch (dialect)
+            {
+                case KustoDialect.ClusterManagerCommand:
+                    return !s_clusterManagerCommandKeywordsThatNeedBrackets.Contains(text);
+
+                case KustoDialect.DataManagerCommand:
+                    return !s_dataManagerCommandKeywordsThatNeedBrackets.Contains(text);
+
+                case KustoDialect.EngineCommand:
+                    return !s_engineCommandKeywordsThatNeedBrackets.Contains(text);
+
+                case KustoDialect.Query:
+                    if (SyntaxFacts.TryGetKind(text, out var kind)
+                        && kind.IsKeyword()
+                        && !kind.CanBeIdentifier())
+                    {
+                        return false;
+                    }
+                    break;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// True if the text can be used as an identifier everywhere in Kusto queries.
         /// </summary>
         public static bool CanBeIdentifier(string text) =>
-            TokenParser.ScanIdentifier(text) == text.Length   // looks like an identifier
-            && !(TokenParser.ScanTimespanLiteral(text) == text.Length)  // does not look like a timespan literal: 10days, etc
-            && !(TokenParser.ScanBooleanLiteral(text) == text.Length)   // does not look like a boolean literal: true, false
-            && (!IsKeyword(text) || IsKeywordThatCanBeIdentifier(text));
+            CanBeIdentifier(text, KustoDialect.Query);
 
         /// <summary>
-        /// True if the text is a keyword.
+        /// Adds bracketting and quoting to the name if it cannot be an identifier in the specified language dialect.
         /// </summary>
-        public static bool IsKeyword(string text) =>
-            SyntaxFacts.TryGetKind(text, out var kind) && kind.GetCategory() == SyntaxCategory.Keyword;
-
-        /// <summary>
-        /// True if the text is a keyword that can be an identifier.
-        /// </summary>
-        public static bool IsKeywordThatCanBeIdentifier(string text) =>
-            SyntaxFacts.TryGetKind(text, out var kind) && kind.GetCategory() == SyntaxCategory.Keyword && SyntaxFacts.CanBeIdentifier(kind);
-
-        /// <summary>
-        /// Adds bracketting and quoting to name if necessary.
-        /// </summary>
-        public static string BracketNameIfNecessary(string name)
+        public static string BracketNameIfNecessary(string name, KustoDialect dialect)
         {
-            if (!CanBeIdentifier(name))
+            if (!CanBeIdentifier(name, dialect))
             {
                 return GetBracketedName(name);
             }
 
             return name;
         }
+
+        /// <summary>
+        /// Adds bracketting and quoting to the name if it cannot be an identifier everywhere in Kusto queries.
+        /// </summary>
+        public static string BracketNameIfNecessary(string name) =>
+            BracketNameIfNecessary(name, KustoDialect.Query);
 
         /// <summary>
         /// Convert name to bracketed form: name -> ['name']
@@ -1126,7 +1162,7 @@ namespace Kusto.Language
                 if (!sawAsterisk)
                 {
                     // this is fixed-pattern (no asterisks before or after), so must be exact match
-                    return text.Length == patternSegmentLength 
+                    return text.Length == patternSegmentLength
                         && string.Compare(text, 0, pattern, 0, patternSegmentLength, ignoreCase) == 0;
                 }
                 else
