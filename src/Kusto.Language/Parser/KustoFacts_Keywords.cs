@@ -699,6 +699,7 @@ namespace Kusto.Language
             "UseOsVersion",
             "UsePseudoRandomKeyVaultName",
             "users",
+            "v2",
             "v3",
             "validate",
             "verbose",
