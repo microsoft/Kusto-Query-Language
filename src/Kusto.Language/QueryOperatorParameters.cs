@@ -273,14 +273,12 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> GraphToTableEdgesParameters = new[]
         {
             WithSourceId,
-            WithTargetId,
-            ExpandOutput.Hide(),
+            WithTargetId
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> GraphToTableNodesParameters = new[]
         {
-            WithNodeId,
-            ExpandOutput.Hide(),
+            WithNodeId
         }.ToReadOnly();
 
         public static readonly QueryOperatorParameter RenderKind =
