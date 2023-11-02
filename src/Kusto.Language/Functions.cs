@@ -2621,6 +2621,30 @@ namespace Kusto.Language
                     new Parameter("series1", ParameterTypeKind.Number),
                     new Parameter("series2", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol SeriesMagnitude =
+            new FunctionSymbol("series_magnitude",
+                ScalarTypes.Real,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // Unhide by the end of Nov'23
+
+        public static readonly FunctionSymbol SeriesSum =
+            new FunctionSymbol("series_sum",
+                ScalarTypes.Real,
+                new Parameter("series", ParameterTypeKind.DynamicArray))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // Unhide by the end of Nov'23
+
+        public static readonly FunctionSymbol SeriesCosineSimilarity =
+            new FunctionSymbol("series_cosine_similarity",
+                ScalarTypes.Real,
+                new Parameter("series1", ParameterTypeKind.DynamicArray),
+                new Parameter("series2", ParameterTypeKind.DynamicArray),
+                new Parameter("series1_magnitude", ScalarTypes.Real, minOccurring: 0),
+                new Parameter("series2_magnitude", ScalarTypes.Real, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide(); // Unhide by the end of Nov'23
         #endregion
 
         #region math functions
@@ -3753,6 +3777,8 @@ namespace Kusto.Language
             SeriesAcos,
             SeriesTan,
             SeriesAtan,
+            SeriesMagnitude,
+            SeriesSum,
             SeriesLog,
             SeriesFloor,
             SeriesCeiling,
@@ -3763,6 +3789,7 @@ namespace Kusto.Language
             SeriesDecomposeAnomalies,
             SeriesPearsonCorrelation,
             SeriesDotProduct,
+            SeriesCosineSimilarity,
 #endregion
 
 #region math functions
