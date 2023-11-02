@@ -19,9 +19,6 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidUsingNullStringComparison =
             new AvoidUsingNullStringComparisonAnalyzer();
 
-        public static readonly KustoAnalyzer AvoidUsingShortStringComparision =
-            new AvoidUsingShortStringComparisionAnalyzer();
-
         public static readonly KustoAnalyzer AvoidUsingToBoolOnNumerics =
             new AvoidUsingToBoolOnNumericsAnalyzer();
 
@@ -70,7 +67,6 @@ namespace Kusto.Language.Editor
                  AvoidUsingContains,
                  AvoidUsingNullStringComparison,
                  AvoidUsingToBoolOnNumerics,
-                 AvoidUsingShortStringComparision,
                  NullAggregation,
                  AvoidUsingFormatDatetimeInPredicate,
                  AvoidUsingObsoleteFunctions,
