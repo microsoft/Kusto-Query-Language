@@ -2651,7 +2651,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol Round =
             new FunctionSymbol("round", ReturnTypeKind.Parameter0,
                 new Parameter("number", ParameterTypeKind.Number),
-                new Parameter("precision", ScalarTypes.Long, minOccurring: 0))
+                new Parameter("precision", ScalarTypes.Long, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument)
             .ConstantFoldable();
 
@@ -3354,8 +3354,8 @@ namespace Kusto.Language
         public static readonly FunctionSymbol FormatBytes =
             new FunctionSymbol("format_bytes", ScalarTypes.String,
                 new Parameter("size", ParameterTypeKind.Number),
-                new Parameter("precision", ScalarTypes.Long, minOccurring: 0),
-                new Parameter("format", ScalarTypes.String, ArgumentKind.LiteralNotEmpty, minOccurring: 0))
+                new Parameter("precision", ParameterTypeKind.Number, ArgumentKind.Constant, minOccurring: 0),
+                new Parameter("format", ScalarTypes.String, ArgumentKind.Literal, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol RowNumber =
