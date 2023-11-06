@@ -1303,6 +1303,25 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        private void CheckIsScalar(SyntaxList<SeparatedElement<Expression>> list, List<Diagnostic> diagnostics)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var exp = list[i].Element;
+                CheckIsScalar(exp, diagnostics);
+            }
+        }
+
+
+        private void CheckAll(SyntaxList<SeparatedElement<Expression>> list, List<Diagnostic> diagnostics, Action<Expression, List<Diagnostic>> checkAction)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var exp = list[i].Element;
+                checkAction(exp, diagnostics);
+            }
+        }
+
         private bool CheckIsInteger(Expression expression, List<Diagnostic> diagnostics)
         {
             var type = GetResultTypeOrError(expression);

@@ -1358,6 +1358,8 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
+                    _binder.CheckIsScalar(node.Expressions, diagnostics);
+
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
 
                     var resultTable = new TableSymbol(builder.GetProjection())
@@ -1499,6 +1501,8 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
+                    _binder.CheckIsScalar(node.Expressions, diagnostics);
+
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, style: ProjectionStyle.Extend);
 
@@ -1525,8 +1529,17 @@ namespace Kusto.Language.Binding
 
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SummarizeParameters, diagnostics);
 
+                    _binder.CheckIsScalar(node.Aggregates, diagnostics);
+
                     if (node.ByClause != null)
                     {
+                        for (int i = 0; i < node.ByClause.Expressions.Count; i++)
+                        {
+                            var expr = node.ByClause.Expressions[i].Element;
+                            if (!_binder.CheckIsScalar(expr, diagnostics))
+                                _binder.CheckIsNotType(expr, ScalarTypes.Dynamic, diagnostics);
+                        }
+
                         // all columns corresponding to by-clause expressions
                         _binder.CreateProjectionColumns(node.ByClause.Expressions, builder, diagnostics);
 
@@ -1558,6 +1571,8 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DistinctParameters, diagnostics);
+
+                    _binder.CheckIsScalar(node.Expressions, diagnostics);
 
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
 
@@ -1835,6 +1850,8 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SerializedParameters, diagnostics);
+
+                    _binder.CheckIsScalar(node.Expressions, diagnostics);
 
                     builder.AddRange(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty), doNotRepeat: true);
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);

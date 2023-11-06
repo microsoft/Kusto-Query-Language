@@ -3355,7 +3355,7 @@ namespace Kusto.Language
             new FunctionSymbol("format_bytes", ScalarTypes.String,
                 new Parameter("size", ParameterTypeKind.Number),
                 new Parameter("precision", ParameterTypeKind.Number, ArgumentKind.Constant, minOccurring: 0),
-                new Parameter("format", ScalarTypes.String, ArgumentKind.Literal, minOccurring: 0))
+                new Parameter("format", ScalarTypes.String, ArgumentKind.Constant, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.FirstArgument);
 
         public static readonly FunctionSymbol RowNumber =
