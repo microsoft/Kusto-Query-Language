@@ -2832,14 +2832,12 @@ namespace Kusto.Language
            new FunctionSymbol("erf", ScalarTypes.Real,
                new Parameter("number", ParameterTypeKind.Number))
            .WithResultNameKind(ResultNameKind.FirstArgument)
-           .Hide() // TODO: Unhide on Oct'15th 2023 
            .ConstantFoldable();
 
         public static readonly FunctionSymbol Erfc =
            new FunctionSymbol("erfc", ScalarTypes.Real,
                new Parameter("number", ParameterTypeKind.Number))
            .WithResultNameKind(ResultNameKind.FirstArgument)
-           .Hide() // TODO: Unhide on Oct'15th 2023 
            .ConstantFoldable();
 
         public static readonly FunctionSymbol IsNan =

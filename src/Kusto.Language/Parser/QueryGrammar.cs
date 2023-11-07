@@ -2792,7 +2792,7 @@ namespace Kusto.Language.Parsing
             var GraphMatchOperator =
                 Rule(
                     Token(SyntaxKind.GraphMatchKeyword, CompletionKind.QueryPrefix),
-                    QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true).Hide(),
+                    QueryParameterList(QueryOperatorParameters.GraphMatchParameters, equalsNeeded: true),
                     GraphMatchPatternClause,
                     Optional(WhereClause),
                     Optional(ProjectClause),
