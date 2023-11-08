@@ -223,6 +223,7 @@ namespace Kusto.Language
             "eventhub",
             "EventHub",
             "export",
+            "external_throttling",
             "fabric",
             "featureflags",
             "force",
