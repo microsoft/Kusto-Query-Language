@@ -114,6 +114,12 @@ namespace Kusto.Language
         /// </summary>
         private Dictionary<string, OptionSymbol> optionMap;
 
+
+        /// <summary>
+        /// Name to ambient <see cref="ParameterSymbol"/> lookup map.
+        /// </summary>
+        private Dictionary<string, ParameterSymbol> parameterMap;
+
         /// <summary>
         /// Name to <see cref="GlobalState"/> lookup map
         /// </summary>
@@ -160,6 +166,7 @@ namespace Kusto.Language
             Dictionary<string, FunctionSymbol> pluginMap,
             Dictionary<OperatorKind, OperatorSymbol> operatorMap,
             Dictionary<string, CommandSymbol> commandMap,
+            Dictionary<string, ParameterSymbol> parameterMap,
             Dictionary<string, OptionSymbol> optionMap,
             Dictionary<GlobalStateProperty, object> propertyMap)
         {
@@ -185,6 +192,7 @@ namespace Kusto.Language
             this.pluginMap = pluginMap;
             this.operatorMap = operatorMap;
             this.commandMap = commandMap;
+            this.parameterMap = parameterMap;
             this.optionMap = optionMap;
             this.propertyMap = propertyMap;
         }
@@ -218,6 +226,7 @@ namespace Kusto.Language
                 this.pluginMap,
                 this.operatorMap,
                 this.commandMap,
+                this.parameterMap,
                 this.optionMap,
                 this.propertyMap);
         }
@@ -295,6 +304,7 @@ namespace Kusto.Language
                     usePlugins == this.PlugIns ? this.pluginMap : null,
                     useOperators == this.Operators ? this.operatorMap : null,
                     useServerKind == this.ServerKind ? this.commandMap : null,
+                    useParameters == this.Parameters ? this.parameterMap : null,
                     useOptions == this.Options ? this.optionMap : null,
                     useProperties == this.Properties ? this.propertyMap : null);
             }
@@ -657,6 +667,9 @@ namespace Kusto.Language
         /// </summary>
         public FunctionSymbol GetFunction(string name)
         {
+            if (this.Functions.Count == 0)
+                return null;
+
             if (this.functionsMap == null)
             {
                 var map = this.Functions.ToDictionary(f => f.Name);
@@ -680,6 +693,9 @@ namespace Kusto.Language
         /// </summary>
         public FunctionSymbol GetAggregate(string name)
         {
+            if (this.Aggregates.Count == 0)
+                return null;
+
             if (this.aggregatesMap == null)
             {
                 var map = this.Aggregates.ToDictionary(f => f.Name);
@@ -705,6 +721,9 @@ namespace Kusto.Language
         /// <returns></returns>
         public FunctionSymbol GetPlugIn(string name)
         {
+            if (this.PlugIns.Count == 0)
+                return null;
+
             if (this.pluginMap == null)
             {
                 var map = this.PlugIns.ToDictionary(f => f.Name);
@@ -746,17 +765,16 @@ namespace Kusto.Language
         /// </summary>
         public OperatorSymbol GetOperator(OperatorKind kind)
         {
+            if (this.Operators.Count == 0)
+                return null;
+
             if (this.operatorMap == null)
             {
                 this.operatorMap = this.Operators.ToDictionary(o => o.OperatorKind);
             }
 
-            if (this.operatorMap.TryGetValue(kind, out var op))
-            {
-                return op;
-            }
-
-            return null;
+            this.operatorMap.TryGetValue(kind, out var op);
+            return op;
         }
 
         /// <summary>
@@ -807,7 +825,7 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the specified parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the specified ambient parameters.
         /// </summary>
         public GlobalState WithParameters(IReadOnlyList<ParameterSymbol> parameters)
         {
@@ -815,7 +833,7 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
         /// </summary>
         public GlobalState AddParameters(IReadOnlyList<ParameterSymbol> parameters)
         {
@@ -823,11 +841,29 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
         /// </summary>
         public GlobalState AddParameters(params ParameterSymbol[] parameters)
         {
             return WithParameters((IReadOnlyList<ParameterSymbol>)parameters);
+        }
+
+        /// <summary>
+        /// Gets the ambient <see cref="ParameterSymbol"/> given its name.
+        /// </summary>
+        public ParameterSymbol GetParameter(string name)
+        {
+            if (this.Parameters.Count == 0)
+                return null;
+
+            if (this.parameterMap == null)
+            {
+                var map = this.Parameters.ToDictionary(p => p.Name);
+                Interlocked.CompareExchange(ref this.parameterMap, map, null);
+            }
+
+            this.parameterMap.TryGetValue(name, out var symbol);
+            return symbol;
         }
 
         /// <summary>
@@ -879,7 +915,8 @@ namespace Kusto.Language
             {
                 return property.DefaultValue;
             }
-            else if (this.propertyMap == null)
+
+            if (this.propertyMap == null)
             {
                 var map = this.Properties.ToDictionary(pv => pv.Property, pv => pv.Value);
                 Interlocked.CompareExchange(ref this.propertyMap, map, null);
@@ -986,6 +1023,7 @@ namespace Kusto.Language
                             pluginMap: null,
                             operatorMap: null,
                             commandMap: null,
+                            parameterMap: null,
                             optionMap: null,
                             propertyMap: null);
                     Interlocked.CompareExchange(ref s_default, globals, null);

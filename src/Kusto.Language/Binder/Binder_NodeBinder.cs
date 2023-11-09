@@ -575,12 +575,31 @@ namespace Kusto.Language.Binding
                     case BracketedWildcardedName bwc:
                         return VisitWildcardedNameReference(node, bwc.SimpleName);
                     case BracedName _:
-                        // error if client parameters not supported
-                        var dx = _binder._globals.GetProperty(Properties.AllowClientParameters) ? null : DiagnosticFacts.GetClientParametersNotSupported().WithLocation(node);
-                        // client parameter does not have a known type
-                        return new SemanticInfo(ScalarTypes.Unknown, dx);
+                        return VisitClientParameterReference(node);
                     default:
                         throw new NotImplementedException();
+                }
+            }
+
+            private SemanticInfo VisitClientParameterReference(NameReference node)
+            {
+                if (_binder._globals.GetProperty(Properties.AllowClientParameters))
+                {
+                    // allow client parameter to bind to ambient parameter for type info.
+                    if (_binder._globals.GetParameter(node.SimpleName) is ParameterSymbol parameter)
+                    {
+                        return new SemanticInfo(parameter, parameter.Type);
+                    }
+                    else
+                    {
+                        // client parameter does not have a known type
+                        return new SemanticInfo(ScalarTypes.Unknown);
+                    }
+                }
+                else
+                {
+                    // error if client parameters not supported
+                    return new SemanticInfo(ScalarTypes.Unknown, DiagnosticFacts.GetClientParametersNotSupported().WithLocation(node));
                 }
             }
 

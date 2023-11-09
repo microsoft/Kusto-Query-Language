@@ -526,7 +526,7 @@ namespace Kusto.Language.Binding
                         _currentCluster.GetMembers(name, match, list);
                     }
 
-                    // look for any built-in functions with matching name (even with those with parameters)
+                    // look for any built-in functions with matching name (even those with parameters)
                     if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
                     {
                         GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
