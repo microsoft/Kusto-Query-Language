@@ -935,8 +935,42 @@ namespace Kusto.Language.Editor
                 return mode;
 
             mode = GetColumnExampleCompletions(position, contextNode, childIndex, builder);
+            if (mode == CompletionMode.Isolated)
+                return mode;
+
+            mode = GetDeconstructCompletions(position, contextNode, childIndex, builder);
 
             return mode;
+        }
+
+        private CompletionMode GetDeconstructCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
+        {
+            // after insertion of open paren in front of existing function call that returns a tuple,
+            // offer to complete a rename deconstruction
+            var pe = contextNode.GetFirstAncestorOrSelf<ParenthesizedExpression>();
+            if (pe != null
+                && !pe.OpenParen.IsMissing
+                && !pe.Expression.IsMissing
+                && pe.CloseParen.IsMissing
+                && position == pe.OpenParen.End
+                && pe.Expression is FunctionCallExpression fc
+                && !(fc.Parent is NamedExpression)
+                && !(fc.Parent is LetStatement) // maybe future
+                && fc.ResultType is TupleSymbol ts
+                && ts.Columns.Count > 1)
+            {
+                var displayText = "(" + ts.Columns[0].Name + ", ...) = ";
+                var insertText = string.Join(", ", ts.Columns.Select(c => KustoFacts.BracketNameIfNecessary(c.Name))) + ") = ";
+                var matchText = fc.Name.SimpleName;
+                builder.Add(new CompletionItem(
+                    CompletionKind.Example, 
+                    displayText: displayText,
+                    editText: insertText,
+                    matchText: matchText, 
+                    priority: CompletionPriority.Top));
+            }
+
+            return CompletionMode.Combined;
         }
 
         private CompletionMode GetColumnExampleCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
@@ -966,7 +1000,6 @@ namespace Kusto.Language.Editor
             }
 
             // TODO: check for in operator too
-
             return CompletionMode.Combined;
         }
 
