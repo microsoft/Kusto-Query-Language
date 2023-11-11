@@ -16,15 +16,16 @@
         /// </summary>
         public string ValueText { get; }
 
-        internal ValueInfo(string valueText, object value)
+        /// <summary>
+        /// The text of the value as specified in the expression.
+        /// </summary>
+        public string RawText { get; }
+
+        internal ValueInfo(string rawText, string valueText, object value)
         {
+            this.RawText = rawText;
             this.ValueText = valueText;
             this.Value = value;
-        }
-
-        internal ValueInfo(string valueText)
-            : this(valueText, valueText)
-        {
         }
     }
 }

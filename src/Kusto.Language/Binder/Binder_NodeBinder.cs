@@ -83,7 +83,7 @@ namespace Kusto.Language.Binding
                         var type = _binder.GetTypeFromTypeExpression(node.NameAndType.Type);
                         if (type != null && !type.IsError)
                         {
-                            if (_binder.CheckIsLiteralValue(node.DefaultValue.Value, diagnostics))
+                            if (_binder.CheckIsLiteralNotToken(node.DefaultValue.Value, diagnostics))
                             {
                                 _binder.CheckIsType(node.DefaultValue.Value, type, Conversion.Compatible, diagnostics);
                             }
@@ -593,7 +593,17 @@ namespace Kusto.Language.Binding
                     else
                     {
                         // client parameter does not have a known type
-                        return new SemanticInfo(ScalarTypes.Unknown);
+                        if (IsInTabularContext(node))
+                        {
+                            // but it is probably tabular
+                            var table = new TableSymbol(node.SimpleName).WithIsOpen(true);
+                            return new SemanticInfo(table);
+                        }
+                        else
+                        {
+                            // otherwise its an unknown scalar
+                            return new SemanticInfo(ScalarTypes.Unknown);
+                        }
                     }
                 }
                 else
@@ -2701,6 +2711,7 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsSummable(node.From, diagnostics);
                     _binder.CheckIsSummable(node.To, diagnostics);
                     _binder.CheckIsSummable(node.Step, diagnostics);
+                    _binder.CheckIsNotConstantValue(node.Step, 0L, false, diagnostics);
 
                     var commonType = TypeFacts.GetCommonScalarType(GetResultTypeOrError(node.From), GetResultTypeOrError(node.To), GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
 

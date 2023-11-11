@@ -1180,7 +1180,7 @@ namespace Kusto.Language.Binding
                     && qop.Values.Count > 0)
                 {
                     CheckIsLiteral(parameter.Expression, diagnostics);
-                    CheckLiteralValue(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
+                    CheckIsLiteralValue(parameter.Expression, qop.Values, qop.IsCaseSensitive, diagnostics);
                 }
             }
         }
@@ -1854,6 +1854,9 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Check if the expression is a literal.
+        /// </summary>
         private bool CheckIsLiteral(Expression expression, List<Diagnostic> diagnostics)
         {
             if (expression.IsLiteral)
@@ -1867,7 +1870,10 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool CheckIsLiteralValue(Expression expression, List<Diagnostic> diagnostics)
+        /// <summary>
+        /// Check if the expression is a scalar literal, but not a token literal.
+        /// </summary>
+        private bool CheckIsLiteralNotToken(Expression expression, List<Diagnostic> diagnostics)
         {
             if (expression.IsLiteral && expression.Kind != SyntaxKind.TokenLiteralExpression)
                 return true;
@@ -1880,7 +1886,10 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool CheckLiteralStringNotEmpty(Expression expression, List<Diagnostic> diagnostics)
+        /// <summary>
+        /// Check if the expression is a non-empty literal string.
+        /// </summary>
+        private bool CheckIsLiteralStringNotEmpty(Expression expression, List<Diagnostic> diagnostics)
         {
             var exprType = GetResultTypeOrError(expression);
             if (!exprType.IsError && exprType != ScalarTypes.Unknown && expression.IsLiteral)
@@ -1895,6 +1904,38 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Return true if the expression a literal that matches one of the values.
+        /// </summary>
+        private bool IsLiteralValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive)
+        {
+            if (!expression.IsLiteral)
+                return false;
+
+            object value = ConvertHelper.ChangeType(expression.LiteralValue, values[0]);
+            return Contains(values, value, caseSensitive);
+        }
+
+        /// <summary>
+        /// Checks if the expression is a literal that matches one of the listed values.
+        /// </summary>
+        private bool CheckIsLiteralValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
+        {
+            var result = GetResultTypeOrError(expression);
+            if (!result.IsError)
+            {
+                if (IsLiteralValue(expression, values, caseSensitive))
+                    return true;
+
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveValue(values).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the expression is a token literal with one of the listed values.
+        /// </summary>
         private bool IsTokenLiteral(Expression expression, IReadOnlyList<object> values, bool caseSensitive)
         {
             if (expression.Kind == SyntaxKind.TokenLiteralExpression)
@@ -1911,6 +1952,9 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Checks if the expression is a token literal that matches one of the listed values.
+        /// </summary>
         private bool CheckIsTokenLiteral(Expression expression, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
         {
             var result = GetResultTypeOrError(expression);
@@ -1925,6 +1969,9 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Checks if the token has one of the listed text values.
+        /// </summary>
         private bool CheckIsToken(SyntaxToken token, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
         {
             var value = ConvertHelper.ChangeType(token.Text, values[0]);
@@ -1939,30 +1986,10 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool IsLiteralValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive)
-        {
-            if (!expression.IsLiteral)
-                return false;
-
-            object value = ConvertHelper.ChangeType(expression.LiteralValue, values[0]);
-            return Contains(values, value, caseSensitive);
-        }
-
-        private bool CheckLiteralValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
-        {
-            var result = GetResultTypeOrError(expression);
-            if (!result.IsError)
-            {
-                if (IsLiteralValue(expression, values, caseSensitive))
-                    return true;
-
-                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveValue(values).WithLocation(expression));
-            }
-
-            return false;
-        }
-
-        private static bool Contains(IReadOnlyList<object> values, object value, bool caseSensitive)
+        /// <summary>
+        /// Returns true if the value in the list of values.
+        /// </summary>
+        private static bool Contains<T>(IReadOnlyList<T> values, T value, bool caseSensitive = false)
         {
             var stringValue = value as string;
             if (stringValue != null)
@@ -1976,9 +2003,10 @@ namespace Kusto.Language.Binding
             }
             else
             {
+                var comparer = EqualityComparer<T>.Default;
                 for (int i = 0, n = values.Count; i < n; i++)
                 {
-                    if (values[i] == value)
+                    if (comparer.Equals(values[i], value))
                         return true;
                 }
             }
@@ -1986,6 +2014,9 @@ namespace Kusto.Language.Binding
             return false;
         }
 
+        /// <summary>
+        /// Checks if the expression is a constant.
+        /// </summary>
         private bool CheckIsConstant(Expression expression, List<Diagnostic> diagnostics)
         {
             if (GetIsConstant(expression)
@@ -1998,6 +2029,94 @@ namespace Kusto.Language.Binding
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns true if the expression is a constant that matches one of the listed values.
+        /// </summary>
+        private static bool IsConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive)
+        {
+            if (!expression.IsConstant)
+                return false;
+
+            if (expression.ConstantValue is T tval)
+            {
+                return Contains(values, tval, caseSensitive);
+            }
+            else
+            {
+                tval = (T)ConvertHelper.ChangeType(expression.ConstantValue, values[0]);
+                return Contains(values, tval, caseSensitive);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the expression is either not constant or does not match any of the listed values.
+        /// </summary>
+        private bool IsNotConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive)
+        {
+            if (!expression.IsConstant)
+                return true;
+
+            if (expression.ConstantValue is T tval)
+            {
+                return !Contains(values, tval, caseSensitive);
+            }
+            else
+            {
+                tval = (T)ConvertHelper.ChangeType(expression.ConstantValue, values[0]);
+                return !Contains(values, tval, caseSensitive);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the expression is a constant that matches one of the listed values.
+        /// </summary>
+        private bool CheckIsConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive, List<Diagnostic> diagnostics)
+        {
+            var result = GetResultTypeOrError(expression);
+            if (!result.IsError)
+            {
+                if (IsConstantValue(expression, values, caseSensitive))
+                    return true;
+
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustHaveValue(values).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the expression is a constant that matches the specified value.
+        /// </summary>
+        private bool CheckIsConstantValue<T>(Expression expression, T value, bool caseSensitive, List<Diagnostic> diagnostics)
+        {
+            return CheckIsConstantValue<T>(expression, new[] { value }, caseSensitive, diagnostics);
+        }
+
+        /// <summary>
+        /// Checks if the expression is either not constant does not match any of the listed values.
+        /// </summary>
+        private bool CheckIsNotConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive, List<Diagnostic> diagnostics)
+        {
+            var result = GetResultTypeOrError(expression);
+            if (!result.IsError)
+            {
+                if (IsNotConstantValue(expression, values, caseSensitive))
+                    return true;
+
+                diagnostics.Add(DiagnosticFacts.GetExpressionMustNotHaveValue(values).WithLocation(expression));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the expression is either not constant does not match the specified value.
+        /// </summary>
+        private bool CheckIsNotConstantValue<T>(Expression expression, T value, bool caseSensitive, List<Diagnostic> diagnostics)
+        {
+            return CheckIsNotConstantValue<T>(expression, new[] { value }, caseSensitive, diagnostics);
         }
 
         /// <summary>
@@ -2390,14 +2509,14 @@ namespace Kusto.Language.Binding
                         case ArgumentKind.Literal:
                             if (CheckIsLiteral(argument, diagnostics) && parameter.Values.Count > 0)
                             {
-                                CheckLiteralValue(argument, parameter.Values, parameter.IsCaseSensitive, diagnostics);
+                                CheckIsLiteralValue(argument, parameter.Values, parameter.IsCaseSensitive, diagnostics);
                             }
                             break;
 
                         case ArgumentKind.LiteralNotEmpty:
                             if (CheckIsLiteral(argument, diagnostics))
                             {
-                                CheckLiteralStringNotEmpty(argument, diagnostics);
+                                CheckIsLiteralStringNotEmpty(argument, diagnostics);
                             }
                             break;
                     }

@@ -459,6 +459,19 @@ namespace Kusto.Language
             }
         }
 
+        public static Diagnostic GetExpressionMustNotHaveValue<T>(IReadOnlyList<T> values)
+        {
+            if (values.Count == 1)
+            {
+                return new Diagnostic("KS140", $"The expression must not be the value: {values[0]}");
+            }
+            else
+            {
+                var list = values.Select(v => v.ToString()).ToList().Join(", ", " or ");
+                return new Diagnostic("KS140", $"The expression must not be one of the values: {list}");
+            }
+        }
+
         public static Diagnostic GetExpressionMustHaveValue<T>(params T[] values)
         {
             return GetExpressionMustHaveValue((IReadOnlyList<T>)values);

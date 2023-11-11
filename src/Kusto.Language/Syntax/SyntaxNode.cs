@@ -126,7 +126,7 @@ namespace Kusto.Language.Syntax
         public override bool IsLiteral => true;
 
         public override ValueInfo LiteralValueInfo => 
-            new ValueInfo(this.Token.ValueText, this.Token.Value);
+            new ValueInfo(this.Token.Text, this.Token.ValueText, this.Token.Value);
     }
 
     public partial class CompoundStringLiteralExpression
@@ -141,7 +141,9 @@ namespace Kusto.Language.Syntax
             {
                 if (_literalValue == null)
                 {
-                    _literalValue = new ValueInfo(string.Concat(this.Tokens.Select(t => t.ValueText)));
+                    var text = this.ToString(IncludeTrivia.Minimal);
+                    var valueText = string.Concat(this.Tokens.Select(t => t.ValueText));
+                    _literalValue = new ValueInfo(text, valueText, valueText);
                 }
 
                 return _literalValue;
@@ -168,14 +170,16 @@ namespace Kusto.Language.Syntax
             {
                 if (_literalInfo == null)
                 {
-                    var text = this.Expression.ToString(IncludeTrivia.Minimal);
+                    var text = this.ToString(IncludeTrivia.Minimal);
+                    var valueText = this.Expression.ToString(IncludeTrivia.Minimal);
+
                     if (this.Kind == SyntaxKind.NullLiteralExpression)
                     {
-                        _literalInfo = new ValueInfo(text, null);
+                        _literalInfo = new ValueInfo(text, valueText, null);
                     }
                     else
                     {
-                        _literalInfo = new ValueInfo(text);
+                        _literalInfo = new ValueInfo(text, valueText, valueText);
                     }
                 }
 

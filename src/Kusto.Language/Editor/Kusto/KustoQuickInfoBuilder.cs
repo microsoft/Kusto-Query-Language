@@ -64,7 +64,7 @@ namespace Kusto.Language.Editor
 
                     if (node.ReferencedSymbol != null && expr != node)
                     {
-                        return GetSymbolInfo(node.ReferencedSymbol, null);
+                        return GetSymbolInfo(node.ReferencedSymbol, null, null);
                     }
                     else if (expr != null)
                     {
@@ -78,11 +78,11 @@ namespace Kusto.Language.Editor
                             }
                             else if (expr.ResultType != null && expr.ResultType.IsScalar)
                             {
-                                return GetSymbolInfo(expr.ResultType, expr.ResultType, QuickInfoKind.Literal);
+                                return GetSymbolInfo(expr.ResultType, expr.ResultType, expr.ConstantValueInfo, QuickInfoKind.Literal);
                             }
                         }
 
-                        return GetSymbolInfo(expr.ReferencedSymbol, expr.ResultType);
+                        return GetSymbolInfo(expr.ReferencedSymbol, expr.ResultType, expr.ConstantValueInfo);
                     }
                 }
             }
@@ -90,12 +90,12 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        private QuickInfoItem GetSymbolInfo(Symbol symbol, TypeSymbol type, QuickInfoKind? itemKind = null)
+        private QuickInfoItem GetSymbolInfo(Symbol symbol, TypeSymbol type, ValueInfo value, QuickInfoKind? itemKind = null)
         {
             if (symbol != null)
             {
                 var texts = new List<ClassifiedText>();
-                SymbolDisplay.GetSymbolDisplay(symbol, type, texts);
+                SymbolDisplay.GetSymbolDisplay(symbol, type, value, texts);
 
                 if (itemKind == null)
                     itemKind = GetItemKind(symbol);
@@ -222,6 +222,11 @@ namespace Kusto.Language.Editor
     {
         public static void GetSymbolDisplay(Symbol symbol, TypeSymbol type, List<ClassifiedText> texts, bool showDescription = true)
         {
+            GetSymbolDisplay(symbol, type, null, texts, showDescription);
+        }
+
+        public static void GetSymbolDisplay(Symbol symbol, TypeSymbol type, ValueInfo value, List<ClassifiedText> texts, bool showDescription = true)
+        {
             if (symbol is GroupSymbol gs)
             {
                 var lines = Math.Min(gs.Members.Count, 5);
@@ -248,7 +253,7 @@ namespace Kusto.Language.Editor
             else if (symbol is VariableSymbol v
                 && (v.Type is FunctionSymbol || v.Type is PatternSymbol))
             {
-                GetSymbolDisplay(v.Type, type, texts);
+                GetSymbolDisplay(v.Type, type, value, texts);
             }
             else if (symbol != null)
             {
@@ -270,6 +275,20 @@ namespace Kusto.Language.Editor
                 {
                     texts.Add(new ClassifiedText(ClassificationKind.Punctuation, ": "));
                     GetTypeDisplay(type, texts);
+                }
+
+                if (value != null && value.RawText != null)
+                {
+                    texts.Add(new ClassifiedText(ClassificationKind.Punctuation, " = "));
+                    var kind = value.Value is string
+                        ? ClassificationKind.StringLiteral
+                        : ClassificationKind.Literal;
+
+                    var text = value.RawText;
+                    if (text.Length > 40)
+                        text = text.Substring(0, 40) + " ...";
+
+                    texts.Add(new ClassifiedText(kind, text));
                 }
 
                 if (showDescription)
