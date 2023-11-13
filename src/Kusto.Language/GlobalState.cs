@@ -59,9 +59,17 @@ namespace Kusto.Language
         public string ServerKind { get; }
 
         /// <summary>
-        /// Ambient parameters
+        /// Symbols that are in scope but defined outside the query.
         /// </summary>
-        public IReadOnlyList<ParameterSymbol> Parameters { get; }
+        public IReadOnlyList<Symbol> AmbientSymbols { get; }
+
+        /// <summary>
+        /// Symbols for client parameters that appear as braced names in a query
+        /// and are textually substituted by the client before execution.
+        /// Client parameters do not require declared symbols to function.
+        /// These symbols provide information for better semantic analysis.
+        /// </summary>
+        public IReadOnlyList<Symbol> ClientSymbols { get; }
 
         /// <summary>
         /// Known query options
@@ -114,11 +122,15 @@ namespace Kusto.Language
         /// </summary>
         private Dictionary<string, OptionSymbol> optionMap;
 
+        /// <summary>
+        /// Name to ambient <see cref="Symbol"/> lookup map.
+        /// </summary>
+        private Dictionary<string, Symbol> ambientSymbolsMap;
 
         /// <summary>
-        /// Name to ambient <see cref="ParameterSymbol"/> lookup map.
+        /// Name to client <see cref="Symbol"/> lookup map.
         /// </summary>
-        private Dictionary<string, ParameterSymbol> parameterMap;
+        private Dictionary<string, Symbol> clientSymbolsMap;
 
         /// <summary>
         /// Name to <see cref="GlobalState"/> lookup map
@@ -153,7 +165,8 @@ namespace Kusto.Language
             IReadOnlyList<FunctionSymbol> plugins,
             IReadOnlyList<OperatorSymbol> operators,
             string serverKind,
-            IReadOnlyList<ParameterSymbol> parameters,
+            IReadOnlyList<Symbol> ambientSymbols,
+            IReadOnlyList<Symbol> clientSymbols,
             IReadOnlyList<OptionSymbol> options,
             IReadOnlyList<PropertyAndValue> properties,
             KustoCache cache,
@@ -166,7 +179,8 @@ namespace Kusto.Language
             Dictionary<string, FunctionSymbol> pluginMap,
             Dictionary<OperatorKind, OperatorSymbol> operatorMap,
             Dictionary<string, CommandSymbol> commandMap,
-            Dictionary<string, ParameterSymbol> parameterMap,
+            Dictionary<string, Symbol> ambientSymbolsMap,
+            Dictionary<string, Symbol> clientSymbolsMap,
             Dictionary<string, OptionSymbol> optionMap,
             Dictionary<GlobalStateProperty, object> propertyMap)
         {
@@ -179,7 +193,8 @@ namespace Kusto.Language
             this.PlugIns = plugins ?? EmptyReadOnlyList<FunctionSymbol>.Instance;
             this.Operators = operators ?? EmptyReadOnlyList<OperatorSymbol>.Instance;
             this.ServerKind = serverKind ?? ServerKinds.Engine;
-            this.Parameters = parameters ?? EmptyReadOnlyList<ParameterSymbol>.Instance;
+            this.AmbientSymbols = ambientSymbols ?? EmptyReadOnlyList<Symbol>.Instance;
+            this.ClientSymbols = clientSymbols ?? EmptyReadOnlyList<Symbol>.Instance;
             this.Options = options ?? EmptyReadOnlyList<OptionSymbol>.Instance;
             this.Properties = properties ?? EmptyReadOnlyList<PropertyAndValue>.Instance;
             this.Cache = cache != null ? cache.WithGlobals(this) : null;
@@ -192,7 +207,8 @@ namespace Kusto.Language
             this.pluginMap = pluginMap;
             this.operatorMap = operatorMap;
             this.commandMap = commandMap;
-            this.parameterMap = parameterMap;
+            this.ambientSymbolsMap = ambientSymbolsMap;
+            this.clientSymbolsMap = clientSymbolsMap;
             this.optionMap = optionMap;
             this.propertyMap = propertyMap;
         }
@@ -213,7 +229,8 @@ namespace Kusto.Language
                 this.PlugIns,
                 this.Operators,
                 this.ServerKind,
-                this.Parameters,
+                this.AmbientSymbols,
+                this.ClientSymbols,
                 this.Options,
                 this.Properties,
                 this.Cache,
@@ -226,7 +243,8 @@ namespace Kusto.Language
                 this.pluginMap,
                 this.operatorMap,
                 this.commandMap,
-                this.parameterMap,
+                this.ambientSymbolsMap,
+                this.clientSymbolsMap,
                 this.optionMap,
                 this.propertyMap);
         }
@@ -245,7 +263,8 @@ namespace Kusto.Language
             Optional<IReadOnlyList<FunctionSymbol>> plugins = default(Optional<IReadOnlyList<FunctionSymbol>>),
             Optional<IReadOnlyList<OperatorSymbol>> operators = default(Optional<IReadOnlyList<OperatorSymbol>>),
             Optional<string> serverKind = default(Optional<string>),
-            Optional<IReadOnlyList<ParameterSymbol>> parameters = default(Optional<IReadOnlyList<ParameterSymbol>>),
+            Optional<IReadOnlyList<Symbol>> ambientSymbols = default(Optional<IReadOnlyList<Symbol>>),
+            Optional<IReadOnlyList<Symbol>> clientSymbols = default(Optional<IReadOnlyList<Symbol>>),
             Optional<IReadOnlyList<OptionSymbol>> options = default(Optional<IReadOnlyList<OptionSymbol>>),
             Optional<IReadOnlyList<PropertyAndValue>> properties = default(Optional<IReadOnlyList<PropertyAndValue>>),
             Optional<KustoCache> cache = default(Optional<KustoCache>),
@@ -260,7 +279,8 @@ namespace Kusto.Language
             var usePlugins = plugins.HasValue ? plugins.Value : this.PlugIns;
             var useOperators = operators.HasValue ? operators.Value : this.Operators;
             var useServerKind = serverKind.HasValue ? serverKind.Value : this.ServerKind;
-            var useParameters = parameters.HasValue ? parameters.Value : this.Parameters;
+            var useAmbientSymbols = ambientSymbols.HasValue ? ambientSymbols.Value : this.AmbientSymbols;
+            var useClientSymbols = clientSymbols.HasValue ? clientSymbols.Value : this.ClientSymbols;
             var useOptions = options.HasValue ? options.Value : this.Options;
             var useProperties = properties.HasValue ? properties.Value : this.Properties;
             var useCache = cache.HasValue ? cache.Value : this.Cache;
@@ -275,7 +295,8 @@ namespace Kusto.Language
                 || usePlugins != this.PlugIns
                 || useOperators != this.Operators
                 || useServerKind != this.ServerKind
-                || useParameters != this.Parameters
+                || useAmbientSymbols != this.AmbientSymbols
+                || useClientSymbols != this.ClientSymbols
                 || useOptions != this.Options
                 || useProperties != this.Properties
                 || useCache != this.Cache
@@ -291,7 +312,8 @@ namespace Kusto.Language
                     usePlugins,
                     useOperators,
                     useServerKind,
-                    useParameters,
+                    useAmbientSymbols,
+                    useClientSymbols,
                     useOptions,
                     useProperties,
                     useCache,
@@ -304,7 +326,8 @@ namespace Kusto.Language
                     usePlugins == this.PlugIns ? this.pluginMap : null,
                     useOperators == this.Operators ? this.operatorMap : null,
                     useServerKind == this.ServerKind ? this.commandMap : null,
-                    useParameters == this.Parameters ? this.parameterMap : null,
+                    useAmbientSymbols == this.AmbientSymbols ? this.ambientSymbolsMap : null,
+                    useClientSymbols == this.ClientSymbols ? this.clientSymbolsMap : null,
                     useOptions == this.Options ? this.optionMap : null,
                     useProperties == this.Properties ? this.propertyMap : null);
             }
@@ -672,7 +695,7 @@ namespace Kusto.Language
 
             if (this.functionsMap == null)
             {
-                var map = this.Functions.ToDictionary(f => f.Name);
+                var map = this.Functions.ToDictionaryLast(f => f.Name);
                 Interlocked.CompareExchange(ref functionsMap, map, null);
             }
 
@@ -698,7 +721,7 @@ namespace Kusto.Language
 
             if (this.aggregatesMap == null)
             {
-                var map = this.Aggregates.ToDictionary(f => f.Name);
+                var map = this.Aggregates.ToDictionaryLast(f => f.Name);
                 Interlocked.CompareExchange(ref this.aggregatesMap, map, null);
             }
 
@@ -726,7 +749,7 @@ namespace Kusto.Language
 
             if (this.pluginMap == null)
             {
-                var map = this.PlugIns.ToDictionary(f => f.Name);
+                var map = this.PlugIns.ToDictionaryLast(f => f.Name);
                 Interlocked.CompareExchange(ref this.pluginMap, map, null);
             }
 
@@ -770,7 +793,7 @@ namespace Kusto.Language
 
             if (this.operatorMap == null)
             {
-                this.operatorMap = this.Operators.ToDictionary(o => o.OperatorKind);
+                this.operatorMap = this.Operators.ToDictionaryLast(o => o.OperatorKind);
             }
 
             this.operatorMap.TryGetValue(kind, out var op);
@@ -825,44 +848,135 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the specified ambient parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the specified ambient symbols.
         /// </summary>
-        public GlobalState WithParameters(IReadOnlyList<ParameterSymbol> parameters)
+        public GlobalState WithAmbientSymbols(IReadOnlyList<Symbol> symbols)
         {
-            return With(parameters: Optional(parameters));
+            return With(ambientSymbols: Optional(symbols));
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient symbols.
         /// </summary>
-        public GlobalState AddParameters(IReadOnlyList<ParameterSymbol> parameters)
+        public GlobalState AddOrUpdateAmbientSymbols(IReadOnlyList<Symbol> symbols)
         {
-            return WithParameters(this.Parameters.Concat(parameters).ToList());
+            return WithAmbientSymbols(this.AmbientSymbols.AddOrUpdate(symbols, s => s.Name));
         }
 
         /// <summary>
-        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient symbols.
         /// </summary>
-        public GlobalState AddParameters(params ParameterSymbol[] parameters)
+        public GlobalState AddOrUpdateAmbientSymbols(params Symbol[] symbols)
         {
-            return WithParameters((IReadOnlyList<ParameterSymbol>)parameters);
+            return AddOrUpdateAmbientSymbols((IReadOnlyList<Symbol>)symbols);
         }
 
         /// <summary>
-        /// Gets the ambient <see cref="ParameterSymbol"/> given its name.
+        /// Gets the ambient <see cref="Symbol"/> given its name.
         /// </summary>
-        public ParameterSymbol GetParameter(string name)
+        public Symbol GetAmbientSymbol(string name)
         {
-            if (this.Parameters.Count == 0)
+            if (this.AmbientSymbols.Count == 0)
                 return null;
 
-            if (this.parameterMap == null)
+            if (this.ambientSymbolsMap == null)
             {
-                var map = this.Parameters.ToDictionary(p => p.Name);
-                Interlocked.CompareExchange(ref this.parameterMap, map, null);
+                var map = this.AmbientSymbols.ToDictionaryLast(p => p.Name);
+                Interlocked.CompareExchange(ref this.ambientSymbolsMap, map, null);
             }
 
-            this.parameterMap.TryGetValue(name, out var symbol);
+            this.ambientSymbolsMap.TryGetValue(name, out var symbol);
+            return symbol;
+        }
+
+        /// <summary>
+        /// Ambient parameters
+        /// </summary>
+        [Obsolete("Use AmbientSymbols")]
+        public IReadOnlyList<ParameterSymbol> Parameters
+        {
+            get
+            {
+                if (this.ambientParameters == null)
+                {
+                    var parameters = this.AmbientSymbols.OfType<ParameterSymbol>().ToReadOnly();
+                    Interlocked.CompareExchange(ref this.ambientParameters, parameters, null);
+                }
+
+                return this.ambientParameters;
+            }
+        }
+
+        private IReadOnlyList<ParameterSymbol> ambientParameters;
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified ambient parameters.
+        /// </summary>
+        [Obsolete("Use WithAmbientSymbols")]
+        public GlobalState WithParameters(IReadOnlyList<ParameterSymbol> parameters)
+        {
+            var ambientWithoutParameters = this.AmbientSymbols.Where(s => !(s is ParameterSymbol));
+            var newList = ambientWithoutParameters.Concat(parameters).Where(s => s != null).ToReadOnly();
+            return WithAmbientSymbols(newList);
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
+        /// </summary>
+        [Obsolete("Use AddOrUpdateAmbientSymbols")]
+        public GlobalState AddParameters(IReadOnlyList<ParameterSymbol> parameters)
+        {
+            return AddOrUpdateAmbientSymbols(parameters);
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the additional ambient parameters.
+        /// </summary>
+        [Obsolete("Use AddOrUpdateAmbientSymbols")]
+        public GlobalState AddParameters(params ParameterSymbol[] parameters)
+        {
+            return AddOrUpdateAmbientSymbols(parameters);
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified client parameter symbols.
+        /// </summary>
+        public GlobalState WithClientSymbols(IReadOnlyList<Symbol> symbols)
+        {
+            return With(clientSymbols: Optional(symbols));
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified client symbols added or updated.
+        /// </summary>
+        public GlobalState AddOrUpdateClientSymbols(IReadOnlyList<Symbol> symbols)
+        {
+            return WithClientSymbols(this.ClientSymbols.AddOrUpdate(symbols, s => s.Name));
+        }
+
+        /// <summary>
+        /// Constructs a new <see cref="GlobalState"/> with the specified client symbols added or updated.
+        /// </summary>
+        public GlobalState AddOrUpdateClientSymbols(params Symbol[] symbols)
+        {
+            return AddOrUpdateClientSymbols((IReadOnlyList<Symbol>)symbols);
+        }
+
+        /// <summary>
+        /// Gets the client parameter <see cref="Symbol"/> given its name.
+        /// </summary>
+        public Symbol GetClientSymbol(string name)
+        {
+            if (this.ClientSymbols.Count == 0)
+                return null;
+
+            if (this.clientSymbolsMap == null)
+            {
+                var map = this.ClientSymbols.ToDictionaryLast(p => p.Name);
+                Interlocked.CompareExchange(ref this.clientSymbolsMap, map, null);
+            }
+
+            this.clientSymbolsMap.TryGetValue(name, out var symbol);
             return symbol;
         }
 
@@ -918,7 +1032,7 @@ namespace Kusto.Language
 
             if (this.propertyMap == null)
             {
-                var map = this.Properties.ToDictionary(pv => pv.Property, pv => pv.Value);
+                var map = this.Properties.ToDictionaryLast(pv => pv.Property, pv => pv.Value);
                 Interlocked.CompareExchange(ref this.propertyMap, map, null);
             }
 
@@ -1010,7 +1124,8 @@ namespace Kusto.Language
                             Language.PlugIns.All,
                             Language.Operators.All,
                             ServerKinds.Engine,
-                            EmptyReadOnlyList<ParameterSymbol>.Instance,
+                            EmptyReadOnlyList<Symbol>.Instance, // ambient parameters
+                            EmptyReadOnlyList<Symbol>.Instance, // client parameters
                             Language.Options.All,
                             EmptyReadOnlyList<PropertyAndValue>.Instance,
                             cache: null,
@@ -1023,7 +1138,8 @@ namespace Kusto.Language
                             pluginMap: null,
                             operatorMap: null,
                             commandMap: null,
-                            parameterMap: null,
+                            ambientSymbolsMap: null,
+                            clientSymbolsMap: null,
                             optionMap: null,
                             propertyMap: null);
                     Interlocked.CompareExchange(ref s_default, globals, null);

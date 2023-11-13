@@ -585,10 +585,10 @@ namespace Kusto.Language.Binding
             {
                 if (_binder._globals.GetProperty(Properties.AllowClientParameters))
                 {
-                    // allow client parameter to bind to ambient parameter for type info.
-                    if (_binder._globals.GetParameter(node.SimpleName) is ParameterSymbol parameter)
+                    // check for supplied symbol for client parameter
+                    if (_binder._globals.GetClientSymbol(node.SimpleName) is Symbol symbol)
                     {
-                        return new SemanticInfo(parameter, parameter.Type);
+                        return GetSemanticInfo(symbol, null);
                     }
                     else
                     {

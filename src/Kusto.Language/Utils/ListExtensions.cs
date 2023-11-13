@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Kusto.Language.Utils
@@ -45,6 +46,105 @@ namespace Kusto.Language.Utils
 
             return hs;
         }
+
+        /// <summary>
+        /// Constructs a dictionary from a list that may have duplicate keys.
+        /// In case of duplicates, the last matching item is kept.
+        /// </summary>
+        public static Dictionary<TKey, TValue> ToDictionaryLast<TKey, TValue>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector)
+        {
+            return ToDictionaryLast(values, keySelector, v => v);
+        }
+
+        /// <summary>
+        /// Constructs a dictionary from a list that may have duplicate keys.
+        /// In case of duplicates, the last matching item is kept.
+        /// </summary>
+        public static Dictionary<TKey, TValue> ToDictionaryLast<TItem, TKey, TValue>(this IEnumerable<TItem> items, Func<TItem, TKey> keySelector, Func<TItem, TValue> valueSelector)
+        {
+            var map = new Dictionary<TKey, TValue>();
+            foreach (var item in items)
+            {
+                var key = keySelector(item);
+                var value = valueSelector(item);
+                map[key] = value;
+            }
+
+            return map;
+        }
+
+        public static IReadOnlyList<TItem> AddOrUpdate<TItem, TKey>(this IReadOnlyList<TItem> items, IReadOnlyList<TItem> newOrUpdatedItems, Func<TItem, TKey> keySelector)
+        {
+            if (newOrUpdatedItems.Count == 0)
+            {
+                // no items to add or update
+                return items;
+            }
+            else if (newOrUpdatedItems.Count == 1)
+            {
+                // single item to add or update
+                var item = newOrUpdatedItems[0];
+                if (item == null)
+                    return items;
+
+                var key = keySelector(item);
+                var comparer = EqualityComparer<TKey>.Default;
+
+                return items
+                    .Where(it => !comparer.Equals(key, keySelector(it)))
+                    .Concat(new[] { item })
+                    .ToReadOnly();
+            }
+            else
+            {
+                // multiple items to add or updated
+                return items
+                    .Concat(newOrUpdatedItems)
+                    .Where(x => x != null)
+                    .DistinctLast(keySelector)
+                    .ToReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Return the sequence of distinct items based on the key, where the first item with a matching key wins.
+        /// </summary>
+        public static IEnumerable<TItem> DistinctFirst<TItem, TKey>(this IEnumerable<TItem> items, Func<TItem, TKey> keySelector)
+        {
+            return items.Distinct(new KeyComparer<TItem, TKey>(keySelector));
+        }
+
+        /// <summary>
+        /// Return the sequence of distinct items based on the key, where last item with a matching key wins.
+        /// </summary>
+        public static IEnumerable<TItem> DistinctLast<TItem, TKey>(this IEnumerable<TItem> items, Func<TItem, TKey> keySelector)
+        {
+            return items.Reverse().DistinctFirst(keySelector).Reverse();
+        }
+
+        private class KeyComparer<TItem, TKey>
+            : IEqualityComparer<TItem>
+        {
+            private readonly Func<TItem, TKey> _keySelector;
+
+            public KeyComparer(Func<TItem, TKey> keySelector)
+            {
+                _keySelector = keySelector;
+            }
+
+            public bool Equals(TItem x, TItem y)
+            {
+                return EqualityComparer<TKey>.Default.Equals(
+                    _keySelector(x),
+                    _keySelector(y));
+            }
+
+            public int GetHashCode(TItem obj)
+            {
+                return _keySelector(obj)?.GetHashCode() ?? 0;
+            }
+        }
+
 
         /// <summary>
         /// Searches for an item in the ordered array that matches the comparison.

@@ -186,10 +186,10 @@ namespace Kusto.Language.Binding
         {
             LocalScope outerScope = null;
 
-            if (globals.Parameters.Count > 0)
+            if (globals.AmbientSymbols.Count > 0)
             {
                 outerScope = new LocalScope();
-                outerScope.AddSymbols(globals.Parameters);
+                outerScope.AddSymbols(globals.AmbientSymbols);
             }
 
             return outerScope;
