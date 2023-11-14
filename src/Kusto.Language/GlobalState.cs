@@ -376,6 +376,10 @@ namespace Kusto.Language
             {
                 return this;
             }
+            else if (clusters == null)
+            {
+                return With(clusters: Optional(clusters)).WithCluster(ClusterSymbol.Unknown);
+            }
             else
             {
                 // change the set of clusters and update current cluster in case its symbol was updated
@@ -421,7 +425,7 @@ namespace Kusto.Language
             {
                 return this;
             }
-            else if (cluster == ClusterSymbol.Unknown)
+            else if (cluster == ClusterSymbol.Unknown || cluster == null)
             {
                 return With(cluster: ClusterSymbol.Unknown, database: DatabaseSymbol.Unknown);
             }
@@ -452,6 +456,12 @@ namespace Kusto.Language
         /// </summary>
         public GlobalState WithDomain(string domain)
         {
+            if (!string.IsNullOrEmpty(domain)
+                && domain[0] != '.')
+            {
+                domain = "." + domain;
+            }
+
             return With(domain: domain);
         }
 
@@ -563,10 +573,13 @@ namespace Kusto.Language
         }
 
         /// <summary>
-        /// Gets the cluster given the simple name or host name.
+        /// Gets the cluster given the short name or host name.
         /// </summary>
         public ClusterSymbol GetCluster(string name)
         {
+            if (name == null)
+                return null;
+
             name = KustoFacts.GetHostName(name) ?? name;
 
             if (this.Cluster != ClusterSymbol.Unknown
@@ -690,6 +703,9 @@ namespace Kusto.Language
         /// </summary>
         public FunctionSymbol GetFunction(string name)
         {
+            if (name == null)
+                return null;
+
             if (this.Functions.Count == 0)
                 return null;
 
@@ -716,6 +732,9 @@ namespace Kusto.Language
         /// </summary>
         public FunctionSymbol GetAggregate(string name)
         {
+            if (name == null)
+                return null;
+
             if (this.Aggregates.Count == 0)
                 return null;
 
@@ -744,7 +763,7 @@ namespace Kusto.Language
         /// <returns></returns>
         public FunctionSymbol GetPlugIn(string name)
         {
-            if (this.PlugIns.Count == 0)
+            if (name == null || this.PlugIns.Count == 0)
                 return null;
 
             if (this.pluginMap == null)
@@ -762,7 +781,8 @@ namespace Kusto.Language
         /// </summary>
         public bool IsAggregateFunction(FunctionSymbol fn)
         {
-            return GetAggregate(fn.Name) == fn;
+            return fn != null 
+                && GetAggregate(fn.Name) == fn;
         }
 
         /// <summary>
@@ -770,6 +790,9 @@ namespace Kusto.Language
         /// </summary>
         public bool IsBuiltInFunction(FunctionSymbol fn)
         {
+            if (fn == null)
+                return false;
+
             return GetFunction(fn.Name) == fn
                 || GetAggregate(fn.Name) == fn
                 || GetPlugIn(fn.Name) == fn;
@@ -813,6 +836,9 @@ namespace Kusto.Language
         /// </summary>
         public CommandSymbol GetCommand(string name)
         {
+            if (name == null)
+                return null;
+
             if (this.commandMap == null)
             {
                 var commands = GetCommands(this.ServerKind);
@@ -876,7 +902,7 @@ namespace Kusto.Language
         /// </summary>
         public Symbol GetAmbientSymbol(string name)
         {
-            if (this.AmbientSymbols.Count == 0)
+            if (name == null || this.AmbientSymbols.Count == 0)
                 return null;
 
             if (this.ambientSymbolsMap == null)
@@ -967,7 +993,7 @@ namespace Kusto.Language
         /// </summary>
         public Symbol GetClientSymbol(string name)
         {
-            if (this.ClientSymbols.Count == 0)
+            if (name == null || this.ClientSymbols.Count == 0)
                 return null;
 
             if (this.clientSymbolsMap == null)
@@ -993,6 +1019,9 @@ namespace Kusto.Language
         /// </summary>
         public OptionSymbol GetOption(string name)
         {
+            if (name == null)
+                return null;
+
             if (this.optionMap == null)
             {
                 var map = new Dictionary<string, OptionSymbol>();
@@ -1025,6 +1054,9 @@ namespace Kusto.Language
         /// </summary>
         public T GetProperty<T>(GlobalStateProperty<T> property)
         {
+            if (property == null)
+                return default(T);            
+
             if (this.Properties.Count == 0)
             {
                 return property.DefaultValue;
@@ -1051,6 +1083,9 @@ namespace Kusto.Language
         /// </summary>
         public GlobalState WithProperty<T>(GlobalStateProperty<T> property, T value)
         {
+            if (property == null)
+                return this;
+
             List<PropertyAndValue> list = null;
 
             bool hasCurrentValue = false;

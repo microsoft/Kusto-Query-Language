@@ -75,7 +75,7 @@ namespace Kusto.Language.Utils
 
         public static IReadOnlyList<TItem> AddOrUpdate<TItem, TKey>(this IReadOnlyList<TItem> items, IReadOnlyList<TItem> newOrUpdatedItems, Func<TItem, TKey> keySelector)
         {
-            if (newOrUpdatedItems.Count == 0)
+            if (newOrUpdatedItems == null || newOrUpdatedItems.Count == 0)
             {
                 // no items to add or update
                 return items;
