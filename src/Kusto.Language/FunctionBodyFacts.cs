@@ -19,16 +19,16 @@ namespace Kusto.Language
         /// <summary>
         /// True if the function body had syntax or semantic errors.
         /// </summary>
-        public bool HasErrors { get; }
+        public bool HasSyntaxErrors { get; }
 
         internal FunctionBodyFacts(
             FunctionBodyFlags flags,
             TypeSymbol nonVariableReturnType,
-            bool hasErrors)
+            bool hasSyntaxErrors)
         {
             Flags = flags;
             NonVariableComputedReturnType = nonVariableReturnType;
-            HasErrors = hasErrors;
+            HasSyntaxErrors = hasSyntaxErrors;
         }
 
         /// <summary>

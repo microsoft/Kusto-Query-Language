@@ -1552,7 +1552,7 @@ namespace Kusto.Language.Binding
             TryGetFunctionBodyFacts(signature, out var funFacts);
 
             // if the function is not yet analyzed or is known to have a variable return type
-            // then compute the function body facts and return type for this location by calling GetCallSiteExpansion.
+            // then compute the function body facts and return type for this location by getting the expansion.
             if (funFacts == null || funFacts.HasVariableReturnType)
             {
                 // use expansion at this call site to determine correct return type
@@ -1564,21 +1564,17 @@ namespace Kusto.Language.Binding
 
                 var returnType = GetBodyResultType(expansion?.Root);
 
-                var hasErrors = funFacts != null ? funFacts.HasErrors
-                    : returnType != null && returnType.IsError ? true
-                    : HasErrors(expansion?.Root);
-
                 if (returnType == null || returnType.IsError)
                     returnType = ScalarTypes.Unknown;
 
-                return new FunctionCallResult(returnType, new FunctionCallInfo(expansion, funFacts, hasErrors));
+                return new FunctionCallResult(returnType, new FunctionCallInfo(expansion, funFacts));
             }
             else
             {
                 // body has non-variable (fixed) return type.
                 return new FunctionCallResult(
                     funFacts.NonVariableComputedReturnType,
-                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts, funFacts.HasErrors));
+                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts));
             }
         }
 
@@ -1590,12 +1586,11 @@ namespace Kusto.Language.Binding
                 : null;
         }
 
-        private static bool HasErrors(SyntaxNode syntax)
+        private static bool HasSyntaxErrors(SyntaxNode syntax)
         {
             return syntax != null
-                && ((syntax.ContainsSyntaxDiagnostics
-                     && syntax.GetContainedSyntaxDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
-                    || (syntax.GetContainedDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error)));
+                && syntax.ContainsSyntaxDiagnostics
+                && syntax.GetContainedSyntaxDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error);
         }
 
         private Func<FunctionCallExpansion> GetDeferredFunctionCallExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
@@ -1858,9 +1853,9 @@ namespace Kusto.Language.Binding
                     ? GetBodyResultType(body) ?? ErrorSymbol.Instance
                     : null;
 
-                var hasErrors = HasErrors(body);
+                var hasSyntaxErrors = HasSyntaxErrors(body);
 
-                facts = new FunctionBodyFacts(bodyFacts, nonVariableReturnType, hasErrors);
+                facts = new FunctionBodyFacts(bodyFacts, nonVariableReturnType, hasSyntaxErrors);
                 SetFunctionBodyFacts(signature, facts);
             }
 

@@ -26,15 +26,33 @@ namespace Kusto.Language.Editor
         {
             SyntaxNode.WalkNodes(code.Syntax, node =>
             {
-                if (node is NameReference nr && !(nr.Parent is FunctionCallExpression) && nr.CalledFunctionHasErrors)
+                if (node is NameReference nr 
+                    && !(nr.Parent is FunctionCallExpression) 
+                    && nr.CalledFunctionHasErrors
+                    && nr.ReferencedSignature is Signature sig1)
                 {
-                    diagnostics.Add(_diagnostic.WithMessage($"The function '{nr.SimpleName}' has errors in its definition.").WithLocation(nr));
+                    AddErrors(code, sig1, nr.GetCalledFunctionDiagnostics(), nr, diagnostics);
                 }
-                else if (node is FunctionCallExpression fc && fc.CalledFunctionHasErrors)
+                else if (node is FunctionCallExpression fc 
+                    && fc.CalledFunctionHasErrors
+                    && fc.Name.ReferencedSignature is Signature sig2)
                 {
-                    diagnostics.Add(_diagnostic.WithMessage($"The function '{fc.Name.SimpleName}' has errors in its definition.").WithLocation(fc.Name));
+                    AddErrors(code, sig2, fc.GetCalledFunctionDiagnostics(), fc.Name, diagnostics);
                 }
             });
+        }
+
+        private static void AddErrors(KustoCode code, Signature sig, IReadOnlyList<Diagnostic> calledFunctionDiagnostics, SyntaxNode location, List<Diagnostic> diagnostics)
+        {
+            // add called function errors if the function is declared in same query (not from db, etc)
+            if (sig.Symbol != null
+                && sig.Declaration != null
+                && sig.Declaration.Tree == code.Tree)
+            {
+                diagnostics.AddRange(calledFunctionDiagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+            }
+
+            diagnostics.Add(_diagnostic.WithMessage($"The function '{sig.Symbol.Name}' has errors in its definition").WithLocation(location));
         }
     }
 }

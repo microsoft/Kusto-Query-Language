@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
+    using Syntax;
+    using Utils;
+
     /// <summary>
     /// Extended semantic information for function calls.
     /// </summary>
@@ -18,20 +21,18 @@ namespace Kusto.Language.Binding
         private readonly Func<FunctionCallExpansion> _expander;
         private FunctionCallExpansion _expansion;
         private FunctionBodyFacts _facts;
-        private bool _hasErrors;
+        private bool? _hasErrors;
 
-        public FunctionCallInfo(Func<FunctionCallExpansion> expander, FunctionBodyFacts facts, bool hasErrors)
+        public FunctionCallInfo(Func<FunctionCallExpansion> expander, FunctionBodyFacts facts)
         {
             _expander = expander;
             _facts = facts;
-            _hasErrors = hasErrors;
         }
 
-        public FunctionCallInfo(FunctionCallExpansion expansion, FunctionBodyFacts facts, bool hasErrors)
+        public FunctionCallInfo(FunctionCallExpansion expansion, FunctionBodyFacts facts)
         {
             _expansion = expansion;
             _facts = facts;
-            _hasErrors = hasErrors;
         }
 
         /// <summary>
@@ -55,7 +56,20 @@ namespace Kusto.Language.Binding
             }
         }
 
-        public bool HasErrors => _hasErrors;
+        public bool HasErrors
+        {
+            get
+            {
+                if (_hasErrors == null)
+                {
+                    _hasErrors =
+                        _facts.HasSyntaxErrors
+                        || this.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error);
+                }
+
+                return _hasErrors.GetValueOrDefault();
+            }
+        }
 
         private IReadOnlyList<Diagnostic> _diagnostics;
 
@@ -65,7 +79,17 @@ namespace Kusto.Language.Binding
             {
                 if (_diagnostics == null)
                 {
-                    _diagnostics = this.Expansion?.Root?.GetContainedDiagnostics() ?? Diagnostic.NoDiagnostics;
+                    if (this.Expansion?.Root is SyntaxNode root)
+                    {
+                        // relocate diagnostics in original tree positions
+                        _diagnostics = root.GetContainedDiagnostics()
+                            .Select(d => d.WithLocation(root.GetPositionInOriginalTree(d.Start), d.Length))
+                            .ToReadOnly();
+                    }
+                    else
+                    {
+                        _diagnostics = Diagnostic.NoDiagnostics;
+                    }
                 }
 
                 return _diagnostics;

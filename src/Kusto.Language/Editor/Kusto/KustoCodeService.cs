@@ -216,7 +216,7 @@ namespace Kusto.Language.Editor
                 && waitForAnalysis
                 && CanBeAnalyzed(code))
             {
-                var ds = new List<Diagnostic>();
+                var analyzerDx = new List<Diagnostic>();
 
                 foreach (var analyzer in this.analyzers)
                 {
@@ -225,15 +225,20 @@ namespace Kusto.Language.Editor
                     // have try-catch to keep editor from crashing from analyzer bugs
                     try
                     {
-                        analyzer.Analyze(code, ds, cancellationToken);
+                        analyzer.Analyze(code, analyzerDx, cancellationToken);
                     }
                     catch (Exception e)
                     {
-                        ds.Add(DiagnosticFacts.AnalysisFailure(analyzer.Name, e.Message));
+                        analyzerDx.Add(DiagnosticFacts.AnalysisFailure(analyzer.Name, e.Message));
                     }
                 }
 
-                Interlocked.CompareExchange(ref this.lazyAnalyzerDiagnostics, ds, null);
+                // only return distinct analyzer diagnostics that are not repeats of binder diagnostics.
+                var binderDx = GetDiagnostics(waitForAnalysis, cancellationToken);
+                // note: binderDx is already distinct, so we can compute where remaining anallyzer dx starts
+                var distinctAnalyzerDx = binderDx.Concat(analyzerDx).Distinct().Skip(binderDx.Count).ToReadOnly();
+
+                Interlocked.CompareExchange(ref this.lazyAnalyzerDiagnostics, distinctAnalyzerDx, null);
             }
 
             return this.lazyAnalyzerDiagnostics ?? EmptyReadOnlyList<Diagnostic>.Instance;

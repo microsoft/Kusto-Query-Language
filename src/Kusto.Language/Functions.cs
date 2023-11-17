@@ -3275,6 +3275,16 @@ namespace Kusto.Language
                 new Parameter("h3cell", ScalarTypes.String))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
+
+        public static readonly FunctionSymbol GeoPolygonToH3Cells =
+            new FunctionSymbol("geo_polygon_to_h3cells",
+                ScalarTypes.DynamicArrayOfString,
+                new Parameter("polygon", ParameterTypeKind.DynamicBag),
+                new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0),
+                new Parameter("radius", ParameterTypeKind.Number, minOccurring: 0))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
         #endregion
 
         #region other
@@ -3846,6 +3856,7 @@ namespace Kusto.Language
             GeoPolygonsUnion,
             GeoSimplifyPolygonsArray,
             GeoLinesUnion,
+            GeoPolygonToH3Cells,
             GeoPolygonToS2Cells,
             GeoPolygonS2CellCoveringLevel,
             GeoPolygonDensify,
