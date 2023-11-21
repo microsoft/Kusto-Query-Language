@@ -9712,7 +9712,8 @@ namespace Kusto.Language.Parsing
                                     Custom(
                                         First(
                                             Token("reconstructCsl"),
-                                            If(Not(Token("reconstructCsl")), rules.NameDeclaration)),
+                                            Token("showExternalArtifacts"),
+                                            If(Not(And(Token("reconstructCsl", "showExternalArtifacts"))), rules.NameDeclaration)),
                                         RequiredToken("="),
                                         Required(rules.Value, rules.MissingValue),
                                         shape128)),

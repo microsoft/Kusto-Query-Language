@@ -2888,6 +2888,29 @@ namespace Kusto.Language
         #endregion
 
         #region geospatial functions
+        public static readonly FunctionSymbol GeoAngle =
+            new FunctionSymbol("geo_angle",
+                ScalarTypes.Real,
+                new Parameter("p1_longitude", ParameterTypeKind.Number),
+                new Parameter("p1_latitude", ParameterTypeKind.Number),
+                new Parameter("p2_longitude", ParameterTypeKind.Number),
+                new Parameter("p2_latitude", ParameterTypeKind.Number),
+                new Parameter("p3_longitude", ParameterTypeKind.Number),
+                new Parameter("p3_latitude", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoAzimuth =
+            new FunctionSymbol("geo_azimuth",
+                ScalarTypes.Real,
+                new Parameter("p1_longitude", ParameterTypeKind.Number),
+                new Parameter("p1_latitude", ParameterTypeKind.Number),
+                new Parameter("p2_longitude", ParameterTypeKind.Number),
+                new Parameter("p2_latitude", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
 
         public static readonly FunctionSymbol GeoDistance2Points =
             new FunctionSymbol("geo_distance_2points",
@@ -3842,6 +3865,8 @@ namespace Kusto.Language
 #endregion
 
 #region geospatial functions
+            GeoAngle,
+            GeoAzimuth,
             GeoDistance2Points,
             GeoDistancePointToLine,
             GeoDistancePointToPolygon,
