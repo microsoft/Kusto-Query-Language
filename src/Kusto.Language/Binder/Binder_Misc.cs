@@ -1912,8 +1912,7 @@ namespace Kusto.Language.Binding
             if (!expression.IsLiteral)
                 return false;
 
-            object value = ConvertHelper.ChangeType(expression.LiteralValue, values[0]);
-            return Contains(values, value, caseSensitive);
+            return Contains(values, expression.LiteralValue, caseSensitive);
         }
 
         /// <summary>
@@ -1942,8 +1941,7 @@ namespace Kusto.Language.Binding
             {
                 if (values != null && values.Count > 0)
                 {
-                    object value = ConvertHelper.ChangeType(expression.LiteralValue, values[0]);
-                    return Contains(values, value, caseSensitive);
+                    return Contains(values, expression.LiteralValue, caseSensitive);
                 }
 
                 return true;
@@ -1974,8 +1972,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         private bool CheckIsToken(SyntaxToken token, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
         {
-            var value = ConvertHelper.ChangeType(token.Text, values[0]);
-            if (Contains(values, value, caseSensitive))
+            if (Contains(values, token.Text, caseSensitive))
                 return true;
 
             if (!token.HasSyntaxDiagnostics)
@@ -1989,26 +1986,12 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Returns true if the value in the list of values.
         /// </summary>
-        private static bool Contains<T>(IReadOnlyList<T> values, T value, bool caseSensitive = false)
+        private static bool Contains(IReadOnlyList<object> values, object value, bool caseSensitive)
         {
-            var stringValue = value as string;
-            if (stringValue != null)
+            for (int i = 0, n = values.Count; i < n; i++)
             {
-                for (int i = 0, n = values.Count; i < n; i++)
-                {
-                    var v = values[i] as string;
-                    if (string.Compare(stringValue, v, ignoreCase: !caseSensitive) == 0)
-                        return true;
-                }
-            }
-            else
-            {
-                var comparer = EqualityComparer<T>.Default;
-                for (int i = 0, n = values.Count; i < n; i++)
-                {
-                    if (comparer.Equals(values[i], value))
-                        return true;
-                }
+                if (ValueComparer.AreEquivalent(values[i], value, caseSensitive))
+                    return true;
             }
 
             return false;
@@ -2034,45 +2017,29 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Returns true if the expression is a constant that matches one of the listed values.
         /// </summary>
-        private static bool IsConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive)
+        private static bool IsConstantValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive)
         {
             if (!expression.IsConstant)
                 return false;
 
-            if (expression.ConstantValue is T tval)
-            {
-                return Contains(values, tval, caseSensitive);
-            }
-            else
-            {
-                tval = (T)ConvertHelper.ChangeType(expression.ConstantValue, values[0]);
-                return Contains(values, tval, caseSensitive);
-            }
+            return Contains(values, expression.ConstantValue, caseSensitive);
         }
 
         /// <summary>
         /// Returns true if the expression is either not constant or does not match any of the listed values.
         /// </summary>
-        private bool IsNotConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive)
+        private bool IsNotConstantValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive)
         {
             if (!expression.IsConstant)
                 return true;
 
-            if (expression.ConstantValue is T tval)
-            {
-                return !Contains(values, tval, caseSensitive);
-            }
-            else
-            {
-                tval = (T)ConvertHelper.ChangeType(expression.ConstantValue, values[0]);
-                return !Contains(values, tval, caseSensitive);
-            }
+            return !Contains(values, expression.ConstantValue, caseSensitive);
         }
 
         /// <summary>
         /// Checks if the expression is a constant that matches one of the listed values.
         /// </summary>
-        private bool CheckIsConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive, List<Diagnostic> diagnostics)
+        private bool CheckIsConstantValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
         {
             var result = GetResultTypeOrError(expression);
             if (!result.IsError)
@@ -2089,15 +2056,15 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Checks if the expression is a constant that matches the specified value.
         /// </summary>
-        private bool CheckIsConstantValue<T>(Expression expression, T value, bool caseSensitive, List<Diagnostic> diagnostics)
+        private bool CheckIsConstantValue(Expression expression, object value, bool caseSensitive, List<Diagnostic> diagnostics)
         {
-            return CheckIsConstantValue<T>(expression, new[] { value }, caseSensitive, diagnostics);
+            return CheckIsConstantValue(expression, new[] { value }, caseSensitive, diagnostics);
         }
 
         /// <summary>
         /// Checks if the expression is either not constant does not match any of the listed values.
         /// </summary>
-        private bool CheckIsNotConstantValue<T>(Expression expression, IReadOnlyList<T> values, bool caseSensitive, List<Diagnostic> diagnostics)
+        private bool CheckIsNotConstantValue(Expression expression, IReadOnlyList<object> values, bool caseSensitive, List<Diagnostic> diagnostics)
         {
             var result = GetResultTypeOrError(expression);
             if (!result.IsError)
@@ -2114,9 +2081,9 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Checks if the expression is either not constant does not match the specified value.
         /// </summary>
-        private bool CheckIsNotConstantValue<T>(Expression expression, T value, bool caseSensitive, List<Diagnostic> diagnostics)
+        private bool CheckIsNotConstantValue(Expression expression, object value, bool caseSensitive, List<Diagnostic> diagnostics)
         {
-            return CheckIsNotConstantValue<T>(expression, new[] { value }, caseSensitive, diagnostics);
+            return CheckIsNotConstantValue(expression, new[] { value }, caseSensitive, diagnostics);
         }
 
         /// <summary>

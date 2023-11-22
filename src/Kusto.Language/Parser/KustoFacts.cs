@@ -562,10 +562,9 @@ namespace Kusto.Language
             switch (dialect)
             {
                 case KustoDialect.ClusterManagerCommand:
-                    return !s_clusterManagerCommandKeywordsThatNeedBrackets.Contains(text);
-
                 case KustoDialect.DataManagerCommand:
-                    return !s_dataManagerCommandKeywordsThatNeedBrackets.Contains(text);
+                    // always require brackets to avoid needing to maintain the correct list of keywords
+                    return false;
 
                 case KustoDialect.EngineCommand:
                     return !s_engineCommandKeywordsThatNeedBrackets.Contains(text);
