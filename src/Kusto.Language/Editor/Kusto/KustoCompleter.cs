@@ -581,29 +581,19 @@ namespace Kusto.Language.Editor
                     if (IsStartOfQuery(contextNode))
                     {
                         items.Add(
-                            new CompletionItem(
-                                kind,
-                                displayText,
-                                insertionText + AfterQueryStart, // add | for start of query
-                                matchText: matchText,
-                                priority: priority));
+                            new CompletionItem(kind, displayText, beforeText: insertionText + AfterQueryStart, matchText: matchText, priority: priority));
                     }
                     else
                     {
                         items.Add(
-                            new CompletionItem(
-                                kind,
-                                displayText,
-                                insertionText,
-                                matchText: matchText,
-                                priority: priority));
+                            new CompletionItem(kind, displayText, beforeText: insertionText, matchText: matchText, priority: priority));
                     }
                     break;
 
                 case FunctionSymbol f:
                     if (nameOnly)
                     {
-                        items.Add(new CompletionItem(kind, displayText, editName));
+                        items.Add(new CompletionItem(kind, displayText, beforeText: editName, matchText: displayText));
                         return;
                     }
 
@@ -944,7 +934,7 @@ namespace Kusto.Language.Editor
         }
 
         private CompletionMode GetDeconstructCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
-        {
+         {
             // after insertion of open paren in front of existing function call that returns a tuple,
             // offer to complete a rename deconstruction
             var pe = contextNode.GetFirstAncestorOrSelf<ParenthesizedExpression>();
@@ -953,24 +943,35 @@ namespace Kusto.Language.Editor
                 && !pe.Expression.IsMissing
                 && pe.CloseParen.IsMissing
                 && position == pe.OpenParen.End
-                && pe.Expression is FunctionCallExpression fc
+                && GetUnpipedExpression(pe.Expression) is FunctionCallExpression fc
                 && !(fc.Parent is NamedExpression)
                 && !(fc.Parent is LetStatement) // maybe future
                 && fc.ResultType is TupleSymbol ts
                 && ts.Columns.Count > 1)
             {
                 var displayText = "(" + ts.Columns[0].Name + ", ...) = ";
-                var insertText = string.Join(", ", ts.Columns.Select(c => KustoFacts.BracketNameIfNecessary(c.Name))) + ") = ";
+
+                var applyTextWithMarkers = string.Join(", ", ts.Columns.Select(c => $"[[{c.Name}]]")) + ") = ";
+
                 var matchText = fc.Name.SimpleName;
-                builder.Add(new CompletionItem(
-                    CompletionKind.Example, 
-                    displayText: displayText,
-                    editText: insertText,
-                    matchText: matchText, 
-                    priority: CompletionPriority.Top));
+
+                var item = new CompletionItem(CompletionKind.Example, displayText, matchText: matchText, priority: CompletionPriority.Top)
+                    .WithApplyTexts(CompletionItem.ParseApplyTexts(applyTextWithMarkers));
+
+                builder.Add(item);
             }
 
             return CompletionMode.Combined;
+        }
+
+        private static Expression GetUnpipedExpression(Expression exp)
+        {
+            while (exp is PipeExpression pe)
+            {
+                exp = pe.Expression;
+            }
+
+            return exp;
         }
 
         private CompletionMode GetColumnExampleCompletions(int position, SyntaxNode contextNode, int childIndex, CompletionBuilder builder)
@@ -2215,7 +2216,9 @@ namespace Kusto.Language.Editor
 
         private CompletionItem GetAugmentedCompletionItem(CompletionItem item)
         {
-            return item.WithEditText(item.EditText + " ");
+            if (item.ApplyTexts.Count != 1 || item.IsEditable)
+                return item;
+            return item.WithBeforeText(item.BeforeText + " ");
         }
 
         private static IReadOnlyList<string> punctuationWithoutSpace =
@@ -2231,10 +2234,10 @@ namespace Kusto.Language.Editor
 
             // was this an auto appended '='?
             // make appended additional space depend on whether it is currently separated by a space.
-            if (item.EditText.EndsWith("=")
-                && TextFacts.IsLetterOrDigit(item.EditText[0])
-                && item.EditText.Length > 1
-                && !TextFacts.IsWhitespace(item.EditText[item.EditText.Length - 2]))
+            if (item.BeforeText.EndsWith("=")
+                && TextFacts.IsLetterOrDigit(item.BeforeText[0])
+                && item.BeforeText.Length > 1
+                && !TextFacts.IsWhitespace(item.BeforeText[item.BeforeText.Length - 2]))
                 return false;
 
             switch (item.Kind)

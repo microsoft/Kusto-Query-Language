@@ -280,6 +280,51 @@ namespace Kusto.Language.Utils
 
             return -1;
         }
+
+        /// <summary>
+        /// Returns a new list with a new item inserted at the specified index.
+        /// </summary>
+        public static IReadOnlyList<T> Insert<T>(this IReadOnlyList<T> list, int index, T newItem)
+        {
+            if (list.Count >= index)
+            {
+                var newList = list.ToList();
+                newList.Insert(index, newItem);
+                return newList.ToReadOnly();
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Returns a new list with the item at the specified index removed.
+        /// </summary>
+        public static IReadOnlyList<T> RemoveAt<T>(this IReadOnlyList<T> list, int index)
+        {
+            if (list.Count >= index)
+            {
+                var newList = list.ToList();
+                newList.RemoveAt(index);
+                return newList.ToReadOnly();
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Returns a new list with the item at the specified index replaced with the new item.
+        /// </summary>
+        public static IReadOnlyList<T> Replace<T>(this IReadOnlyList<T> list, int index, T newItem)
+        {
+            if (list.Count > index && !EqualityComparer<T>.Default.Equals(list[index], newItem))
+            {
+                var array = list.ToArray();
+                array[index] = newItem;
+                return array.ToReadOnly();
+            }
+
+            return list;
+        }
     }
 
     /// <summary>

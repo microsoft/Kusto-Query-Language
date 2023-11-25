@@ -406,20 +406,14 @@ namespace Kusto.Language.Parsing
             if (text.StartsWith("_", StringComparison.Ordinal))
                 return null;
 
-            string afterText = null;
-            string editText = ctext ?? text;
+            var item = new CompletionItem(ckind, text, matchText: matchText, priority: priority);
 
             if (ctext != null)
             {
-                var cursor = ctext.IndexOf('|');
-                if (cursor >= 0)
-                {
-                    afterText = ctext.Substring(cursor + 1);
-                    editText = ctext.Substring(0, cursor);
-                }
+                item = item.WithApplyTexts(CompletionItem.ParseApplyTexts(ctext));
             }
 
-            return new CompletionItem(ckind, displayText: text, matchText: matchText, editText: editText, afterText: afterText, priority: priority);
+            return item;
         }
 
         /// <summary>
