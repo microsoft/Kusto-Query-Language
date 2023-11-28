@@ -39,7 +39,7 @@ namespace Kusto.Language.Editor
             if (position >= token.TextStart && position <= token.End
                 && !IsInsideMacroExpand(token))
             {
-                if (GetEntityExpressionStart(token) is Expression entity)
+                if (GetEntityExpressionStart(token, code.Globals) is Expression entity)
                 {
                     if (selectionLength == 0)
                     {
@@ -56,7 +56,7 @@ namespace Kusto.Language.Editor
                 }
 
                 if (TryGetUnionQuery(token, out var query)
-                    && TryGetUnionEntityExpressions(query, out _))
+                    && TryGetUnionEntityExpressions(query, code.Globals, out _))
                 {
                     actions.Add(
                         ConvertUnionToMacroExpandAction
@@ -97,8 +97,8 @@ namespace Kusto.Language.Editor
                 && Int32.TryParse(action.Data[1], out var selectionLength)
                 && Int32.TryParse(action.Data[2], out var position)
                 && code.Syntax.GetTokenAt(position) is SyntaxToken token
-                && GetEntityExpressionStart(token) is Expression entity
-                && entity.ReferencedSymbol is Symbol entitySymbol)
+                && GetEntityExpressionStart(token, code.Globals) is Expression entityStart
+                && entityStart.ResultType is Symbol entitySymbol)
             {
                 TextFacts.TrimRangeEnd(code.Text, selectionStart, ref selectionLength);
                 AdjustRangeToNode(code, ref selectionStart, ref selectionLength);
@@ -107,12 +107,12 @@ namespace Kusto.Language.Editor
 
                 // wrap selection in macro-expand
                 var textWithBrackets = originalText.InsertBrackets(
-                    selectionStart, $"macro-expand entity_group [{entity.ToString(IncludeTrivia.Interior)}] as {InitialEntityGroupElementName}", "(",
+                    selectionStart, $"macro-expand entity_group [{entityStart.ToString(IncludeTrivia.Interior)}] as {InitialEntityGroupElementName}", "(",
                     selectionStart + selectionLength, ")",
                     options.FormattingOptions);
 
                 // replace all references to entities with entity group element
-                var entityExpressions = GetEntityExpressions(code, entitySymbol);
+                var entityExpressions = GetEntityExpressionStarts(code, entitySymbol);
                 var textWithReplacements = textWithBrackets.ApplyAll(
                     entityExpressions.Select(ex =>
                     {
@@ -133,14 +133,15 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Gets all the entity expressions referring to the specified symbol.
+        /// Gets all the entity expression starts referring to the specified symbol.
         /// </summary>
-        private List<Expression> GetEntityExpressions(KustoCode code, Symbol symbol)
+        private List<Expression> GetEntityExpressionStarts(KustoCode code, Symbol symbol)
         {
             return code.Syntax
-                .GetDescendantsOrSelf<Expression>(ex => ex.ReferencedSymbol == symbol && !(ex.Parent is PathExpression pe && pe.Selector == ex))
-                .Select(ex => GetEntityExpressionStart(ex))
+                .GetDescendantsOrSelf<Expression>(ex => ex.ResultType == symbol && !(ex.Parent is PathExpression pe && pe.Selector == ex))
+                .Select(ex => GetEntityExpressionStart(ex, code.Globals))
                 .Where(ex => ex != null)
+                .Distinct()
                 .ToList();
         }
 
@@ -150,7 +151,7 @@ namespace Kusto.Language.Editor
                 && Int32.TryParse(action.Data[0], out var position)
                 && code.Syntax.GetTokenAt(position) is SyntaxToken token
                 && TryGetUnionQuery(token, out var unionQuery)
-                && TryGetUnionEntityExpressions(unionQuery, out var entities)
+                && TryGetUnionEntityExpressions(unionQuery, code.Globals, out var entities)
                 && TryGetQuery(token, out var query))
             {
                 var originalText = new EditString(code.Text);
@@ -224,21 +225,21 @@ namespace Kusto.Language.Editor
             return query != null;
         }
 
-        private bool TryGetUnionEntityExpressions(Expression query, out List<Expression> entities)
+        private bool TryGetUnionEntityExpressions(Expression query, GlobalState globals, out List<Expression> entities)
         {
             entities = new List<Expression>();
-            return GetUnionEntityExpressions(query, entities);
+            return GetUnionEntityExpressions(query, globals, entities);
         }
 
-        private bool GetUnionEntityExpressions(Expression query, List<Expression> entities)
+        private bool GetUnionEntityExpressions(Expression query, GlobalState globals, List<Expression> entities)
         {
             // gather all entity expressions in union query
             if (query is PipeExpression pipe)
             {
-                if (!GetUnionEntityExpressions(pipe.Expression, entities))
+                if (!GetUnionEntityExpressions(pipe.Expression, globals, entities))
                     return false;
 
-                if (!GetUnionEntityExpressions(pipe.Operator, entities))
+                if (!GetUnionEntityExpressions(pipe.Operator, globals, entities))
                     return false;
 
                 return true;
@@ -248,7 +249,7 @@ namespace Kusto.Language.Editor
                 for (int i = 0; i < union.Expressions.Count; i++)
                 {
                     var expr = union.Expressions[i].Element;
-                    var entity = GetEntityExpression(expr);
+                    var entity = GetEntityExpression(expr, globals);
                     if (entity == null)
                         return false;
                     entities.Add(entity);
@@ -258,7 +259,7 @@ namespace Kusto.Language.Editor
             }
             else
             {
-                var entity = GetEntityExpression(query);
+                var entity = GetEntityExpression(query, globals);
                 if (entity == null)
                     return false;
                 entities.Add(entity);

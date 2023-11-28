@@ -3235,6 +3235,40 @@ namespace Kusto.Language.Parsing
 
         private Expression ParseEntityPathExpression()
         {
+            var expr = ParsePathElementSelectorOrFunctionCall();
+
+            if (expr != null)
+            {
+                while (true)
+                {
+                    var kind = PeekToken().Kind;
+                    if (kind == SyntaxKind.DotToken)
+                    {
+                        expr = new PathExpression(expr, ParseToken(), ParsePathElementSelectorOrFunctionCall() ?? CreateMissingNameReference());
+                    }
+                    else if (kind == SyntaxKind.OpenBracketToken)
+                    {
+                        expr = new ElementExpression(expr, ParseBracketedPathElementSelector());
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return expr;
+        }
+
+        private bool ScanQualifiedEntityStart()
+        {
+            return ((PeekToken().Text == Functions.Database.Name
+                || PeekToken().Text == Functions.Cluster.Name)
+                && PeekToken(1).Kind == SyntaxKind.OpenParenToken);
+        }
+
+        private Expression ParseSimplePathExpression()
+        {
             var expr = ParsePathElementSelector();
 
             if (expr != null)
@@ -3261,10 +3295,10 @@ namespace Kusto.Language.Parsing
         }
 
         private Expression ParseEntityReferenceExpression() =>
-            ParseEntityPathExpression();
+            ParseSimplePathExpression();
 
-        private static readonly Func<QueryParser, Expression> FnParseEntityReferenceExpression =
-            qp => qp.ParseEntityReferenceExpression();
+        private static readonly Func<QueryParser, Expression> FnParseSimplePathExpression =
+            qp => qp.ParseSimplePathExpression();
         
         private Expression ParseWildcardedEntityExpression()
         {
@@ -3432,7 +3466,7 @@ namespace Kusto.Language.Parsing
             if (keyword != null)
             {
                 var byKeyword = ParseRequiredToken(SyntaxKind.ByKeyword);
-                var expressions = ParseCommaList(FnParseEntityReferenceExpression, FnCreateMissingNameReferenceAsExpression, FnScanFacetExpressionListEnd, oneOrMore: true);
+                var expressions = ParseCommaList(FnParseSimplePathExpression, FnCreateMissingNameReferenceAsExpression, FnScanFacetExpressionListEnd, oneOrMore: true);
                 var withClause = ParseFacetWithClause();
                 return new FacetOperator(keyword, byKeyword, expressions, withClause);
             }
@@ -3803,7 +3837,7 @@ namespace Kusto.Language.Parsing
             {
                 var parameters = ParseQueryOperatorParameterList(s_partitionOperatorParameterMap);
                 var byKeyword = ParseRequiredToken(SyntaxKind.ByKeyword);
-                var byExpr = ParseEntityReferenceExpression() ?? CreateMissingNameReference();
+                var byExpr = ParseSimplePathExpression() ?? CreateMissingNameReference();
                 var scope = ParsePartitionScope();
                 var operand = ParsePartitionOperand() ?? CreateMissingPartitionOperand();
                 return new PartitionOperator(keyword, parameters, byKeyword, byExpr, scope, operand);
@@ -4869,7 +4903,7 @@ namespace Kusto.Language.Parsing
             if (ParseToken(SyntaxKind.PartitionByKeyword) is SyntaxToken keyword)
             {
                 var parameters = ParseQueryOperatorParameterList(s_partitionByParameters);
-                var entity = ParseEntityReferenceExpression() ?? CreateMissingNameReference();
+                var entity = ParseSimplePathExpression() ?? CreateMissingNameReference();
                 var idClause = ParsePartitionByIdClause();
                 var openParen = ParseRequiredToken(SyntaxKind.OpenParenToken);
                 var subQuery = ParseContextualSubExpression() ?? CreateMissingExpression();
@@ -5198,6 +5232,9 @@ namespace Kusto.Language.Parsing
             {
                 return explicitEntityGroup;
             }
+
+            if (ScanQualifiedEntityStart())
+                return ParseEntityPathExpression();
 
             return ParseNameReference();
         }

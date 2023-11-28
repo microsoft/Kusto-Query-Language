@@ -1233,6 +1233,21 @@ namespace Kusto.Language.Parsing
 
             var EntityPathExpression =
                 ApplyZeroOrMore(
+                    PathElementSelectorOrFunctionCall,
+                    _left =>
+                        First(
+                            Rule(_left, Token(SyntaxKind.DotToken), Required(PathElementSelectorOrFunctionCall, CreateMissingNameReference),
+                                (left, dot, selector) =>
+                                    (Expression)new PathExpression(left, dot, selector)),
+                            Rule(_left, BracketedPathElementSelector,
+                                (left, right) =>
+                                    (Expression)new ElementExpression(left, right))));
+
+            var ScanQualifiedEntityStart =
+                And(Or(Token(Functions.Database.Name), Token(Functions.Cluster.Name)), Token(SyntaxKind.OpenParenToken));
+
+            var SimplePathExpression =
+                ApplyZeroOrMore(
                     PathElementSelector,
                     _left =>
                         First(
@@ -1242,11 +1257,6 @@ namespace Kusto.Language.Parsing
                             Rule(_left, BracketedPathElementSelector,
                                 (left, right) =>
                                     (Expression)new ElementExpression(left, right))));
-
-            // this is meant for column references?
-            var EntityReferenceExpression =
-                EntityPathExpression
-                .WithTag("<entity>");
 
             var ScanWildcardedEntityReferenceOrFunctionCall =
                 Or(ScanWildcard, ScanFunctionCall);
@@ -1640,7 +1650,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.FacetKeyword, CompletionKind.QueryPrefix).Hide(),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    SeparatedList<Expression>(EntityReferenceExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingNameReference, oneOrMore: true),
+                    SeparatedList<Expression>(SimplePathExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingNameReference, oneOrMore: true),
                     Optional(FacetWithClause),
                     (facetKeyword, byKeyword, list, withClause) =>
                         (QueryOperator)new FacetOperator(facetKeyword, byKeyword, list, withClause))
@@ -2159,7 +2169,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.PartitionKeyword, CompletionKind.QueryPrefix, CompletionPriority.Low),
                     QueryParameterList(QueryOperatorParameters.PartitionParameters),
                     RequiredToken(SyntaxKind.ByKeyword),
-                    Required(EntityReferenceExpression, CreateMissingNameReference),
+                    Required(SimplePathExpression, CreateMissingNameReference),
                     Optional(PartitionScopeClause),
                     Required(
                         First(
@@ -2181,7 +2191,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     HiddenToken(SyntaxKind.PartitionByKeyword),
                     QueryParameterList(QueryOperatorParameters.PartitionByParameters),
-                    Required(EntityReferenceExpression, CreateMissingNameReference),
+                    Required(SimplePathExpression, CreateMissingNameReference),
                     Optional(PartitionByIdClause),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     Required(ContextualSubExpression, CreateMissingExpression),
@@ -2629,7 +2639,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
-                    First(EntityGroup, SimpleNameReference),
+                    First(EntityGroup, If(ScanQualifiedEntityStart, EntityPathExpression), SimpleNameReference),
                     Optional(macroExpandScopeReferenceName),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     MacroExpandSubQuery,

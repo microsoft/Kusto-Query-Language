@@ -316,44 +316,50 @@ namespace Kusto.Language.Editor
         /// Gets a part of an entity expression given a syntax element.
         /// Returns null if the element is not part of an entity expression.
         /// </summary>
-        public static Expression GetEntityExpressionPart(SyntaxElement element)
+        public static Expression GetEntityExpressionPart(SyntaxElement element, GlobalState globals)
         {
             if (element is SyntaxToken token)
-            {
                 element = token.Parent;
-            }
 
             if (element.Parent is Name name)
                 element = name;
 
-            if (element.Parent is NameReference nameRef)
-                element = nameRef;
+            if (element.Parent is NameReference parentNameRef)
+                element = parentNameRef;
+
+            if (element is NameReference nameReference
+                && nameReference.Parent is FunctionCallExpression parentFC)
+                element = parentFC;
 
             if (element is Expression expr)
             {
-                if (expr.ReferencedSymbol is TableSymbol
-                    || expr.ReferencedSymbol is EntityGroupElementSymbol)
-                {
+                if (IsEntityPart(expr, globals)
+                    || IsDatabasePart(expr)
+                    || IsClusterPart(expr)
+                    || IsEntityGroupElementPart(expr))
                     return expr;
-                }
-                else if (expr.Parent is FunctionCallExpression fc
-                    && fc.ReferencedSymbol is FunctionSymbol fs
-                    && (fs == Functions.Table || fs == Functions.Database || fs == Functions.Cluster))
-                {
-                    return fc;
-                }
             }
 
             return null;
         }
 
         /// <summary>
+        /// Returns true if the function is part of an entity expression.
+        /// </summary>
+        public static bool IsEntityFunction(FunctionSymbol fs) =>
+            fs == Functions.Table
+            || fs == Functions.ExternalTable
+            || fs == Functions.MaterializedView;
+
+        /// <summary>
         /// Gets the portion of the entity expression from the start of the full entity expression
         /// up to and including the specified element.
         /// </summary>
-        public static Expression GetEntityExpressionStart(SyntaxElement element)
+        public static Expression GetEntityExpressionStart(SyntaxElement element, GlobalState globals)
         {
-            if (GetEntityExpressionPart(element) is Expression expr)
+            var token = element is SyntaxToken tok ? tok : element.GetLastToken();
+
+            if (GetEntityExpressionPart(token, globals) is Expression expr)
             {
                 var end = expr.End;
 
@@ -372,9 +378,16 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets the full entity expression given a part of it
         /// </summary>
-        public static Expression GetEntityExpression(SyntaxElement element)
+        public static Expression GetEntityExpression(SyntaxElement element, GlobalState globals)
         {
-            if (GetEntityExpressionPart(element) is Expression expr)
+            // start with right-most part of path (entity part)
+            while (element is PathExpression path)
+            {
+                element = path.Selector;
+            }
+
+            // walk back up as long as we still have parts of an entity expression
+            if (GetEntityExpressionPart(element, globals) is Expression expr)
             {
                 while (expr.Parent is PathExpression parentPath)
                 {
@@ -386,6 +399,86 @@ namespace Kusto.Language.Editor
 
             return null;
         }
+
+        /// <summary>
+        /// Gets the selector part of an entity expression.
+        /// </summary>
+        public static Expression GetEntityExpressionPart(Expression entity, Func<Expression, bool> fnSelector)
+        {
+            if (fnSelector(entity))
+                return entity;
+
+            while (entity is PathExpression pe)
+            {
+                if (fnSelector(pe.Expression))
+                    return pe.Expression;
+                if (fnSelector(pe.Selector))
+                    return pe.Selector;
+                entity = pe.Expression;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the cluster('xxx') part of an entity expression or null if there is no cluster qualifier.
+        /// </summary>
+        public static Expression GetEntityExpressionClusterPart(Expression entity) =>
+            GetEntityExpressionPart(entity, IsClusterPart);
+
+        /// <summary>
+        /// Gets the database('xxx') part of the entity expression or null if there is no database qualifier.
+        /// </summary>
+        public static Expression GetEntityExpressionDatabasePart(Expression entity) =>
+            GetEntityExpressionPart(entity, IsDatabasePart);
+
+        /// <summary>
+        /// Gets the entity part (table, function, etc) of an entity expression.
+        /// </summary>
+        public static Expression GetEntityExpressionEntityPart(Expression entity, GlobalState globals = null) =>
+            GetEntityExpressionPart(entity, e => IsEntityPart(e, globals));
+
+        /// <summary>
+        /// Gets the entity group element part of an entity expression.
+        /// </summary>
+        public static Expression GetEntityExpressionEntityGroupElementPart(Expression entity) =>
+            GetEntityExpressionPart(entity, IsEntityGroupElementPart);
+
+        /// <summary>
+        /// True if the entity expression part is a cluster qualifier.
+        /// </summary>
+        public static bool IsClusterPart(Expression part) =>
+            part is FunctionCallExpression fc && fc.ReferencedSymbol == Functions.Cluster;
+
+        /// <summary>
+        /// True if the entity expression part is a database qualifier.
+        /// </summary>
+        public static bool IsDatabasePart(Expression part) =>
+             part is FunctionCallExpression fc && fc.ReferencedSymbol == Functions.Database;
+
+        /// <summary>
+        /// True if the entity expression part is the database entity.
+        /// </summary>
+        public static bool IsEntityPart(Expression part, GlobalState globals = null)
+        {
+            if (part == null)
+                return false;
+
+            if (part is FunctionCallExpression fc && IsEntityFunction(fc.ReferencedSymbol as FunctionSymbol))
+                return true;
+
+            if (globals != null && part is NameReference nr && nr.ReferencedSymbol is Symbol sym && globals.GetDatabase(sym) != null)
+                return true;
+
+            // the entity part is immediately after the database part
+            return part.Parent is PathExpression pe && pe.Selector == part && IsDatabasePart(pe.Expression);
+        }
+
+        /// <summary>
+        /// True if the entity expression part is an entity group element reference.
+        /// </summary>
+        public static bool IsEntityGroupElementPart(Expression part) =>
+            part is NameReference nr && nr.ReferencedSymbol is EntityGroupElementSymbol;
 
         /// <summary>
         /// Determines if the node is the right hand side of a path expression after a database(xxx) or cluster().database() expression.
@@ -410,6 +503,28 @@ namespace Kusto.Language.Editor
         public static bool IsDatabaseMemberNotFromCurrentDatabase(Symbol symbol, GlobalState globals)
         {
             return globals.GetDatabase(symbol) is DatabaseSymbol db && db != globals.Database;
+        }
+
+        /// <summary>
+        /// Gets the referenced symbol or the result of an entity function.
+        /// </summary>
+        public static Symbol GetEntityReference(SyntaxNode node)
+        {
+            if (node is FunctionCallExpression fc
+                && (fc.ReferencedSymbol == Functions.Table
+                    || fc.ReferencedSymbol == Functions.ExternalTable
+                    || fc.ReferencedSymbol == Functions.MaterializedView))
+            {
+                return fc.ResultType;
+            }
+            else if (node is NameReference nr && !(nr.Parent is FunctionCallExpression))
+            {
+                return nr.ReferencedSymbol;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

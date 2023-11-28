@@ -285,57 +285,8 @@ namespace Kusto.Language.Editor
 
         private static string GetRequalifiedDatabaseFunctionBody(SyntaxNode body, GlobalState globals)
         {
-            var text = body.ToString(IncludeTrivia.All);
-
-            // need to qualify any unqualified reference to database functions/tables that are not from the current database
-            var nodesToQualify = body.GetDescendants<SyntaxNode>(n =>
-                !IsDatabaseQualifiedName(n)
-                && GetReferencedDatabaseMember(n) is Symbol sym
-                && IsDatabaseMemberNotFromCurrentDatabase(sym, globals));
-
-            // edit from the end
-            // todo: update this to make all edits in one call
-            for (int i = nodesToQualify.Count - 1; i >= 0; i--)
-            {
-                var n = nodesToQualify[i];
-                var db = globals.GetDatabase(GetReferencedDatabaseMember(n));
-                if (db != null)
-                {
-                    var dbNameLiteral = KustoFacts.GetSingleQuotedStringLiteral(db.Name);
-                    var cluster = globals.GetCluster(db);
-                    if (cluster != globals.Cluster)
-                    {
-                        var clusterNameLiteral = KustoFacts.GetSingleQuotedStringLiteral(cluster.Name);
-                        text = text.Insert(n.TextStart, $"cluster({clusterNameLiteral}).database({dbNameLiteral}).");
-
-                    }
-                    else
-                    {
-                        text = text.Insert(n.TextStart, $"database({dbNameLiteral}).");
-                    }
-                }
-            }
-
-            return text;
-        }
-
-        private static Symbol GetReferencedDatabaseMember(SyntaxNode node)
-        {
-            if (node is FunctionCallExpression fc)
-            {
-                if (fc.ReferencedSymbol == Functions.Table)
-                    return fc.ResultType;
-
-                return fc.ReferencedSymbol;
-            }
-            else if (node is NameReference nr && !(nr.Parent is FunctionCallExpression))
-            {
-                return nr.ReferencedSymbol;
-            }
-            else
-            {
-                return null;
-            }
+            var text = new EditString(body.ToString(IncludeTrivia.All));
+            return KustoQualifier.Requalify(text, body, globals, globals.Cluster, globals.Database);
         }
     }
 }

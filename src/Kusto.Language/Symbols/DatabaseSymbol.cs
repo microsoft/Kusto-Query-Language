@@ -214,23 +214,33 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
-        /// Creates a database that includes only the specified members.
+        /// Returns a new <see cref="DatabaseSymbol"/> with the specified <see cref="AlternateName"/>.
+        /// </summary>
+        public DatabaseSymbol WithAlternateName(string alternateName)
+        {
+            if (this.AlternateName == alternateName)
+                return this;
+            return new DatabaseSymbol(this.Name, alternateName, this.Members, this.IsOpen);
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="DatabaseSymbol"/> with the specified members.
         /// </summary>
         public DatabaseSymbol WithMembers(IEnumerable<Symbol> members)
         {
-            return new DatabaseSymbol(this.Name, members, this.IsOpen);
+            return new DatabaseSymbol(this.Name, this.AlternateName, members, this.IsOpen);
         }
 
         /// <summary>
-        /// Creates a new database that includes the additional symbols (tables and functions).
+        /// Returns a new <see cref="DatabaseSymbol"/> with the specified members added.
         /// </summary>
         public DatabaseSymbol AddMembers(IEnumerable<Symbol> symbols)
         {
-            return new DatabaseSymbol(this.Name, this.Members.Concat(symbols), this.IsOpen);
+            return new DatabaseSymbol(this.Name, this.AlternateName, this.Members.Concat(symbols), this.IsOpen);
         }
 
         /// <summary>
-        /// Creates a new database that includes the additional symbols (tables and functions).
+        /// Returns a new <see cref="DatabaseSymbol"/> with the specified members added.
         /// </summary>
         public DatabaseSymbol AddMembers(params Symbol[] symbols)
         {
