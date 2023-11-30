@@ -2684,12 +2684,77 @@ namespace Kusto.Language.Parsing
             return expr;
         }
 
+        private bool ScanIsQueryExpression()
+        {
+            // if it starts with a query operator, then its a query expression.
+            if (ScanPossibleQueryOperator())
+                return true;
+
+            // if is there a pipe/bar before we get to end of the expression then it is a query expression.
+            if (ScanIsPipeBeforeEndOfExpression())
+                return true;
+
+            return false;
+        }
+
+        private bool ScanIsPipeBeforeEndOfExpression()
+        {
+            int offset = 0;
+            int parenCount = 0;
+
+            while (true)
+            {
+                var token = PeekToken(offset);
+                switch (token.Kind)
+                {
+                    case SyntaxKind.None:
+                    case SyntaxKind.SemicolonToken:
+                        // end of expression
+                        return false;
+                    case SyntaxKind.CommaToken:
+                        // comma ends expression 
+                        if (parenCount == 0)
+                            return false;
+                        break;
+                    case SyntaxKind.CloseParenToken:
+                        // close paren can end expression
+                        if (parenCount == 0)
+                            return false;
+                        parenCount--;
+                        break;
+                    case SyntaxKind.OpenParenToken:
+                        parenCount++;
+                        break;
+                    case SyntaxKind.BarToken:
+                        // looks like pipe expression starts here
+                        return true;
+                }
+
+                offset++;
+            }
+        }
+
         private ExpressionList ParseRequiredInOperatorExpressionList()
         {
-            return new ExpressionList(
-                ParseRequiredToken(SyntaxKind.OpenParenToken),
-                ParseCommaList(FnParseUnnamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true),
-                ParseRequiredToken(SyntaxKind.CloseParenToken));
+            var openParen = ParseRequiredToken(SyntaxKind.OpenParenToken);
+            SyntaxList<SeparatedElement<Expression>> exprList;
+
+            if (ScanIsQueryExpression())
+            {
+                // if query, then list is one query expression
+                var query = ParseExpression();
+                exprList = new SyntaxList<SeparatedElement<Expression>>(
+                    new SeparatedElement<Expression>(query));
+            }
+            else
+            {
+                // expression list of unnamed expressions (not queries)
+                exprList = ParseCommaList(FnParseUnnamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
+            }
+
+            var closeParen = ParseRequiredToken(SyntaxKind.CloseParenToken);
+
+            return new ExpressionList(openParen, exprList, closeParen);
         }
 
         private ExpressionCouple ParseRequiredExpressionCouple()

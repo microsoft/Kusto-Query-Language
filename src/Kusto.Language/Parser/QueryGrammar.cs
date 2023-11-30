@@ -1450,11 +1450,17 @@ namespace Kusto.Language.Parsing
             var InOperatorExpressionList =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
-                    First(
-                        // this is a special path meant to influence completion for first argument only
+                    Best(
+                        // this is a special path meant to influence completion for first argument only when an extra parenthesis is typed 
                         If(And(Token(SyntaxKind.OpenParenToken), AnyToken.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
                             CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true)),
-                        CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true)),
+                        // normal list of expressions
+                        CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true),
+                        // allows full query expression as only item in list
+                        Rule(
+                            this.Expression.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar), 
+                            expr => new SyntaxList<SeparatedElement<Expression>>(new SeparatedElement<Expression>(expr)))
+                        ),
                     RequiredToken(SyntaxKind.CloseParenToken),
 
                     (openParen, list, closeParen) =>
