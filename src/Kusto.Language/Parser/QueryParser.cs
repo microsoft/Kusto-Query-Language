@@ -2700,7 +2700,7 @@ namespace Kusto.Language.Parsing
         private bool ScanIsPipeBeforeEndOfExpression()
         {
             int offset = 0;
-            int parenCount = 0;
+            int parenDepth = 0;
 
             while (true)
             {
@@ -2713,21 +2713,23 @@ namespace Kusto.Language.Parsing
                         return false;
                     case SyntaxKind.CommaToken:
                         // comma ends expression 
-                        if (parenCount == 0)
+                        if (parenDepth == 0)
                             return false;
                         break;
                     case SyntaxKind.CloseParenToken:
                         // close paren can end expression
-                        if (parenCount == 0)
+                        if (parenDepth == 0)
                             return false;
-                        parenCount--;
+                        parenDepth--;
                         break;
                     case SyntaxKind.OpenParenToken:
-                        parenCount++;
+                        parenDepth++;
                         break;
                     case SyntaxKind.BarToken:
                         // looks like pipe expression starts here
-                        return true;
+                        if (parenDepth == 0)
+                            return true;
+                        break;
                 }
 
                 offset++;
