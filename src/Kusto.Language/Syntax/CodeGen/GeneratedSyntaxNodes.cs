@@ -8444,7 +8444,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.None;
+                case 1: return CompletionHint.EntityGroup;
                 default: return CompletionHint.Inherit;
             }
         }

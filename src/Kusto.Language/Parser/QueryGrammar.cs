@@ -1244,7 +1244,10 @@ namespace Kusto.Language.Parsing
                                     (Expression)new ElementExpression(left, right))));
 
             var ScanQualifiedEntityStart =
-                And(Or(Token(Functions.Database.Name), Token(Functions.Cluster.Name)), Token(SyntaxKind.OpenParenToken));
+                And(Or(
+                    HiddenToken(Functions.Database.Name), 
+                    HiddenToken(Functions.Cluster.Name)), 
+                    Token(SyntaxKind.OpenParenToken));
 
             var SimplePathExpression =
                 ApplyZeroOrMore(

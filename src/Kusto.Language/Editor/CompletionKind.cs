@@ -127,6 +127,11 @@ namespace Kusto.Language.Editor
         MaterialiedView,
 
         /// <summary>
+        /// The name of an entity group
+        /// </summary>
+        EntityGroup,
+
+        /// <summary>
         /// The name of a graph
         /// </summary>
         Graph,

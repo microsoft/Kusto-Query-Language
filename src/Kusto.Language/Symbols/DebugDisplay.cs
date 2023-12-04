@@ -23,56 +23,42 @@ namespace Kusto.Language.Symbols
                 case ColumnSymbol c:
                     return $"{c.Name}: {GetText(c.Type)}";
                 case TableSymbol t:
-                    return $"table({string.Join(", ", t.Columns.Select(m => GetText(m)))})";
+                    return $"{t.Name}: ({string.Join(", ", t.Columns.Select(m => GetText(m)))})";
                 case DatabaseSymbol d:
-                    return $"database({KustoFacts.GetSingleQuotedStringLiteral(!string.IsNullOrEmpty(d.AlternateName) ? d.AlternateName : d.Name)})";
+                    return KustoFacts.GetSingleQuotedStringLiteral(!string.IsNullOrEmpty(d.AlternateName) ? d.AlternateName : d.Name);
                 case ClusterSymbol c:
-                    return $"cluster({KustoFacts.GetSingleQuotedStringLiteral(c.Name)})";
+                    return KustoFacts.GetSingleQuotedStringLiteral(c.Name);
                 case GroupSymbol g:
                     return "[" + string.Join(", ", g.Members.Select(s => GetText(s))) + "]";
                 case FunctionSymbol f:
-                    return $"{f.Name}{GetText(f.Signatures[0])}";
+                    return $"{f.Name} = {GetText(f.Signatures[0])}";
                 case ParameterSymbol p:
                     return $"{p.Name}: {GetText(p.Type)}";
                 case GraphSymbol g:
-                    if (g.Name.Length > 0)
+                    if (g.NodeShape != null)
                     {
-                        if (g.NodeShape != null)
-                        {
-                            return $"{g.Name}: [Edge{GetText(g.EdgeShape)}, Node{GetText(g.NodeShape)}]";
-                        }
-                        else
-                        {
-                            return $"{g.Name}: [Edge{GetText(g.EdgeShape)}]";
-                        }
+                        return $"{g.Name}: [Edge{GetText(g.EdgeShape)}, Node{GetText(g.NodeShape)}]";
                     }
                     else
                     {
-                        if (g.NodeShape != null)
-                        {
-                            return $"[Edge{GetText(g.EdgeShape)}, Node{GetText(g.NodeShape)}]";
-                        }
-                        else
-                        {
-                            return $"[Edge{GetText(g.EdgeShape)}]";
-                        }
+                        return $"{g.Name}: [Edge{GetText(g.EdgeShape)}]";
                     }
                 case EntityGroupSymbol e:
                     if (e.Definition != null)
                     {
-                        return $"entity_group({e.Name}: {e.Definition})";
+                        return $"{e.Name}: {e.Definition}";
                     }
                     else
                     {
-                        return $"entity_group({e.Name}: {string.Join(", ", e.Members.Select(m => GetText(m)))})";
+                        return $"{e.Name}: {string.Join(", ", e.Members.Select(m => GetText(m)))}";
                     }
                 case PatternSymbol pat:
-                    return $"{pat.Name}({string.Join(", ", pat.Parameters.Select(p => GetText(p)))})";
+                    return $"{pat.Name}: ({string.Join(", ", pat.Parameters.Select(p => GetText(p)))})";
                 case VariableSymbol v:
-                    return $"let {v.Name}: {GetText(v.Type)}";
+                    return $"{v.Name} = {GetText(v.Type)}";
 
                 case TupleSymbol t:
-                    return $"{{{string.Join(", ", t.Members.Select(m => GetText(m)))}}}";
+                    return $"[{string.Join(", ", t.Members.Select(m => GetText(m)))}]";
                 case PrimitiveSymbol prv:
                     return prv.Name;
                 case DynamicAnySymbol d:

@@ -7,19 +7,18 @@ namespace Kusto.Language.Editor
     /// </summary>
     public enum CompletionRank
     {
-        Literal = 0,
-        Aggregate = Literal + 1,
-        Column = Aggregate + 1,
-        Table = Column + 1,
-        Variable = Table + 1,
-        Function = Variable + 1,
-        MaterializedView = Function + 1,
-        Keyword = MaterializedView + 1,
-        StringOperator = Keyword + 1,
-        MathOperator = StringOperator + 1,
-        Other = MathOperator + 1,
-
-        Default = Other + 1
+        Literal,
+        Aggregate,
+        Column,
+        Table,
+        Entity,  // other entities (not tables or functions)
+        Variable,
+        Function,
+        Keyword,
+        StringOperator,
+        MathOperator,
+        Other,
+        Default
     }
 
     /// <summary>

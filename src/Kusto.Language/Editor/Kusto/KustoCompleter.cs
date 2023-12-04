@@ -326,7 +326,9 @@ namespace Kusto.Language.Editor
                     return CompletionRank.Table;
 
                 case CompletionKind.MaterialiedView:
-                    return CompletionRank.MaterializedView;
+                case CompletionKind.EntityGroup:
+                case CompletionKind.Graph:
+                    return CompletionRank.Entity;
 
                 case CompletionKind.Variable:
                 case CompletionKind.Parameter:
@@ -1675,7 +1677,7 @@ namespace Kusto.Language.Editor
                 match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local;
 
             if ((hint & CompletionHint.Expression) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Column;
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.EntityGroup | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Column;
 
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
@@ -2724,6 +2726,8 @@ namespace Kusto.Language.Editor
                     return CompletionKind.Table;
                 case SymbolKind.MaterializedView:
                     return CompletionKind.MaterialiedView;
+                case SymbolKind.EntityGroup:
+                    return CompletionKind.EntityGroup;
                 case SymbolKind.Graph:
                     return CompletionKind.Graph;
                 case SymbolKind.Primitive:

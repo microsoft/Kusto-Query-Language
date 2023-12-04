@@ -435,8 +435,8 @@ namespace Kusto.Language.Binding
             }
             else if (_pathScope != null)
             {
-                // so far only columns, tables, materialized-views and functions can be dot accessed.
-                var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.MaterializedView | SymbolMatch.Function);
+                // so far only columns, tables, materialized-views, entity_groups and functions can be dot accessed.
+                var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.MaterializedView | SymbolMatch.EntityGroup | SymbolMatch.Function);
 
                 // if this is an entity group element then add special members
                 if (GetMacroExpandScope(contextNode) != null)
