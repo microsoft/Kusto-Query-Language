@@ -23,6 +23,9 @@ namespace Kusto.Language
         public static readonly OptionSymbol DeferPartialQueryFailures =
             new OptionSymbol("deferpartialqueryfailures", "If true, disables reporting partial query failures as part of the result set.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol ErrorReportingPlacement =
+            new OptionSymbol("results_error_reporting_placement", "Decides the placement of errors in the result set.", ScalarTypes.String, new[] { "'in_data'", "'end_of_table'", "'end_of_dataset'" });
+
         public static readonly OptionSymbol DoNotImpersonate =
             new OptionSymbol("request_impersonation_disabled", "If specified, indicates that the service should not impersonate the caller's identity.", ScalarTypes.Bool);
 
@@ -142,7 +145,7 @@ namespace Kusto.Language
 
         public static readonly OptionSymbol RequestExternalTableDisabled =
             new OptionSymbol("request_external_table_disabled", "If specified, indicates that the request can't access external tables.", ScalarTypes.Bool);
-        
+
         public static readonly OptionSymbol RequestExternalDataDisabled =
             new OptionSymbol("request_external_data_disabled", "If specified, indicates that the request can't access external data (using externaldata operator) or external tables.", ScalarTypes.Bool);
 
@@ -176,12 +179,19 @@ namespace Kusto.Language
         public static readonly OptionSymbol ValidatePermissions =
             new OptionSymbol("validate_permissions", "Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol V2NewlinesBetweenFrames =
+            new OptionSymbol("results_v2_newlines_between_frames", "Adds new lines between frames in the results, in order to make it easier to parse them.", ScalarTypes.Bool);
+
+        public static readonly OptionSymbol V2FragmentPrimaryTables =
+            new OptionSymbol("results_v2_fragment_primary_tables", "Causes primary tables to be sent in multiple fragments, each containing a subset of the rows.", ScalarTypes.Bool);
+
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
     BestEffort,
     DebugPython,
     DeferPartialQueryFailures,
     DoNotImpersonate,
+    ErrorReportingPlacement,
     MaterializedViewShuffleQuery,
     MaxEntitiesToUnion,
     MaxMemoryConsumptionPerIterator,
@@ -231,6 +241,8 @@ namespace Kusto.Language
     TruncationMaxRecords,
     TruncationMaxSize,
     ValidatePermissions,
+    V2NewlinesBetweenFrames,
+    V2FragmentPrimaryTables,
 };
 
     }
