@@ -4435,7 +4435,23 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             First(
-                                fragment9,
+                                Custom(
+                                    Token("cluster"),
+                                    Token("("),
+                                    rules.StringLiteral,
+                                    Token(")"),
+                                    Token("."),
+                                    RequiredToken("database"),
+                                    RequiredToken("("),
+                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                                    RequiredToken(")"),
+                                    shape79),
+                                Custom(
+                                    Token("cluster"),
+                                    RequiredToken("("),
+                                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                                    RequiredToken(")"),
+                                    new [] {CD(), CD(), CD("clusterName", CompletionHint.Literal), CD()}),
                                 fragment10)),
                         missing4),
                     RequiredToken(")"),
