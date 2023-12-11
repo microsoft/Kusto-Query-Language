@@ -8519,6 +8519,17 @@ namespace Kusto.Language.Parsing
                         fragment51),
                     shape261));
 
+            var ShowDatabaseEntity = Command("ShowDatabaseEntity", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("database"),
+                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
+                    Token("entity"),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Optional(
+                        fragment4),
+                    new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(), CD("EntityName", CompletionHint.None), CD(isOptional: true)}));
+
             var ShowDatabaseExtentContainersCleanOperations = Command("ShowDatabaseExtentContainersCleanOperations", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -11233,6 +11244,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseSchema3,
                 DatabaseShardGroupsStatisticsShow,
                 ShowDatabaseCslSchema3,
+                ShowDatabaseEntity,
                 ShowDatabaseExtentContainersCleanOperations,
                 ShowDatabaseExtentsMetadata6,
                 ShowDatabaseExtents16,

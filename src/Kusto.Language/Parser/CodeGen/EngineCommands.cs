@@ -69,6 +69,7 @@ namespace Kusto.Language
         private static readonly string _schema39 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
         private static readonly string _schema40 = "(Name: string, Entities: string)";
         private static readonly string _schema41 = "(ExtentContainerId:guid, Url:string, State:string, CreatedOn:datetime, MaxDateTime:datetime, IsRecyclable:bool, StoresDatabaseMetadataPointer:bool, HardDeletePeriod:timespan, ActiveMetadataContainer:bool, MetadataContainer:bool)";
+        private static readonly string _schema42 = "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)";
 
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol("ShowDatabase", _schema0);
@@ -1869,9 +1870,10 @@ namespace Kusto.Language
             new CommandSymbol("ClearExternalArtifactsCache", _schema18);
 
         public static readonly CommandSymbol ShowDatabasesEntities =
-            new CommandSymbol(
-                "ShowDatabasesEntities",
-                "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)");
+            new CommandSymbol("ShowDatabasesEntities", _schema42);
+
+        public static readonly CommandSymbol ShowDatabaseEntity =
+            new CommandSymbol("ShowDatabaseEntity", _schema42);
 
         public static readonly CommandSymbol ReplaceDatabaseKeyVaultSecrets =
             new CommandSymbol("ReplaceDatabaseKeyVaultSecrets", _schema18);
@@ -2449,6 +2451,7 @@ namespace Kusto.Language
             ClearClusterGroupMembershipCache,
             ClearExternalArtifactsCache,
             ShowDatabasesEntities,
+            ShowDatabaseEntity,
             ReplaceDatabaseKeyVaultSecrets
         };
     }
