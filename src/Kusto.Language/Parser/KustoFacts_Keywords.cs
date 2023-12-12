@@ -30,6 +30,7 @@ namespace Kusto.Language
             "callstacks",
             "cancel",
             "char",
+            "clusteradmin",
             "concurrency",
             "configuration",
             "consume",
