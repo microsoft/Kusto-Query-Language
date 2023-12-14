@@ -1407,6 +1407,12 @@ namespace Kusto.Language
         public static readonly CommandSymbol MoveExtentsQuery =
             new CommandSymbol("MoveExtentsQuery", _schema37);
 
+        public static readonly CommandSymbol TableShuffleExtents =
+            new CommandSymbol("TableShuffleExtents", _schema37);
+
+        public static readonly CommandSymbol TableShuffleExtentsQuery =
+            new CommandSymbol("TableShuffleExtentsQuery", _schema37);
+
         public static readonly CommandSymbol ReplaceExtents =
             new CommandSymbol("ReplaceExtents", _schema37);
 
@@ -2304,6 +2310,8 @@ namespace Kusto.Language
             MergeExtentsDryrun,
             MoveExtentsFrom,
             MoveExtentsQuery,
+            TableShuffleExtents,
+            TableShuffleExtentsQuery,
             ReplaceExtents,
             DropExtent,
             DropExtents,

@@ -131,6 +131,7 @@ namespace Kusto.Language
             "serialize",
             "set",
             "shards",
+            "shuffle",
             "softdelete",
             "softretention",
             "sort",

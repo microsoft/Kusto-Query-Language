@@ -10667,6 +10667,52 @@ namespace Kusto.Language.Parsing
                     RequiredToken("extent"),
                     new [] {CD(), CD("tableName", CompletionHint.None), CD()}));
 
+            var TableShuffleExtents = Command("TableShuffleExtents", 
+                Custom(
+                    Token("shuffle", CompletionKind.CommandPrefix),
+                    Optional(Token("async")),
+                    Token("table"),
+                    rules.TableNameReference,
+                    Token("extents"),
+                    First(
+                        Custom(
+                            Token("("),
+                            OneOrMoreCommaList(
+                                Custom(
+                                    rules.AnyGuidLiteralOrString,
+                                    shape228),
+                                fnMissingElement: rules.MissingValue),
+                            Token(")"),
+                            shape226),
+                        Custom(
+                            Token("("),
+                            Required(
+                                OneOrMoreCommaList(
+                                    Custom(
+                                        rules.AnyGuidLiteralOrString,
+                                        shape228),
+                                    fnMissingElement: rules.MissingValue),
+                                missing56),
+                            RequiredToken(")"),
+                            shape226),
+                        Token("all")),
+                    Optional(
+                        fragment4),
+                    new [] {CD(), CD(isOptional: true), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)}));
+
+            var TableShuffleExtentsQuery = Command("TableShuffleExtentsQuery", 
+                Custom(
+                    Token("shuffle", CompletionKind.CommandPrefix),
+                    Optional(Token("async")),
+                    RequiredToken("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    RequiredToken("extents"),
+                    Optional(
+                        fragment4),
+                    RequiredToken("<|"),
+                    Required(rules.QueryInput, rules.MissingExpression),
+                    new [] {CD(), CD(isOptional: true), CD(), CD("tableName", CompletionHint.Table), CD(), CD(isOptional: true), CD(), CD("Query", CompletionHint.Tabular)}));
+
             var UndoDropTable = Command("UndoDropTable", 
                 Custom(
                     Token("undo", CompletionKind.CommandPrefix),
@@ -11451,6 +11497,8 @@ namespace Kusto.Language.Parsing
                 ShowExtentColumnStorageStats,
                 ShowExtentDetails3,
                 ShowExtentDetails4,
+                TableShuffleExtents,
+                TableShuffleExtentsQuery,
                 UndoDropTable
             };
 
