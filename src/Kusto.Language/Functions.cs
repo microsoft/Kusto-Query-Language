@@ -2626,15 +2626,13 @@ namespace Kusto.Language
             new FunctionSymbol("series_magnitude",
                 ScalarTypes.Real,
                 new Parameter("series", ParameterTypeKind.DynamicArray))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // Unhide by the end of Nov'23
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesSum =
             new FunctionSymbol("series_sum",
                 ScalarTypes.Real,
                 new Parameter("series", ParameterTypeKind.DynamicArray))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // Unhide by the end of Nov'23
+            .WithResultNameKind(ResultNameKind.None);
 
         public static readonly FunctionSymbol SeriesCosineSimilarity =
             new FunctionSymbol("series_cosine_similarity",
@@ -2643,8 +2641,7 @@ namespace Kusto.Language
                 new Parameter("series2", ParameterTypeKind.DynamicArray),
                 new Parameter("series1_magnitude", ScalarTypes.Real, minOccurring: 0),
                 new Parameter("series2_magnitude", ScalarTypes.Real, minOccurring: 0))
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide(); // Unhide by the end of Nov'23
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region math functions
