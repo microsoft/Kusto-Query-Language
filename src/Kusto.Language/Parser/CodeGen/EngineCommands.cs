@@ -1505,6 +1505,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ExecuteDatabaseScript =
             new CommandSymbol("ExecuteDatabaseScript", _schema18);
 
+        public static readonly CommandSymbol ExecuteClusterScript =
+            new CommandSymbol("ExecuteClusterScript", _schema18);
+
         public static readonly CommandSymbol CreateRequestSupport =
             new CommandSymbol("CreateRequestSupport", _schema18);
 
@@ -2340,6 +2343,7 @@ namespace Kusto.Language
             ShowTcpPorts,
             ShowThreadPools,
             ExecuteDatabaseScript,
+            ExecuteClusterScript,
             CreateRequestSupport,
             ShowRequestSupport,
             ShowClusterAdminState,
