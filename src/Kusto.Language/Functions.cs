@@ -3421,7 +3421,7 @@ namespace Kusto.Language
             new FunctionSymbol("row_window_session", ReturnTypeKind.Parameter0,
                 new Parameter("expr", ScalarTypes.DateTime),
                 new Parameter("maxDistanceFromFirst", ScalarTypes.TimeSpan),
-                new Parameter("minDistanceBetweenNeighbors", ScalarTypes.TimeSpan),
+                new Parameter("maxDistanceBetweenNeighbors", ScalarTypes.TimeSpan),
                 new Parameter("restart", ScalarTypes.Bool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None);
 
