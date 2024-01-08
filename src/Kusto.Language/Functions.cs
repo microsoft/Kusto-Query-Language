@@ -2895,8 +2895,7 @@ namespace Kusto.Language
                 new Parameter("p3_longitude", ParameterTypeKind.Number),
                 new Parameter("p3_latitude", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoAzimuth =
             new FunctionSymbol("geo_azimuth",
@@ -2906,8 +2905,7 @@ namespace Kusto.Language
                 new Parameter("p2_longitude", ParameterTypeKind.Number),
                 new Parameter("p2_latitude", ParameterTypeKind.Number))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
 
         public static readonly FunctionSymbol GeoDistance2Points =
             new FunctionSymbol("geo_distance_2points",
@@ -3303,8 +3301,7 @@ namespace Kusto.Language
                 new Parameter("resolution", ParameterTypeKind.Number, minOccurring: 0),
                 new Parameter("radius", ParameterTypeKind.Number, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
-            .ConstantFoldable()
-            .Hide();
+            .ConstantFoldable();
         #endregion
 
         #region other
