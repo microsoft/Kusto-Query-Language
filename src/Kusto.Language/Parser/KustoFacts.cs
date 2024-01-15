@@ -289,7 +289,6 @@ namespace Kusto.Language
         {
             "__blackbox",
             "__box",
-            "__burn_cpu",
             "__cast",
             "__columnifexists",
             "__const_cast",
