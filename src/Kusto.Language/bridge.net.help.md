@@ -23,7 +23,8 @@ To debug bridge.net when you get an build exception (without any useful informat
      Arguments:      path to Kusto.Language.Bridge.csproj
      DebuggerType:   Managed (.Net 4x)
      Working Dir:    path to Kusto project root
-4) Hit F5: 
+4) make sure "Just My Code" debug option is disabled
+5) Hit F5: 
    ** You should stop at actual thrown exception and be able to deduce 
       what part of Kusto.Language source code causes the problem by 
       actual exception message or other data on call stack.**

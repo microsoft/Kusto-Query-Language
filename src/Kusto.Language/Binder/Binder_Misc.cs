@@ -734,6 +734,16 @@ namespace Kusto.Language.Binding
 
                 var anyP0 = possibleParameters.Any(p => p.ArgumentKind == ArgumentKind.Column_Parameter0);
                 var anyP0_Common = possibleParameters.Any(p => p.ArgumentKind == ArgumentKind.Column_Parameter0_Common);
+                var anyP0_Expression = possibleParameters.Any(p => p.ArgumentKind == ArgumentKind.Expression_Parameter0_Element);
+
+                if (anyP0_Expression
+                    && fc.ArgumentList.Expressions.Count > 0
+                    && fc.ArgumentList.Expressions[0].Element.ResultType is TypeSymbol argType
+                    && argType is DynamicArraySymbol da
+                    && da.ElementType is DynamicBagSymbol db)
+                {
+                    return new TableSymbol(db.Properties);
+                }
 
                 if ((anyP0 || anyP0_Common)
                     && fc.ArgumentList.Expressions.Count > 0 

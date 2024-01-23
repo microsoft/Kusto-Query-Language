@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Binding
 {
-    using Parsing;
     using Symbols;
     using Syntax;
     using Utils;
@@ -56,7 +53,7 @@ namespace Kusto.Language.Binding
             var list = s_symbolListPool.AllocateFromPool();
             try
             {
-                GetFunctionsInPlugInScope(name, IncludeFunctionKind.All, list);
+                GetFunctionsInPlugInScope(location, name, IncludeFunctionKind.All, list);
                 return GetMatchingSymbolResult(name, location, list, false);
             }
             finally
@@ -405,7 +402,7 @@ namespace Kusto.Language.Binding
                 }
                 else
                 {
-                    GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.All, list);
+                    GetFunctionsInScope(_scopeKind, location, name, IncludeFunctionKind.All, list);
                 }
             }
             else
@@ -507,7 +504,7 @@ namespace Kusto.Language.Binding
                         && (match & SymbolMatch.Function) != 0)
                     {
                         // database functions only (locally defined functions are already handled above)
-                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.DatabaseFunctions, list);
+                        GetFunctionsInScope(_scopeKind, location, name, IncludeFunctionKind.DatabaseFunctions, list);
                         RemoveFunctionsThatCannotBeInvokedWithZeroArgs(list);
 
                         // database functions do not require argument list if it has zero arguments.
@@ -529,7 +526,7 @@ namespace Kusto.Language.Binding
                     // look for any built-in functions with matching name (even those with parameters)
                     if (list.Count == 0 && (match & SymbolMatch.Function) != 0)
                     {
-                        GetFunctionsInScope(_scopeKind, name, IncludeFunctionKind.BuiltInFunctions, list);
+                        GetFunctionsInScope(_scopeKind, location, name, IncludeFunctionKind.BuiltInFunctions, list);
                     }
 
                     // infer column for this otherwise unbound reference?

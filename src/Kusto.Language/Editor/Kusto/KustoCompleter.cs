@@ -10,21 +10,22 @@ namespace Kusto.Language.Editor
     using Syntax;
     using System.Text;
     using Utils;
+    using static KustoServiceHelpers;
 
     internal class KustoCompleter
     {
-        private readonly KustoCode code;
-        private readonly CompletionOptions options;
-        private readonly CancellationToken cancellationToken;
+        private readonly KustoCode _code;
+        private readonly CompletionOptions _options;
+        private readonly CancellationToken _cancellationToken;
 
         public KustoCompleter(
             KustoCode code,
             CompletionOptions options, 
             CancellationToken cancellationToken)
         {
-            this.code = code;
-            this.options = options;
-            this.cancellationToken = cancellationToken;
+            _code = code;
+            _options = options;
+            _cancellationToken = cancellationToken;
         }
 
         public CompletionInfo GetCompletionItems(int position)
@@ -40,12 +41,12 @@ namespace Kusto.Language.Editor
             var mode = CompletionMode.Combined;
 
             // use editStart instead of actual cursor position to adjust for token affinity
-            if (options.IncludeSymbols)
+            if (_options.IncludeSymbols)
             {
                 mode = GetSymbolCompletions(editStart, builder);
             }
 
-            if (mode == CompletionMode.Combined && options.IncludeSyntax)
+            if (mode == CompletionMode.Combined && _options.IncludeSyntax)
             {
                 GetSyntaxCompletions(editStart, builder);
             }
@@ -67,7 +68,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         private void GetEditRange(int position, out int editStart, out int editLength)
         {
-            var affinityToken = GetTokenWithAffinity(position);
+            var affinityToken = GetTokenWithAffinity(_code, position);
 
             if (affinityToken != null)
             {
@@ -162,7 +163,7 @@ namespace Kusto.Language.Editor
             if (key == '\r' || key == '\n')
                 return false;
 
-            var token = GetTokenLeftOfPosition(position);
+            var token = GetTokenLeftOfPosition(_code, position);
             if (token != null)
             {
                 // insert whitespace immediately after token?
@@ -196,7 +197,7 @@ namespace Kusto.Language.Editor
                     }
 
                     // after a complete expression
-                    var expr = GetCompleteExpressionLeftOfPosition(position);
+                    var expr = GetCompleteExpressionLeftOfPosition(_code, position);
                     if (expr != null)
                         return true;
                 }
@@ -245,9 +246,9 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool ShouldComplete(int position)
         {
-            var token = this.code.Syntax.GetTokenAt(position);
+            var token = this._code.Syntax.GetTokenAt(position);
             var previous = token.GetPreviousToken();
-            var affinity = GetTokenWithAffinity(position) ?? token;
+            var affinity = GetTokenWithAffinity(_code, position) ?? token;
 
             var leftOrSurrounding = (position == token.TriviaStart)
                 ? (previous ?? token) : token;
@@ -300,7 +301,7 @@ namespace Kusto.Language.Editor
         private CompletionRank GetOrderingRank(CompletionItem item)
         {
             // allow for cancellation during ordering of completion items
-            this.cancellationToken.ThrowIfCancellationRequested();
+            this._cancellationToken.ThrowIfCancellationRequested();
 
             if (item.Rank != CompletionRank.Default)
                 return item.Rank;
@@ -442,14 +443,14 @@ namespace Kusto.Language.Editor
 
             var match = GetSymbolMatch(position);
 
-            if (options.IncludeFunctions == IncludeFunctionKind.None)
+            if (_options.IncludeFunctions == IncludeFunctionKind.None)
             {
                 match &= ~SymbolMatch.Function;
             }
 
             var isCommand = IsInCommand(contextNode, contextChildIndex);
 
-            var include = options.IncludeFunctions;
+            var include = _options.IncludeFunctions;
 
             if (isCommand)
             {
@@ -457,11 +458,11 @@ namespace Kusto.Language.Editor
                 include &= IncludeFunctionKind.DatabaseFunctions;
             }
 
-            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, match, include, symbols, this.cancellationToken);
+            Binder.GetSymbolsInScope(this._code.Tree, position, this._code.Globals, match, include, symbols, this._cancellationToken);
 
             var isInvoke = IsInvokeFunctionContext(contextNode);
             var rowScope = (isInvoke)
-                ? Binder.GetRowScope(this.code.Tree, position, this.code.Globals, this.cancellationToken)
+                ? Binder.GetRowScope(this._code.Tree, position, this._code.Globals, this._cancellationToken)
                 : null;
 
             var symbolItems = new List<CompletionItem>();
@@ -556,7 +557,7 @@ namespace Kusto.Language.Editor
         private void GetCompletionItemsForSymbol(Symbol symbol, SyntaxNode contextNode, bool nameOnly, List<CompletionItem> items)
         {
             var kind = GetCompletionKind(symbol);
-            string editName = KustoFacts.BracketNameIfNecessary(symbol.Name, code.Dialect);
+            string editName = KustoFacts.BracketNameIfNecessary(symbol.Name, _code.Dialect);
             var displayText = CompletionDisplay.GetText(symbol, nameOnly);
 
             switch (symbol)
@@ -599,7 +600,7 @@ namespace Kusto.Language.Editor
                         return;
                     }
 
-                    var builtIn = this.code.Globals.IsBuiltInFunction(f);
+                    var builtIn = this._code.Globals.IsBuiltInFunction(f);
                     if (builtIn)
                     {
                         // built-in functions don't need to be escaped even if they are keywords
@@ -630,7 +631,7 @@ namespace Kusto.Language.Editor
                         // function has parameters
                         var isInvoke = IsInvokeFunctionContext(contextNode);
 
-                        if (this.options.EnableParameterInjection && f.MaxArgumentCount == 1 && !builtIn && !isInvoke)
+                        if (this._options.EnableParameterInjection && f.MaxArgumentCount == 1 && !builtIn && !isInvoke)
                         {
                             items.Add(new CompletionItem(kind, displayText, editName + "({parameter})", matchText: f.Name));
                         }
@@ -675,7 +676,7 @@ namespace Kusto.Language.Editor
                     items.Add(new CompletionItem(CompletionKind.Database, displayText, editName));
                     if (!string.IsNullOrEmpty(d.AlternateName))
                     {
-                        string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName, code.Dialect);
+                        string altEditName = KustoFacts.BracketNameIfNecessary(symbol.AlternateName, _code.Dialect);
                         items.Add(new CompletionItem(CompletionKind.Database, d.AlternateName, altEditName));
                     }
                     break;
@@ -700,50 +701,6 @@ namespace Kusto.Language.Editor
             var op = node?.GetFirstAncestorOrSelf<QueryOperator>();
             var fc = node?.GetFirstAncestorOrSelf<FunctionCallExpression>();
             return op is InvokeOperator && (fc == null || fc.TextStart < op.TextStart);
-        }
-
-        private static bool IsNameLikeToken(SyntaxKind kind)
-        {
-            switch (kind.GetCategory())
-            {
-                case SyntaxCategory.Identifier:
-                case SyntaxCategory.Keyword:
-                    return true;
-                default:
-                    // ! can be start of some keywords
-                    return kind == SyntaxKind.BangToken;
-            }
-        }
-
-        internal static bool HasAffinity(SyntaxToken token, int position)
-        {
-            return (position > token.TextStart && position < token.End)
-                || position == token.TextStart && IsNameLikeToken(token.Kind)
-                || position == token.End && IsNameLikeToken(token.Kind);
-        }
-
-        /// <summary>
-        /// Get the token that the position has affinity with,
-        /// or null if the position does not have affinity (in whitespace between tokens).
-        /// </summary>
-        private SyntaxToken GetTokenWithAffinity(int position)
-        {
-            var token = this.code.Syntax.GetTokenAt(position);
-            var previous = token.GetPreviousToken();
-
-            if (HasAffinity(token, position))
-            {
-                return token;
-            }
-            else if (previous != null && HasAffinity(previous, position))
-            {
-                return previous;
-            }
-            else
-            {
-                // fully inside trivia between tokens, no affinity
-                return null;
-            }
         }
 
         private SymbolMatch GetSymbolMatch(int position)
@@ -1349,7 +1306,7 @@ namespace Kusto.Language.Editor
             {
                 case ReturnTypeKind.Parameter0Cluster:
                     // show the known cluster names
-                    builder.AddRange(GetMemberNameExamples(this.code.Globals.Clusters));
+                    builder.AddRange(GetMemberNameExamples(this._code.Globals.Clusters));
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
                     return true;
 
@@ -1364,7 +1321,7 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Cluster.Databases));
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Cluster.Databases));
                     }
 
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
@@ -1381,7 +1338,7 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.Tables));
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.Tables));
                     }
 
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
@@ -1398,7 +1355,7 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.ExternalTables));
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.ExternalTables));
                     }
 
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
@@ -1415,7 +1372,7 @@ namespace Kusto.Language.Editor
                     }
                     else
                     {
-                        builder.AddRange(GetMemberNameExamples(this.code.Globals.Database.MaterializedViews));
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.MaterializedViews));
                     }
 
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
@@ -1466,7 +1423,7 @@ namespace Kusto.Language.Editor
         {
             // first get all items in scope
             var symbols = new List<Symbol>();
-            Binder.GetSymbolsInScope(this.code.Tree, position, this.code.Globals, match, IncludeFunctionKind.All, symbols, this.cancellationToken);
+            Binder.GetSymbolsInScope(this._code.Tree, position, this._code.Globals, match, IncludeFunctionKind.All, symbols, this._cancellationToken);
 
             // get completion items for the symbols with a matching scalar type
             var symbolItems = new List<CompletionItem>();
@@ -1537,7 +1494,7 @@ namespace Kusto.Language.Editor
 
         private bool ShowParameterNames(FunctionSymbol function)
         {
-            return !this.code.Globals.IsBuiltInFunction(function) && function.MaxArgumentCount >= 2;
+            return !this._code.Globals.IsBuiltInFunction(function) && function.MaxArgumentCount >= 2;
         }
 
         private bool IsArgumentNameRequired(IReadOnlyList<Signature> signatures, IReadOnlyList<Expression> arguments, int argumentIndex)
@@ -2095,7 +2052,7 @@ namespace Kusto.Language.Editor
             contextNode = null;
             contextChildIndex = 0;
 
-            SyntaxToken token = this.code.Syntax.GetTokenAt(position);
+            SyntaxToken token = this._code.Syntax.GetTokenAt(position);
 
             if (token == null)
                 return false;
@@ -2188,7 +2145,7 @@ namespace Kusto.Language.Editor
         {
             var hints = GetCompletionHint(position);
             var match = GetSymbolMatch(position);
-            var expr = GetCompleteExpressionLeftOfPosition(position);
+            var expr = GetCompleteExpressionLeftOfPosition(_code, position);
 
             var annotations = GetGrammarAnnotations(position);
 
@@ -2228,7 +2185,7 @@ namespace Kusto.Language.Editor
 
         private bool ShouldAugmentSyntaxCompletionItem(CompletionItem item)
         {
-            if (!options.AutoAppendWhitespace)
+            if (!_options.AutoAppendWhitespace)
                 return false;
 
             if (item.AfterText?.Length > 0)
@@ -2296,11 +2253,11 @@ namespace Kusto.Language.Editor
             // find a possible better starting point than the start of the whole query
             GetGrammarSearchContext(position, out var startPosition, out var grammar);
 
-            var startIndex = this.code.GetTokenIndex(startPosition);
-            var matchIndex = this.code.GetTokenIndex(position);
+            var startIndex = this._code.GetTokenIndex(startPosition);
+            var matchIndex = this._code.GetTokenIndex(position);
 
             // use a source that only includes relevant tokens (so we dont bother with tokens beyond)
-            var tokens = this.code.GetLexicalTokens();
+            var tokens = this._code.GetLexicalTokens();
             var source = new ArraySource<LexicalToken>(tokens, 0, matchIndex + 1);
 
             AnnotatedParserFinder<LexicalToken>.Find(source, matchIndex, grammar, startIndex, annotatedParsers);
@@ -2311,7 +2268,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         private void GetGrammarSearchContext(int position, out int searchStart, out Parser<LexicalToken> grammar)
         {
-            var token = GetTokenLeftOfPosition(position);
+            var token = GetTokenLeftOfPosition(_code, position);
 
             if (token != null)
             {
@@ -2399,44 +2356,20 @@ namespace Kusto.Language.Editor
                             break;
                         case Command _:
                             searchStart = node.TextStart;
-                            grammar = code.Grammar; // use entire command block grammar
+                            grammar = _code.Grammar; // use entire command block grammar
                             return;
                     }
                 }
             }
 
             // otherwise use the grammar associated with the entire source
-            searchStart = this.code.Syntax.TextStart;
-            grammar = this.code.Grammar;
-        }
-
-        private SyntaxToken GetTokenLeftOfPosition(int position)
-        {
-            var token = this.code.Syntax.GetTokenAt(position);
-            var hasAffinity = token != null && HasAffinity(token, position);
-
-            if (token != null && (position <= token.TextStart || !hasAffinity || token.Kind == SyntaxKind.EndOfTextToken))
-            {
-                token = token.GetPreviousToken();
-            }
-
-            return token;
-        }
-
-        private Expression GetCompleteExpressionLeftOfPosition(int position)
-        {
-            var token = GetTokenLeftOfPosition(position);
-
-            var expr = token?.GetFirstAncestorOrSelf<Expression>();
-            if (expr != null && expr.End == token.End && !expr.HasMissingChildren())
-                return expr;
-
-            return null;
+            searchStart = this._code.Syntax.TextStart;
+            grammar = this._code.Grammar;
         }
 
         private bool IncludeSyntax(CompletionItem item, int position, CompletionHint hints, SymbolMatch match, Expression left)
         {
-            if (!options.IncludePunctuationOnlySyntax 
+            if (!_options.IncludePunctuationOnlySyntax 
                 && item.Kind == CompletionKind.Punctuation)
                 return false;
 
@@ -2506,7 +2439,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool HasMatchingInfixOperator(OperatorKind kind, TypeSymbol arg0Type, CompletionHint returnTypeHint)
         {
-            var op = this.code.Globals.GetOperator(kind);
+            var op = this._code.Globals.GetOperator(kind);
 
             foreach (var sig in op.Signatures)
             {
@@ -2695,15 +2628,15 @@ namespace Kusto.Language.Editor
                     return CompletionKind.Database;
                 case SymbolKind.Function:
                     var fn = (FunctionSymbol)symbol;
-                    if (this.code.Globals.IsAggregateFunction(fn))
+                    if (this._code.Globals.IsAggregateFunction(fn))
                     {
                         return CompletionKind.AggregateFunction;
                     }
-                    else if (this.code.Globals.IsBuiltInFunction(fn))
+                    else if (this._code.Globals.IsBuiltInFunction(fn))
                     {
                         return CompletionKind.BuiltInFunction;
                     }
-                    else if (this.code.Globals.IsDatabaseFunction(fn))
+                    else if (this._code.Globals.IsDatabaseFunction(fn))
                     {
                         return CompletionKind.DatabaseFunction;
                     }

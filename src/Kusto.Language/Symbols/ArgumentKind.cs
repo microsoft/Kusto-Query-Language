@@ -15,6 +15,11 @@ namespace Kusto.Language.Symbols
         Expression,
 
         /// <summary>
+        /// The argument may be any expression, but the row scope is derived from parameter0 element type.
+        /// </summary>
+        Expression_Parameter0_Element,
+
+        /// <summary>
         /// The argument must be the star expression
         /// </summary>
         StarOnly,

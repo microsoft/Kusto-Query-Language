@@ -856,7 +856,7 @@ namespace Kusto.Language
                     new Parameter("minute", ParameterTypeKind.Number, minOccurring: 0),
                     new Parameter("second", ParameterTypeKind.Number, minOccurring: 0)),
               new Signature(ScalarTypes.DateTime,
-                    new Parameter("dateTime", ParameterTypeKind.Scalar)))
+                    new Parameter("value", ParameterTypeKind.Scalar)))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
@@ -872,7 +872,7 @@ namespace Kusto.Language
                     new Parameter("minutes", ParameterTypeKind.Integer),
                     new Parameter("seconds", ParameterTypeKind.Integer, minOccurring: 0)),
                 new Signature(ScalarTypes.TimeSpan,
-                    new Parameter("timespan", ParameterTypeKind.Scalar)))
+                    new Parameter("value", ParameterTypeKind.Scalar)))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.OnlyArgument);
 
@@ -3304,6 +3304,84 @@ namespace Kusto.Language
             .ConstantFoldable();
         #endregion
 
+        #region Graph functions
+        public static readonly FunctionSymbol _All =
+            new FunctionSymbol("all",
+                ScalarTypes.Bool,
+                new Parameter("items", ParameterTypeKind.DynamicArray),
+                new Parameter("expression", ScalarTypes.Bool, ArgumentKind.Expression_Parameter0_Element))
+            .WithCustomAvailability(context =>
+            {
+                // must exist in where clause of graph-match operator
+                return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
+                    && gm.WhereClause != null
+                    && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
+            })
+            .Hide();
+
+        public static readonly FunctionSymbol Map =
+            new FunctionSymbol("map",
+                context =>
+                {
+                    if (context.Arguments.Count > 1)
+                    {
+                        var expr = context.Arguments[1];
+                        return ScalarTypes.GetDynamicArray(expr.ResultType);
+                    }
+                    return ScalarTypes.DynamicArray;
+                },
+                Tabularity.Scalar,
+                new Parameter("items", ParameterTypeKind.DynamicArray),
+                new Parameter("expression", ParameterTypeKind.Scalar, ArgumentKind.Expression_Parameter0_Element))
+            .WithCustomAvailability(context =>
+            {
+                // must exist in project clause of graph-match operator
+                return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
+                    && gm.ProjectClause != null
+                    && (gm.ProjectClause == context.Location || gm.ProjectClause.IsAncestorOf(context.Location));
+            })
+            .Hide();
+
+        public static readonly FunctionSymbol InnerNodes =
+            new FunctionSymbol("inner_nodes",
+                context =>
+                {
+                    if (context.Arguments.Count > 0
+                        && context.Arguments[0] is Expression arg)
+                    {
+                        if (arg.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator graphMatch)
+                        {
+                            if (graphMatch.Parent is PipeExpression p
+                                && p.Expression.ResultType is GraphSymbol gs)
+                            {
+                                return ScalarTypes.GetDynamicArray(ScalarTypes.GetDynamicBag(gs.NodeShape.Columns));
+                            }
+                        }
+                    }
+
+                    // could not find node schema
+                    return ScalarTypes.DynamicArrayOfBag;
+                },
+                Tabularity.Scalar,
+                new Parameter("edge", ParameterTypeKind.Scalar))
+            .WithCustomAvailability(context =>
+            {
+                var inGM = context.Location.GetFirstAncestor<GraphMatchOperator>() != null;
+
+                // can only occur in first argument to all() or map() function
+                var inAllOrMap = context.Location.GetFirstAncestor<FunctionCallExpression>(
+                    fce => fce.Name.SimpleName != Functions.InnerNodes.Name) is FunctionCallExpression fc
+                    && (fc.Name.SimpleName == Functions._All.Name || fc.Name.SimpleName == Functions.Map.Name)
+                    && (context.Location == fc.ArgumentList 
+                        || (fc.ArgumentList.Expressions.Count > 0 
+                            && fc.ArgumentList.Expressions[0].Element.IsAncestorOf(context.Location)
+                            ));
+                return inGM && inAllOrMap ;
+            })
+            .Hide();
+
+        #endregion
+
         #region other
         public static readonly FunctionSymbol CurrentClusterEndpoint =
             new FunctionSymbol("current_cluster_endpoint", ScalarTypes.String);
@@ -3911,6 +3989,12 @@ namespace Kusto.Language
             GeoH3CellParent,
             GeoH3CellRings,
             GeoH3CellLevel,
+            #endregion
+
+            #region graph functions
+            _All,
+            Map,
+            InnerNodes,
             #endregion
 
             #region ip-matching functions

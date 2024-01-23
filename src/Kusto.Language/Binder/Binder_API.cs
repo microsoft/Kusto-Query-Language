@@ -514,7 +514,7 @@ namespace Kusto.Language.Binding
                         // get any built-in functions
                         if ((match & SymbolMatch.Function) != 0 && (include & IncludeFunctionKind.BuiltInFunctions) != 0)
                         {
-                            GetFunctionsInScope(match, null, IncludeFunctionKind.BuiltInFunctions, list);
+                            GetFunctionsInScope(contextNode, match, null, IncludeFunctionKind.BuiltInFunctions, list);
                         }
 
                         // metadata symbols (tables, etc)
@@ -543,7 +543,7 @@ namespace Kusto.Language.Binding
                     case ScopeKind.Aggregate:
                         if ((match & SymbolMatch.Function) != 0)
                         {
-                            GetFunctionsInScope(match, null, include, list);
+                            GetFunctionsInScope(contextNode, match, null, include, list);
                         }
                         break;
 
@@ -551,7 +551,7 @@ namespace Kusto.Language.Binding
                     case ScopeKind.PlugIn:
                         if ((match & SymbolMatch.Function) != 0)
                         {
-                            GetFunctionsInScope(match, null, include, list);
+                            GetFunctionsInScope(contextNode, match, null, include, list);
                         }
                         break;
 
@@ -633,6 +633,7 @@ namespace Kusto.Language.Binding
         }
 
         private void GetFunctionsInScope(
+            SyntaxNode contextNode,
             SymbolMatch match,
             string name,
             IncludeFunctionKind include,
@@ -643,6 +644,7 @@ namespace Kusto.Language.Binding
             {
                 GetFunctionsInScope(
                     _scopeKind,
+                    contextNode,
                     name,
                     include,
                     allFunctions);
@@ -663,6 +665,7 @@ namespace Kusto.Language.Binding
 
         private void GetFunctionsInScope(
             ScopeKind kind,
+            SyntaxNode contextNode,
             string name,
             IncludeFunctionKind include,
             List<Symbol> functions)
@@ -670,11 +673,11 @@ namespace Kusto.Language.Binding
             switch (kind)
             {
                 case ScopeKind.Aggregate:
-                    GetAggregateFunctionsInScope(name, include, functions);
+                    GetAggregateFunctionsInScope(contextNode, name, include, functions);
                     break;
 
                 case ScopeKind.PlugIn:
-                    GetFunctionsInPlugInScope(name, include, functions);
+                    GetFunctionsInPlugInScope(contextNode, name, include, functions);
                     break;
 
                 case ScopeKind.Option:
@@ -682,12 +685,13 @@ namespace Kusto.Language.Binding
 
                 case ScopeKind.Normal:
                 default:
-                    GetFunctionsInNormalScope(name, include, functions);
+                    GetFunctionsInNormalScope(contextNode, name, include, functions);
                     break;
             }
         }
 
         private void GetAggregateFunctionsInScope(
+            SyntaxNode contextNode,
             string name,
             IncludeFunctionKind include,
             List<Symbol> functions)
@@ -699,10 +703,11 @@ namespace Kusto.Language.Binding
             {
                 if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
                 {
-                    functions.AddRange(_globals.Aggregates);
+                    var context = new BinderAvailabilityContext(contextNode);
+                    functions.AddRange(_globals.Aggregates.Where(f => IsAvailable(f, context)));
                 }
 
-                GetFunctionsInNormalScope(name, include, functions);
+                GetFunctionsInNormalScope(contextNode, name, include, functions);
             }
             else
             {
@@ -717,12 +722,28 @@ namespace Kusto.Language.Binding
 
                 if (functions.Count == 0)
                 {
-                    GetFunctionsInNormalScope(name, include, functions);
+                    GetFunctionsInNormalScope(contextNode, name, include, functions);
                 }
             }
         }
 
+        private class BinderAvailabilityContext : CustomAvailabilityContext
+        {
+            public readonly SyntaxNode _location;
+
+            public BinderAvailabilityContext(SyntaxNode location)
+            {
+                _location = location;
+            }
+
+            public override SyntaxNode Location => _location;
+        }
+
+        private static bool IsAvailable(FunctionSymbol function, BinderAvailabilityContext context) =>
+            function.CustomAvailability == null || function.CustomAvailability(context);
+
         private void GetFunctionsInPlugInScope(
+            SyntaxNode contextNode,
             string name,
             IncludeFunctionKind include,
             List<Symbol> functions)
@@ -734,7 +755,8 @@ namespace Kusto.Language.Binding
             {
                 if (name == null)
                 {
-                    functions.AddRange(_globals.PlugIns);
+                    var context = new BinderAvailabilityContext(contextNode);
+                    functions.AddRange(_globals.PlugIns.Where(f => IsAvailable(f, context)));
                 }
                 else
                 {
@@ -748,6 +770,7 @@ namespace Kusto.Language.Binding
         }
 
         private void GetFunctionsInNormalScope(
+            SyntaxNode contextNode,
             string name,
             IncludeFunctionKind include,
             List<Symbol> functions)
@@ -760,14 +783,16 @@ namespace Kusto.Language.Binding
             {
                 if ((include & IncludeFunctionKind.BuiltInFunctions) != 0)
                 {
+                    var context = new BinderAvailabilityContext(contextNode);
+
                     if (name == null)
                     {
-                        functions.AddRange(_globals.Functions);
+                        functions.AddRange(_globals.Functions.Where(f => IsAvailable(f, context)));
                     }
                     else if (functions.Count == 0)
                     {
                         var fn = _globals.GetFunction(name);
-                        if (fn != null)
+                        if (fn != null && IsAvailable(fn, context))
                         {
                             functions.Add(fn);
                         }

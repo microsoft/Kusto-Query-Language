@@ -248,7 +248,7 @@ namespace Kusto.Language.Binding
                 // when resolving aggregate expression result types.
                 node.ByClause?.Accept(this);
 
-                VisitInScope(node.Aggregates, ScopeKind.Aggregate);
+                VisitInScopeKind(node.Aggregates, ScopeKind.Aggregate);
 
                 BindNode(node);
             }
@@ -383,7 +383,7 @@ namespace Kusto.Language.Binding
             public override void VisitMakeSeriesOperator(MakeSeriesOperator node)
             {
                 node.Parameters.Accept(this);
-                VisitInScope(node.Aggregates, ScopeKind.Aggregate);
+                VisitInScopeKind(node.Aggregates, ScopeKind.Aggregate);
                 node.OnClause?.Accept(this);
                 node.RangeClause?.Accept(this);
                 node.ByClause?.Accept(this);
@@ -391,21 +391,26 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
-            private void VisitInScope(SyntaxNode node, ScopeKind kind)
+            private void VisitInRowScope(SyntaxNode node, TableSymbol rowScope)
+            {
+                if (node == null)
+                    return;
+
+                var oldRowScope = _binder._rowScope;
+                _binder._rowScope = rowScope;
+                node.Accept(this);
+                _binder._rowScope = oldRowScope;
+            }
+
+            private void VisitInScopeKind(SyntaxNode node, ScopeKind kind)
             {
                 if (node == null)
                     return;
 
                 var oldScopeKind = _binder._scopeKind;
                 _binder._scopeKind = kind;
-                try
-                {
-                    node.Accept(this);
-                }
-                finally
-                {
-                    _binder._scopeKind = oldScopeKind;
-                }
+                node.Accept(this);
+                _binder._scopeKind = oldScopeKind;
             }
 
             public override void VisitTopNestedClause(TopNestedClause node)
@@ -413,7 +418,7 @@ namespace Kusto.Language.Binding
                 node.Expression?.Accept(this);
                 node.OfExpression.Accept(this);
                 node.WithOthersClause?.Accept(this);
-                VisitInScope(node.ByExpression, ScopeKind.Aggregate);
+                VisitInScopeKind(node.ByExpression, ScopeKind.Aggregate);
 
                 BindNode(node);
             }
@@ -547,7 +552,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        this.VisitInScope(node.ArgumentList, argumentScope);
+                        this.VisitInScopeKind(node.ArgumentList, argumentScope);
                     }
                 }
                 finally
@@ -588,7 +593,7 @@ namespace Kusto.Language.Binding
                         {
                             case ArgumentKind.Aggregate:
                                 // switch to aggregate scope for arguments that need to be aggregate expressions
-                                this.VisitInScope(arg, ScopeKind.Aggregate);
+                                this.VisitInScopeKind(arg, ScopeKind.Aggregate);
                                 break;
 
                             case ArgumentKind.Column_Parameter0:
@@ -608,23 +613,36 @@ namespace Kusto.Language.Binding
                                         _binder._rowScope = p0Table;
                                     }
 
-                                    this.VisitInScope(arg, argumentScope);
+                                    this.VisitInScopeKind(arg, argumentScope);
                                     _binder._rowScope = oldRowScope;
                                 }
                                 else
                                 {
-                                    this.VisitInScope(arg, ScopeKind.Aggregate);
+                                    this.VisitInScopeKind(arg, ScopeKind.Aggregate);
+                                }
+                                break;
+
+                            case ArgumentKind.Expression_Parameter0_Element:
+                                if (i > 0
+                                    && arguments[0].ResultType is DynamicArraySymbol da
+                                    && da.ElementType is DynamicBagSymbol db)
+                                {
+                                    this.VisitInRowScope(arg, new TableSymbol(db.Properties));
+                                }
+                                else
+                                {
+                                    this.VisitInScopeKind(arg, argumentScope);
                                 }
                                 break;
 
                             default:
-                                this.VisitInScope(arg, argumentScope);
+                                this.VisitInScopeKind(arg, argumentScope);
                                 break;
                         }
                     }
                     else
                     {
-                        this.VisitInScope(arg, argumentScope);
+                        this.VisitInScopeKind(arg, argumentScope);
                     }
                 }
 

@@ -8,63 +8,6 @@ namespace Kusto.Language.Symbols
     using System;
     using Utils;
 
-    public enum ResultNameKind
-    {
-        /// <summary>
-        /// The name is not inferred from the function invocation.
-        /// Typically the column is given the name Column1 or Column2, etc.
-        /// </summary>
-        None,
-
-        /// <summary>
-        /// The name is combination of the name of function and the name inferred from the first argument.
-        /// </summary>
-        NameAndFirstArgument,
-
-        /// <summary>
-        /// The name is a combination of the function name and the name is inferred from the the first argument,
-        /// but only if there is only one argument, otherwise it acts as <see cref="None"/>.
-        /// </summary>
-        /// <remarks>This option exists because of odd name inference behavior of a few functions that differ depending on the number of arguments.</remarks>
-        NameAndOnlyArgument,
-
-        /// <summary>
-        /// The name is a combination of the specified prefix and the name inferred from the first argument.
-        /// </summary>
-        PrefixAndFirstArgument,
-
-        /// <summary>
-        /// The name if a combination of the specified prefix and the name is inferred from the the first argument,
-        /// but only if there is only one argument, otherwise it acts as <see cref="None"/>.
-        /// </summary>
-        /// <remarks>This option exists because of odd name inference behavior of a few functions that differ depending on the number of arguments.</remarks>
-        PrefixAndOnlyArgument,
-
-        /// <summary>
-        /// The name of the column is the value the first parameter's string literal argument
-        /// if a column of that name exists in the current row scope.
-        /// </summary>
-        /// <remarks>This option exists to support columnifexists() function.</remarks>
-        FirstArgumentValueIfColumn,
-
-        /// <summary>
-        /// The name is the prefix name as specified (no underscores added.)
-        /// </summary>
-        PrefixOnly,
-
-        /// <summary>
-        /// The name is the name inferred from the first argument.
-        /// </summary>
-        FirstArgument,
-
-        /// <summary>
-        /// The name is the name inferred from the first argument if there is only one argument, otherwise it acts the same as <see cref="None"/>
-        /// </summary>
-        OnlyArgument,
-
-        Default = None
-    }
-
     /// <summary>
     /// The symbol for a function.
     /// </summary>
@@ -109,6 +52,11 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public string OptimizedAlternative { get; }
 
+        /// <summary>
+        /// A function that determines when this function is available in a given context.
+        /// </summary>
+        public CustomAvailability CustomAvailability { get; }
+
         [Flags]
         private enum FunctionFlags
         {
@@ -138,8 +86,6 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public bool IsView => (_flags & FunctionFlags.View) != 0;
 
-
-
         private FunctionSymbol(
             string name, 
             IEnumerable<Signature> signatures, 
@@ -148,7 +94,8 @@ namespace Kusto.Language.Symbols
             string resultNamePrefix,
             string description,
             string alternative,
-            string optimizedAlternative)
+            string optimizedAlternative,
+            CustomAvailability fnAvailability)
             : base(name)
         {
             this.Signatures = signatures.ToReadOnly().CheckArgumentNullOrEmptyOrElementNull(nameof(signatures));
@@ -164,12 +111,20 @@ namespace Kusto.Language.Symbols
             this.ResultNamePrefix = resultNamePrefix;
             this.Alternative = alternative;
             this.OptimizedAlternative = optimizedAlternative;
+            CustomAvailability = fnAvailability;
         }
 
         public FunctionSymbol(string name, IEnumerable<Signature> signatures, string description = null)
-            : this(name, signatures, flags: FunctionFlags.None, 
-                  resultNameKind: ResultNameKind.Default, resultNamePrefix: null, 
-                  description: description, alternative: null, optimizedAlternative: null)
+            : this(
+                  name, 
+                  signatures, 
+                  flags: FunctionFlags.None, 
+                  resultNameKind: ResultNameKind.Default, 
+                  resultNamePrefix: null, 
+                  description: description, 
+                  alternative: null, 
+                  optimizedAlternative: null,
+                  fnAvailability: null)
         {
         }
 
@@ -255,7 +210,8 @@ namespace Kusto.Language.Symbols
             Optional<string> resultNamePrefix = default,
             Optional<string> description = default,
             Optional<string> alternative = default,
-            Optional<string> optimizedAlternative = default)
+            Optional<string> optimizedAlternative = default,
+            Optional<CustomAvailability> fnAvailability = default)
         {
             var newName = name.HasValue ? name.Value : this.Name;
             var newSignatures = signatures.HasValue ? signatures.Value : this.Signatures;
@@ -265,6 +221,7 @@ namespace Kusto.Language.Symbols
             var newDescription = description.HasValue ? description.Value : this.Description;
             var newAlternative = alternative.HasValue ? alternative.Value : this.Alternative;
             var newOptimizedAlternative = optimizedAlternative.HasValue ? optimizedAlternative.Value : this.OptimizedAlternative;
+            var newFnAvailability = fnAvailability.HasValue ? fnAvailability.Value : CustomAvailability;
 
             if (newName != this.Name
                 || newSignatures != this.Signatures
@@ -273,7 +230,8 @@ namespace Kusto.Language.Symbols
                 || newResultNamePrefix != this.ResultNamePrefix
                 || newDescription != this.Description
                 || newAlternative != this.Alternative
-                || newOptimizedAlternative != this.OptimizedAlternative)
+                || newOptimizedAlternative != this.OptimizedAlternative
+                || newFnAvailability != CustomAvailability)
             {
                 return new FunctionSymbol(
                     newName,
@@ -283,7 +241,8 @@ namespace Kusto.Language.Symbols
                     newResultNamePrefix,
                     newDescription,
                     newAlternative,
-                    newOptimizedAlternative);
+                    newOptimizedAlternative,
+                    newFnAvailability);
             }
             else
             {
@@ -387,6 +346,15 @@ namespace Kusto.Language.Symbols
         public FunctionSymbol WithOptimizedAlternative(string alternative)
         {
             return With(optimizedAlternative: alternative);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="FunctionSymbol"/> that has a custom function determining whether or 
+        /// not the function is available in a given context.
+        /// </summary>
+        public FunctionSymbol WithCustomAvailability(CustomAvailability fnAvailability)
+        {
+            return With(fnAvailability: fnAvailability);
         }
 
         /// <summary>

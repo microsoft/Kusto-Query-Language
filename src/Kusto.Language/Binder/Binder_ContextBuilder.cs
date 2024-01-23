@@ -313,7 +313,6 @@ namespace Kusto.Language.Binding
                 return last?.IsMissing ?? false;
             }
 
-
             public override void VisitPatternDeclaration(PatternDeclaration node)
             {
                 base.VisitPatternDeclaration(node);
