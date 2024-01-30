@@ -10784,6 +10784,32 @@ namespace Kusto.Language.Parsing
                     Optional(Token("internal")),
                     new [] {CD(), CD(), CD(), CD(CompletionHint.None), CD(isOptional: true), CD(), CD(), CD("Version", CompletionHint.Literal), CD(isOptional: true)}));
 
+            var TableDataUpdate = Command("TableDataUpdate", 
+                Custom(
+                    Token("update", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    rules.TableNameReference,
+                    Token("delete"),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    RequiredToken("append"),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Required(
+                        fragment5,
+                        missing1),
+                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD("csl")}));
+
+            var TableDataUpdateShortSyntax = Command("TableDataUpdateShortSyntax", 
+                Custom(
+                    Token("update", CompletionKind.CommandPrefix),
+                    RequiredToken("table"),
+                    Required(rules.TableNameReference, rules.MissingNameReference),
+                    RequiredToken("on"),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Required(
+                        fragment5,
+                        missing1),
+                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(CompletionHint.None), CD("csl")}));
+
             var commandParsers = new Parser<LexicalToken, Command>[]
             {
                 AddClusterRole,
@@ -11555,7 +11581,9 @@ namespace Kusto.Language.Parsing
                 ShowExtentDetails4,
                 TableShuffleExtents,
                 TableShuffleExtentsQuery,
-                UndoDropTable
+                UndoDropTable,
+                TableDataUpdate,
+                TableDataUpdateShortSyntax
             };
 
             return commandParsers;
