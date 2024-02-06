@@ -1312,7 +1312,7 @@ namespace Kusto.Language.Editor
 
                 case ReturnTypeKind.Parameter0Database:
                     // show either the dotted cluster's database names or the global cluster's database names
-                    if (GetLeftOfFunctionCall(contextNode) is Expression cpl)
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression cpl)
                     {
                         if (cpl.ResultType is ClusterSymbol cc)
                         {
@@ -1329,7 +1329,7 @@ namespace Kusto.Language.Editor
 
                 case ReturnTypeKind.Parameter0Table:
                     // show either the dotted database's table names or the global database's table names
-                    if (GetLeftOfFunctionCall(contextNode) is Expression dpl)
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression dpl)
                     {
                         if (dpl.ResultType is DatabaseSymbol ds)
                         {
@@ -1346,7 +1346,7 @@ namespace Kusto.Language.Editor
 
                 case ReturnTypeKind.Parameter0ExternalTable:
                     // show either the dotted database's table names or the global database's table names
-                    if (GetLeftOfFunctionCall(contextNode) is Expression edpl)
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression edpl)
                     {
                         if (edpl.ResultType is DatabaseSymbol ds)
                         {
@@ -1363,7 +1363,7 @@ namespace Kusto.Language.Editor
 
                 case ReturnTypeKind.Parameter0MaterializedView:
                     // show either the dotted database's table names or the global database's table names
-                    if (GetLeftOfFunctionCall(contextNode) is Expression mvdpl)
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression mvdpl)
                     {
                         if (mvdpl.ResultType is DatabaseSymbol ds)
                         {
@@ -1457,22 +1457,18 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private static SyntaxNode GetLeftOfFunctionCall(SyntaxNode expression)
+        /// <summary>
+        /// Gets the instance expression of a function call given a function call or one of its arguments.
+        /// This is the expression on the left-side of a path expression dot with the function call on the right.
+        /// Returns null if the function call is not a selector (right-side) of a path expression.
+        /// </summary>
+        private static SyntaxNode GetInstanceExpressionOfFunctionCall(SyntaxNode functionCallOrArgument)
         {
-            var parent = expression.Parent;
-
-            if (parent is ExpressionList el)
-                parent = el.Parent;
-
-            if (parent is FunctionCallExpression fc)
-                parent = fc.Parent;
-
-            if (parent is PathExpression pe)
-            {
-                return pe.Expression;
-            }
-
-            return null;
+            // walk up parents to find function call, and then get expression left of dot (path)
+            return functionCallOrArgument.GetFirstAncestorOrSelf<FunctionCallExpression>() is FunctionCallExpression fcall
+                && fcall.Parent is PathExpression path
+                ? path.Expression
+                : null;
         }
 
         private IEnumerable<CompletionItem> GetMemberNameExamples(IEnumerable<Symbol> symbols)
