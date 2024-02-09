@@ -446,12 +446,11 @@ namespace Kusto.Language.Symbols
             || type == ScalarTypes.Decimal;
 
         /// <summary>
-        /// Returns true if the type is string, dynamic(string) or dynamic
+        /// Returns true if the type is string or any dynamic
         /// </summary>
         public static bool IsStringOrDynamic(this Symbol type) =>
             type == ScalarTypes.String
-            || type == ScalarTypes.DynamicString
-            || type == ScalarTypes.Dynamic;
+            || type is DynamicSymbol;
 
         /// <summary>
         /// Returns true if the type is string or any array of strings.

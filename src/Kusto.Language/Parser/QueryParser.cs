@@ -2763,9 +2763,9 @@ namespace Kusto.Language.Parsing
         {
             return new ExpressionCouple(
                 ParseRequiredToken(SyntaxKind.OpenParenToken),
-                ParseInvocationExpression() ?? CreateMissingExpression(),
+                ParseUnnamedExpression() ?? CreateMissingExpression(),
                 ParseRequiredToken(SyntaxKind.DotDotToken),
-                ParseInvocationExpression() ?? CreateMissingExpression(),
+                ParseUnnamedExpression() ?? CreateMissingExpression(),
                 ParseRequiredToken(SyntaxKind.CloseParenToken));
         }
 
