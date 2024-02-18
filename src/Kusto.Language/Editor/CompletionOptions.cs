@@ -12,6 +12,7 @@ namespace Kusto.Language.Editor
             IncludePunctuation              = 0b0000_0100,
             EnableParameterInjection        = 0b0001_0000,
             AutoAppendWhitespace            = 0b0010_0000,
+            IncludeExtendedSyntax           = 0b0100_0000,
 
             Default = IncludeSymbols | IncludeSyntax | IncludePunctuation | AutoAppendWhitespace
         }
@@ -27,6 +28,8 @@ namespace Kusto.Language.Editor
         public bool EnableParameterInjection => (flags & OptionFlags.EnableParameterInjection) != 0;
 
         public bool AutoAppendWhitespace => (flags & OptionFlags.AutoAppendWhitespace) != 0;
+
+        public bool IncludeExtendedSytnax => (flags & OptionFlags.IncludeExtendedSyntax) != 0;
 
         public IncludeFunctionKind IncludeFunctions { get; }
 
@@ -64,6 +67,11 @@ namespace Kusto.Language.Editor
         public CompletionOptions WithIncludePunctuationOnlySyntax(bool include)
         {
             return new CompletionOptions(SetOption(this.flags, OptionFlags.IncludePunctuation, include), this.IncludeFunctions);
+        }
+
+        public CompletionOptions WithIncludeExtendedSyntax(bool include)
+        {
+            return new CompletionOptions(SetOption(this.flags, OptionFlags.IncludeExtendedSyntax, include), this.IncludeFunctions);
         }
 
         public CompletionOptions WithEnableParameterInjection(bool enable)

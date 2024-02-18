@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Kusto.Language.Editor
 {
     using Parsing;
-    using Utils;
 
     /// <summary>
     /// Finds parsers with annotations that are considered at a specific input offset
@@ -18,7 +16,9 @@ namespace Kusto.Language.Editor
     {
         private Source<TInput> _source;
         private readonly int _findOffset;
-        private readonly List<Parser<TInput>> _list;
+        private readonly List<Parser<TInput>> _path;
+        private readonly List<Parser<TInput>> _results;
+        private readonly List<ParserPath<TInput>> _pathResults;
         private bool _prevWasMissing;
         private int _missingCount;
         private int _listMissingCount;
@@ -26,26 +26,35 @@ namespace Kusto.Language.Editor
         private AnnotatedParserFinder(
             Source<TInput> source,
             int findOffset,
-            List<Parser<TInput>> annotatedParsers)
+            List<ParserPath<TInput>> paths)
         {
             _source = source;
             _findOffset = findOffset;
             _prevWasMissing = false;
-            _list = annotatedParsers;
+            _path = new List<Parser<TInput>>();
+            _results = new List<Parser<TInput>>();
+            _pathResults = paths;
         }
 
         /// <summary>
         /// Finds the parsers with annotations that are considered at the specified find input offset.
         /// </summary>
-        /// <param name="source">The input source</param>
-        /// <param name="findOffset">The offset of the input item within the input source</param>
-        /// <param name="root">The root parser of the grammar</param>
-        /// <param name="start">The starting input offset associated with the root parser</param>
-        /// <param name="annotatedParsers">The output list of annotated parsers.</param>
-        public static void Find(Source<TInput> source, int findOffset, Parser<TInput> root, int start, List<Parser<TInput>> annotatedParsers)
+        public static IReadOnlyList<Parser<TInput>> FindParsers(Source<TInput> source, int findOffset, Parser<TInput> root, int start)
         {
-            var finder = new AnnotatedParserFinder<TInput>(source, findOffset, annotatedParsers);
+            var finder = new AnnotatedParserFinder<TInput>(source, findOffset, null);
             finder.Find(root, start);
+            return finder._results;
+        }
+
+        /// <summary>
+        /// Finds the list of paths to parsers with annotations that are considered at the specified find input offset.
+        /// </summary>
+        public static IReadOnlyList<ParserPath<TInput>> FindPaths(Source<TInput> source, int findOffset, Parser<TInput> root, int start)
+        {
+            var paths = new List<ParserPath<TInput>>();
+            var finder = new AnnotatedParserFinder<TInput>(source, findOffset, paths);
+            finder.Find(root, start);
+            return paths;
         }
 
         private const int MaxDepth = 400;
@@ -64,6 +73,9 @@ namespace Kusto.Language.Editor
             _depth++;
             int len;
 
+            // add parser to path
+            _path.Add(parser);
+
             if (parser.IsHidden)
             {
                 len = parser.Scan(_source, start);
@@ -75,23 +87,29 @@ namespace Kusto.Language.Editor
                     && parser.Annotations.Count > 0)
                 {
                     // if no results or new results are equally as good
-                    if (_list.Count == 0
+                    if (_results.Count == 0
                         || _missingCount <= _listMissingCount)
                     {
                         // if this path had lesser results, then throw them out in favor of better results
                         if (_missingCount < _listMissingCount)
                         {
-                            _list.Clear();
+                            _results.Clear();
                         }
 
                         // combine results 
-                        _list.Add(parser);
+                        _results.Add(parser);
                         _listMissingCount = _missingCount;
+
+                        if (_pathResults != null)
+                            _pathResults.Add(ParserPath<TInput>.From(_path));
                     }
                 }
 
                 len = parser.Accept(this, start);
             }
+
+            // remove parser from path
+            _path.RemoveAt(_path.Count - 1);
 
             _depth--;
             return len;

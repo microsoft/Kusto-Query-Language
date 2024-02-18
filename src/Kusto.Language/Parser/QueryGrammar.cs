@@ -3120,7 +3120,8 @@ namespace Kusto.Language.Parsing
             var Restriction =
                 First(
                     If(ScanWildcardedEntityReferenceOrFunctionCall, WildcardedEntityReference),
-                    SimpleNameReference);
+                    SimpleNameReference)
+                    .WithCompletionHint(CompletionHint.Table | CompletionHint.MaterializedView | CompletionHint.ExternalTable | CompletionHint.Graph);
 
             var RestrictStatement =
                 Rule(

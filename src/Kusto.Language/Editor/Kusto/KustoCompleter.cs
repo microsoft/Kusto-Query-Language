@@ -28,6 +28,58 @@ namespace Kusto.Language.Editor
             _cancellationToken = cancellationToken;
         }
 
+        #region Completion Builder
+
+        private class CompletionBuilder
+        {
+            private readonly List<CompletionItem> list = new List<CompletionItem>();
+            private readonly Dictionary<string, int> indexMap = new Dictionary<string, int>();
+
+            public CompletionBuilder()
+            {
+            }
+
+            public IReadOnlyList<CompletionItem> ToList() => list.AsReadOnly();
+
+            public void Add(CompletionItem item)
+            {
+                if (indexMap.TryGetValue(item.DisplayText, out var existingItemIndex))
+                {
+                    var better = GetBetterItem(list[existingItemIndex], item);
+                    if (better == item)
+                    {
+                        list[existingItemIndex] = item;
+                    }
+                }
+                else
+                {
+                    indexMap.Add(item.DisplayText, list.Count);
+                    list.Add(item);
+                }
+            }
+
+            public void AddRange(IEnumerable<CompletionItem> items)
+            {
+                foreach (var item in items)
+                {
+                    Add(item);
+                }
+            }
+
+            private static CompletionItem GetBetterItem(CompletionItem existing, CompletionItem other)
+            {
+                // promote query operators over keywords
+                if (existing.Kind == CompletionKind.Keyword && other.Kind == CompletionKind.QueryPrefix)
+                    return other;
+
+                return existing;
+            }
+        }
+
+        #endregion
+
+        #region Public API
+
         public CompletionInfo GetCompletionItems(int position)
         {
             GetEditRange(position, out var editStart, out var editLength);
@@ -365,6 +417,10 @@ namespace Kusto.Language.Editor
                     return CompletionRank.Other;
             }
         }
+
+        #endregion
+
+        #region Symbol Completions
 
         private bool IsInCommand(SyntaxElement element, int contextChildIndex)
         {
@@ -2137,12 +2193,17 @@ namespace Kusto.Language.Editor
             return false;
         }
 
+        #endregion
+
+        #region Syntax Completions
+
         private void GetSyntaxCompletions(int position, CompletionBuilder builder)
         {
             var hints = GetCompletionHint(position);
             var match = GetSymbolMatch(position);
             var expr = GetCompleteExpressionLeftOfPosition(_code, position);
 
+            // look for any completion items annotated on a parser corresponding to this location
             var annotations = GetGrammarAnnotations(position);
 
             // add in any completion hints associated with this parser
@@ -2166,6 +2227,12 @@ namespace Kusto.Language.Editor
                         builder.Add(item);
                     }
                 }
+            }
+
+            if (_options.IncludeExtendedSytnax)
+            {
+                // get all extended completions derived from syntax
+                GetExtendedSyntaxCompletions(position, builder);
             }
         }
 
@@ -2230,10 +2297,8 @@ namespace Kusto.Language.Editor
             if (_annotations != null && _annotationPosition == position)
                 return _annotations;
 
-            var parsers = new List<Parser<LexicalToken>>();
-
             // look for completions in the grammar elements corresponding to the text position
-            GetAnnotatedParsers(position, parsers);
+            var parsers = GetAnnotatedParsers(position);
 
             _annotations = parsers.SelectMany(p => p.Annotations).ToList();
             _annotationPosition = position;
@@ -2241,22 +2306,90 @@ namespace Kusto.Language.Editor
             return _annotations;
         }
 
+        private IReadOnlyList<Parser<LexicalToken>> _annotatedParsers;
+        private int _annotatedParserPosition;
+
         /// <summary>
         /// Gets a list of all annotated parsers that are invoked for the token at the specified text position.
         /// </summary>
-        private void GetAnnotatedParsers(int position, List<Parser<LexicalToken>> annotatedParsers)
+        private IReadOnlyList<Parser<LexicalToken>> GetAnnotatedParsers(int position)
         {
+            if (_annotatedParsers != null 
+                && _annotatedParserPosition == position)
+            {
+                return _annotatedParsers;
+            }
+
             // find a possible better starting point than the start of the whole query
             GetGrammarSearchContext(position, out var startPosition, out var grammar);
 
-            var startIndex = this._code.GetTokenIndex(startPosition);
-            var matchIndex = this._code.GetTokenIndex(position);
+            var startIndex = _code.GetTokenIndex(startPosition);
+            var matchIndex = _code.GetTokenIndex(position);
 
             // use a source that only includes relevant tokens (so we dont bother with tokens beyond)
-            var tokens = this._code.GetLexicalTokens();
+            var tokens = _code.GetLexicalTokens();
             var source = new ArraySource<LexicalToken>(tokens, 0, matchIndex + 1);
 
-            AnnotatedParserFinder<LexicalToken>.Find(source, matchIndex, grammar, startIndex, annotatedParsers);
+            _annotatedParsers = AnnotatedParserFinder<LexicalToken>.FindParsers(source, matchIndex, grammar, startIndex);
+            _annotatedParserPosition = position;
+            return _annotatedParsers;
+        }
+
+        private IReadOnlyList<ParserPath<LexicalToken>> _annotatedParserPaths;
+        private int _annotatedParserPathPosition;
+
+        /// <summary>
+        /// Gets a list of all cursors to annotated parsers that are invoked for the token at the specified text position.
+        /// </summary>
+        private IReadOnlyList<ParserPath<LexicalToken>> GetAnnotatedParserPaths(int position)
+        {
+            if (_annotatedParserPaths != null
+                && _annotatedParserPathPosition == position)
+            {
+                return _annotatedParserPaths;
+            }
+
+            // find a possible better starting point than the start of the whole query
+            GetGrammarSearchContext(position, out var startPosition, out var grammar);
+
+            var startIndex = _code.GetTokenIndex(startPosition);
+            var matchIndex = _code.GetTokenIndex(position);
+
+            // use a source that only includes relevant tokens (so we dont bother with tokens beyond)
+            var tokens = _code.GetLexicalTokens();
+            var source = new ArraySource<LexicalToken>(tokens, 0, matchIndex + 1);
+
+            _annotatedParserPaths = AnnotatedParserFinder<LexicalToken>.FindPaths(source, matchIndex, grammar, startIndex);
+            _annotatedParserPathPosition = position;
+            return _annotatedParserPaths;
+        }
+
+        private QueryGrammar __queryGrammar;
+        private QueryGrammar CurrentQueryGrammar
+        {
+            get
+            {
+                if (__queryGrammar == null)
+                {
+                    __queryGrammar = QueryGrammar.From(_code.Globals);
+                }
+
+                return __queryGrammar;
+            }
+        }
+
+        private CommandGrammar __commandGrammar;
+        private CommandGrammar CurrentCommandGrammar
+        {
+            get
+            {
+                if (__commandGrammar == null)
+                {
+                    __commandGrammar = CommandGrammar.From(_code.Globals);
+                }
+
+                return __commandGrammar;
+            }
         }
 
         /// <summary>
@@ -2268,7 +2401,7 @@ namespace Kusto.Language.Editor
 
             if (token != null)
             {
-                var queryGrammar = QueryGrammar.From(GlobalState.Default);
+                var queryGrammar = CurrentQueryGrammar;
                 var node = token.Parent;
                 var nextToken = token.GetNextToken();
 
@@ -2387,17 +2520,6 @@ namespace Kusto.Language.Editor
                 default:
                     return true;
             }
-        }
-
-        private static bool HasLetters(string text)
-        {
-            foreach (var ch in text)
-            {
-                if (TextFacts.IsLetter(ch))
-                    return true;
-            }
-
-            return false;
         }
 
         private bool AnyInfixMatches(Expression left, string op, int position)
@@ -2683,51 +2805,473 @@ namespace Kusto.Language.Editor
                     return CompletionKind.Variable;
             }
         }
+        #endregion
 
-        private class CompletionBuilder
+
+        #region Extended Syntax Completions
+        /// <summary>
+        /// Adds extended completion items generated from syntax
+        /// </summary>
+        private void GetExtendedSyntaxCompletions(int position, CompletionBuilder builder)
         {
-            private readonly List<CompletionItem> list = new List<CompletionItem>();
-            private readonly Dictionary<string, int> indexMap = new Dictionary<string, int>();
+            var tmpBuilder = new CompletionBuilder();
 
-            public CompletionBuilder()
+            var items = _completionItemListPool.AllocateFromPool();
+            try
             {
-            }
+                var paths = GetAnnotatedParserPaths(position);
 
-            public IReadOnlyList<CompletionItem> ToList() => list.AsReadOnly();
+                var rootPaths = paths
+                    .Select(p => GetLocalRoot(p))
+                    .Where(p => p.Parent != null 
+                        && GetDeepCompletionItem(p.Parser) is CompletionItem item 
+                        && item.Kind != CompletionKind.Punctuation)
+                    .DistinctFirst(p => p.Parser)
+                    .ToList();
 
-            public void Add(CompletionItem item)
-            {
-                if (indexMap.TryGetValue(item.DisplayText, out var existingItemIndex))
+                foreach (var path in rootPaths)
                 {
-                    var better = GetBetterItem(list[existingItemIndex], item);
-                    if (better == item)
+                    items.Clear();
+
+                    // all paths here should be the immediate child of a sequence
+                    // use that parent sequence as a limiter for the extension
+                    var ceiling = path.Parent;
+
+                    BuildExtendedSyntaxCompletions(path, ceiling, items, tmpBuilder);
+                }
+
+                builder.AddRange(tmpBuilder.ToList());
+            }
+            catch (Exception e)
+            {
+                _ = e;
+            }
+            finally
+            {
+                _completionItemListPool.ReturnToPool(items);
+            }
+        }
+
+        private static readonly ObjectPool<List<CompletionItem>> _completionItemListPool =
+            new ObjectPool<List<CompletionItem>>(() => new List<CompletionItem>(), list => list.Clear());
+
+        /// <summary>
+        /// Gets the parent sequence of the 
+        /// </summary>
+        private ParserPath<LexicalToken> GetLocalRoot(ParserPath<LexicalToken> path)
+        {
+            var current = path;
+
+            while (true)
+            {
+                // find the immediate parent sequence.
+                if (TryGetParentSequenceParser(current, null, out var parent, out int index))
+                {
+                    if (parent.ChildCount > 1)
                     {
-                        list[existingItemIndex] = item;
+                        return parent.GetChild(index);
+                    }
+                    else
+                    {
+                        current = parent;
                     }
                 }
                 else
                 {
-                    indexMap.Add(item.DisplayText, list.Count);
-                    list.Add(item);
+                    return path;
                 }
-            }
-
-            public void AddRange(IEnumerable<CompletionItem> items)
-            {
-                foreach (var item in items)
-                {
-                    Add(item);
-                }
-            }
-
-            private static CompletionItem GetBetterItem(CompletionItem existing, CompletionItem other)
-            {
-                // promote query operators over keywords
-                if (existing.Kind == CompletionKind.Keyword && other.Kind == CompletionKind.QueryPrefix)
-                    return other;
-
-                return existing;
             }
         }
+
+        /// <summary>
+        /// Builds the next step of extended completions given the completion texts aggregates so far
+        /// and the current grammar parser.
+        /// </summary>
+        private void BuildExtendedSyntaxCompletions(
+            ParserPath<LexicalToken> path,
+            ParserPath<LexicalToken> ceiling, // don't extend above this point
+            List<CompletionItem> parts,
+            CompletionBuilder builder)
+        {
+            while (path != null)
+            {
+                if (path.Parser.IsHidden)
+                {
+                    // this is not supposed to show up in completion
+                    // finish this sequence here
+                    break;
+                }
+                else if (path.Parser.IsRequired)
+                {
+                    path = path.GetChild(0);
+                    continue;
+                }
+                else if (path.Parser.IsConditional)
+                {
+                    // assume it is true and do true branch
+                    path = path.GetChild(1);
+                    continue;
+                }
+                else if (TryGetSpecialTexts(path.Parser, parts))
+                {
+                    path = GetNextParserInSequence(path, ceiling);
+                    continue;
+                }
+                else if (path.Parser.IsMatch 
+                    && GetCompletionItem(path.Parser) is CompletionItem item
+                    && item.DisplayText == item.BeforeText
+                    && item.AfterText == "")
+                {
+                    var text = item.BeforeText;
+
+                    // don't expand into open brackets and braces (names and client-parameters)
+                    if (text == "[" || text == "{")
+                    {
+                        // stop here and don't include the brackets
+                        break;
+                    }
+
+                    // cannot start on punctuation
+                    if (parts.Count == 0
+                        && IsPunctuation(item))
+                        return;
+
+                    parts.Add(item);
+
+                    // handle open parens specially
+                    if (text == "(")
+                    {
+                        parts.Add(new CompletionItem(")", beforeText: "", afterText: ")"));
+
+                        // end here
+                        builder.Add(CreateExtendedSyntaxCompletion(parts));
+                        return;
+                    }
+
+                    // continue to the next parser in sequence
+                    var next = GetNextParserInSequence(path, ceiling);
+                    path = next;
+                    continue;
+                }
+                else if (path.Parser.IsSequence && path.ChildCount > 0)
+                {
+                    // move down to first item in this sequence
+                    path = path.GetChild(0);
+                    continue;
+                }
+                else if (path.Parser.IsOptional && !path.Parser.IsRepetition)
+                {
+                    // do variation with optional item
+                    var currentCount = parts.Count;
+                    var optPath = path.GetChild(0);
+                    BuildExtendedSyntaxCompletions(optPath, ceiling, parts, builder);
+                    parts.SetCount(currentCount);
+
+                    // continue to next item
+                    path = GetNextParserInSequence(path, ceiling);
+                    continue;
+                }
+                else if (path.Parser.IsAlternation)
+                {
+                    // do all branches
+                    var currentCount = parts.Count;
+                    for (int a = 0; a < path.ChildCount; a++)
+                    {
+                        var altPath = path.GetChild(a);
+                        parts.SetCount(currentCount);
+                        BuildExtendedSyntaxCompletions(altPath, ceiling, parts, builder);
+                    }
+                    break;
+                }
+                else if (!path.Parser.IsForward
+                    && (!path.Parser.IsRepetition || (path.Parser.IsRepetition && !path.Parser.IsOptional))
+                    && path.ChildCount == 1)
+                {
+                    // drill down through this parser and continue
+                    path = path.GetChild(0);
+                    continue;
+                }
+
+                break;
+            }
+
+            if (parts.Count > 1)
+            {
+                var item = CreateExtendedSyntaxCompletion(parts);
+
+                if (item != null 
+                    && item.DisplayText != ""
+                    && !char.IsWhiteSpace(item.DisplayText[0])
+                    && !char.IsPunctuation(item.DisplayText[0]))
+                {
+                    builder.Add(item);
+                }
+            }
+        }
+
+        private static bool IsPunctuation(CompletionItem item) =>
+            item.DisplayText.Length > 0 && char.IsPunctuation(item.DisplayText[0]);
+
+        /// <summary>
+        /// Gets the first completion item from this parser one of its descendants.
+        /// </summary>
+        private CompletionItem GetDeepCompletionItem(Parser<LexicalToken> parser)
+        {
+            while (parser != null)
+            {
+                var item = GetCompletionItem(parser);
+                if (item != null)
+                    return item;
+
+                if (parser.ChildParserCount == 0)
+                    return null;
+
+                parser = parser.GetChildParser(0);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets <see cref="CompletionText"/> for special parser rules.
+        /// </summary>
+        private bool TryGetSpecialTexts(Parser<LexicalToken> parser, List<CompletionItem> items)
+        {
+            var commandGrammar = CurrentCommandGrammar;
+            var rules = commandGrammar.PredefinedRules;
+
+            // cannot start on special text
+            if (items.Count == 0)
+                return false;
+
+            if (rules.TableNameReference == parser
+                || rules.ExternalTableNameReference == parser
+                || rules.MaterializedViewNameReference == parser
+                || rules.DatabaseFunctionNameReference == parser
+                || rules.DatabaseNameReference == parser
+                || rules.ClusterNameReference == parser
+                || rules.DatabaseOrTableNameReference == parser
+                || rules.DatabaseOrTableOrColumnNameReference == parser
+                || rules.TableOrColumnNameReference == parser
+                || rules.DatabaseTableColumnNameReference == parser
+                || rules.ColumnNameReference == parser
+                || rules.ColumnNameReference == parser
+                || rules.TableColumnNameReference == parser
+                || rules.TableOrColumnNameReference == parser
+                || rules.ScriptInput == parser
+                || rules.QueryInput == parser
+                || rules.Value == parser
+                || rules.Type == parser
+                )
+            {
+                items.Add(new CompletionItem("", beforeText: " ", afterText: " "));
+                return true;
+            }
+            else if (rules.NameDeclaration == parser
+                || rules.QualifiedNameDeclaration == parser)
+            {
+                items.Add(new CompletionItem("", beforeText: " ", afterText: "name "));
+                return true;
+            }
+            else if (rules.FunctionDeclaration == parser)
+            {
+                items.Add(new CompletionItem("() { }"));
+                return true;
+            }
+            else if (rules.FunctionBody == parser)
+            {
+                items.Add(new CompletionItem("{ }"));
+                return true;
+            }
+            else if (rules.AnyGuidLiteralOrString == parser
+                || rules.GuidLiteral == parser
+                || rules.StringLiteral == parser
+                || rules.RawGuidLiteral == parser)
+            {
+                items.Add(new CompletionItem("\"\"", beforeText: "\"", afterText: "\""));
+                return true;
+            }
+            else if (rules.BracketedStringLiteral == parser)
+            {
+                items.Add(new CompletionItem("[]", beforeText: "[", afterText: "]"));
+                return true;
+            }
+            else if (parser.Tag != null
+                && parser.Tag.Length > 0
+                && parser.Tag[0] == '<')
+            {
+                items.Add(new CompletionItem(displayText: "", beforeText: " ", afterText: " "));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="CompletionItem"/> annotated on this parser or null.
+        /// </summary>
+        private static CompletionItem GetCompletionItem(Parser<LexicalToken> parser) =>
+            parser.Annotations.OfType<CompletionItem>().FirstOrDefault() is CompletionItem item ? item : null;
+
+        /// <summary>
+        /// Creates a <see cref="CompletionItem"/> from a list of <see cref="CompletionText"/>
+        /// </summary>
+        private static CompletionItem CreateExtendedSyntaxCompletion(IReadOnlyList<CompletionItem> items)
+        {
+            var texts = items.SelectMany(item => item.ApplyTexts).ToList();
+            var combinedTexts = CombineTexts(texts);
+
+            var displayText = items.Aggregate("", (s, item) => CombineWithSpacing(s, item.DisplayText));
+            
+            return new CompletionItem(items[0].Kind, displayText)
+                .WithApplyTexts(combinedTexts)
+                .WithRank(CompletionRank.Other)
+                .WithPriority(CompletionPriority.Low);
+        }
+
+        /// <summary>
+        /// Combines texts together with spacing if necessary.
+        /// </summary>
+        private static IReadOnlyList<CompletionText> CombineTexts(IReadOnlyList<CompletionText> texts)
+        {
+            var results = new List<CompletionText>();
+
+            for (int i = 0; i < texts.Count; i++)
+            {
+                var current = texts[i];
+
+                if (results.Count == 0)
+                {
+                    results.Add(current);
+                }
+                else
+                {
+                    var prev = results[results.Count - 1];
+                    if (prev is CompletionFixedText
+                        && !current.Caret
+                        && current is CompletionFixedText)
+                    {
+                        // combine fixed texts that are not caret positions
+                        results[results.Count - 1] = new CompletionFixedText(CombineWithSpacing(prev.Text, current.Text));
+                    }
+                    else if (NeedsSpacing(prev.Text, current.Text))
+                    {
+                        if (!current.Caret && current is CompletionFixedText)
+                        {
+                            results.Add(new CompletionFixedText(" " + current.Text));
+                        }
+                        else if (prev is CompletionFixedText)
+                        {
+                            results[results.Count - 1] = new CompletionFixedText(prev.Text + " ");
+                            results.Add(current);
+                        }
+                        else
+                        {
+                            results.Add(current);
+                        }
+                    }
+                    else
+                    {
+                        results.Add(current);
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        private static bool NeedsSpacing(string prev, string next)
+        {
+            return prev.Length > 0
+                && next.Length > 0
+                && NeedsSpacing(prev[prev.Length - 1], next[0]);
+        }
+
+        private static bool NeedsSpacing(char prev, char next)
+        {
+            if (IsDoubleTokenChar(prev) || IsDoubleTokenChar(next))
+                return true;
+            if (char.IsPunctuation(prev) && char.IsPunctuation(next))
+                return false;
+            if (char.IsWhiteSpace(prev) || char.IsWhiteSpace(next))
+                return false;
+            return true;
+        }
+
+        private static bool IsDoubleTokenChar(char ch) =>
+            ch == '=' || ch == '<' || ch == '>' || ch == '!' || ch == '~';
+
+        private static string CombineWithSpacing(string prev, string next)
+        {
+            if (NeedsSpacing(prev, next))
+            {
+                return prev + " " + next;
+            }
+            else
+            {
+                return prev + next;
+            }
+        }
+
+        private static ParserPath<LexicalToken> GetNextParserInSequence(
+            ParserPath<LexicalToken> path, 
+            ParserPath<LexicalToken> ceiling)
+        {
+            var current = path;
+
+            // find the sequence the parser is in
+            while (TryGetParentSequenceParser(current, ceiling, out var parent, out var index))
+            {
+                if (index + 1 < parent.ChildCount)
+                {
+                    return parent.GetChild(index + 1);
+                }
+
+                current = parent;
+            }
+
+            return null;
+        }
+
+        private static bool TryGetParentSequenceParser(
+            ParserPath<LexicalToken> path, 
+            ParserPath<LexicalToken> ceiling,
+            out ParserPath<LexicalToken> parent, 
+            out int index)
+        {
+            var child = path;
+
+            int count = 0;
+
+            while (child != null)
+            {
+                // cannot move up beyond the ceiling
+                if (child == ceiling
+                    || child.Parent == null)
+                    break;
+
+                parent = child.Parent;
+
+                if (parent.Parser.IsSequence)
+                {
+                    index = parent.Parser.GetChildParserIndex(child.Parser);
+                    return true;
+                }
+
+                child = parent;
+
+                // cycle detection
+                count++;
+                if (count > 100)
+                    break;
+            }
+
+            index = -1;
+            parent = null;
+            return false;
+        }
+#endregion
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kusto.Language.Editor
 {
@@ -10,7 +8,7 @@ namespace Kusto.Language.Editor
 
     /// <summary>
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("{DisplayText}")]
+    //[System.Diagnostics.DebuggerDisplay("{DisplayText}")]
     public class CompletionItem
     {
         /// <summary>
@@ -33,13 +31,35 @@ namespace Kusto.Language.Editor
         /// </summary>
         public IReadOnlyList<CompletionText> ApplyTexts { get; }
 
+        private string _beforeText;
+        private string _afterText;
+
         /// <summary>
         /// The text to apply before the cursor/caret.
         /// </summary>
-        public string BeforeText => 
-            ApplyTexts.Count > 0 
-                ? ApplyTexts[0].Text 
-                : "";
+        public string BeforeText
+        {
+            get
+            {
+                if (_beforeText == null && this.ApplyTexts.Count > 0)
+                {
+                    if (!this.ApplyTexts.Any(t => t.Caret))
+                    {
+                        // just the first text.. the rest if after the caret (if any)
+                        _beforeText = this.ApplyTexts[0].Text;
+                    }
+                    else
+                    {
+                        // all the text before the first caret marker
+                        var textsBeforeCaret = this.ApplyTexts.TakeWhile(t => t.Caret);
+                        _beforeText = string.Concat(textsBeforeCaret.Select(t => t.Text));
+                    }
+                }
+
+                return _beforeText ?? "";
+            }
+        }
+
 
         /// <summary>
         /// The text apply after the cursor/caret.
@@ -48,16 +68,29 @@ namespace Kusto.Language.Editor
         {
             get
             {
-                if (_afterText == null && this.ApplyTexts.Count > 1)
+                if (_afterText == null && this.ApplyTexts.Count > 0)
                 {
-                    _afterText = string.Concat(this.ApplyTexts.Skip(1).Select(t => t.Text));
+                    if (!this.ApplyTexts.Any(t => t.Caret))
+                    {
+                        if (this.ApplyTexts.Count > 1)
+                        {
+                            _afterText = string.Concat(this.ApplyTexts.Skip(1).Select(t => t.Text));
+                        }
+                        else
+                        {
+                            _afterText = "";
+                        }
+                    }
+                    else
+                    {
+                        // all the text after the first caret marker
+                        _afterText = string.Concat(this.ApplyTexts.SkipWhile(t => !t.Caret).Select(t => t.Text));
+                    }
                 }
 
-                return _afterText;
+                return _afterText ?? "";
             }
         }
-
-        private string _afterText;
 
         [Obsolete("Use BeforeText or ApplyTexts")]
         public string EditText => BeforeText;
@@ -117,12 +150,23 @@ namespace Kusto.Language.Editor
         {
         }
 
+        public CompletionItem(
+            string displayText,
+            string beforeText = null,
+            string afterText = null,
+            string matchText = null,
+            CompletionRank rank = CompletionRank.Default,
+            CompletionPriority priority = CompletionPriority.Normal)
+            : this(CompletionKind.Syntax, displayText, CreateApplyTexts(beforeText ?? displayText, afterText), matchText, rank, priority)
+        {
+        }
+
         private static IReadOnlyList<CompletionText> CreateApplyTexts(string beforeText, string afterText)
         {
             var list = new List<CompletionText>(2);
             list.Add(CompletionText.Fixed(beforeText ?? ""));
             if (afterText != null)
-                list.Add(CompletionText.Fixed(afterText));
+                list.Add(CompletionText.Fixed(afterText, caret: true));
             return list.ToReadOnly();
         }
 
@@ -297,20 +341,32 @@ namespace Kusto.Language.Editor
         }
     }
 
+    [System.Diagnostics.DebuggerDisplay("{Text}")]
     public abstract class CompletionText
     {
+        private string DebugText => Caret ? "^" + Text : Text;
+
+        /// <summary>
+        /// The fixed text portion of a completion
+        /// </summary>
         public string Text { get; }
 
-        protected CompletionText(string text) 
+        /// <summary>
+        /// True if the caret should be moved to start of this text.
+        /// </summary>
+        public bool Caret { get; }
+
+        protected CompletionText(string text, bool caret) 
         {
             this.Text = text;
+            this.Caret = caret;
         }
 
         /// <summary>
         /// Creates a new <see cref="CompletionText"/> that is fixed text.
         /// </summary>
-        public static CompletionFixedText Fixed(string text) =>
-            new CompletionFixedText(text);
+        public static CompletionFixedText Fixed(string text, bool caret = false) =>
+            new CompletionFixedText(text, caret);
 
         /// <summary>
         /// Creates a new <see cref="CompletionText"/> that is editable after applied.
@@ -321,8 +377,8 @@ namespace Kusto.Language.Editor
 
     public sealed class CompletionFixedText : CompletionText
     {
-        internal CompletionFixedText(string text)
-            : base (text)
+        internal CompletionFixedText(string text, bool caret = false)
+            : base (text, caret)
         {
         }
     }
@@ -330,7 +386,7 @@ namespace Kusto.Language.Editor
     public sealed class CompletionEditableText : CompletionText
     {
         internal CompletionEditableText(string text)
-            : base(text)
+            : base(text, true)
         {
         }
     }

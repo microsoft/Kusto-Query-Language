@@ -126,9 +126,71 @@ namespace Kusto.Language.Parsing
         public Parser<TInput> Hide() => this.WithIsHidden(true);
 
         /// <summary>
-        /// True if the parser can succeed with no input consumed.
+        /// True if the parser still succeeds if it does not match anything, 
+        /// and instead produces nothing.
         /// </summary>
         public virtual bool IsOptional => false;
+
+        /// <summary>
+        /// True if the parser still succeeds if it does not match anything,
+        /// but produces a fixed value instead.
+        /// </summary>
+        public virtual bool IsRequired => false;
+
+        /// <summary>
+        /// True if the parser succeeds if any one of many child parsers succeed.
+        /// </summary>
+        public virtual bool IsAlternation => false;
+
+        /// <summary>
+        /// True if the parser succeeds if all of many child parsers succeed in sequence.
+        /// </summary>
+        public virtual bool IsSequence => false;
+
+        /// <summary>
+        /// True if the parser produces multiple outputs from repeatedly parsing a child parser.
+        /// </summary>
+        public virtual bool IsRepetition => false;
+
+        /// <summary>
+        /// True if the parser matches input directly.
+        /// </summary>
+        public virtual bool IsMatch => false;
+
+        /// <summary>
+        /// True if this parser forwards to another parser,
+        /// meaning it may be involved in a cycle.
+        /// </summary>
+        public virtual bool IsForward => false;
+
+        public virtual bool IsNegation => false;
+
+        public virtual bool IsConditional => false;
+
+        /// <summary>
+        /// The number of child parsers this parser contains.
+        /// </summary>
+        public abstract int ChildParserCount { get; }
+
+        /// <summary>
+        /// Gets the child parser at the specified index.
+        /// </summary>
+        public abstract Parser<TInput> GetChildParser(int index);
+
+        /// <summary>
+        /// Gets the index of the child parser contained by this parser.
+        /// </summary>
+        public int GetChildParserIndex(Parser<TInput> childParser)
+        {
+            var childCount = this.ChildParserCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                if (this.GetChildParser(i) == childParser)
+                    return i;
+            }
+
+            return -1;
+        }
 
         /// <summary>
         /// Invokes the corresponding <see cref="ParserVisitor{TInput}"/> visit method.
@@ -154,30 +216,6 @@ namespace Kusto.Language.Parsing
         /// Returns the number of source items that are successfully matched by this parser, or a negative number indicating failure.
         /// </summary>
         public abstract int Scan(Source<TInput> input, int inputStart);
-    }
-
-    public struct ParseResult<TOutput>
-    {
-        /// <summary>
-        /// The number of input items consumed by the parser or a negative number if the parsing failed.
-        /// </summary>
-        public int Length { get; }
-
-        /// <summary>
-        /// The single produced result of the parser.
-        /// </summary>
-        public TOutput Value { get; }
-
-        /// <summary>
-        /// True if the parse was successful.
-        /// </summary>
-        public bool Succeeded => Length >= 0;
-
-        public ParseResult(int length, TOutput value)
-        {
-            this.Length = length;
-            this.Value = value;
-        }
     }
 
     /// <summary>
@@ -216,98 +254,5 @@ namespace Kusto.Language.Parsing
         /// <typeparam name="TNewOutput">The type to convert the output to.</typeparam>
         public Parser<TInput, TNewOutput> Cast<TNewOutput>() =>
             Parsers<TInput>.Rule(this, o => (TNewOutput)(object)o).WithTag(this.Tag);
-    }
-
-    /// <summary>
-    /// A parser that is allowed on the right side of an Apply.
-    /// </summary>
-    public struct RightParser<TInput, TOutput>
-    {
-        /// <summary>
-        /// The underlying parser that is on the right side of an Apply.
-        /// </summary>
-        internal Parser<TInput, TOutput> Parser { get; }
-
-        internal RightParser(Parser<TInput, TOutput> parser)
-        {
-            this.Parser = parser;
-        }
-
-        /// <summary>
-        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the tag specified.
-        /// </summary>
-        public RightParser<TInput, TOutput> WithTag(string tag) => new RightParser<TInput, TOutput>(this.Parser.WithTag(tag));
-
-        /// <summary>
-        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the annotations specified.
-        /// </summary>
-        public RightParser<TInput, TOutput> WithAnnotations(IEnumerable<object> annotations) => new RightParser<TInput, TOutput>(this.Parser.WithAnnotations(annotations));
-
-        /// <summary>
-        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the IsHidden property specified.
-        /// </summary>
-        public RightParser<TInput, TOutput> WithIsHidden(bool isHidden) => new RightParser<TInput, TOutput>(this.Parser.WithIsHidden(isHidden));
-
-        /// <summary>
-        /// Creates a copy of this <see cref="RightParser{TInput, TOutput}"/> with the IsHidden property set to true.
-        /// </summary>
-        public RightParser<TInput, TOutput> Hide() => this.WithIsHidden(true);
-    }
-
-    public static class ParserExtensions
-    {
-        /// <summary>
-        /// Parses the text into the output list.
-        /// </summary>
-        public static int Parse(this Parser<char> parser, string text, List<object> output)
-        {
-            return parser.Parse(new TextSource(text), 0, output, 0);
-        }
-
-        /// <summary>
-        /// Parses the text and returns a single output value in <see cref="ParseResult{TOutput}"/>.
-        /// </summary>
-        public static ParseResult<TOutput> Parse<TOutput>(this Parser<char, TOutput> parser, string text)
-        {
-            return parser.Parse(new TextSource(text), 0);
-        }
-
-        /// <summary>
-        /// Returns true if the parser successfully parses the text. 
-        /// Returns the produced value as an out parameter.
-        /// </summary>
-        public static bool TryParse<TOutput>(this Parser<char, TOutput> parser, string text, out TOutput value)
-        {
-            var result = parser.Parse(text);
-            value = result.Value;
-            return result.Length > 0;
-        }
-    }
-
-    /// <summary>
-    /// A parsed value and its source offset.
-    /// </summary>
-    public struct OffsetValue<TValue>
-    {
-        /// <summary>
-        /// The text offset of the value in the source.
-        /// </summary>
-        public readonly int Offset;
-
-        /// <summary>
-        /// The value located at the offset.
-        /// </summary>
-        public readonly TValue Value;
-
-        /// <summary>
-        /// Constructs a new <see cref="OffsetValue{TValue}"/>
-        /// </summary>
-        /// <param name="offset">The text offset of the value in the source.</param>
-        /// <param name="value">The value located at the offset.</param>
-        public OffsetValue(int offset, TValue value)
-        {
-            this.Offset = offset;
-            this.Value = value;
-        }
     }
 }

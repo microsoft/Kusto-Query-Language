@@ -25,6 +25,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public Parser<LexicalToken, CommandBlock> CommandBlock { get; }
 
+        public PredefinedRuleParsers PredefinedRules { get; }
 
         public CommandGrammar(GlobalState globals)
         {
@@ -40,7 +41,7 @@ namespace Kusto.Language.Parsing
             // include parsers for all command symbols
             var queryParser = QueryGrammar.From(globals);
 
-            var rules = new PredefinedRuleParsers(queryParser, queryInput, scriptInput);
+            var rules = this.PredefinedRules = new PredefinedRuleParsers(queryParser, queryInput, scriptInput);
             var commandParsers = this.CreateCommandParsers(rules).ToArray();
             var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
 
