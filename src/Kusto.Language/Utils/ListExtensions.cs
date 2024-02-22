@@ -282,33 +282,19 @@ namespace Kusto.Language.Utils
         }
 
         /// <summary>
-        /// Returns a new list with a new item inserted at the specified index.
+        /// Returns a new list with the item added.
         /// </summary>
-        public static IReadOnlyList<T> Insert<T>(this IReadOnlyList<T> list, int index, T newItem)
+        public static IReadOnlyList<T> Append<T>(this IReadOnlyList<T> list, T newItem)
         {
-            if (list.Count >= index)
-            {
-                var newList = list.ToList();
-                newList.Insert(index, newItem);
-                return newList.ToReadOnly();
-            }
-
-            return list;
+            return ReplaceRange(list, list.Count, 0, newItem);
         }
 
         /// <summary>
-        /// Returns a new list with the item at the specified index removed.
+        /// Returns a new list with the items added.
         /// </summary>
-        public static IReadOnlyList<T> RemoveAt<T>(this IReadOnlyList<T> list, int index)
+        public static IReadOnlyList<T> Append<T>(this IReadOnlyList<T> list, IReadOnlyList<T> newItems)
         {
-            if (list.Count >= index)
-            {
-                var newList = list.ToList();
-                newList.RemoveAt(index);
-                return newList.ToReadOnly();
-            }
-
-            return list;
+            return ReplaceRange(list, list.Count, 0, newItems);
         }
 
         /// <summary>
@@ -316,14 +302,51 @@ namespace Kusto.Language.Utils
         /// </summary>
         public static IReadOnlyList<T> Replace<T>(this IReadOnlyList<T> list, int index, T newItem)
         {
-            if (list.Count > index && !EqualityComparer<T>.Default.Equals(list[index], newItem))
+            return ReplaceRange(list, index, 1, newItem);
+        }
+
+        /// <summary>
+        /// Returns a new list with the items in the specified range replaced with the new item.
+        /// </summary>
+        public static IReadOnlyList<T> ReplaceRange<T>(this IReadOnlyList<T> list, int start, int length, T newItem)
+        {
+            var newList = list.ToList();
+            
+            if (length > 0 && start >= 0 && start < newList.Count)
             {
-                var array = list.ToArray();
-                array[index] = newItem;
-                return array.ToReadOnly();
+                var removed = Math.Min(newList.Count - start, length);
+                if (removed > 0)
+                    newList.RemoveRange(start, removed);
             }
 
-            return list;
+            if (newItem != null && start >= 0 && start <= newList.Count)
+            {
+                newList.Insert(start, newItem);
+            }
+
+            return newList;
+        }
+
+        /// <summary>
+        /// Returns a new list with the items in the specified range replaced with the new item.
+        /// </summary>
+        public static IReadOnlyList<T> ReplaceRange<T>(this IReadOnlyList<T> list, int start, int length, IReadOnlyList<T> newItems)
+        {
+            var newList = list.ToList();
+
+            if (length > 0 && start >= 0 && start < newList.Count)
+            {
+                var removed = Math.Min(newList.Count - start, length);
+                if (removed > 0)
+                    newList.RemoveRange(start, removed);
+            }
+
+            if (newItems != null && newItems.Count  > 0 && start >= 0 && start <= newList.Count)
+            {
+                newList.InsertRange(start, newItems);
+            }
+
+            return newList;
         }
     }
 

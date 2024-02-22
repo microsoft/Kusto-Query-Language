@@ -410,7 +410,7 @@ namespace Kusto.Language.Parsing
 
             if (ctext != null)
             {
-                item = item.WithApplyTexts(CompletionItem.ParseApplyTexts(ctext));
+                item = item.WithApplyTexts(ctext);
             }
 
             return item;

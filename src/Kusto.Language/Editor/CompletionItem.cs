@@ -7,8 +7,9 @@ namespace Kusto.Language.Editor
     using Utils;
 
     /// <summary>
+    /// Represents an individual option in an intellisense completion list.
     /// </summary>
-    //[System.Diagnostics.DebuggerDisplay("{DisplayText}")]
+    [System.Diagnostics.DebuggerDisplay("{DisplayText}")]
     public class CompletionItem
     {
         /// <summary>
@@ -43,16 +44,18 @@ namespace Kusto.Language.Editor
             {
                 if (_beforeText == null && this.ApplyTexts.Count > 0)
                 {
-                    if (!this.ApplyTexts.Any(t => t.Caret))
+                    var caretIndex = this.CaretIndex;
+                    if (caretIndex > 0)
                     {
-                        // just the first text.. the rest if after the caret (if any)
-                        _beforeText = this.ApplyTexts[0].Text;
+                        _beforeText = string.Concat(this.ApplyTexts.Take(caretIndex).Select(t => t.Text));
+                    }
+                    else if (caretIndex < 0)
+                    {
+                        _beforeText = string.Concat(this.ApplyTexts.Select(t => t.Text));
                     }
                     else
                     {
-                        // all the text before the first caret marker
-                        var textsBeforeCaret = this.ApplyTexts.TakeWhile(t => t.Caret);
-                        _beforeText = string.Concat(textsBeforeCaret.Select(t => t.Text));
+                        _beforeText = "";
                     }
                 }
 
@@ -70,21 +73,14 @@ namespace Kusto.Language.Editor
             {
                 if (_afterText == null && this.ApplyTexts.Count > 0)
                 {
-                    if (!this.ApplyTexts.Any(t => t.Caret))
+                    var caretIndex = this.CaretIndex;
+                    if (caretIndex >= 0)
                     {
-                        if (this.ApplyTexts.Count > 1)
-                        {
-                            _afterText = string.Concat(this.ApplyTexts.Skip(1).Select(t => t.Text));
-                        }
-                        else
-                        {
-                            _afterText = "";
-                        }
+                        _afterText = string.Concat(this.ApplyTexts.Skip(caretIndex).Select(t => t.Text));
                     }
                     else
                     {
-                        // all the text after the first caret marker
-                        _afterText = string.Concat(this.ApplyTexts.SkipWhile(t => !t.Caret).Select(t => t.Text));
+                        _afterText = "";
                     }
                 }
 
@@ -96,10 +92,9 @@ namespace Kusto.Language.Editor
         public string EditText => BeforeText;
 
         /// <summary>
-        /// True if any segment of the <see cref="ApplyTexts"/> is editable after completion.
+        /// True if completion should be retriggered automatically after this item is inserted and the caret positioned.
         /// </summary>
-        public bool IsEditable => 
-            this.ApplyTexts.Any(t => t is CompletionEditableText);
+        public bool Retrigger { get; }
 
         /// <summary>
         /// The ranking that controls the ordering of categories of completion items.
@@ -117,7 +112,8 @@ namespace Kusto.Language.Editor
             IReadOnlyList<CompletionText> applyTexts,
             string matchText,
             CompletionRank rank,
-            CompletionPriority priority)
+            CompletionPriority priority,
+            bool retrigger)
         {
             this.Kind = kind;
             this.DisplayText = displayText ?? "";
@@ -125,6 +121,7 @@ namespace Kusto.Language.Editor
             this.ApplyTexts = applyTexts.ToReadOnly();
             this.Rank = rank;
             this.Priority = priority;
+            this.Retrigger = retrigger;
         }
 
         /// <summary>
@@ -137,7 +134,6 @@ namespace Kusto.Language.Editor
         /// <param name="matchText">The text to match against user typing. If not specified the displayText is used.</param>
         /// <param name="rank">The rank of the completion item determines the category for ordering in the completion list.</param>
         /// <param name="priority">The priority of the completion item determines the ordering within the items rank.</param>
-        /// <returns></returns>
         public CompletionItem(
             CompletionKind kind,
             string displayText,
@@ -145,41 +141,76 @@ namespace Kusto.Language.Editor
             string afterText = null,
             string matchText = null,
             CompletionRank rank = CompletionRank.Default,
-            CompletionPriority priority = CompletionPriority.Normal)
-            : this(kind, displayText, CreateApplyTexts(beforeText ?? displayText, afterText), matchText, rank, priority)
+            CompletionPriority priority = CompletionPriority.Normal,
+            bool retrigger = false)
+            : this(kind, displayText, CreateApplyTexts(beforeText ?? displayText, afterText), matchText, rank, priority, retrigger)
         {
         }
 
+        /// <summary>
+        /// Creates a <see cref="CompletionItem"/> instance.
+        /// </summary>
+        /// <param name="displayText">The text to display in the completion list for the item.</param>
+        /// <param name="beforeText">The text to apply before the cursor/caret. If not specified the displayText is used.</param>
+        /// <param name="afterText">The text to apply after the cursor/caret.</param>
+        /// <param name="matchText">The text to match against user typing. If not specified the displayText is used.</param>
+        /// <param name="rank">The rank of the completion item determines the category for ordering in the completion list.</param>
+        /// <param name="priority">The priority of the completion item determines the ordering within the items rank.</param>
         public CompletionItem(
             string displayText,
             string beforeText = null,
             string afterText = null,
             string matchText = null,
             CompletionRank rank = CompletionRank.Default,
-            CompletionPriority priority = CompletionPriority.Normal)
-            : this(CompletionKind.Syntax, displayText, CreateApplyTexts(beforeText ?? displayText, afterText), matchText, rank, priority)
+            CompletionPriority priority = CompletionPriority.Normal,
+            bool retrigger = false)
+            : this(CompletionKind.Syntax, displayText, CreateApplyTexts(beforeText ?? displayText, afterText), matchText, rank, priority, retrigger)
         {
         }
 
         private static IReadOnlyList<CompletionText> CreateApplyTexts(string beforeText, string afterText)
         {
             var list = new List<CompletionText>(2);
-            list.Add(CompletionText.Fixed(beforeText ?? ""));
+            list.Add(CompletionText.Create(beforeText ?? ""));
             if (afterText != null)
-                list.Add(CompletionText.Fixed(afterText, caret: true));
+                list.Add(CompletionText.Create(afterText, caret: true));
             return list.ToReadOnly();
         }
 
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="Kind"/> property modified.
+        /// This is typically used to select an icon/glyph for the completion item UI.
+        /// </summary>
         public CompletionItem WithKind(CompletionKind kind)
         {
-            return new CompletionItem(kind, this.DisplayText, this.ApplyTexts, this.MatchText, this.Rank, this.Priority);
+            return new CompletionItem(
+                kind, 
+                this.DisplayText, 
+                this.ApplyTexts, 
+                this.MatchText, 
+                this.Rank, 
+                this.Priority, 
+                this.Retrigger);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="DisplayText"/> property modified.
+        /// </summary>
         public CompletionItem WithDisplayText(string displayText)
         {
-            return new CompletionItem(this.Kind, displayText, this.ApplyTexts, this.MatchText, this.Rank, this.Priority);
+            return new CompletionItem(
+                this.Kind,
+                displayText,
+                this.ApplyTexts,
+                this.MatchText,
+                this.Rank,
+                this.Priority,
+                this.Retrigger);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="MatchText"/> property modified.
+        /// </summary>
         public CompletionItem WithMatchText(string matchText)
         {
             return new CompletionItem(
@@ -188,12 +219,13 @@ namespace Kusto.Language.Editor
                 this.ApplyTexts,
                 matchText,
                 this.Rank,
-                this.Priority
+                this.Priority,
+                this.Retrigger
                 );
         }
 
         /// <summary>
-        /// Creates a new <see cref="CompletionItem"/> with the <see cref="ApplyTexts"/> specified.
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="ApplyTexts"/> property modified.
         /// </summary>
         public CompletionItem WithApplyTexts(IReadOnlyList<CompletionText> applyTexts)
         {
@@ -203,28 +235,65 @@ namespace Kusto.Language.Editor
                 applyTexts,
                 this.MatchText,
                 this.Rank,
-                this.Priority
+                this.Priority,
+                this.Retrigger
                 );
         }
 
         /// <summary>
-        /// Creates a new <see cref="CompletionItem"/> with the <see cref="ApplyTexts"/> specified.
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="ApplyTexts"/> property modified.
         /// </summary>
         public CompletionItem WithApplyTexts(params CompletionText[] applyTexts)
         {
             return WithApplyTexts((IReadOnlyList<CompletionText>)applyTexts);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="ApplyTexts"/> property modified.
+        /// </summary>
+        public CompletionItem WithApplyTexts(string textWithMarkers)
+        {
+            return WithApplyTexts(CompletionText.Parse(textWithMarkers));
+        }
+
+        /// <summary>
+        /// Returns the index of the <see cref="ApplyTexts"/> that contains the caret
+        /// </summary>
+        private int CaretIndex
+        {
+            get
+            {
+                for (int i = 0; i < this.ApplyTexts.Count; i++)
+                {
+                    if (this.ApplyTexts[i].Caret)
+                        return i;
+                }
+
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="BeforeText"/> property modified.
+        /// </summary>
         public CompletionItem WithBeforeText(string beforeText)
         {
+            var newBeforeText = CompletionText.Create(beforeText);
+            var caretIndex = this.CaretIndex;
+            var newApplyTexts = caretIndex >= 0
+                ? this.ApplyTexts.ReplaceRange(0, caretIndex, newBeforeText)
+                : new[] { newBeforeText };
+
             return new CompletionItem(
                 this.Kind,
                 this.DisplayText,
-                this.ApplyTexts.Replace(0, CompletionText.Fixed(beforeText)),
+                newApplyTexts,
                 this.MatchText,
                 this.Rank,
-                this.Priority);
+                this.Priority,
+                this.Retrigger);
         }
+
 
         [Obsolete("Use WithBeforeText")]
         public CompletionItem WithEditText(string editText)
@@ -232,38 +301,33 @@ namespace Kusto.Language.Editor
             return WithBeforeText(editText);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="AfterText"/> property modified.
+        /// </summary>
         public CompletionItem WithAfterText(string afterText)
         {
-            var newParts = this.ApplyTexts;
-            if (afterText == null)
-            {
-                newParts = newParts.Count == 2 ? newParts.RemoveAt(1) 
-                    : newParts;
-            }
-            else
-            {
-                var newAfterText = CompletionText.Fixed(afterText);
-                newParts = newParts.Count == 2 ? newParts.Replace(1, newAfterText)
-                        : newParts.Count == 1 ? newParts.Insert(1, newAfterText)
-                        : newParts;
-            }
+            var newAfterText = CompletionText.Create(afterText, caret: true);
+            var caretIndex = this.CaretIndex;
+            var newApplyTexts =
+                caretIndex > 0 ? this.ApplyTexts.ReplaceRange(caretIndex, this.ApplyTexts.Count - caretIndex, newAfterText)
+                : caretIndex == 0 ? new[] { newAfterText }
+                : this.ApplyTexts.Append(newAfterText);
 
-            if (newParts != this.ApplyTexts)
-            {
-                return new CompletionItem(
-                    this.Kind,
-                    this.DisplayText,
-                    newParts,
-                    this.MatchText,
-                    this.Rank,
-                    this.Priority
-                    );
-            }
-
-            return this;
+            return new CompletionItem(
+                this.Kind,
+                this.DisplayText,
+                newApplyTexts,
+                this.MatchText,
+                this.Rank,
+                this.Priority,
+                this.Retrigger
+                );
         }
 
-        public CompletionItem WithRank(CompletionRank rank)
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="Rank"/> property modified.
+        /// </summary>
+        internal CompletionItem WithRank(CompletionRank rank)
         {
             return new CompletionItem(
                 this.Kind,
@@ -271,10 +335,14 @@ namespace Kusto.Language.Editor
                 this.ApplyTexts,
                 this.MatchText,
                 rank,
-                this.Priority);
+                this.Priority,
+                this.Retrigger);
         }
 
-        public CompletionItem WithPriority(CompletionPriority priority)
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="Priority"/> property modified.
+        /// </summary>
+        internal CompletionItem WithPriority(CompletionPriority priority)
         {
             return new CompletionItem(
                 this.Kind,
@@ -282,9 +350,68 @@ namespace Kusto.Language.Editor
                 this.ApplyTexts,
                 this.MatchText,
                 this.Rank,
-                priority
+                priority,
+                this.Retrigger
                 );
         }
+
+        /// <summary>
+        /// Creates a new <see cref="CompletionItem"/> with the <see cref="Priority"/> property modified.
+        /// </summary>
+        public CompletionItem WithRetrigger(bool retrigger)
+        {
+            return new CompletionItem(
+                this.Kind,
+                this.DisplayText,
+                this.ApplyTexts,
+                this.MatchText,
+                this.Rank,
+                this.Priority,
+                retrigger
+                );
+        }
+    }
+
+    /// <summary>
+    /// An individual text segment for a <see cref="CompletionItem"/>
+    /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{Text}")]
+    public class CompletionText
+    {
+        /// <summary>
+        /// The text to apply to insert.
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>
+        /// True if the caret should be moved to start of this text after being inserted.
+        /// </summary>
+        public bool Caret { get; }
+
+        /// <summary>
+        /// True if the text should be selected after being inserted. 
+        /// </summary>
+        public bool Select { get; }
+
+        protected CompletionText(string text, bool caret, bool select) 
+        {
+            this.Text = text;
+            this.Caret = caret;
+            this.Select = select;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CompletionText"/>.
+        /// </summary>
+        public static CompletionText Create(string text, bool caret = false, bool select = false) =>
+            new CompletionText(text, caret, select);
+
+        /// <summary>
+        /// Creates a new <see cref="CompletionText"/> that is intended to be editted.
+        /// </summary>
+        public static CompletionText CreateEdit(string text) =>
+            new CompletionText(text, caret: true, select: true);
+
 
         private const string DefaultCursorMarker = "|";
         private const string DefaultStartMarker = "[[";
@@ -293,10 +420,10 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Parses the text into a list of <see cref="CompletionText"/>.
         /// </summary>
-        public static IReadOnlyList<CompletionText> ParseApplyTexts(
-            string textWithMarkers, 
-            string cursorMarker = DefaultCursorMarker, 
-            string startMarker = DefaultStartMarker, 
+        public static IReadOnlyList<CompletionText> Parse(
+            string textWithMarkers,
+            string cursorMarker = DefaultCursorMarker,
+            string startMarker = DefaultStartMarker,
             string endMarker = DefaultEndMarker)
         {
             var list = new List<CompletionText>();
@@ -306,8 +433,8 @@ namespace Kusto.Language.Editor
             {
                 var beforeCursorText = cursorPos > 0 ? textWithMarkers.Substring(0, cursorPos) : "";
                 var afterCursorText = textWithMarkers.Substring(cursorPos + cursorMarker.Length);
-                list.Add(CompletionText.Fixed(beforeCursorText));
-                list.Add(CompletionText.Fixed(afterCursorText));
+                list.Add(CompletionText.Create(beforeCursorText));
+                list.Add(CompletionText.Create(afterCursorText, caret: true));
             }
             else
             {
@@ -322,72 +449,21 @@ namespace Kusto.Language.Editor
                         {
                             if (startPos > pos)
                             {
-                                // add fixed segment between edit segments
-                                list.Add(CompletionText.Fixed(textWithMarkers.Substring(pos, startPos - pos)));
+                                list.Add(CompletionText.Create(textWithMarkers.Substring(pos, startPos - pos)));
                             }
 
-                            list.Add(CompletionText.Editable(textWithMarkers.Substring(startPos + startMarker.Length, endPos - (startPos + startMarker.Length))));
+                            list.Add(CompletionText.CreateEdit(textWithMarkers.Substring(startPos + startMarker.Length, endPos - (startPos + startMarker.Length))));
                             pos = endPos + endMarker.Length;
                             continue;
                         }
                     }
 
-                    list.Add(CompletionText.Fixed(textWithMarkers.Substring(pos)));
+                    list.Add(CompletionText.Create(textWithMarkers.Substring(pos)));
                     pos = textWithMarkers.Length;
                 }
             }
 
             return list.ToReadOnly();
-        }
-    }
-
-    [System.Diagnostics.DebuggerDisplay("{Text}")]
-    public abstract class CompletionText
-    {
-        private string DebugText => Caret ? "^" + Text : Text;
-
-        /// <summary>
-        /// The fixed text portion of a completion
-        /// </summary>
-        public string Text { get; }
-
-        /// <summary>
-        /// True if the caret should be moved to start of this text.
-        /// </summary>
-        public bool Caret { get; }
-
-        protected CompletionText(string text, bool caret) 
-        {
-            this.Text = text;
-            this.Caret = caret;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="CompletionText"/> that is fixed text.
-        /// </summary>
-        public static CompletionFixedText Fixed(string text, bool caret = false) =>
-            new CompletionFixedText(text, caret);
-
-        /// <summary>
-        /// Creates a new <see cref="CompletionText"/> that is editable after applied.
-        /// </summary>
-        public static CompletionEditableText Editable(string text) =>
-            new CompletionEditableText(text);
-    }
-
-    public sealed class CompletionFixedText : CompletionText
-    {
-        internal CompletionFixedText(string text, bool caret = false)
-            : base (text, caret)
-        {
-        }
-    }
-
-    public sealed class CompletionEditableText : CompletionText
-    {
-        internal CompletionEditableText(string text)
-            : base(text, true)
-        {
         }
     }
 }

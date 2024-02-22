@@ -39,10 +39,29 @@ namespace Kusto.Language.Editor
             {
             }
 
-            public IReadOnlyList<CompletionItem> ToList() => list.AsReadOnly();
+            public int Count => list.Count;
+
+
+            private IReadOnlyList<CompletionItem> _frozenList;
+
+            public IReadOnlyList<CompletionItem> Items
+            {
+                get
+                {
+                    if (_frozenList == null)
+                    {
+                        var tmp = list.ToReadOnly();
+                        Interlocked.CompareExchange(ref _frozenList, tmp, null);
+                    }
+
+                    return _frozenList;
+                }
+            }
 
             public void Add(CompletionItem item)
             {
+                _frozenList = null;
+
                 if (indexMap.TryGetValue(item.DisplayText, out var existingItemIndex))
                 {
                     var better = GetBetterItem(list[existingItemIndex], item);
@@ -103,7 +122,9 @@ namespace Kusto.Language.Editor
                 GetSyntaxCompletions(editStart, builder);
             }
 
-            var items = builder.ToList();
+            var items = builder.Items
+                .Select(it => Retriggered(it))
+                .ToList();
 
             // order completions by rank, priority & display name
             var orderedItems = items
@@ -113,6 +134,26 @@ namespace Kusto.Language.Editor
                  .ToArray();
 
             return new CompletionInfo(orderedItems, editStart, editLength);
+        }
+
+        /// <summary>
+        /// Enable retrigger of completion automatically from text before caret after insertion
+        /// </summary>
+        private CompletionItem Retriggered(CompletionItem item)
+        {
+            if (!item.Retrigger)
+            {
+                var prevChar = item.BeforeText.Length > 0
+                    ? item.BeforeText[item.BeforeText.Length - 1]
+                    : '\0';
+
+                if (char.IsWhiteSpace(prevChar) || prevChar == '(')
+                {
+                    item = item.WithRetrigger(true);
+                }
+            }
+
+            return item;
         }
 
         /// <summary>
@@ -543,9 +584,9 @@ namespace Kusto.Language.Editor
 
                 foreach (var item in symbolItems)
                 {
-                    if (ShouldAugmentSymbolCompletionItem(symbol, hint))
+                    if (ShouldAddSpaceToCompletionItem(symbol, hint))
                     {
-                        builder.Add(GetAugmentedCompletionItem(item));
+                        builder.Add(AddSpaceToCompletionItem(item));
                     }
                     else
                     {
@@ -589,7 +630,7 @@ namespace Kusto.Language.Editor
             return false;
         }
 
-        private bool ShouldAugmentSymbolCompletionItem(Symbol symbol, CompletionHint hint)
+        private bool ShouldAddSpaceToCompletionItem(Symbol symbol, CompletionHint hint)
         {
             // only append space if the symbol is in a boolean context and is not itself boolean
             return (hint & CompletionHint.Boolean) != 0
@@ -971,7 +1012,7 @@ namespace Kusto.Language.Editor
                 var matchText = fc.Name.SimpleName;
 
                 var item = new CompletionItem(CompletionKind.Example, displayText, matchText: matchText, priority: CompletionPriority.Top)
-                    .WithApplyTexts(CompletionItem.ParseApplyTexts(applyTextWithMarkers));
+                    .WithApplyTexts(applyTextWithMarkers);
 
                 builder.Add(item);
             }
@@ -2219,7 +2260,7 @@ namespace Kusto.Language.Editor
                 {
                     if (ShouldAugmentSyntaxCompletionItem(item))
                     {
-                        var augmentedItem = GetAugmentedCompletionItem(item);
+                        var augmentedItem = AddSpaceToCompletionItem(item);
                         builder.Add(augmentedItem);
                     }
                     else
@@ -2236,11 +2277,16 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private CompletionItem GetAugmentedCompletionItem(CompletionItem item)
+        private CompletionItem AddSpaceToCompletionItem(CompletionItem item)
         {
-            if (item.ApplyTexts.Count != 1 || item.IsEditable)
-                return item;
-            return item.WithBeforeText(item.BeforeText + " ");
+            // add space after before text to help trigger completion again
+            if (item.BeforeText.Length > 0 
+                && !char.IsWhiteSpace(item.BeforeText[item.BeforeText.Length - 1]))
+            {
+                return item.WithBeforeText(item.BeforeText + " ");
+            }
+
+            return item;
         }
 
         private static IReadOnlyList<string> punctuationWithoutSpace =
@@ -2814,14 +2860,13 @@ namespace Kusto.Language.Editor
         /// </summary>
         private void GetExtendedSyntaxCompletions(int position, CompletionBuilder builder)
         {
-            var tmpBuilder = new CompletionBuilder();
-
             var items = _completionItemListPool.AllocateFromPool();
             try
             {
                 var paths = GetAnnotatedParserPaths(position);
 
                 var rootPaths = paths
+                    .Where(p => !IsInConditionalTest(p))
                     .Select(p => GetLocalRoot(p))
                     .Where(p => p.Parent != null 
                         && GetDeepCompletionItem(p.Parser) is CompletionItem item 
@@ -2837,10 +2882,10 @@ namespace Kusto.Language.Editor
                     // use that parent sequence as a limiter for the extension
                     var ceiling = path.Parent;
 
+                    var tmpBuilder = new CompletionBuilder();
                     BuildExtendedSyntaxCompletions(path, ceiling, items, tmpBuilder);
+                    builder.AddRange(tmpBuilder.Items);
                 }
-
-                builder.AddRange(tmpBuilder.ToList());
             }
             catch (Exception e)
             {
@@ -2855,6 +2900,13 @@ namespace Kusto.Language.Editor
         private static readonly ObjectPool<List<CompletionItem>> _completionItemListPool =
             new ObjectPool<List<CompletionItem>>(() => new List<CompletionItem>(), list => list.Clear());
 
+
+        private static bool IsInConditionalTest(ParserPath<LexicalToken> path)
+        {
+            return TryGetFirstAncestorConditional(path, null, out var _, out int index)
+                && index == 0;
+        }
+
         /// <summary>
         /// Gets the parent sequence of the 
         /// </summary>
@@ -2862,10 +2914,11 @@ namespace Kusto.Language.Editor
         {
             var current = path;
 
+
             while (true)
             {
                 // find the immediate parent sequence.
-                if (TryGetParentSequenceParser(current, null, out var parent, out int index))
+                if (TryGetFirstAncestorSequence(current, null, out var parent, out int index))
                 {
                     if (parent.ChildCount > 1)
                     {
@@ -2883,6 +2936,9 @@ namespace Kusto.Language.Editor
             }
         }
 
+        private static int MaxExtensionSize = 10;
+        private static int MaxExtensionCount = 20;
+
         /// <summary>
         /// Builds the next step of extended completions given the completion texts aggregates so far
         /// and the current grammar parser.
@@ -2895,10 +2951,19 @@ namespace Kusto.Language.Editor
         {
             while (path != null)
             {
+                // too many extensions
+                if (builder.Count >= MaxExtensionCount)
+                    return;
+
                 if (path.Parser.IsHidden)
                 {
                     // this is not supposed to show up in completion
                     // finish this sequence here
+                    break;
+                }
+                else if (path.Parser.IsForward)
+                {
+                    // end here to avoid cycles
                     break;
                 }
                 else if (path.Parser.IsRequired)
@@ -2917,21 +2982,14 @@ namespace Kusto.Language.Editor
                     path = GetNextParserInSequence(path, ceiling);
                     continue;
                 }
-                else if (path.Parser.IsMatch 
+                else if (path.Parser.IsMatch
                     && GetCompletionItem(path.Parser) is CompletionItem item
                     && item.DisplayText == item.BeforeText
                     && item.AfterText == "")
                 {
                     var text = item.BeforeText;
 
-                    // don't expand into open brackets and braces (names and client-parameters)
-                    if (text == "[" || text == "{")
-                    {
-                        // stop here and don't include the brackets
-                        break;
-                    }
-
-                    // cannot start on punctuation
+                    // don't start extended completions on punctuation
                     if (parts.Count == 0
                         && IsPunctuation(item))
                         return;
@@ -2939,25 +2997,45 @@ namespace Kusto.Language.Editor
                     parts.Add(item);
 
                     // handle open parens specially
-                    if (text == "(")
+                    if (IsStartBracket(text))
                     {
-                        parts.Add(new CompletionItem(")", beforeText: "", afterText: ")"));
+                        var endBracket = GetEndBracket(text);
+                        parts.Add(new CompletionItem(endBracket, beforeText: "", afterText: endBracket));
 
-                        // end here
-                        builder.Add(CreateExtendedSyntaxCompletion(parts));
-                        return;
+                        // skip to ) and continue from there
+                        var endParen = FindNextSibling(path, ceiling, endBracket);
+                        if (endParen != null)
+                        {
+                            // continue at next after close paren
+                            path = GetNextParserInSequence(endParen, ceiling);
+                            continue;
+                        }
+                        else
+                        {
+                            // end here
+                            break;
+                        }
                     }
-
-                    // continue to the next parser in sequence
-                    var next = GetNextParserInSequence(path, ceiling);
-                    path = next;
-                    continue;
+                    else
+                    {
+                        // continue to the next in sequence
+                        path = GetNextParserInSequence(path, ceiling);
+                        continue;
+                    }
                 }
                 else if (path.Parser.IsSequence && path.ChildCount > 0)
                 {
-                    // move down to first item in this sequence
-                    path = path.GetChild(0);
-                    continue;
+                    if (parts.Count < MaxExtensionSize)
+                    {
+                        // move down to first item in this sequence
+                        path = path.GetChild(0);
+                        continue;
+                    }
+                    else
+                    {
+                        // don't start a new sequence if we are too long already
+                        break;
+                    }
                 }
                 else if (path.Parser.IsOptional && !path.Parser.IsRepetition)
                 {
@@ -2968,6 +3046,18 @@ namespace Kusto.Language.Editor
                     parts.SetCount(currentCount);
 
                     // continue to next item
+                    path = GetNextParserInSequence(path, ceiling);
+                    continue;
+                }
+                else if (path.Parser.IsRepetition && !path.Parser.IsOptional)
+                {
+                    // do it once
+                    path = path.GetChild(0);
+                    continue;
+                }
+                else if (path.Parser.IsRepetition && path.Parser.IsOptional)
+                {
+                    // skip over optional repetition
                     path = GetNextParserInSequence(path, ceiling);
                     continue;
                 }
@@ -2983,11 +3073,9 @@ namespace Kusto.Language.Editor
                     }
                     break;
                 }
-                else if (!path.Parser.IsForward
-                    && (!path.Parser.IsRepetition || (path.Parser.IsRepetition && !path.Parser.IsOptional))
-                    && path.ChildCount == 1)
+                else if (path.ChildCount == 1)
                 {
-                    // drill down through this parser and continue
+                    // drill down through this parser looking for match parser w/ completion item
                     path = path.GetChild(0);
                     continue;
                 }
@@ -3009,8 +3097,30 @@ namespace Kusto.Language.Editor
             }
         }
 
+        /// <summary>
+        /// Returns the next sibling with the associated text
+        /// </summary>
+        private ParserPath<LexicalToken> FindNextSibling(ParserPath<LexicalToken> path, ParserPath<LexicalToken> ceiling, string text)
+        {
+            if (TryGetFirstAncestorSequence(path, ceiling, out var sequence, out var index))
+            {
+                for (int i = index; i < sequence.ChildCount; i++)
+                {
+                    var child = sequence.GetChild(i);
+                    var item = GetDeepCompletionItem(child.Parser);
+                    if (item != null && item.BeforeText == text && item.AfterText == "")
+                        return child;
+                }
+            }
+
+            return null;
+        }
+
         private static bool IsPunctuation(CompletionItem item) =>
-            item.DisplayText.Length > 0 && char.IsPunctuation(item.DisplayText[0]);
+            IsPunctuation(item.DisplayText);
+
+        private static bool IsPunctuation(string text) =>
+            text.Length > 0 && char.IsPunctuation(text[0]);
 
         /// <summary>
         /// Gets the first completion item from this parser one of its descendants.
@@ -3037,6 +3147,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool TryGetSpecialTexts(Parser<LexicalToken> parser, List<CompletionItem> items)
         {
+            var queryGrammar = CurrentQueryGrammar;
             var commandGrammar = CurrentCommandGrammar;
             var rules = commandGrammar.PredefinedRules;
 
@@ -3044,7 +3155,11 @@ namespace Kusto.Language.Editor
             if (items.Count == 0)
                 return false;
 
-            if (rules.TableNameReference == parser
+            if (queryGrammar.SimpleNameReference == parser
+                || queryGrammar.WildcardedNameReference == parser
+                || queryGrammar.BracedName == parser
+                || queryGrammar.BracketedName == parser
+                || rules.TableNameReference == parser
                 || rules.ExternalTableNameReference == parser
                 || rules.MaterializedViewNameReference == parser
                 || rules.DatabaseFunctionNameReference == parser
@@ -3058,19 +3173,44 @@ namespace Kusto.Language.Editor
                 || rules.ColumnNameReference == parser
                 || rules.TableColumnNameReference == parser
                 || rules.TableOrColumnNameReference == parser
-                || rules.ScriptInput == parser
-                || rules.QueryInput == parser
-                || rules.Value == parser
-                || rules.Type == parser
                 )
             {
+                // don't show anything in completion, but move caret to this point
                 items.Add(new CompletionItem("", beforeText: " ", afterText: " "));
                 return true;
             }
-            else if (rules.NameDeclaration == parser
+            else if (rules.ScriptInput == parser
+                || rules.QueryInput == parser)
+            {
+                // don't show anything in completion, but move caret to this point
+                items.Add(new CompletionItem("", beforeText: " ", afterText: " "));
+                return true;
+            }
+            else if (queryGrammar.SimpleNameDeclaration == parser
+                || queryGrammar.SimpleNameDeclarationExpression == parser
+                || queryGrammar.BracketedNameDeclaration == parser
+                || rules.NameDeclaration == parser
                 || rules.QualifiedNameDeclaration == parser)
             {
-                items.Add(new CompletionItem("", beforeText: " ", afterText: "name "));
+                items.Add(new CompletionItem("").WithApplyTexts(CompletionText.Create("name", caret: true, select: true)));
+                return true;
+            }
+            else if (rules.Value == parser
+                || queryGrammar.Literal == parser)
+            {
+                items.Add(new CompletionItem("?").WithApplyTexts(CompletionText.Create("0", caret: true, select: true)));
+                return true;
+            }
+            else if (queryGrammar.Expression == parser
+                || queryGrammar.NamedExpression == parser
+                || queryGrammar.UnnamedExpression == parser)
+            {
+                items.Add(new CompletionItem("").WithApplyTexts(CompletionText.Create("expr", caret: true, select: true)));
+                return true;
+            }
+            else if (rules.Type == parser)
+            {
+                items.Add(new CompletionItem("").WithApplyTexts(CompletionText.Create("real", caret: true, select: true)));
                 return true;
             }
             else if (rules.FunctionDeclaration == parser)
@@ -3078,7 +3218,8 @@ namespace Kusto.Language.Editor
                 items.Add(new CompletionItem("() { }"));
                 return true;
             }
-            else if (rules.FunctionBody == parser)
+            else if (rules.FunctionBody == parser
+                || queryGrammar.FunctionBody == parser)
             {
                 items.Add(new CompletionItem("{ }"));
                 return true;
@@ -3086,12 +3227,14 @@ namespace Kusto.Language.Editor
             else if (rules.AnyGuidLiteralOrString == parser
                 || rules.GuidLiteral == parser
                 || rules.StringLiteral == parser
-                || rules.RawGuidLiteral == parser)
+                || rules.RawGuidLiteral == parser
+                || queryGrammar.StringLiteral == parser)
             {
                 items.Add(new CompletionItem("\"\"", beforeText: "\"", afterText: "\""));
                 return true;
             }
-            else if (rules.BracketedStringLiteral == parser)
+            else if (rules.BracketedStringLiteral == parser
+                || rules.BracketedInputText == parser)
             {
                 items.Add(new CompletionItem("[]", beforeText: "[", afterText: "]"));
                 return true;
@@ -3100,6 +3243,7 @@ namespace Kusto.Language.Editor
                 && parser.Tag.Length > 0
                 && parser.Tag[0] == '<')
             {
+                // move caret here only
                 items.Add(new CompletionItem(displayText: "", beforeText: " ", afterText: " "));
                 return true;
             }
@@ -3108,6 +3252,15 @@ namespace Kusto.Language.Editor
                 return false;
             }
         }
+
+        private static bool IsStartBracket(string text) =>
+            text == "(" || text == "[" || text == "{";
+
+        private static string GetEndBracket(string startBracket) =>
+            startBracket == "(" ? ")"
+            : startBracket == "[" ? "]"
+            : startBracket == "{" ? "}"
+            : null;
 
         /// <summary>
         /// Gets the <see cref="CompletionItem"/> annotated on this parser or null.
@@ -3149,22 +3302,21 @@ namespace Kusto.Language.Editor
                 else
                 {
                     var prev = results[results.Count - 1];
-                    if (prev is CompletionFixedText
-                        && !current.Caret
-                        && current is CompletionFixedText)
+                    if (!prev.Caret 
+                        && !current.Caret)
                     {
                         // combine fixed texts that are not caret positions
-                        results[results.Count - 1] = new CompletionFixedText(CombineWithSpacing(prev.Text, current.Text));
+                        results[results.Count - 1] = CompletionText.Create(CombineWithSpacing(prev.Text, current.Text));
                     }
                     else if (NeedsSpacing(prev.Text, current.Text))
                     {
-                        if (!current.Caret && current is CompletionFixedText)
+                        if (!current.Caret)
                         {
-                            results.Add(new CompletionFixedText(" " + current.Text));
+                            results.Add(CompletionText.Create(" " + current.Text));
                         }
-                        else if (prev is CompletionFixedText)
+                        else if (!prev.Caret)
                         {
-                            results[results.Count - 1] = new CompletionFixedText(prev.Text + " ");
+                            results[results.Count - 1] = CompletionText.Create(prev.Text + " ");
                             results.Add(current);
                         }
                         else
@@ -3222,7 +3374,7 @@ namespace Kusto.Language.Editor
             var current = path;
 
             // find the sequence the parser is in
-            while (TryGetParentSequenceParser(current, ceiling, out var parent, out var index))
+            while (TryGetFirstAncestorSequence(current, ceiling, out var parent, out var index))
             {
                 if (index + 1 < parent.ChildCount)
                 {
@@ -3235,10 +3387,29 @@ namespace Kusto.Language.Editor
             return null;
         }
 
-        private static bool TryGetParentSequenceParser(
+        private static bool TryGetFirstAncestorSequence(
             ParserPath<LexicalToken> path, 
             ParserPath<LexicalToken> ceiling,
-            out ParserPath<LexicalToken> parent, 
+            out ParserPath<LexicalToken> sequence, 
+            out int index)
+        {
+            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsSequence, out sequence, out index);
+        }
+
+        private static bool TryGetFirstAncestorConditional(
+            ParserPath<LexicalToken> path,
+            ParserPath<LexicalToken> ceiling,
+            out ParserPath<LexicalToken> conditional,
+            out int index)
+        {
+            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsConditional, out conditional, out index);
+        }
+
+        private static bool TryGetFirstAncestor(
+            ParserPath<LexicalToken> path,
+            ParserPath<LexicalToken> ceiling,
+            Func<ParserPath<LexicalToken>, bool> fnMatch,
+            out ParserPath<LexicalToken> ancestor,
             out int index)
         {
             var child = path;
@@ -3252,15 +3423,15 @@ namespace Kusto.Language.Editor
                     || child.Parent == null)
                     break;
 
-                parent = child.Parent;
+                ancestor = child.Parent;
 
-                if (parent.Parser.IsSequence)
+                if (fnMatch(ancestor))
                 {
-                    index = parent.Parser.GetChildParserIndex(child.Parser);
+                    index = ancestor.Parser.GetChildParserIndex(child.Parser);
                     return true;
                 }
 
-                child = parent;
+                child = ancestor;
 
                 // cycle detection
                 count++;
@@ -3269,9 +3440,10 @@ namespace Kusto.Language.Editor
             }
 
             index = -1;
-            parent = null;
+            ancestor = null;
             return false;
         }
-#endregion
+
+        #endregion
     }
 }
