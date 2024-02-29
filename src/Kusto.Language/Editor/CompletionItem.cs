@@ -168,6 +168,12 @@ namespace Kusto.Language.Editor
         {
         }
 
+        /// <summary>
+        /// True if this <see cref="CompletionItem"/> adjusts the position of the caret.
+        /// </summary>
+        internal bool HasCaret =>
+            this.ApplyTexts.Any(at => at.Caret);
+
         private static IReadOnlyList<CompletionText> CreateApplyTexts(string beforeText, string afterText)
         {
             var list = new List<CompletionText>(2);

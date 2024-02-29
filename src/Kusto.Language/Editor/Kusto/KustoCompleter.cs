@@ -3069,7 +3069,19 @@ namespace Kusto.Language.Editor
                     {
                         var altPath = path.GetChild(a);
                         parts.SetCount(currentCount);
-                        BuildExtendedSyntaxCompletions(altPath, ceiling, parts, builder);
+
+                        // if alternation at start of path, then use separate builders
+                        // per alternate to allow for the extension count limit to apply per alt.
+                        var altBuilder = parts.Count == 0 
+                            ? new CompletionBuilder() 
+                            : builder;
+
+                        BuildExtendedSyntaxCompletions(altPath, ceiling, parts, altBuilder);
+
+                        if (altBuilder != builder)
+                        {
+                            builder.AddRange(altBuilder.Items);
+                        }
                     }
                     break;
                 }
@@ -3155,6 +3167,9 @@ namespace Kusto.Language.Editor
             if (items.Count == 0)
                 return false;
 
+            // check if caret is already positioned in existing items
+            var hasCaret = items.Any(item => item.HasCaret);
+
             if (queryGrammar.SimpleNameReference == parser
                 || queryGrammar.WildcardedNameReference == parser
                 || queryGrammar.BracedName == parser
@@ -3205,7 +3220,14 @@ namespace Kusto.Language.Editor
                 || queryGrammar.NamedExpression == parser
                 || queryGrammar.UnnamedExpression == parser)
             {
-                items.Add(new CompletionItem("").WithApplyTexts(CompletionText.Create("expr", caret: true, select: true)));
+                if (hasCaret)
+                {
+                    items.Add(new CompletionItem("").WithApplyTexts(CompletionText.Create("expr", caret: true, select: true)));
+                }
+                else
+                {
+                    items.Add(new CompletionItem("", beforeText: " ", afterText: " "));
+                }
                 return true;
             }
             else if (rules.Type == parser)
@@ -3237,14 +3259,6 @@ namespace Kusto.Language.Editor
                 || rules.BracketedInputText == parser)
             {
                 items.Add(new CompletionItem("[]", beforeText: "[", afterText: "]"));
-                return true;
-            }
-            else if (parser.Tag != null
-                && parser.Tag.Length > 0
-                && parser.Tag[0] == '<')
-            {
-                // move caret here only
-                items.Add(new CompletionItem(displayText: "", beforeText: " ", afterText: " "));
                 return true;
             }
             else

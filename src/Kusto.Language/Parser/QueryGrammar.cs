@@ -1990,10 +1990,11 @@ namespace Kusto.Language.Parsing
             var MvExpandExpressionList =
                 First(
                     // if only one item that is just "to typeof(xxx)" then allow expression to be null w/o error
-                    If(And(Token(SyntaxKind.ToKeyword).Hide(), TypeofLiteral, Fails(Token(SyntaxKind.CommaToken))),
+                    If(And(Token(SyntaxKind.ToKeyword), TypeofLiteral, Fails(Token(SyntaxKind.CommaToken))),
                         Rule(ToTypeOfClause,
                             clause => new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] {
-                                new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause)) }))),
+                                new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause)) })))
+                        .Hide(),
                     SeparatedList(MvExpandExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvExpandExpression, oneOrMore: true));
 
             var MvExpandRowLimitClause =
@@ -2028,10 +2029,11 @@ namespace Kusto.Language.Parsing
             var MvApplyExpressionList =
                 First(
                     // if only one item that is just "to typeof(xxx)" then allow expression to be null w/o error
-                    If(And(Token(SyntaxKind.ToKeyword).Hide(), TypeofLiteral, Fails(Token(SyntaxKind.CommaToken))),
+                    If(And(Token(SyntaxKind.ToKeyword), TypeofLiteral, Fails(Token(SyntaxKind.CommaToken))),
                         Rule(ToTypeOfClause,
                             clause => new SyntaxList<SeparatedElement<MvApplyExpression>>(new[] {
-                                new SeparatedElement<MvApplyExpression>(new MvApplyExpression(null, clause)) }))),
+                                new SeparatedElement<MvApplyExpression>(new MvApplyExpression(null, clause)) })))
+                        .Hide(),
                     SeparatedList(MvApplyExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvApplyExpression, oneOrMore: true));
 
             var MvApplyRowLimitClause =
@@ -2573,7 +2575,7 @@ namespace Kusto.Language.Parsing
 
             var RenderWithClause =
                 Rule(
-                    Token(SyntaxKind.WithKeyword).Hide(),
+                    Token(SyntaxKind.WithKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     Optional(Token(SyntaxKind.CommaToken)),
                     QueryParameterCommaList(QueryOperatorParameters.RenderWithProperties),
