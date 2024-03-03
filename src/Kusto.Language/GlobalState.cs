@@ -798,6 +798,16 @@ namespace Kusto.Language
                 || GetPlugIn(fn.Name) == fn;
         }
 
+        public bool IsBuiltInFunctionName(string functionName)
+        {
+            if (string.IsNullOrEmpty(functionName))
+                return false;
+
+            return GetFunction(functionName)?.Name == functionName
+                || GetAggregate(functionName)?.Name == functionName
+                || GetPlugIn(functionName)?.Name == functionName;
+        }
+
         /// <summary>
         /// Constructs a new <see cref="GlobalState"/> with the specified operators.
         /// </summary>
