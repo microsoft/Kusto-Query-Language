@@ -540,6 +540,16 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
+        private static readonly Func<EvaluateRowSchema> CreateMissingEvaluateRowSchema = () =>
+            new EvaluateRowSchema(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                null,
+                null,
+                SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
         private static readonly Func<NamedParameter> CreateMissingNamedParameter = () =>
             new NamedParameter(
                 new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
@@ -1740,6 +1750,22 @@ namespace Kusto.Language.Parsing
                 var list = ParseCommaList(FnParseNameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, FnScanCommonListEnd, allowTrailingComma: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                 return new RowSchema(open, leadingComma, list, close);
+            }
+
+            return null;
+        }
+
+        private EvaluateRowSchema ParseEvaluateRowSchema()
+        {
+            if (PeekToken().Kind == SyntaxKind.OpenParenToken)
+            {
+                var open = ParseToken();
+                var leadingComma = ParseToken(SyntaxKind.CommaToken);
+                var asteriskToken = ParseToken(SyntaxKind.AsteriskToken);
+                var asteriskTokenComma = ParseToken(SyntaxKind.CommaToken);
+                var list = ParseCommaList(FnParseNameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, FnScanCommonListEnd, allowTrailingComma: true);
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new EvaluateRowSchema(open, leadingComma, asteriskToken, asteriskTokenComma, list, close);
             }
 
             return null;
@@ -4357,7 +4383,7 @@ namespace Kusto.Language.Parsing
             var colon = ParseToken(SyntaxKind.ColonToken);
             if (colon != null)
             {
-                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
+                var schema = ParseEvaluateRowSchema() ?? CreateMissingEvaluateRowSchema();
                 return new EvaluateSchemaClause(colon, schema);
             }
 

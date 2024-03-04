@@ -97,7 +97,7 @@ namespace Kusto.Language.Symbols
             }
 
             var columns = new List<ColumnSymbol>();
-            Binding.Binder.CreateColumnsFromRowSchema(rowSchema, columns);
+            Binding.Binder.CreateColumnsFromRowSchema(rowSchema.Columns, columns);
             return new TableSymbol(columns);
         }
 

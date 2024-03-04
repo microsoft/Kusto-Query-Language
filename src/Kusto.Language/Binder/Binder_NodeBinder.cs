@@ -1780,6 +1780,12 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitEvaluateRowSchema(EvaluateRowSchema node)
+            {
+                // handled by parent node
+                return null;
+            }
+
             public override SemanticInfo VisitDataTableExpression(DataTableExpression node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1787,7 +1793,7 @@ namespace Kusto.Language.Binding
                 try
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DataTableParameters, diagnostics);
-                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
                     _binder.CheckDataValueTypes(node.Values, columns, diagnostics);
                     return new SemanticInfo(new TableSymbol(columns), diagnostics);
                 }
@@ -1804,7 +1810,7 @@ namespace Kusto.Language.Binding
                 var columns = s_columnListPool.AllocateFromPool();
                 try
                 {
-                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
 
                     if (node.Id != null)
                     {
@@ -1827,7 +1833,7 @@ namespace Kusto.Language.Binding
                 var columns = s_columnListPool.AllocateFromPool();
                 try
                 {
-                    CreateColumnsFromRowSchema(node.Schema, columns, diagnostics);
+                    CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
 
                     node.URIs.Select(item => _binder.CheckIsExactType(item.Element, ScalarTypes.String, diagnostics));
 
@@ -3297,7 +3303,7 @@ namespace Kusto.Language.Binding
                     _binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty, columns);
                     _binder.CheckIsScalar(node.Expression, diagnostics);
 
-                    CreateColumnsFromRowSchema(node.Keys, columns, diagnostics);
+                    CreateColumnsFromRowSchema(node.Keys.Columns, columns, diagnostics);
 
                     if (node.WithClause != null)
                     {
@@ -3343,7 +3349,7 @@ namespace Kusto.Language.Binding
 
                     if (node.Schema != null)
                     {
-                        CreateColumnsFromRowSchema(node.Schema.Schema, columns);
+                        CreateColumnsFromRowSchema(node.Schema.Schema.Columns, columns);
                         return new SemanticInfo(new TableSymbol(columns), diagnostics);
                     }
                     else

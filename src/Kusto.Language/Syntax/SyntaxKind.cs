@@ -509,6 +509,7 @@
         ToTypeOfClause,
         EvaluateSchemaClause,
         RowSchema,
+        EvaluateRowSchema,
         EntityGroupExpression,
 
         // query operators

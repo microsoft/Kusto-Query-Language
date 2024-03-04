@@ -488,14 +488,14 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Creates column symbols for all the columns declared in the schema.
         /// </summary>
-        public static void CreateColumnsFromRowSchema(RowSchema schema, List<ColumnSymbol> columns, List<Diagnostic> diagnostics = null)
+        public static void CreateColumnsFromRowSchema(SyntaxList<SeparatedElement<NameAndTypeDeclaration>> schemaColumns, List<ColumnSymbol> columns, List<Diagnostic> diagnostics = null)
         {
             var declaredNames = s_stringSetPool.AllocateFromPool();
             try
             {
-                for (int i = 0, n = schema.Columns.Count; i < n; i++)
+                for (int i = 0, n = schemaColumns.Count; i < n; i++)
                 {
-                    var nat = schema.Columns[i].Element;
+                    var nat = schemaColumns[i].Element;
 
                     switch (nat.Type)
                     {

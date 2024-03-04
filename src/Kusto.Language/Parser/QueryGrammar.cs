@@ -1545,6 +1545,20 @@ namespace Kusto.Language.Parsing
                         (openParen, leadingComma, columns, closeParen) =>
                             new RowSchema(openParen, leadingComma, columns, closeParen));
 
+            var EvaluateRowSchema =
+                    Rule(
+                        Token(SyntaxKind.OpenParenToken),
+                        Optional(Token(SyntaxKind.CommaToken)),
+                        Optional(Token(SyntaxKind.AsteriskToken)),
+                        Optional(Token(SyntaxKind.CommaToken)),
+                        CommaList<NameAndTypeDeclaration>(
+                            NameAndTypeDeclaration,
+                            CreateMissingNameAndTypeDeclaration,
+                            allowTrailingComma: true),
+                        RequiredToken(SyntaxKind.CloseParenToken),
+                        (openParen, leadingComma, asteriskToken, asteriskTokenComma, columns, closeParen) =>
+                            new EvaluateRowSchema(openParen, leadingComma, asteriskToken, asteriskTokenComma, columns, closeParen));
+
             var DataTableExpression =
                 Rule(
                     Token(SyntaxKind.DataTableKeyword, CompletionKind.QueryPrefix),
@@ -2074,7 +2088,7 @@ namespace Kusto.Language.Parsing
             var EvaluateSchemaClause =
                 Rule(
                     Token(SyntaxKind.ColonToken),
-                    Required(RowSchema, CreateMissingRowSchema),
+                    Required(EvaluateRowSchema, CreateMissingEvaluateRowSchema),
                     (keyword, expr) =>
                         new EvaluateSchemaClause(keyword, expr));
 
@@ -3452,6 +3466,16 @@ namespace Kusto.Language.Parsing
         public static RowSchema CreateMissingRowSchema(Source<LexicalToken> source, int start) =>
             new RowSchema(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
+        public static EvaluateRowSchema CreateMissingEvaluateRowSchema(Source<LexicalToken> source, int start) =>
+            new EvaluateRowSchema(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                null,
                 null,
                 SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),

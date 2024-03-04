@@ -6741,12 +6741,12 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken ColonToken { get; }
         
-        public RowSchema Schema { get; }
+        public EvaluateRowSchema Schema { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="EvaluateSchemaClause"/>.
         /// </summary>
-        internal EvaluateSchemaClause(SyntaxToken colonToken, RowSchema schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal EvaluateSchemaClause(SyntaxToken colonToken, EvaluateRowSchema schema, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.ColonToken = Attach(colonToken);
             this.Schema = Attach(schema, optional: true);
@@ -6807,7 +6807,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new EvaluateSchemaClause((SyntaxToken)ColonToken?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new EvaluateSchemaClause((SyntaxToken)ColonToken?.Clone(includeDiagnostics), (EvaluateRowSchema)Schema?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class EvaluateSchemaClause */
@@ -13099,6 +13099,110 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class RowSchema */
     
+    #region class EvaluateRowSchema
+    public sealed partial class EvaluateRowSchema : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.EvaluateRowSchema;
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxToken LeadingComma { get; }
+        
+        public SyntaxToken AsteriskToken { get; }
+        
+        public SyntaxToken AsteriskTokenComma { get; }
+        
+        public SyntaxList<SeparatedElement<NameAndTypeDeclaration>> Columns { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="EvaluateRowSchema"/>.
+        /// </summary>
+        internal EvaluateRowSchema(SyntaxToken openParen, SyntaxToken leadingComma, SyntaxToken asteriskToken, SyntaxToken asteriskTokenComma, SyntaxList<SeparatedElement<NameAndTypeDeclaration>> columns, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OpenParen = Attach(openParen);
+            this.LeadingComma = Attach(leadingComma, optional: true);
+            this.AsteriskToken = Attach(asteriskToken, optional: true);
+            this.AsteriskTokenComma = Attach(asteriskTokenComma, optional: true);
+            this.Columns = Attach(columns);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 6;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OpenParen;
+                case 1: return LeadingComma;
+                case 2: return AsteriskToken;
+                case 3: return AsteriskTokenComma;
+                case 4: return Columns;
+                case 5: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OpenParen);
+                case 1: return nameof(LeadingComma);
+                case 2: return nameof(AsteriskToken);
+                case 3: return nameof(AsteriskTokenComma);
+                case 4: return nameof(Columns);
+                case 5: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Declaration;
+                case 5: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitEvaluateRowSchema(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitEvaluateRowSchema(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new EvaluateRowSchema((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxToken)LeadingComma?.Clone(includeDiagnostics), (SyntaxToken)AsteriskToken?.Clone(includeDiagnostics), (SyntaxToken)AsteriskTokenComma?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NameAndTypeDeclaration>>)Columns?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class EvaluateRowSchema */
+    
     #region class ExternalDataExpression
     public sealed partial class ExternalDataExpression : Expression
     {
@@ -15305,6 +15409,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitDataScopeExpression(DataScopeExpression node);
         public abstract void VisitDataTableExpression(DataTableExpression node);
         public abstract void VisitRowSchema(RowSchema node);
+        public abstract void VisitEvaluateRowSchema(EvaluateRowSchema node);
         public abstract void VisitExternalDataExpression(ExternalDataExpression node);
         public abstract void VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract void VisitExternalDataWithClause(ExternalDataWithClause node);
@@ -15995,6 +16100,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitEvaluateRowSchema(EvaluateRowSchema node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitExternalDataExpression(ExternalDataExpression node)
         {
             this.DefaultVisit(node);
@@ -16266,6 +16375,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitDataScopeExpression(DataScopeExpression node);
         public abstract TResult VisitDataTableExpression(DataTableExpression node);
         public abstract TResult VisitRowSchema(RowSchema node);
+        public abstract TResult VisitEvaluateRowSchema(EvaluateRowSchema node);
         public abstract TResult VisitExternalDataExpression(ExternalDataExpression node);
         public abstract TResult VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract TResult VisitExternalDataWithClause(ExternalDataWithClause node);
@@ -16953,6 +17063,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitRowSchema(RowSchema node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitEvaluateRowSchema(EvaluateRowSchema node)
         {
             return this.DefaultVisit(node);
         }
