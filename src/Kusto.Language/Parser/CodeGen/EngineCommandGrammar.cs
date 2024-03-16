@@ -8834,15 +8834,14 @@ namespace Kusto.Language.Parsing
                         fragment58),
                     shape263));
 
-            var ShowDatabaseMirroringOperationsStatus = Command("ShowDatabaseMirroringOperationsStatus", 
+            var ShowDatabaseOperationsMirroringStatus = Command("ShowDatabaseOperationsMirroringStatus", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
                     If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
-                    Token("mirroring"),
-                    RequiredToken("operations"),
-                    RequiredToken("status"),
-                    shape66));
+                    Token("operations"),
+                    RequiredToken("mirroring-status"),
+                    shape192));
 
             var ShowDatabasePolicyCaching2 = Command("ShowDatabasePolicyCaching", 
                 Custom(
@@ -10491,35 +10490,32 @@ namespace Kusto.Language.Parsing
                     Token("kqlschema"),
                     shape225));
 
-            var ShowTableMirroringOperationsExportedArtifacts = Command("ShowTableMirroringOperationsExportedArtifacts", 
+            var ShowTableOperationsMirroringExportedArtifacts = Command("ShowTableOperationsMirroringExportedArtifacts", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
                     If(Not(Token("*")), rules.TableNameReference),
-                    Token("mirroring"),
                     Token("operations"),
-                    Token("exported-artifacts"),
-                    shape135));
+                    Token("mirroring-exported-artifacts"),
+                    shape197));
 
-            var ShowTableMirroringOperationsFailures = Command("ShowTableMirroringOperationsFailures", 
+            var ShowTableOperationsMirroringFailures = Command("ShowTableOperationsMirroringFailures", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
                     If(Not(Token("*")), rules.TableNameReference),
-                    Token("mirroring"),
                     Token("operations"),
-                    Token("failures"),
-                    shape135));
+                    Token("mirroring-failures"),
+                    shape197));
 
-            var ShowTableMirroringOperationsStatus = Command("ShowTableMirroringOperationsStatus", 
+            var ShowTableOperationsMirroringStatus = Command("ShowTableOperationsMirroringStatus", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
                     If(Not(Token("*")), rules.TableNameReference),
-                    Token("mirroring"),
-                    RequiredToken("operations"),
-                    RequiredToken("status"),
-                    shape135));
+                    Token("operations"),
+                    RequiredToken("mirroring-status"),
+                    shape197));
 
             var ShowTablePolicyIngestionTime = Command("ShowTablePolicyIngestionTime", 
                 Custom(
@@ -11373,7 +11369,7 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseIngestionMappings2,
                 ShowDatabaseJournal,
                 ShowDatabaseCslSchema4,
-                ShowDatabaseMirroringOperationsStatus,
+                ShowDatabaseOperationsMirroringStatus,
                 ShowDatabasePolicyCaching2,
                 ShowDatabasePolicyDiagnostics,
                 ShowDatabasePolicyEncoding,
@@ -11538,9 +11534,9 @@ namespace Kusto.Language.Parsing
                 ShowTableIngestionMappings,
                 ShowTableIngestionMapping,
                 ShowTableCslSchema2,
-                ShowTableMirroringOperationsExportedArtifacts,
-                ShowTableMirroringOperationsFailures,
-                ShowTableMirroringOperationsStatus,
+                ShowTableOperationsMirroringExportedArtifacts,
+                ShowTableOperationsMirroringFailures,
+                ShowTableOperationsMirroringStatus,
                 ShowTablePolicyIngestionTime,
                 ShowTablePolicyRowLevelSecurity,
                 ShowTablePrincipals,

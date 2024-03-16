@@ -1506,10 +1506,8 @@ namespace Kusto.Language.Binding
                         builder.Add(col);
                     }
 
-                    // Even that column order changes - it doesn't really matter right now
                     var resultTable = new TableSymbol(builder.GetProjection())
-                        .WithInheritableProperties(RowScopeOrEmpty)
-                        .WithIsOpen(true);
+                        .WithInheritableProperties(RowScopeOrEmpty);
 
                     var info = new SemanticInfo(resultTable, diagnostics);
                     return info;
@@ -1520,7 +1518,6 @@ namespace Kusto.Language.Binding
                     s_projectionBuilderPool.ReturnToPool(builder);
                 }
             }
-
 
             public override SemanticInfo VisitExtendOperator(ExtendOperator node)
             {

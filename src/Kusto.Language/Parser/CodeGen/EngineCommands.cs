@@ -1241,17 +1241,17 @@ namespace Kusto.Language
         public static readonly CommandSymbol SetMaterializedViewCursor =
             new CommandSymbol("SetMaterializedViewCursor", _schema18);
 
-        public static readonly CommandSymbol ShowTableMirroringOperationsStatus =
-            new CommandSymbol("ShowTableMirroringOperationsStatus", _schema29);
+        public static readonly CommandSymbol ShowTableOperationsMirroringStatus =
+            new CommandSymbol("ShowTableOperationsMirroringStatus", _schema29);
 
-        public static readonly CommandSymbol ShowDatabaseMirroringOperationsStatus =
-            new CommandSymbol("ShowDatabaseMirroringOperationsStatus", _schema29);
+        public static readonly CommandSymbol ShowDatabaseOperationsMirroringStatus =
+            new CommandSymbol("ShowDatabaseOperationsMirroringStatus", _schema29);
 
-        public static readonly CommandSymbol ShowTableMirroringOperationsExportedArtifacts =
-            new CommandSymbol("ShowTableMirroringOperationsExportedArtifacts", _schema30);
+        public static readonly CommandSymbol ShowTableOperationsMirroringExportedArtifacts =
+            new CommandSymbol("ShowTableOperationsMirroringExportedArtifacts", _schema30);
 
-        public static readonly CommandSymbol ShowTableMirroringOperationsFailures =
-            new CommandSymbol("ShowTableMirroringOperationsFailures", _schema31);
+        public static readonly CommandSymbol ShowTableOperationsMirroringFailures =
+            new CommandSymbol("ShowTableOperationsMirroringFailures", _schema31);
 
         public static readonly CommandSymbol ShowCluster =
             new CommandSymbol(
@@ -2275,10 +2275,10 @@ namespace Kusto.Language
             AlterMaterializedViewAutoUpdateSchema,
             ClearMaterializedViewData,
             SetMaterializedViewCursor,
-            ShowTableMirroringOperationsStatus,
-            ShowDatabaseMirroringOperationsStatus,
-            ShowTableMirroringOperationsExportedArtifacts,
-            ShowTableMirroringOperationsFailures,
+            ShowTableOperationsMirroringStatus,
+            ShowDatabaseOperationsMirroringStatus,
+            ShowTableOperationsMirroringExportedArtifacts,
+            ShowTableOperationsMirroringFailures,
             ShowCluster,
             ShowClusterDetails,
             ShowDiagnostics,
