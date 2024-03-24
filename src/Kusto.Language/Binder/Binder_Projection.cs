@@ -301,38 +301,7 @@ namespace Kusto.Language.Binding
                         }
                         else if (rs is GroupSymbol group && style == ProjectionStyle.Reorder)
                         {
-                            var members = s_symbolListPool.AllocateFromPool();
-                            try
-                            {
-                                if (oe != null && oe.Ordering != null)
-                                {
-                                    if (oe.Ordering.AscOrDescKeyword.Kind == SyntaxKind.DescKeyword)
-                                    {
-                                        members.AddRange(group.Members.OrderByDescending(m => m.Name));
-                                    }
-                                    else
-                                    {
-                                        members.AddRange(group.Members.OrderBy(m => m.Name));
-                                    }
-                                }
-                                else
-                                {
-                                    members.AddRange(group.Members);
-                                }
-
-                                // add any columns referenced in group
-                                foreach (var m in members)
-                                {
-                                    if (m is ColumnSymbol c)
-                                    {
-                                        builder.Add(c, doNotRepeat: true);
-                                    }
-                                }
-                            }
-                            finally
-                            {
-                                s_symbolListPool.ReturnToPool(members);
-                            }
+                            AddProjectionColumns(builder, OrderColumns(group.Members.OfType<ColumnSymbol>(), oe?.Ordering), doNotRepeat: true);
                         }
                         else if (GetResultType(expression) is GroupSymbol g)
                         {
@@ -371,20 +340,74 @@ namespace Kusto.Language.Binding
 
                             if (style == ProjectionStyle.Print && columnName != null)
                             {
-                                //col = new ColumnSymbol(columnName, columnType ?? type, source: expression);
                                 col = GetOrDeclareColumnForExpression(expression, columnName, columnType ?? type);
                                 builder.Add(col, columnName, replace: false);
                             }
                             else
                             {
                                 var name = GetExpressionResultName(expression, null) ?? columnName ?? GetDefaultColumnName(expression, style == ProjectionStyle.Extend);
-                                //col = new ColumnSymbol(name, columnType ?? type, source: expression);
                                 col = GetOrDeclareColumnForExpression(expression, name, columnType ?? type);
                                 builder.Add(col, replace: style == ProjectionStyle.Replace || style == ProjectionStyle.Extend);
                             }
                         }
                         break;
                 }
+            }
+        }
+
+        private enum ColumnOrdering
+        {
+            None,
+            Ascending,
+            Descending,
+            GrannyAscending,
+            GrannyDescending
+        }
+
+        private static ColumnOrdering GetColumnOrdering(OrderingClause ordering)
+        {
+            if (ordering == null)
+                return ColumnOrdering.None;
+
+            switch (ordering.AscOrDescKeyword.Kind)
+            {
+                case SyntaxKind.AscKeyword:
+                    return ColumnOrdering.Ascending;
+                case SyntaxKind.DescKeyword:
+                    return ColumnOrdering.Descending;
+                case SyntaxKind.GrannyAscKeyword:
+                    return ColumnOrdering.GrannyAscending;
+                case SyntaxKind.GrannyDescKeyword:
+                    return ColumnOrdering.GrannyDescending;
+                default:
+                    return ColumnOrdering.None;
+            }
+        }
+
+        private static IEnumerable<ColumnSymbol> OrderColumns(IEnumerable<ColumnSymbol> columns, OrderingClause ordering)
+        {
+            switch (GetColumnOrdering(ordering))
+            {
+                case ColumnOrdering.Ascending:
+                    return columns.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase);
+                case ColumnOrdering.Descending:
+                    return columns.OrderByDescending(c => c.Name, StringComparer.OrdinalIgnoreCase);
+                case ColumnOrdering.GrannyAscending:
+                    return columns.OrderBy(c => c.Name, StringAndNumberComparer.OrdinalIgnoreCase);
+                case ColumnOrdering.GrannyDescending:
+                    return columns.OrderByDescending(c => c.Name, StringAndNumberComparer.OrdinalIgnoreCase);
+                case ColumnOrdering.None:
+                default:
+                    return columns;
+            }
+        }
+
+        private static void AddProjectionColumns(ProjectionBuilder builder, IEnumerable<ColumnSymbol> columns, bool doNotRepeat)
+        {
+            // add any columns referenced in group
+            foreach (var c in columns)
+            {
+                builder.Add(c, doNotRepeat: doNotRepeat);
             }
         }
 

@@ -28,17 +28,20 @@ namespace Kusto.Language.Parsing
 
     public class QueryParser
     {
-        private readonly LexicalToken[] _tokens;
         private readonly Source<LexicalToken> _source;
         private readonly ParseOptions _options;
         private int _pos;
 
-        private QueryParser(LexicalToken[] tokens, int start, ParseOptions options)
+        private QueryParser(Source<LexicalToken> source, int start, ParseOptions options)
         {
-            _tokens = tokens;
-            _source = new ArraySource<LexicalToken>(tokens);
+            _source = source;
             _options = options ?? ParseOptions.Default;
             _pos = start;
+        }
+
+        private QueryParser(LexicalToken[] tokens, int start, ParseOptions options)
+            : this(new ArraySource<LexicalToken>(tokens), start, options)
+        {
         }
 
         public static Expression ParseExpression(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
@@ -136,7 +139,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Gets the reset point for the current input position.
         /// </summary>
-        private int GetResetPoint()
+        internal int GetResetPoint()
         {
             return _pos;
         }
@@ -144,7 +147,7 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Resets the parser to the reset point.
         /// </summary>
-        private void Reset(int resetPoint)
+        internal void Reset(int resetPoint)
         {
             _pos = resetPoint;
         }
@@ -184,7 +187,7 @@ namespace Kusto.Language.Parsing
         /// </summary>
         private LexicalToken PeekToken()
         {
-            return _pos < _tokens.Length ? _tokens[_pos] : NoToken;
+            return !_source.IsEnd(_pos) ? _source.Peek(_pos) : NoToken;
         }
 
         /// <summary>
@@ -193,7 +196,7 @@ namespace Kusto.Language.Parsing
         private LexicalToken PeekToken(int offset)
         {
             var index = _pos + offset;
-            return index < _tokens.Length ? _tokens[index] : NoToken;
+            return !_source.IsEnd(index) ? _source.Peek(index) : NoToken;
         }
 
         private static readonly LexicalToken NoToken =
@@ -1929,11 +1932,22 @@ namespace Kusto.Language.Parsing
             var keyword = ParseToken(keywordName);
             if (keyword != null)
             {
-                return new MaterializedViewCombineClause(
-                    keyword,
-                    ParseRequiredToken(SyntaxKind.OpenParenToken),
-                    ParseExpression() ?? CreateMissingExpression(),
-                    ParseRequiredToken(SyntaxKind.CloseParenToken));
+                if (keywordName == "aggregations")
+                {
+                    return new MaterializedViewCombineClause(
+                        keyword,
+                        ParseRequiredToken(SyntaxKind.OpenParenToken),
+                        ParseSummarizeOperator() ?? CreateMissingExpression(),
+                        ParseRequiredToken(SyntaxKind.CloseParenToken));
+                }
+                else
+                {
+                    return new MaterializedViewCombineClause(
+                        keyword,
+                        ParseRequiredToken(SyntaxKind.OpenParenToken),
+                        ParseExpression() ?? CreateMissingExpression(),
+                        ParseRequiredToken(SyntaxKind.CloseParenToken));
+                }
             }
             else
             {
@@ -2710,7 +2724,7 @@ namespace Kusto.Language.Parsing
             return expr;
         }
 
-        private bool ScanIsQueryExpression()
+        internal bool ScanIsQueryExpression()
         {
             // if it starts with a query operator, then its a query expression.
             if (ScanPossibleQueryOperator())
@@ -3851,8 +3865,21 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private Expression ParseForkPipeExpression() =>
-            ParsePipeExpression();
+        private Expression ParseForkPipeExpression()
+        {
+            Expression expr = ParseForkPipeQueryOperator();
+            if (expr != null)
+            {
+                while (PeekToken().Kind == SyntaxKind.BarToken)
+                {
+                    var pipe = ParseToken();
+                    var pipedOperator = ParseRequiredQueryOperator();
+                    expr = new PipeExpression(expr, pipe, pipedOperator);
+                }
+            }
+
+            return expr;
+        }
 
         private QueryOperator ParseForkPipeQueryOperator() =>
             ParsePipedQueryOperator()
@@ -5780,8 +5807,9 @@ namespace Kusto.Language.Parsing
         private bool ScanPossibleQueryOperator()
         {
             int nameLen;
+            var kind = PeekToken().Kind;
 
-            switch (PeekToken().Kind)
+            switch (kind)
             {
                 // keywords can be identifier so might not actually be query operators
                 case SyntaxKind.EvaluateKeyword:
@@ -5865,8 +5893,8 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.TopNestedKeyword:
                 case SyntaxKind.UnionKeyword:
                 case SyntaxKind.WhereKeyword:
-                    // cannot be identifier so must be query operator
-                    return true;
+                    // if cannot be identifier it must be query operator
+                    return !kind.CanBeIdentifier();
 
                 default:
                     return false;

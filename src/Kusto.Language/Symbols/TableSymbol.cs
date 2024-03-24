@@ -90,6 +90,14 @@ namespace Kusto.Language.Symbols
                 throw new ArgumentNullException(nameof(schema));
             }
 
+            schema = schema.Trim();
+
+            if (schema.Length > 0 && schema[0] != '(')
+                schema = "(" + schema;
+
+            if (schema.Length > 0 && schema[schema.Length - 1] != ')')
+                schema = schema + ")";
+
             var rowSchema = QueryParser.ParseRowSchema(schema);
             if (rowSchema == null)
             {

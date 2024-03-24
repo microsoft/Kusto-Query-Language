@@ -823,7 +823,7 @@ namespace Kusto.Language.Parsing
                 }
                 else
                 {
-                    return 
+                    return
                         Rule(
                             AsIdentifierNameDeclaration(tokenParser),
                             Required(valueParser, fnMissingValue ?? CreateMissingValue),
@@ -881,7 +881,7 @@ namespace Kusto.Language.Parsing
             }
 
             Parser<LexicalToken, NamedParameter> QueryParameter(
-                QueryOperatorParameter parameter, 
+                QueryOperatorParameter parameter,
                 bool equalsNeeded = false,  // if true then equals is needed when deciding if the name starts a parameter (unless the parameter does not uses equals syntax)
                 IReadOnlyList<QueryOperatorParameter> allParameters = null)
             {
@@ -892,7 +892,7 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterValueKind.Any:
                         return QParameter(
                             QueryParameterName(parameter),
-                            hasEquals, equalsNeeded, 
+                            hasEquals, equalsNeeded,
                             AnyQueryOperatorParameterValue,
                             CreateMissingValue);
                     case QueryOperatorParameterValueKind.StringLiteral:
@@ -903,7 +903,7 @@ namespace Kusto.Language.Parsing
                             CreateMissingStringLiteral);
                     case QueryOperatorParameterValueKind.BoolLiteral:
                         return QParameter(
-                            QueryParameterName(parameter), 
+                            QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             First(BooleanLiteralWithCompletion, AnyQueryOperatorParameterValue),
                             CreateMissingBooleanLiteral);
@@ -935,7 +935,7 @@ namespace Kusto.Language.Parsing
                     case QueryOperatorParameterValueKind.WordOrNumber:
                         return parameter.Values.Count > 0
                             ? QParameter(
-                                QueryParameterName(parameter), 
+                                QueryParameterName(parameter),
                                 hasEquals, equalsNeeded,
                                 First(AsTokenLiteral(Token(parameter.Values)), AnyQueryOperatorParameterValue),
                                 CreateMissingTokenLiteral(parameter.Values))
@@ -962,7 +962,7 @@ namespace Kusto.Language.Parsing
                         var nameRule = If(Not(And(Token(allParameterNames), Token(SyntaxKind.EqualToken))), ExtendedNameReference.Cast<NameReference>());
                         var nameList = NameReferenceList(nameRule);
                         return QParameter(
-                            QueryParameterName(parameter), 
+                            QueryParameterName(parameter),
                             hasEquals, equalsNeeded,
                             First(nameList, AnyQueryOperatorParameterValue),
                             expressionHint: CompletionHint.Column);
@@ -1003,9 +1003,9 @@ namespace Kusto.Language.Parsing
                 return CommaList(first, CreateMissingNamedParameter);
             };
 
-#endregion
+            #endregion
 
-#region Expressions
+            #region Expressions
             var ParenthesizedExpression =
                 Rule(
                     Token(SyntaxKind.OpenParenToken),
@@ -1054,7 +1054,7 @@ namespace Kusto.Language.Parsing
                         Rule(DashedName, Token(SyntaxKind.EqualToken), Required(UnnamedExpression, CreateMissingExpression),
                             (name, equals, expr) =>
                                 (Expression)new SimpleNamedExpression(
-                                    new NameDeclaration(name, new[] {DiagnosticFacts.GetNameRequiresBrackets(name.Name.Text)}), 
+                                    new NameDeclaration(name, new[] { DiagnosticFacts.GetNameRequiresBrackets(name.Name.Text) }),
                                     equals, expr))),
 
                     If(And(ScanRenameList, Token(SyntaxKind.EqualToken)),
@@ -1220,7 +1220,7 @@ namespace Kusto.Language.Parsing
                 First(
                     BarePathElementSelector,
                     BracketedPathElementSelector);
- 
+
             var BracketedEntityNamePathElementSelector =
                 First(
                     If(ScanBracketedWildcardName, BracketedWildcardedNameReference),
@@ -1245,8 +1245,8 @@ namespace Kusto.Language.Parsing
 
             var ScanQualifiedEntityStart =
                 And(Or(
-                    HiddenToken(Functions.Database.Name), 
-                    HiddenToken(Functions.Cluster.Name)), 
+                    HiddenToken(Functions.Database.Name),
+                    HiddenToken(Functions.Cluster.Name)),
                     Token(SyntaxKind.OpenParenToken));
 
             var SimplePathExpression =
@@ -1461,7 +1461,7 @@ namespace Kusto.Language.Parsing
                         CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true),
                         // allows full query expression as only item in list
                         Rule(
-                            this.Expression.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar), 
+                            this.Expression.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar),
                             expr => new SyntaxList<SeparatedElement<Expression>>(new SeparatedElement<Expression>(expr)))
                         ),
                     RequiredToken(SyntaxKind.CloseParenToken),
@@ -1527,9 +1527,9 @@ namespace Kusto.Language.Parsing
                 ApplyZeroOrMore(LogicalAnd, _left =>
                     Rule(_left, Token(SyntaxKind.OrKeyword, CompletionKind.ScalarInfix), Required(LogicalAnd, CreateMissingExpression),
                         (left, op, right) => (Expression)new BinaryExpression(SyntaxKind.OrExpression, left, op, right)));
-#endregion
+            #endregion
 
-#region Query Operators
+            #region Query Operators
 
             this.LiteralList = CommaList(Literal, CreateMissingExpression, allowTrailingComma: true);
 
@@ -1576,7 +1576,7 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.ContextualDataTableKeyword).Hide(),
                     Required(UnnamedExpression, CreateMissingExpression), // guid literal expected, though parse any expression
                     Required(RowSchema, CreateMissingRowSchema),
-                    (keyword, id, schema) => 
+                    (keyword, id, schema) =>
                         (Expression)new ContextualDataTableExpression(keyword, id, schema));
 
             var ExternalDataWithClausePropertyValue =
@@ -1912,8 +1912,8 @@ namespace Kusto.Language.Parsing
             var MakeSeriesInRangeClause =
                 Rule(
                     RequiredToken(SyntaxKind.InKeyword).Hide(), // this syntax is deprecated so hide the first keyword
-                    RequiredToken(SyntaxKind.RangeKeyword).Hide(), 
-                        //new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
+                    RequiredToken(SyntaxKind.RangeKeyword).Hide(),
+                    //new CompletionItem(CompletionKind.Keyword, "range (start, stop, step)", "range (", ")", "range")),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     CommaList(NamedExpression, CreateMissingExpression),
                     RequiredToken(SyntaxKind.CloseParenToken),
@@ -2163,7 +2163,7 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.AsKeyword),
                     Required(RowSchema, CreateMissingRowSchema),
                     Optional(ParseKvWithClause),
-                    (parseKvKeyword, expression, asKeyword, keys, withClause) => 
+                    (parseKvKeyword, expression, asKeyword, keys, withClause) =>
                         (QueryOperator)new ParseKvOperator(parseKvKeyword, expression, asKeyword, keys, withClause))
                 .WithTag("<parse-kv>");
 
@@ -2298,7 +2298,7 @@ namespace Kusto.Language.Parsing
                             new SimpleNamedExpression(new NameDeclaration(new TokenName(bin)), equal, value)));
 
             var SummarizeByExpression =
-                If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken), Match(tk => tk.Kind.IsLiteral()))), 
+                If(Not(And(Token(SyntaxKind.BinKeyword), Token(SyntaxKind.EqualToken), Match(tk => tk.Kind.IsLiteral()))),
                     NamedExpression);
 
             var SummarizeByClause =
@@ -2413,7 +2413,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.FatArrowToken),
                     CommaList(ScanAssignment, CreateMissingScanAssignment, oneOrMore: true),
-                    (token, list) => new ScanComputationClause(token, list));            
+                    (token, list) => new ScanComputationClause(token, list));
 
             var ScanStepOutput =
                 Rule(
@@ -2424,7 +2424,7 @@ namespace Kusto.Language.Parsing
 
             var ScanStep =
                 Rule(
-                    Token(SyntaxKind.StepKeyword),                    
+                    Token(SyntaxKind.StepKeyword),
                     Required(RenameName, CreateMissingNameDeclaration), // name                    
                     Optional(HiddenToken(SyntaxKind.OptionalKeyword)), // not yet supported                    
                     Optional(ScanStepOutput.Hide()),
@@ -2455,13 +2455,13 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.DeclareKeyword),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    CommaList(FunctionParameter, CreateMissingFunctionParameter, endKinds: new[] { SyntaxKind.WithKeyword } ),
+                    CommaList(FunctionParameter, CreateMissingFunctionParameter, endKinds: new[] { SyntaxKind.WithKeyword }),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (declare, open, declarations, close) => new ScanDeclareClause(declare, open, declarations, close));
 
             var ScanOperator =
                 Rule(
-                    Token(SyntaxKind.ScanKeyword, CompletionKind.QueryPrefix), 
+                    Token(SyntaxKind.ScanKeyword, CompletionKind.QueryPrefix),
                     QueryParameterList(QueryOperatorParameters.ScanParameters),
                     Optional(ScanOrderByClause),
                     Optional(ScanPartitionByClause),
@@ -2635,7 +2635,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.PrintKeyword, CompletionKind.QueryPrefix),
                     CommaList(NamedExpression, CreateMissingExpression, oneOrMore: true),
-                    (keyword, exprs) => 
+                    (keyword, exprs) =>
                         (QueryOperator)new PrintOperator(keyword, exprs))
                 .WithTag("<print>");
 
@@ -2730,7 +2730,7 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.GraphToTableNodesParameters, equalsNeeded: true),
                     (keyword, asClause, parameters) => new GraphToTableOutputClause(keyword, asClause, parameters))
                 .WithTag("graph-to-table-output-nodes-clause");
-    
+
             var GraphToTableEdgesClause =
                 Rule(
                      Token(SyntaxKind.GraphEdgesKeyword, CompletionKind.Keyword),
@@ -2751,7 +2751,7 @@ namespace Kusto.Language.Parsing
                     CommaList(GraphToTableOutputClause, CreateMissingGraphToTableOutputClause, oneOrMore: true),
                     (keyword, outputClause) => (QueryOperator)new GraphToTableOperator(keyword, outputClause))
                 .WithTag("<graph-to-table>");
-                
+
             var WhereClause =
                 Rule(
                     Token(SyntaxKind.WhereKeyword),
@@ -2782,7 +2782,7 @@ namespace Kusto.Language.Parsing
                             MatchText("-->", SyntaxKind.DashDashGreaterThanToken),
                             MatchText("<--", SyntaxKind.LessThanDashDashToken),
                             MatchText("--", SyntaxKind.DashDashToken)),
-                        (token) => (GraphMatchPatternNotation) new GraphMatchPatternEdge(token, null, null, null)),
+                        (token) => (GraphMatchPatternNotation)new GraphMatchPatternEdge(token, null, null, null)),
                     Rule(
                         First(
                             MatchText("<-[", SyntaxKind.LessThanDashBracketToken),
@@ -2792,8 +2792,8 @@ namespace Kusto.Language.Parsing
                         First(
                             MatchText("]->", SyntaxKind.BracketDashGreaterThanToken),
                             MatchText("]-", SyntaxKind.BracketDashToken)),
-                        (firstToken, name, range, lastToken) => 
-                            (GraphMatchPatternNotation) new GraphMatchPatternEdge(firstToken, name, range, lastToken))
+                        (firstToken, name, range, lastToken) =>
+                            (GraphMatchPatternNotation)new GraphMatchPatternEdge(firstToken, name, range, lastToken))
                     );
 
             var GraphMatchPatternNode =
@@ -2801,9 +2801,9 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.OpenParenToken),
                     Optional(SimpleNameDeclaration),
                     Token(SyntaxKind.CloseParenToken),
-                    (open, name, close) => 
-                        (GraphMatchPatternNotation) new GraphMatchPatternNode(open, name, close));
-            
+                    (open, name, close) =>
+                        (GraphMatchPatternNotation)new GraphMatchPatternNode(open, name, close));
+
             var GraphMatchPattern = Rule(
                 List(
                     First(GraphMatchPatternNode, GraphMatchPatternEdge),
@@ -2812,7 +2812,7 @@ namespace Kusto.Language.Parsing
                 ),
                 (elements) => new GraphMatchPattern(elements))
                 .WithCompletion(
-                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"), 
+                    new CompletionItem(CompletionKind.Syntax, "(n1)-[e]->(n2)"),
                     new CompletionItem(CompletionKind.Syntax, "(n1)-[e1]->(n2)-[e2]->(n3)"),
                     new CompletionItem(CompletionKind.Syntax, "(n1)-[e*1..3]->(n2)"));
 
@@ -2944,14 +2944,14 @@ namespace Kusto.Language.Parsing
             var InitialPipeElementExpression =
                 First(
                     Rule(PrePipeQueryOperator, o => (Expression)o),
-                    If(Not(And(Token(SyntaxKind.CountKeyword), Token("("))), // allow count() to bind as function call
-                        Rule(PostPipeQueryOperator, o => (Expression)o).Hide()), // allow other pipe operators to parse, but fail in binding
+                    If(Not(ScanSimpleName), // allow post-pipe operators that don't start with a legal name to parse and fail in binding
+                        Rule(PostPipeQueryOperator, o => (Expression)o).Hide()), 
                     UnnamedExpression);
 
             this.FollowingPipeElementExpression =
                 First(
                     PostPipeQueryOperator,
-                    PrePipeQueryOperator.Hide(), // allow these to parse, but fail in binding
+                    PrePipeQueryOperator.Hide(), // allow any pre-pipe operator, but fail in binding
                     BadQueryOperator.Hide()); // allow these to parse, but fail in binding
 
             PipeExpressionCore =
