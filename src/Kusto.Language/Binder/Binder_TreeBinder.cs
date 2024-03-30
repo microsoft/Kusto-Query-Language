@@ -653,7 +653,7 @@ namespace Kusto.Language.Binding
             public override void VisitInvokeOperator(InvokeOperator node)
             {
                 var oldRowScope = _binder._rowScope;
-                _binder._implicitArgumentType = _binder._rowScope;
+                _binder._implicitArgumentType = _binder.RowScopeOrEmpty;
                 _binder._rowScope = null;
                 try
                 {

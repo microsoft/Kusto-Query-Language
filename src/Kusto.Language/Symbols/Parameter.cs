@@ -283,9 +283,15 @@ namespace Kusto.Language.Symbols
                     return $"{KustoFacts.BracketNameIfNecessary(parameter.Name)}: {parameter.DeclaredTypes[0].Name}";
                 }
             }
-
-            // not sure what to do here if this is called for other kinds of parameters
-            return $"{name}: dynamic";
+            else if (parameter.TypeKind == ParameterTypeKind.Tabular)
+            {
+                return $"{name}: (*)";
+            }
+            else
+            {
+                // not sure what to do here if this is called for other kinds of parameters
+                return $"{name}: dynamic";
+            }
         }
 
         /// <summary>

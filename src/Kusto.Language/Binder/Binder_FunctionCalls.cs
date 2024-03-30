@@ -331,7 +331,7 @@ namespace Kusto.Language.Binding
             {
                 // add fake argument to represent the implicit value
                 arguments.Insert(0, functionCall.Name);
-                argumentTypes.Insert(0, _implicitArgumentType);
+                argumentTypes.Insert(0, _implicitArgumentType ?? TableSymbol.Empty);
             }
         }
 
