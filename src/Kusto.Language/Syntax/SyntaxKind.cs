@@ -118,6 +118,7 @@
         InCsKeyword,
         InvokeKeyword,
         IsFuzzyKeyword,
+        BestEffortKeyword,
         ForceRemoteKeyword,
 
         JoinKeyword,
