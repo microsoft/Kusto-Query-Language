@@ -2709,7 +2709,7 @@ namespace Kusto.Language.Parsing
 
             var GraphMergeOperaor =
                 Rule(
-                    Token(SyntaxKind.GraphMergeKeyword, CompletionKind.QueryPrefix),
+                    Token(SyntaxKind.GraphMergeKeyword, CompletionKind.QueryPrefix).Hide(),
                     Required(InvocationExpression, CreateMissingExpression),
                     Optional(JoinOnClause),
                     (keyword, graph, onClause) =>
