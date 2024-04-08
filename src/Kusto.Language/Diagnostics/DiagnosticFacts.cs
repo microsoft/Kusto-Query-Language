@@ -941,6 +941,16 @@ namespace Kusto.Language
             return new Diagnostic("KS240", $"source, target and node id columns can't be of type dynamic, consider using explicit cast");
         }
 
+        public static Diagnostic GetJoinKeyCannotBeDynamic()
+        {
+            return new Diagnostic("KS241", $"Join keys cannot be dynamic");
+        }
+
+        public static Diagnostic GetJoinKeysNotComparable(string leftType, string rightType)
+        {
+            return new Diagnostic("KS241", $"Inconsistent data types for join keys: ({leftType}, {rightType})");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

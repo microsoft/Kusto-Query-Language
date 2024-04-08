@@ -2560,7 +2560,7 @@ namespace Kusto.Language.Binding
                 {
                     if (be.Kind == SyntaxKind.EqualExpression)
                     {
-                        if (CheckJoinEquality(be, diagnostics, out var leftMatchingColumn, out var rightMatchingColumn))
+                        if (CheckJoinOnEquality(be, diagnostics, out var leftMatchingColumn, out var rightMatchingColumn))
                         {
                             if (leftMatchingColumn != null && rightMatchingColumn != null && joinColumns != null)
                             {
@@ -2629,7 +2629,7 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            private bool CheckJoinEquality(
+            private bool CheckJoinOnEquality(
                 Expression condition,
                 List<Diagnostic> diagnostics,
                 out ColumnSymbol leftColumn,
@@ -2646,16 +2646,53 @@ namespace Kusto.Language.Binding
                     return false;
                 }
 
-                if (CheckJoinEqualityOperand(be.Left, "$left", diagnostics, out leftColumn)
-                    & CheckJoinEqualityOperand(be.Right, "$right", diagnostics, out rightColumn))
+                if (CheckJoinOnEqualityOperand(be.Left, "$left", diagnostics, out leftColumn)
+                    & CheckJoinOnEqualityOperand(be.Right, "$right", diagnostics, out rightColumn))
                 {
-                    return true;
+                    return CheckJoinOnKeysComparable(be.Left, be.Right, diagnostics);
                 }
 
                 return false;
             }
 
-            private bool CheckJoinEqualityOperand(Expression operand, string prefix, List<Diagnostic> diagnostics, out ColumnSymbol column)
+            private static bool CheckJoinOnKeysComparable(Expression left, Expression right, List<Diagnostic> diagnostics)
+            {
+                var leftType = left.ResultType as ScalarSymbol ?? ScalarTypes.Unknown;
+                var rightType = right.ResultType as ScalarSymbol ?? ScalarTypes.Unknown;
+
+                // join keys cannot be dynamic
+                if (leftType is DynamicSymbol)
+                {
+                    if (diagnostics != null)
+                        diagnostics.Add(DiagnosticFacts.GetJoinKeyCannotBeDynamic().WithLocation(left));
+                    return false;
+                }
+                else if (rightType is DynamicSymbol)
+                {
+                    if (diagnostics != null)
+                        diagnostics.Add(DiagnosticFacts.GetJoinKeyCannotBeDynamic().WithLocation(right));
+                    return false;
+                }
+
+                // unknown or error so ignore
+                if (leftType == ScalarTypes.Unknown || leftType.IsError
+                    || rightType == ScalarTypes.Unknown || rightType.IsError)
+                {
+                    return true;
+                }
+
+                // join keys must be consistent data type
+                if (Promote(leftType) != Promote(rightType))
+                {
+                    if (diagnostics != null)
+                        diagnostics.Add(DiagnosticFacts.GetJoinKeysNotComparable(leftType.Name, rightType.Name));
+                    return false;
+                }
+
+                return true;
+            }
+
+            private bool CheckJoinOnEqualityOperand(Expression operand, string prefix, List<Diagnostic> diagnostics, out ColumnSymbol column)
             {
                 column = null;
                 operand = RemoveParenthesis(operand);
