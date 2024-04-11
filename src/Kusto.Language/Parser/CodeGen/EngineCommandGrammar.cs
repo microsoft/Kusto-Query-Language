@@ -7232,7 +7232,7 @@ namespace Kusto.Language.Parsing
                     Token("capacity"),
                     Optional(
                         Custom(
-                            Token("data-export", "extents-merge", "extents-partition", "ingestions", "materialized-view", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
+                            Token("data-export", "mirroring", "extents-merge", "extents-partition", "ingestions", "materialized-view", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
                             CD("Resource"))),
                     Optional(
                         fragment62),
@@ -8834,15 +8834,6 @@ namespace Kusto.Language.Parsing
                         fragment58),
                     shape263));
 
-            var ShowDatabaseOperationsMirroringStatus = Command("ShowDatabaseOperationsMirroringStatus", 
-                Custom(
-                    Token("show", CompletionKind.CommandPrefix),
-                    Token("database"),
-                    If(Not(And(Token("*", "cache", "cslschema", "datastats", "details", "extents", "extent", "identity", "ingestion", "keyvault", "kqlschema", "policies", "principals", "schema", "shard-groups"))), rules.DatabaseNameReference),
-                    Token("operations"),
-                    RequiredToken("mirroring-status"),
-                    shape192));
-
             var ShowDatabasePolicyCaching2 = Command("ShowDatabasePolicyCaching", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -9196,7 +9187,10 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
-                    Token("tables")));
+                    Token("tables"),
+                    Optional(
+                        fragment5),
+                    shape251));
 
             var ShowExternalTableArtifacts = Command("ShowExternalTableArtifacts", 
                 Custom(
@@ -9283,6 +9277,19 @@ namespace Kusto.Language.Parsing
                     new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD()}));
 
             var ShowExternalTable = Command("ShowExternalTable", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("external"),
+                    RequiredToken("table"),
+                    Required(rules.ExternalTableNameReference, rules.MissingNameReference),
+                    RequiredToken("with"),
+                    RequiredToken("("),
+                    ZeroOrMoreCommaList(
+                        fragment0),
+                    RequiredToken(")"),
+                    new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD(CompletionHint.None), CD()}));
+
+            var ShowExternalTable2 = Command("ShowExternalTable", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
@@ -10062,6 +10069,15 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("tables")));
 
+            var ShowTableOperationsMirroringStatus = Command("ShowTableOperationsMirroringStatus", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("table"),
+                    Token("*"),
+                    Token("operations"),
+                    RequiredToken("mirroring-status"),
+                    new [] {CD(), CD(), CD("TableName"), CD(), CD()}));
+
             var ShowTableStarPolicyCaching = Command("ShowTableStarPolicyCaching", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -10514,7 +10530,7 @@ namespace Kusto.Language.Parsing
                     Token("mirroring-failures"),
                     shape197));
 
-            var ShowTableOperationsMirroringStatus = Command("ShowTableOperationsMirroringStatus", 
+            var ShowTableOperationsMirroringStatus2 = Command("ShowTableOperationsMirroringStatus", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("table"),
@@ -11375,7 +11391,6 @@ namespace Kusto.Language.Parsing
                 ShowDatabaseIngestionMappings2,
                 ShowDatabaseJournal,
                 ShowDatabaseCslSchema4,
-                ShowDatabaseOperationsMirroringStatus,
                 ShowDatabasePolicyCaching2,
                 ShowDatabasePolicyDiagnostics,
                 ShowDatabasePolicyEncoding,
@@ -11420,6 +11435,7 @@ namespace Kusto.Language.Parsing
                 ShowExternalTablesPrincipalRoles,
                 ShowExternalTableSchema,
                 ShowExternalTable,
+                ShowExternalTable2,
                 ShowFabricCache,
                 ShowFabricClocks,
                 ShowFabricLocks,
@@ -11497,6 +11513,7 @@ namespace Kusto.Language.Parsing
                 ShowTablesDetails2,
                 TablesShardGroupsStatisticsShow2,
                 ShowTables2,
+                ShowTableOperationsMirroringStatus,
                 ShowTableStarPolicyCaching,
                 ShowTableStarPolicyExtentTagsRetention,
                 ShowTableStarPolicyIngestionBatching,
@@ -11543,7 +11560,7 @@ namespace Kusto.Language.Parsing
                 ShowTableCslSchema2,
                 ShowTableOperationsMirroringExportedArtifacts,
                 ShowTableOperationsMirroringFailures,
-                ShowTableOperationsMirroringStatus,
+                ShowTableOperationsMirroringStatus2,
                 ShowTablePolicyIngestionTime,
                 ShowTablePolicyRowLevelSecurity,
                 ShowTablePrincipals,
