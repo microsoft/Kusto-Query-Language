@@ -52,14 +52,24 @@ namespace Kusto.Language.Binding
 
             public override void VisitLiteralExpression(LiteralExpression node)
             {
-                if (node.Kind == SyntaxKind.StringLiteralExpression)
+                BindStandAloneSearchTerm(node);
+            }
+
+            public override void VisitNameReference(NameReference node)
+            {
+                BindStandAloneSearchTerm(node);
+            }
+
+            private void BindStandAloneSearchTerm(Expression node)
+            {
+                // bind it first and then adjust if necessary
+                node.Accept(_treeBinder);
+
+                if (node.IsConstant && node.ResultType == ScalarTypes.String)
                 {
-                    // string literals in predicate positions are abbreviations of:  * has <literal>
-                    _binder.SetSemanticInfo(node, new SemanticInfo(ScalarTypes.Bool));
-                }
-                else
-                {
-                    node.Accept(_treeBinder);
+                    // stand alone constant search terms are abbreviations of: * has <constant>
+                    // so make them claim to be boolean
+                    _binder.SetSemanticInfo(node, node.GetSemanticInfo().WithResultType(ScalarTypes.Bool));
                 }
             }
 

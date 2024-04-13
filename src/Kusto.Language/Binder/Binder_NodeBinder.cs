@@ -2134,10 +2134,10 @@ namespace Kusto.Language.Binding
                     }
                     else if (ReferencesAllTablesImplicitly(node))
                     {
-                        // * references all columns from all tables
+                        // references all columns from all tables
                         refTables.AddRange(tables);
                     }
-                    else
+                    else if (tables.Count > 0 && refColumns.Count > 0)
                     {
                         // only include tables that have a column the same name as one
                         // referenced in the condition
@@ -2307,15 +2307,18 @@ namespace Kusto.Language.Binding
 
             private static bool ReferencesAllTablesImplicitly(FindOperator node)
             {
+                // contains '*' expression as in '* has xxx', so this condition references all columns
                 if (node.Condition.GetFirstDescendantOrSelf<StarExpression>() != null)
                     return true;
 
-                // any string literal at root or left/right of and/or is abbreviation of: * has <string-literal>
-                return node.Condition.GetFirstDescendantOrSelf<LiteralExpression>(lt =>
-                    lt.Kind == SyntaxKind.StringLiteralExpression
-                    && (lt.Parent == node
-                        || lt.Parent is BinaryExpression be &&
-                           (be.Kind == SyntaxKind.AndExpression || be.Kind == SyntaxKind.OrExpression))) != null;
+                // has a stand alone search term, which is an abbreviation of '* has xxx'
+                return node.Condition.GetFirstDescendantOrSelf<Expression>(e => IsStandAloneSearchTerm(e)) != null;
+            }
+
+            private static bool IsStandAloneSearchTerm(Expression expr)
+            {
+                // a stand-alone search term is a constant string that was adjusted to bool by SearchAndPredicateBinder
+                return expr.IsConstant && expr.ConstantValue is string && expr.ResultType == ScalarTypes.Bool;
             }
 
             public override SemanticInfo VisitUnionOperator(UnionOperator node)
