@@ -376,7 +376,7 @@ namespace Kusto.Language.Editor
                     var classifications = new List<ClassifiedRange>();
                     KustoClassifier.GetClassifications(code.Syntax, start, length, clipToRange, classifications, cancellationToken);
 
-                    var clientParameterClassifications = GetClientParametersClassifications();
+                    var clientParameterClassifications = GetClientParametersClassifications(start, length, clipToRange);
                     if (clientParameterClassifications.Count > 0)
                     {
                         var merged = Add(classifications, clientParameterClassifications);

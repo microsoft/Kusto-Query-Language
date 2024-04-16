@@ -82,13 +82,15 @@ namespace Kusto.Language.Editor
         {
             // by default classify entire text as plain-text.
             var classifications = new[] { new ClassifiedRange(ClassificationKind.PlainText, start, length) };
-            var clientParameterClassifications = GetClientParametersClassifications();
+            var clientParameterClassifications = GetClientParametersClassifications(start, length, clipToRange);
             var merged = Add(classifications, clientParameterClassifications);
             return new ClassificationInfo(merged);
         }
 
-        protected IReadOnlyList<ClassifiedRange> GetClientParametersClassifications()
+        protected IReadOnlyList<ClassifiedRange> GetClientParametersClassifications(int start, int length, bool clipToRange)
         {
+            var end = start + length;
+
             var cps = GetClientParameters();
             if (cps.Count == 0)
                 return EmptyReadOnlyList<ClassifiedRange>.Instance;
@@ -96,7 +98,25 @@ namespace Kusto.Language.Editor
             var list = new List<ClassifiedRange>();
             foreach (var cp in cps)
             {
-                list.Add(new ClassifiedRange(ClassificationKind.ClientParameter, cp.Start, cp.Length));
+                // if it does not overlap range then skip
+                if (cp.Start + cp.Length < start                // parameter ends before range start 
+                    || cp.Start + cp.Length > start + length)   // parameter starts after range end
+                    continue;
+
+                var cpStart = cp.Start;
+                var cpEnd = cp.End;
+                var cpLen = cp.Length;
+
+                if (clipToRange)
+                {
+                    if (cpStart < start)
+                        cpStart = start;
+                    if (cpEnd > end)
+                        cpEnd = end;
+                    cpLen = cpEnd - cpStart;
+                }
+
+                list.Add(new ClassifiedRange(ClassificationKind.ClientParameter, cpStart, cpLen));
             }
 
             return list;
@@ -315,13 +335,13 @@ namespace Kusto.Language.Editor
         {
             if (_clientParameters == null)
             {
-                _clientParameters = GetClientParameters(this.Text, 0);
+                _clientParameters = GetClientParameters(this.Text);
             }
 
             return _clientParameters;
         }
 
-        internal IReadOnlyList<ClientParameter> GetClientParameters(string blockText, int offsetInScript)
+        internal IReadOnlyList<ClientParameter> GetClientParameters(string blockText)
         {
             List<ClientParameter> list = null;
 
@@ -339,7 +359,7 @@ namespace Kusto.Language.Editor
                             list = new List<ClientParameter>();
                         }
 
-                        list.Add(new ClientParameter(blockText.Substring(openBrace + 1, len - 2), openBrace + offsetInScript, len));
+                        list.Add(new ClientParameter(blockText.Substring(openBrace + 1, len - 2), openBrace, len));
                         start = openBrace + len;
                     }
                     else
