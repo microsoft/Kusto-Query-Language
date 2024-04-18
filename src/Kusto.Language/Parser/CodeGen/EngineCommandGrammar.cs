@@ -7232,7 +7232,7 @@ namespace Kusto.Language.Parsing
                     Token("capacity"),
                     Optional(
                         Custom(
-                            Token("data-export", "mirroring", "extents-merge", "extents-partition", "ingestions", "materialized-view", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
+                            Token("data-export", "extents-merge", "extents-partition", "ingestions", "materialized-view", "mirroring", "periodic-storage-artifacts-cleanup", "purge-storage-artifacts-cleanup", "queries", "query-acceleration", "stored-query-results", "streaming-ingestion-post-processing", "table-purge"),
                             CD("Resource"))),
                     Optional(
                         fragment62),

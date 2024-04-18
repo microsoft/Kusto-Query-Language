@@ -1,0 +1,1 @@
+..\..\..\test\ut\Kusto.Language.JS.UT\runtests.html
