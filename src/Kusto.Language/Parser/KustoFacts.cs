@@ -170,6 +170,11 @@ namespace Kusto.Language
             "leftouter", "leftsemi", "rightanti", "rightantisemi", "rightouter", "rightsemi"
         };
 
+        public static readonly IReadOnlyList<string> GraphMarkComponentsKinds = new string[]
+        {
+           "weak", "strong"
+        };
+
         public static readonly IReadOnlyList<string> JoinHintRemotes = new string[]
         {
             "auto", "left", "local", "right", "unresolved"

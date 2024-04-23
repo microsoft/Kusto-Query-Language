@@ -139,6 +139,7 @@
         MacroExpandKeyword,
         MacroExpandScopeReferenceName,
         MakeGraphKeyword,
+        GraphMarkComponentsKeyword,
         MakeSeriesKeyword,
         MatchesRegexKeyword,
         MaterializeKeyword,
@@ -569,6 +570,8 @@
         MakeGraphOperator,
         MakeGraphWithClause,
         MakeGraphTableAndKeyClause,
+
+        GraphMarkComponentsOperator,
 
         MakeSeriesOperator,
         MakeSeriesExpression,

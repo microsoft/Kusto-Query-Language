@@ -2756,11 +2756,9 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsSummable(node.Step, diagnostics);
                     _binder.CheckIsNotConstantValue(node.Step, 0L, false, diagnostics);
 
-                    var commonType = TypeFacts.GetCommonScalarType(GetResultTypeOrError(node.From), GetResultTypeOrError(node.To), GetResultTypeOrError(node.Step)) ?? ErrorSymbol.Instance;
-
-                    var name = node.Name.SimpleName;
-
-                    var result = new TableSymbol(new ColumnSymbol(name, commonType));
+                    var rangeType = TypeFacts.GetCommonScalarType(GetResultTypeOrError(node.From), GetResultTypeOrError(node.To)) ?? ScalarTypes.Unknown;
+                    var rangeName = node.Name.SimpleName;
+                    var result = new TableSymbol(new ColumnSymbol(rangeName, rangeType));
 
                     return new SemanticInfo(result, diagnostics);
                 }
@@ -3769,6 +3767,27 @@ namespace Kusto.Language.Binding
             {
                 // handled by containing node
                 return null;
+            }
+
+            public override SemanticInfo VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    if (node.Parameters != null)
+                    {
+                        _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.GraphMarkComponentsParameters, diagnostics);
+                    }
+
+                    var symbol = new GraphSymbol(this.RowScopeOrEmpty);
+                    return new SemanticInfo(symbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
 
             public override SemanticInfo VisitGraphToTableOperator(GraphToTableOperator node)

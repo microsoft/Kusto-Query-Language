@@ -4004,6 +4004,9 @@ namespace Kusto.Language.Parsing
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_joinOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.JoinParameters);
 
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_GraphMarkComponentsParametersMap =
+                        CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphMarkComponentsParameters);
+
         private JoinOperator ParseJoinOperator()
         {
             var keyword = ParseToken(SyntaxKind.JoinKeyword);
@@ -5657,7 +5660,20 @@ namespace Kusto.Language.Parsing
 
             return null;
         }
-#endregion
+        #endregion
+
+#region GraphMarkComponentsOperator
+        private GraphMarkComponentsOperator ParseGraphMarkComponentsOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphMarkComponentsKeyword) is SyntaxToken keyword)
+            {
+                var parameters = ParseQueryOperatorParameterList(s_GraphMarkComponentsParametersMap, equalsNeeded: true);
+                return new GraphMarkComponentsOperator(keyword, parameters);
+            }
+
+            return null;
+        }
+        #endregion
 
         #endregion
 
@@ -5794,6 +5810,8 @@ namespace Kusto.Language.Parsing
                     return ParseGraphMatchOperator();
                 case SyntaxKind.GraphToTableKeyword: 
                     return ParseGraphToTableOperator();
+                case SyntaxKind.GraphMarkComponentsKeyword:
+                    return ParseGraphMarkComponentsOperator();
                 case SyntaxKind.AssertSchemaKeyword:
                     return ParseAssertSchemaOperator();
                 default:
@@ -5865,6 +5883,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.LimitKeyword:
                 case SyntaxKind.MacroExpandKeyword:
                 case SyntaxKind.MakeGraphKeyword:
+                case SyntaxKind.GraphMarkComponentsKeyword:
                 case SyntaxKind.MakeSeriesKeyword:
                 case SyntaxKind.MvApplyKeyword:
                 case SyntaxKind.MvDashApplyKeyword:

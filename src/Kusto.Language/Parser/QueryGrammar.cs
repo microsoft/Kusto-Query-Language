@@ -2706,6 +2706,14 @@ namespace Kusto.Language.Parsing
                     )
                 .WithTag("<make-graph>");
 
+            var GraphMarkComponentsOperator =
+                Rule(
+                    Token(SyntaxKind.GraphMarkComponentsKeyword, CompletionKind.QueryPrefix),
+                    QueryParameterList(QueryOperatorParameters.GraphMarkComponentsParameters, equalsNeeded: true),
+                    (graphMarkComponentsKeyword, parameters) =>
+                        (QueryOperator)new GraphMarkComponentsOperator(graphMarkComponentsKeyword, parameters)
+                    )
+                .WithTag("<graph-mark-components>");
 
             var GraphMergeOperaor =
                 Rule(
@@ -2866,6 +2874,7 @@ namespace Kusto.Language.Parsing
                     GetSchemaOperator,
                     GraphMatchOperator,
                     GraphMergeOperaor,
+                    GraphMarkComponentsOperator.Hide(), // TODO: Enable once fully deployed.
                     GraphToTableOperator,
                     InvokeOperator,
                     JoinOperator,

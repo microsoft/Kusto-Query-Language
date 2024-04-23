@@ -76,6 +76,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter Kind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word);
 
+        public static readonly QueryOperatorParameter WithComponentId =
+            new QueryOperatorParameter("with_component_id", QueryOperatorParameterValueKind.NameDeclaration);
+
         public static readonly QueryOperatorParameter NoWithSource =
             new QueryOperatorParameter("__noWithSource", QueryOperatorParameterValueKind.Any);
 
@@ -199,6 +202,12 @@ namespace Kusto.Language
             HintDotShuffleKey,
             HintDotStrategy.WithValues(KustoFacts.JoinHintStrategies),
             HintDotNumPartitions
+        }.ToReadOnly();
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphMarkComponentsParameters = new QueryOperatorParameter[]
+        {
+            Kind.WithValues(KustoFacts.GraphMarkComponentsKinds),
+            WithComponentId
         }.ToReadOnly();
 
         public static readonly IReadOnlyList<QueryOperatorParameter> LookupParameters = new QueryOperatorParameter[]

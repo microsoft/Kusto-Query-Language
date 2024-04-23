@@ -170,6 +170,7 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.MacroExpandKeyword, "macro-expand"),
                 new SyntaxData(SyntaxKind.MakeGraphKeyword, "make-graph"),
+                new SyntaxData(SyntaxKind.GraphMarkComponentsKeyword, "graph-mark-components"),
                 new SyntaxData(SyntaxKind.MakeSeriesKeyword, "make-series"),
                 new SyntaxData(SyntaxKind.MatchesRegexKeyword, "matches regex", opKind: OperatorKind.MatchRegex),
                 new SyntaxData(SyntaxKind.MaterializeKeyword, "materialize"),
@@ -598,7 +599,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MacroExpandOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphWithClause, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),                
+                new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphMarkComponentsOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),

@@ -10132,6 +10132,73 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class MakeGraphWithClause */
     
+    #region class GraphMarkComponentsOperator
+    public sealed partial class GraphMarkComponentsOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphMarkComponentsOperator;
+        
+        public SyntaxToken GraphMarkComponentsKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphMarkComponentsOperator"/>.
+        /// </summary>
+        internal GraphMarkComponentsOperator(SyntaxToken graphMarkComponentsKeyword, SyntaxList<NamedParameter> parameters, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphMarkComponentsKeyword = Attach(graphMarkComponentsKeyword);
+            this.Parameters = Attach(parameters);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphMarkComponentsKeyword;
+                case 1: return Parameters;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphMarkComponentsKeyword);
+                case 1: return nameof(Parameters);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphMarkComponentsOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphMarkComponentsOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphMarkComponentsOperator((SyntaxToken)GraphMarkComponentsKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphMarkComponentsOperator */
+    
     #region class MakeGraphTableAndKeyClause
     public sealed partial class MakeGraphTableAndKeyClause : SyntaxNode
     {
@@ -15372,6 +15439,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitRenderOperator(RenderOperator node);
         public abstract void VisitMakeGraphOperator(MakeGraphOperator node);
         public abstract void VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract void VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract void VisitGraphToTableOperator(GraphToTableOperator node);
@@ -15952,6 +16020,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
         {
             this.DefaultVisit(node);
@@ -16338,6 +16410,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitRenderOperator(RenderOperator node);
         public abstract TResult VisitMakeGraphOperator(MakeGraphOperator node);
         public abstract TResult VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract TResult VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract TResult VisitGraphToTableOperator(GraphToTableOperator node);
@@ -16915,6 +16988,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitMakeGraphWithClause(MakeGraphWithClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node)
         {
             return this.DefaultVisit(node);
         }
