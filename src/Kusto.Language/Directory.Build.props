@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Condition="'$(KUSTO_BuildMultiTarget)' != 'true'" Project="..\..\..\BuildProcessTemplates\Kusto.Build.props" />
-  <Import Condition="'$(KUSTO_BuildMultiTarget)' == 'true'" Project="Package.props" />
+  <Import Condition="'$(KUSTO_BuildMultiTarget)' != 'true' and Exists('..\..\..\BuildProcessTemplates\Kusto.Build.targets')" Project="..\..\..\BuildProcessTemplates\Kusto.Build.props" />
+  <Import Condition="'$(KUSTO_BuildMultiTarget)' == 'true' and Exists('..\..\..\BuildProcessTemplates\Kusto.Build.targets')" Project="Package.props" />
 </Project>

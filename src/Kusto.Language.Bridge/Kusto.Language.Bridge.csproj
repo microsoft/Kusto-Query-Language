@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <KustoProps Condition="Exists('..\Directory.Build.props')">true</KustoProps>
+    <KustoProps Condition="Exists('..\..\Directory.Build.props')">true</KustoProps>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -32,10 +32,20 @@
     <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\obj\**\*.cs;..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs" />
     <None Include="bridge.json" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Bridge" />
-    <PackageReference Include="Bridge.Min" />
-  </ItemGroup>
+	<Choose>
+    <When Condition=" '$(KustoProps)' == 'true' ">
+      <ItemGroup>
+        <PackageReference Include="Bridge"/>
+        <PackageReference Include="Bridge.Min"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Bridge" Version="17.10.1" />
+        <PackageReference Include="Bridge.Min" Version="17.10.1" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <!-- Replacing original BridgeNetCompilerTask to make it incremental (original definition is here: $(NuGetPackageRoot)\Bridge.Min\17.10.1\build\Bridge.Min.targets) -->
   <Target Name="BridgeNetCompilerTask" Inputs="$(OutputPath)$(AssemblyName).dll" Outputs="$(OutputPath)bridge\$(AssemblyName).js">
     <Message Text="Patched Bridge started" Importance="high" />
