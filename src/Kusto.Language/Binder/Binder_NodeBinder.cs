@@ -2756,7 +2756,14 @@ namespace Kusto.Language.Binding
                     _binder.CheckIsSummable(node.Step, diagnostics);
                     _binder.CheckIsNotConstantValue(node.Step, 0L, false, diagnostics);
 
-                    var rangeType = TypeFacts.GetCommonScalarType(GetResultTypeOrError(node.From), GetResultTypeOrError(node.To)) ?? ScalarTypes.Unknown;
+                    var fromType = GetResultTypeOrError(node.From);
+                    var toType = GetResultTypeOrError(node.To);
+                    var stepType = GetResultTypeOrError(node.Step);
+                    var fromToType = TypeFacts.GetCommonScalarType(fromType, toType) ?? ScalarTypes.Unknown;
+                    var rangeType = (fromToType == stepType && stepType == ScalarTypes.Int)
+                        ? ScalarTypes.Int // does not match add semantics here
+                        : _binder.GetBinaryOperatorResultType(OperatorKind.Add, fromToType, stepType, node.Step, diagnostics);
+
                     var rangeName = node.Name.SimpleName;
                     var result = new TableSymbol(new ColumnSymbol(rangeName, rangeType));
 

@@ -149,6 +149,7 @@ namespace Kusto.Language.Binding
             }
         }
 
+
         private static bool AllAreConstant(IReadOnlyList<Expression> expressions)
         {
             for (int i = 0; i < expressions.Count; i++)
@@ -277,6 +278,27 @@ namespace Kusto.Language.Binding
                 default:
                     return OperatorKind.None;
             }
+        }
+
+        /// <summary>
+        /// Returns the result type for the binary operator given the two argument types.
+        /// </summary>
+        private TypeSymbol GetBinaryOperatorResultType(OperatorKind kind, TypeSymbol leftType, TypeSymbol rightType, SyntaxElement location, List<Diagnostic> diagnostics = null)
+        {
+            var fakeLeftArg = FakeExpression.Create(leftType);
+            var fakeRightArg = FakeExpression.Create(rightType);
+            return GetBinaryOperatorResultType(kind, fakeLeftArg, fakeRightArg, location ?? fakeLeftArg, diagnostics);
+        }
+
+        /// <summary>
+        /// Returns the result type for the binary operator given the two argument expressions.
+        /// </summary>
+        private TypeSymbol GetBinaryOperatorResultType(OperatorKind kind, Expression left, Expression right, SyntaxElement location, List<Diagnostic> diagnostics = null)
+        {
+            var info = GetBinaryOperatorInfo(kind, left, GetResultTypeOrError(left), right, GetResultTypeOrError(right), location ?? left);
+            if (diagnostics != null)
+                diagnostics.AddRange(info.Diagnostics);
+            return info.ResultType;
         }
     }
 }
