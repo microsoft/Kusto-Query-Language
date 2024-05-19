@@ -1038,6 +1038,31 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitMakeGraphOperator(MakeGraphOperator node)
+            {
+                // We want to visit (and bind) the partitioned-by subquery last.
+                for (int i = 0, n = node.ChildCount; i < n; i++)
+                {
+                    if (node.GetChild(i) is SyntaxNode child && node.GetName(i) != nameof(node.PartitionedByClause))
+                    {
+                        child.Accept(this);
+                    }
+                }
+                BindNode(node);
+
+                // In case we have a partitioned-by subquery, we want the result symbol to be that of the 
+                // subquery.
+                if (node.PartitionedByClause != null)
+                {
+                    node.PartitionedByClause.Accept(this);
+
+                    var mgInfo = node.GetSemanticInfo();
+                    var info = node.PartitionedByClause.Subquery.GetSemanticInfo().WithDiagnostics(mgInfo.Diagnostics);
+                    _binder.SetSemanticInfo(node, info);
+                }
+                
+            }
+
             public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
             {
                 node.Table?.Accept(this);
@@ -1066,7 +1091,7 @@ namespace Kusto.Language.Binding
 
                     if (node.OnClause != null)
                     {
-                        var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                        var leftGraph = GetGraphSymbol(node);
                         var rightGraph = node.Graph.ResultType as GraphSymbol;
 
                         _binder._rowScope = leftGraph?.EdgeShape;

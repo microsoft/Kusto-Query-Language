@@ -205,6 +205,11 @@ namespace Kusto.Language
             "shuffle", "native", "legacy"
         };
 
+        public static readonly IReadOnlyList<string> PartitionedGraphMakeHintStrategies = new string[]
+        {
+            "shuffle", "native"
+        };
+
         public static readonly IReadOnlyList<string> ReduceByKinds = new string[]
         {
             "source"
@@ -535,6 +540,7 @@ namespace Kusto.Language
                 || (expr.Parent is PartitionSubquery ps && ps.Subquery == expr)
                 || (expr.Parent is MvApplySubqueryExpression mvas && mvas.Expression == expr)
                 || (expr.Parent is PartitionByOperator pbo && pbo.Subquery == expr)
+                || (expr.Parent is MakeGraphPartitionedByClause mgpb && mgpb.Subquery == expr)
                 || (expr.Parent is FacetWithExpressionClause fwce && fwce.Expression == expr)
                 || (expr.Parent is FacetWithOperatorClause fwoc && fwoc.Operator == expr)
                 || (expr.Parent is Expression pe && IsChildOfPipeStartingExpression(pe))

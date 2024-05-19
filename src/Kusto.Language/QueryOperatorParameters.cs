@@ -293,6 +293,11 @@ namespace Kusto.Language
             WithNodeId
         }.ToReadOnly();
 
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphMakeParameters = new[]
+        {
+            HintDotStrategy.WithValues(KustoFacts.PartitionedGraphMakeHintStrategies)
+        }.ToReadOnly();
+
         public static readonly QueryOperatorParameter RenderKind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word, values: KustoFacts.ChartKinds);
 

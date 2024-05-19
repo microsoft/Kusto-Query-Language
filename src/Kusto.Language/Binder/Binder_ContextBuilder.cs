@@ -516,7 +516,7 @@ namespace Kusto.Language.Binding
                 }
                 else if (node.OnClause != null && _position >= node.OnClause.TextStart)
                 {
-                    var leftShape = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol lgs ? lgs.EdgeShape : null;
+                    var leftShape = GetGraphSymbol(node) is GraphSymbol lgs ? lgs.EdgeShape : null;
                     var rightShape = node.Graph.ResultType is GraphSymbol rgs ? rgs.EdgeShape : null;
                     _binder._rowScope = leftShape ?? rightShape;
                     _binder._rightRowScope = rightShape ?? leftShape;

@@ -339,6 +339,38 @@ namespace Kusto.Language.Binding
 
             return commonColumnsTable;
         }
+
+        /// <summary>
+        /// Gets the <see cref="GraphSymbol"/> from the given <paramref name="node"/>.
+        /// </summary>
+        private static GraphSymbol GetGraphSymbol(SyntaxNode node)
+        {
+            // There are two valid configurations:
+            //
+            // 1. In a regular expression, the graph will be the result of the expression (left-side)
+            //    of a pipe expression.
+            //
+            // 2. In a partitioned make-graph subquery, the node will have a MakeGraphPartitionedByClause
+            //    node as one of its parents, which contains the graph symbol.
+
+            var pe = node.Parent as PipeExpression;
+            if (pe?.Expression.ResultType is GraphSymbol pegs)
+            {
+                return pegs;
+            }
+
+            var current = node;
+            while (current != null && !(current is MakeGraphPartitionedByClause)) {
+                current = current.Parent is MakeGraphPartitionedByClause mgpb ? mgpb : current.Parent;
+            }
+
+            if (current?.Parent is MakeGraphOperator mg && mg.ResultType is GraphSymbol mggs)
+            {
+                return mggs;
+            }
+
+            return null;
+        }
         #endregion
 
         #region Common definitions
@@ -541,7 +573,7 @@ namespace Kusto.Language.Binding
 
         private void BindGraphMatchPatternDeclarations(GraphMatchOperator graphMatch)
         {
-            var graphScope = graphMatch.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+            var graphScope = GetGraphSymbol(graphMatch);
             var edgeTuple = graphScope != null ? new TupleSymbol(graphScope.EdgeShape.Columns, graphScope.EdgeShape) : TupleSymbol.Empty;
             var nodeTuple = graphScope?.NodeShape != null ? new TupleSymbol(graphScope.NodeShape.Columns, graphScope.NodeShape) : TupleSymbol.Empty;
 

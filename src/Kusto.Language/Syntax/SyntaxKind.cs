@@ -188,6 +188,7 @@
         ParseKeyword,
         ParseWhereKeyword,
         ParseKvKeyword,
+        PartitionedByKeyword,
         PartitionByKeyword,
         PartitionKeyword,
         PathFormatKeyword,
@@ -570,6 +571,7 @@
         MakeGraphOperator,
         MakeGraphWithClause,
         MakeGraphTableAndKeyClause,
+        MakeGraphPartitionedByClause,
 
         GraphMarkComponentsOperator,
 

@@ -2685,14 +2685,26 @@ namespace Kusto.Language.Parsing
             var MakeGraphWithClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
-                    CommaList(MakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, oneOrMore: true),
+                    CommaList(MakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionedByKeyword }),
                     (withKeyword, tablesAndKeys) =>
                         new MakeGraphWithClause(withKeyword, tablesAndKeys))
                 .WithTag("<make-graph-with-clause>");
 
+            var MakeGraphPartitionedByClause =
+                Rule(
+                    Token(SyntaxKind.PartitionedByKeyword),
+                    Required(SimplePathExpression, CreateMissingNameReference),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Required(ContextualSubExpression, CreateMissingExpression),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, entity, openParen, subQuery, closeParen) =>
+                        new MakeGraphPartitionedByClause(keyword, (NameReference)entity, openParen, subQuery, closeParen))
+                .WithTag("<make-graph-partitioned-by-clause>");
+
             var MakeGraphOperator =
                 Rule(
                     Token(SyntaxKind.MakeGraphKeyword, CompletionKind.QueryPrefix),
+                    QueryParameterList(QueryOperatorParameters.GraphMakeParameters, equalsNeeded: true),
                     Required(SimpleNameReference, CreateMissingNameReference),
                     Required(
                         First(
@@ -2701,8 +2713,9 @@ namespace Kusto.Language.Parsing
                         () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
                     Required(SimpleNameReference, CreateMissingNameReference),
                     Optional(MakeGraphWithClause),
-                    (keyword, sourceColumn, direction, targetColumn, withClause) =>
-                        (QueryOperator)new MakeGraphOperator(keyword, (NameReference)sourceColumn, direction, (NameReference)targetColumn, withClause)
+                    Optional(MakeGraphPartitionedByClause),
+                    (keyword, parameters, sourceColumn, direction, targetColumn, withClause, partitionedByClause) =>
+                        (QueryOperator)new MakeGraphOperator(keyword, parameters, (NameReference)sourceColumn, direction, (NameReference)targetColumn, withClause, partitionedByClause)
                     )
                 .WithTag("<make-graph>");
 

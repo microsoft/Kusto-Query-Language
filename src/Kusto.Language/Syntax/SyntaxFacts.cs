@@ -219,6 +219,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ParseKeyword, "parse", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.ParseWhereKeyword, "parse-where"),
                 new SyntaxData(SyntaxKind.ParseKvKeyword, "parse-kv"),
+                new SyntaxData(SyntaxKind.PartitionedByKeyword, "partitioned-by"),
                 new SyntaxData(SyntaxKind.PartitionByKeyword, "__partitionby", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PartitionKeyword, "partition", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.PathFormatKeyword, "pathformat"),
@@ -601,6 +602,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MakeGraphWithClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMarkComponentsOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphPartitionedByClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),

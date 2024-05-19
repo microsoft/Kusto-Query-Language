@@ -3572,6 +3572,8 @@ namespace Kusto.Language.Binding
                             }
                         }
                     }
+                    
+                    // Note that we don't handled the PartitionedByClause here but rather in the dedicated Visit* method.
 
                     var symbol = new GraphSymbol(this.RowScopeOrEmpty, nodesShape);
                     return new SemanticInfo(symbol, diagnostics);
@@ -3598,6 +3600,28 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    _binder.CheckIsColumn(node.Entity, diagnostics);
+                    CheckQueryOperators(node.Subquery, KustoFacts.PostPipeOperatorKinds, diagnostics, allowContextualRoot: true);
+
+                    var tableType = node.Subquery.ResultType as TableSymbol;
+
+                    var result = new TableSymbol(_binder.GetDeclaredAndInferredColumns(tableType))
+                                    .WithInheritableProperties(RowScopeOrEmpty)
+                                    .WithIsSorted(false);
+
+                    return new SemanticInfo(result, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
             public override SemanticInfo VisitGraphMergeOperator(GraphMergeOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -3605,7 +3629,7 @@ namespace Kusto.Language.Binding
                 {
                     CheckNotFirstInPipe(node, diagnostics);
 
-                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    var leftGraph = GetGraphSymbol(node);
                     if (leftGraph == null)
                     {
                         diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMergeKeyword));
@@ -3637,7 +3661,7 @@ namespace Kusto.Language.Binding
 
                     TypeSymbol symbol = null;
 
-                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    var leftGraph = GetGraphSymbol(node);
                     if (leftGraph == null)
                     {
                         diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMatchKeyword));
@@ -3806,7 +3830,7 @@ namespace Kusto.Language.Binding
 
                     TypeSymbol symbol = null;
 
-                    var leftGraph = node.Parent is PipeExpression pe && pe.Expression.ResultType is GraphSymbol gs ? gs : null;
+                    var leftGraph = GetGraphSymbol(node);
                     if (leftGraph == null)
                     {
                         diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphToTableKeyword));

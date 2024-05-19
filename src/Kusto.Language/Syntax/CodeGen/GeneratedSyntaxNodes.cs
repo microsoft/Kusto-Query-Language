@@ -9976,6 +9976,8 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken MakeGraphKeyword { get; }
         
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
         public NameReference SourceColumn { get; }
         
         public SyntaxToken DirectionToken { get; }
@@ -9984,30 +9986,36 @@ namespace Kusto.Language.Syntax
         
         public MakeGraphWithClause WithClause { get; }
         
+        public MakeGraphPartitionedByClause PartitionedByClause { get; }
+        
         /// <summary>
         /// Constructs a new instance of <see cref="MakeGraphOperator"/>.
         /// </summary>
-        internal MakeGraphOperator(SyntaxToken makeGraphKeyword, NameReference sourceColumn, SyntaxToken directionToken, NameReference targetColumn, MakeGraphWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal MakeGraphOperator(SyntaxToken makeGraphKeyword, SyntaxList<NamedParameter> parameters, NameReference sourceColumn, SyntaxToken directionToken, NameReference targetColumn, MakeGraphWithClause withClause, MakeGraphPartitionedByClause partitionedByClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.MakeGraphKeyword = Attach(makeGraphKeyword);
+            this.Parameters = Attach(parameters);
             this.SourceColumn = Attach(sourceColumn);
             this.DirectionToken = Attach(directionToken);
             this.TargetColumn = Attach(targetColumn);
             this.WithClause = Attach(withClause, optional: true);
+            this.PartitionedByClause = Attach(partitionedByClause, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 5;
+        public override int ChildCount => 7;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
                 case 0: return MakeGraphKeyword;
-                case 1: return SourceColumn;
-                case 2: return DirectionToken;
-                case 3: return TargetColumn;
-                case 4: return WithClause;
+                case 1: return Parameters;
+                case 2: return SourceColumn;
+                case 3: return DirectionToken;
+                case 4: return TargetColumn;
+                case 5: return WithClause;
+                case 6: return PartitionedByClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10017,10 +10025,12 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return nameof(MakeGraphKeyword);
-                case 1: return nameof(SourceColumn);
-                case 2: return nameof(DirectionToken);
-                case 3: return nameof(TargetColumn);
-                case 4: return nameof(WithClause);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(SourceColumn);
+                case 3: return nameof(DirectionToken);
+                case 4: return nameof(TargetColumn);
+                case 5: return nameof(WithClause);
+                case 6: return nameof(PartitionedByClause);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -10029,7 +10039,8 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 4:
+                case 5:
+                case 6:
                     return true;
                 default:
                     return false;
@@ -10041,10 +10052,12 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Column;
-                case 2: return CompletionHint.Syntax;
-                case 3: return CompletionHint.Column;
-                case 4: return CompletionHint.Clause;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Column;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Column;
+                case 5: return CompletionHint.Clause;
+                case 6: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10060,7 +10073,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeGraphOperator((SyntaxToken)MakeGraphKeyword?.Clone(includeDiagnostics), (NameReference)SourceColumn?.Clone(includeDiagnostics), (SyntaxToken)DirectionToken?.Clone(includeDiagnostics), (NameReference)TargetColumn?.Clone(includeDiagnostics), (MakeGraphWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new MakeGraphOperator((SyntaxToken)MakeGraphKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (NameReference)SourceColumn?.Clone(includeDiagnostics), (SyntaxToken)DirectionToken?.Clone(includeDiagnostics), (NameReference)TargetColumn?.Clone(includeDiagnostics), (MakeGraphWithClause)WithClause?.Clone(includeDiagnostics), (MakeGraphPartitionedByClause)PartitionedByClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class MakeGraphOperator */
@@ -10271,6 +10284,91 @@ namespace Kusto.Language.Syntax
         }
     }
     #endregion /* class MakeGraphTableAndKeyClause */
+    
+    #region class MakeGraphPartitionedByClause
+    public sealed partial class MakeGraphPartitionedByClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphPartitionedByClause;
+        
+        public SyntaxToken PartitionedByKeyword { get; }
+        
+        public NameReference Entity { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public Expression Subquery { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphPartitionedByClause"/>.
+        /// </summary>
+        internal MakeGraphPartitionedByClause(SyntaxToken partitionedByKeyword, NameReference entity, SyntaxToken openParen, Expression subquery, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PartitionedByKeyword = Attach(partitionedByKeyword);
+            this.Entity = Attach(entity);
+            this.OpenParen = Attach(openParen);
+            this.Subquery = Attach(subquery);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PartitionedByKeyword;
+                case 1: return Entity;
+                case 2: return OpenParen;
+                case 3: return Subquery;
+                case 4: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PartitionedByKeyword);
+                case 1: return nameof(Entity);
+                case 2: return nameof(OpenParen);
+                case 3: return nameof(Subquery);
+                case 4: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Column;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Query;
+                case 4: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeGraphPartitionedByClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeGraphPartitionedByClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MakeGraphPartitionedByClause((SyntaxToken)PartitionedByKeyword?.Clone(includeDiagnostics), (NameReference)Entity?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (Expression)Subquery?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MakeGraphPartitionedByClause */
     
     #region class GraphMergeOperator
     public sealed partial class GraphMergeOperator : QueryOperator
@@ -15441,6 +15539,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitMakeGraphWithClause(MakeGraphWithClause node);
         public abstract void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
+        public abstract void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
         public abstract void VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract void VisitGraphToTableOperator(GraphToTableOperator node);
         public abstract void VisitGraphToTableOutputClause(GraphToTableOutputClause node);
@@ -16028,6 +16127,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitGraphMergeOperator(GraphMergeOperator node)
         {
             this.DefaultVisit(node);
@@ -16412,6 +16515,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitMakeGraphWithClause(MakeGraphWithClause node);
         public abstract TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
+        public abstract TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
         public abstract TResult VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract TResult VisitGraphToTableOperator(GraphToTableOperator node);
         public abstract TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node);
@@ -16996,6 +17100,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node)
         {
             return this.DefaultVisit(node);
         }
