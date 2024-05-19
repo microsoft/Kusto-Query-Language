@@ -709,6 +709,10 @@ namespace Kusto.Language.Binding
                 var oldDefaultColumnNameSuffix = _binder._defaultColumnNameSuffix;
                 try
                 {
+                    // remember scope before function declaration
+                    // to use when evaluating function expansions
+                    _binder._staticScopes[node] = oldLocalScope.Copy();
+
                     _binder._localScope = new LocalScope(oldLocalScope);
                     _binder._defaultColumnNameSuffix = 1;
                     base.VisitFunctionDeclaration(node);

@@ -93,6 +93,11 @@ namespace Kusto.Language.Binding
         private Binder _outerBinder;
 
         /// <summary>
+        /// Remembered local binding scope state just before a function is declared.
+        /// </summary>
+        private Dictionary<FunctionDeclaration, LocalScope> _staticScopes;
+
+        /// <summary>
         /// Any aliased databases.
         /// </summary>
         private readonly Dictionary<string, DatabaseSymbol> _aliasedDatabases =
@@ -141,6 +146,7 @@ namespace Kusto.Language.Binding
             _localScope = new LocalScope(outerScope);
             _semanticInfoSetter = semanticInfoSetter ?? DefaultSetSemanticInfo;
             _cancellationToken = cancellationToken;
+            _staticScopes = outerBinder?._staticScopes ?? new Dictionary<FunctionDeclaration, LocalScope>();
         }
 
         public TableSymbol RowScopeOrEmpty => _rowScope ?? TableSymbol.Empty;

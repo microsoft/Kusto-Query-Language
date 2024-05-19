@@ -1547,8 +1547,6 @@ namespace Kusto.Language.Binding
         /// </summary>
         private FunctionCallResult GetComputedFunctionCallResult(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
-            var outerScope = _localScope.Copy();
-
             TryGetFunctionBodyFacts(signature, out var funFacts);
 
             // if the function is not yet analyzed or is known to have a variable return type
@@ -1557,7 +1555,7 @@ namespace Kusto.Language.Binding
             {
                 // use expansion at this call site to determine correct return type
                 // if signature facts was not yet known, it will be computed by calling GetCallSiteExpansion
-                var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes, outerScope);
+                var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes);
                 
                 // try again after evaluating expansion
                 TryGetFunctionBodyFacts(signature, out funFacts);
@@ -1574,7 +1572,7 @@ namespace Kusto.Language.Binding
                 // body has non-variable (fixed) return type.
                 return new FunctionCallResult(
                     funFacts.NonVariableComputedReturnType,
-                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes, outerScope), funFacts));
+                    new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes), funFacts));
             }
         }
 
@@ -1593,7 +1591,7 @@ namespace Kusto.Language.Binding
                 && syntax.GetContainedSyntaxDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error);
         }
 
-        private Func<FunctionCallExpansion> GetDeferredFunctionCallExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
+        private Func<FunctionCallExpansion> GetDeferredFunctionCallExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
             FunctionCallExpansion expansion = null;
             var args = arguments.ToReadOnly(); // force copy
@@ -1606,7 +1604,7 @@ namespace Kusto.Language.Binding
                     // re-introduce binding lock since deferred function can be called outside the current binding lock
                     lock (this._globalBindingCache)
                     {
-                        expansion = this.GetFunctionCallExpansion(signature, args, types, outerScope);
+                        expansion = this.GetFunctionCallExpansion(signature, args, types);
                     }
                 }
 
@@ -1617,7 +1615,10 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the inline expansion of a function call
         /// </summary>
-        internal FunctionCallExpansion GetFunctionCallExpansion(Signature signature, IReadOnlyList<Expression> arguments = null, IReadOnlyList<TypeSymbol> argumentTypes = null, LocalScope outerScope = null)
+        internal FunctionCallExpansion GetFunctionCallExpansion(
+            Signature signature, 
+            IReadOnlyList<Expression> arguments = null, 
+            IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
             if (signature.ReturnKind != ReturnTypeKind.Computed)
                 return null;
@@ -1636,7 +1637,6 @@ namespace Kusto.Language.Binding
                     try
                     {
                         var body = GetUnboundBody(signature);
-
                         if (body != null)
                         {
                             var isInDatabase = IsDatabaseSymbolSignature(signature);
@@ -1653,7 +1653,8 @@ namespace Kusto.Language.Binding
                                 expansion = new FunctionCallExpansion(body);
                             }
 
-                            if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, outerScope, callSiteInfo.Locals))
+                            var staticScope = GetOuterScope(signature);
+                            if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, staticScope, callSiteInfo.Locals))
                             {
                                 // compute function body facts as side effect
                                 var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);
@@ -1828,6 +1829,18 @@ namespace Kusto.Language.Binding
                 var text = GetFunctionBodyText(signature);
                 return QueryParser.ParseFunctionBody(text);
             }
+        }
+
+        private LocalScope GetOuterScope(Signature signature)
+        {
+            if (signature.Declaration != null
+                && signature.Declaration.Parent is FunctionDeclaration fd
+                && _staticScopes.TryGetValue(fd, out var scope))
+            {
+                return scope;
+            }
+
+            return null;
         }
 
         private static TypeSymbol GetRepresentativeType(Parameter parameter)

@@ -83,6 +83,7 @@ namespace Kusto.Language.Symbols
 
         /// <summary>
         /// If true, this function is considered a view.
+        /// Views are local functions that can be accessed using the table() function.
         /// </summary>
         public bool IsView => (_flags & FunctionFlags.View) != 0;
 
