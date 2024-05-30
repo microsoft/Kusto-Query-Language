@@ -3291,8 +3291,11 @@ namespace Kusto.Language.Editor
             var combinedTexts = CombineTexts(texts);
 
             var displayText = items.Aggregate("", (s, item) => CombineWithSpacing(s, item.DisplayText));
+
+            // remove all whitespace from text matching to aid early completion for non-extended completions
+            var matchText = displayText.Filter(c => !TextFacts.IsWhitespace(c));
             
-            return new CompletionItem(items[0].Kind, displayText)
+            return new CompletionItem(items[0].Kind, displayText, matchText: matchText)
                 .WithApplyTexts(combinedTexts)
                 .WithRank(CompletionRank.Other)
                 .WithPriority(CompletionPriority.Low);

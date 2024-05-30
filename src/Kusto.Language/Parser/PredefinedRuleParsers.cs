@@ -16,32 +16,40 @@ namespace Kusto.Language.Parsing
     /// </summary>
     public class PredefinedRuleParsers
     {
+        public Parser<LexicalToken, SyntaxElement> Value { get; }
+        public Parser<LexicalToken, SyntaxElement> StringLiteral { get; }
+        public Parser<LexicalToken, SyntaxElement> BracketedStringLiteral { get; }
         public Parser<LexicalToken, SyntaxElement> RawGuidLiteral { get; }
         public Parser<LexicalToken, SyntaxElement> GuidLiteral { get; }
         public Parser<LexicalToken, SyntaxElement> AnyGuidLiteralOrString { get; }
-        public Parser<LexicalToken, SyntaxElement> StringLiteral { get; }
+        public Parser<LexicalToken, SyntaxElement> Type { get; }
+
+        public Parser<LexicalToken, SyntaxElement> NameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> QualifiedNameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> WildcardedNameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> QualifiedWildcardedNameDeclaration { get; }
+
         public Parser<LexicalToken, SyntaxElement> ColumnNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> TableNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> ExternalTableNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> MaterializedViewNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> FunctionNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> EntityGroupNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> DatabaseNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> ClusterNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> DatabaseFunctionNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> DatabaseOrTableNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> DatabaseTableNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> DatabaseOrTableOrColumnNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> DatabaseTableColumnNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> TableOrColumnNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> TableColumnNameReference { get; }
-        public Parser<LexicalToken, SyntaxElement> BracketedStringLiteral { get; }
-        public Parser<LexicalToken, SyntaxElement> Value { get; }
-        public Parser<LexicalToken, SyntaxElement> Type { get; }
-        public Parser<LexicalToken, SyntaxElement> NameDeclaration { get; }
-        public Parser<LexicalToken, SyntaxElement> QualifiedNameDeclaration { get; }
-        public Parser<LexicalToken, SyntaxElement> EntityGroups { get; }
 
-        public Parser<LexicalToken, SyntaxElement> WildcardedNameDeclaration { get; }
-        public Parser<LexicalToken, SyntaxElement> QualifiedWildcardedNameDeclaration { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseOrTableNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseOrTableOrColumnNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> TableOrColumnNameReference { get; }
+
+        public Parser<LexicalToken, SyntaxElement> DatabaseTableNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseTableColumnNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> TableColumnNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseExternalTableNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseMaterializedViewNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseFunctionNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> DatabaseEntityGroupNameReference { get; }
+
         public Parser<LexicalToken, SyntaxElement> FunctionDeclaration { get; }
         public Parser<LexicalToken, SyntaxElement> FunctionBody { get; }
         public Parser<LexicalToken, SyntaxElement> QueryInput { get; }
@@ -183,7 +191,7 @@ namespace Kusto.Language.Parsing
                     .WithCompletionHint(Editor.CompletionHint.MaterializedView)
                     .WithTag("<materializedview>");
 
-            this.EntityGroups =
+            this.EntityGroupNameReference =
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.EntityGroup))
                     .WithCompletionHint(Editor.CompletionHint.EntityGroup)
                     .WithTag("<entitygroup>");
@@ -198,7 +206,7 @@ namespace Kusto.Language.Parsing
                     .WithCompletionHint(Editor.CompletionHint.Cluster)
                     .WithTag("<cluster>");
 
-            this.DatabaseFunctionNameReference =
+            this.FunctionNameReference =
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Function))
                     .WithCompletionHint(Editor.CompletionHint.DatabaseFunction)
                     .WithTag("<function>");
@@ -241,6 +249,58 @@ namespace Kusto.Language.Parsing
                         Rule(_left, Token(".").Hide(), Required(TableOrColumnNameReference, MissingNameReference),
                             (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
                     .WithTag("<table_column>");
+
+            var databaseOrExternalTableNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database | SymbolMatch.ExternalTable))
+                    .WithCompletionHint(Editor.CompletionHint.Database | Editor.CompletionHint.ExternalTable)
+                    .WithTag("<database_or_externaltable>");
+
+            this.DatabaseExternalTableNameReference =
+                ApplyZeroOrMore(
+                    databaseOrExternalTableNameReference,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(ExternalTableNameReference, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<database_externaltable>");
+
+            var databaseOrMaterializedViewNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database | SymbolMatch.MaterializedView))
+                    .WithCompletionHint(Editor.CompletionHint.Database | Editor.CompletionHint.MaterializedView)
+                    .WithTag("<database_or_materializedview>");
+
+            this.DatabaseMaterializedViewNameReference =
+                ApplyZeroOrMore(
+                    databaseOrMaterializedViewNameReference,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(MaterializedViewNameReference, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<database_materializedview>");
+
+            var databaseOrFunctionNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database | SymbolMatch.Function))
+                    .WithCompletionHint(Editor.CompletionHint.Database | Editor.CompletionHint.DatabaseFunction)
+                    .WithTag("<database_or_function>");
+
+            this.DatabaseFunctionNameReference =
+                ApplyZeroOrMore(
+                    databaseOrFunctionNameReference,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(FunctionNameReference, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<database_function>");
+
+            var databaseOrEntityGroupNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database | SymbolMatch.EntityGroup))
+                    .WithCompletionHint(Editor.CompletionHint.Database | Editor.CompletionHint.EntityGroup)
+                    .WithTag("<database_or_entitygroup>");
+
+            this.DatabaseEntityGroupNameReference =
+                ApplyZeroOrMore(
+                    databaseOrEntityGroupNameReference,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(EntityGroupNameReference, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<database_entitygroup>");
 
             this.Value = First(GuidLiteral, RawGuidLiteral, queryParser.Literal.Cast<SyntaxElement>());
 
