@@ -938,17 +938,22 @@ namespace Kusto.Language
 
         public static Diagnostic GetMakeGraphDynamicNodeIdColumnNotSupported()
         {
-            return new Diagnostic("KS240", $"source, target and node id columns can't be of type dynamic, consider using explicit cast");
+            return new Diagnostic("KS240", "source, target and node id columns can't be of type dynamic, consider using explicit cast");
         }
 
         public static Diagnostic GetJoinKeyCannotBeDynamic()
         {
-            return new Diagnostic("KS241", $"Join keys cannot be dynamic");
+            return new Diagnostic("KS241", "Join keys cannot be dynamic");
         }
 
         public static Diagnostic GetJoinKeysNotComparable(string leftType, string rightType)
         {
-            return new Diagnostic("KS241", $"Inconsistent data types for join keys: ({leftType}, {rightType})");
+            return new Diagnostic("KS242", $"Inconsistent data types for join keys: ({leftType}, {rightType})");
+        }
+
+        public static Diagnostic GetMakeGraphImplicityIdShouldNotBeEmpty()
+        {
+            return new Diagnostic("KS243", "Implicit node ID should not be empty.");
         }
 
         #region command diagnostics

@@ -309,6 +309,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.WithMatchIdKeyword, "with_match_id"),
                 new SyntaxData(SyntaxKind.With_SourceKeyword, "with_source"),
                 new SyntaxData(SyntaxKind.WithStepNameKeyword, "with_step_name"),
+                new SyntaxData(SyntaxKind.WithNodeIdKeyword, "with_node_id", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.WithSourceKeyword, "withsource"),
                 new SyntaxData(SyntaxKind.WriteAheadLogKeyword, "writeaheadlog"),
 
@@ -599,7 +600,8 @@ namespace Kusto.Language.Syntax
 
                 new SyntaxData(SyntaxKind.MacroExpandOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphOperator, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.MakeGraphWithClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphWithTablesAndKeysClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.MakeGraphWithImplicitIdClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMarkComponentsOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphPartitionedByClause, "", SyntaxCategory.Node),

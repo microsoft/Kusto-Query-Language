@@ -10079,18 +10079,30 @@ namespace Kusto.Language.Syntax
     #endregion /* class MakeGraphOperator */
     
     #region class MakeGraphWithClause
-    public sealed partial class MakeGraphWithClause : SyntaxNode
+    public abstract partial class MakeGraphWithClause : SyntaxNode
     {
-        public override SyntaxKind Kind => SyntaxKind.MakeGraphWithClause;
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphWithClause"/>.
+        /// </summary>
+        internal MakeGraphWithClause(IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+        }
+    }
+    #endregion /* class MakeGraphWithClause */
+    
+    #region class MakeGraphWithTablesAndKeysClause
+    public sealed partial class MakeGraphWithTablesAndKeysClause : MakeGraphWithClause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphWithTablesAndKeysClause;
         
         public SyntaxToken WithKeyword { get; }
         
         public SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>> TablesAndKeys { get; }
         
         /// <summary>
-        /// Constructs a new instance of <see cref="MakeGraphWithClause"/>.
+        /// Constructs a new instance of <see cref="MakeGraphWithTablesAndKeysClause"/>.
         /// </summary>
-        internal MakeGraphWithClause(SyntaxToken withKeyword, SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>> tablesAndKeys, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal MakeGraphWithTablesAndKeysClause(SyntaxToken withKeyword, SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>> tablesAndKeys, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.WithKeyword = Attach(withKeyword);
             this.TablesAndKeys = Attach(tablesAndKeys);
@@ -10131,19 +10143,92 @@ namespace Kusto.Language.Syntax
         
         public override void Accept(SyntaxVisitor visitor)
         {
-            visitor.VisitMakeGraphWithClause(this);
+            visitor.VisitMakeGraphWithTablesAndKeysClause(this);
         }
         public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
         {
-            return visitor.VisitMakeGraphWithClause(this);
+            return visitor.VisitMakeGraphWithTablesAndKeysClause(this);
         }
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new MakeGraphWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>>)TablesAndKeys?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new MakeGraphWithTablesAndKeysClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<MakeGraphTableAndKeyClause>>)TablesAndKeys?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
-    #endregion /* class MakeGraphWithClause */
+    #endregion /* class MakeGraphWithTablesAndKeysClause */
+    
+    #region class MakeGraphWithImplicitIdClause
+    public sealed partial class MakeGraphWithImplicitIdClause : MakeGraphWithClause
+    {
+        public override SyntaxKind Kind => SyntaxKind.MakeGraphWithImplicitIdClause;
+        
+        public SyntaxToken WithNodeIdKeyword { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public NameDeclaration Name { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="MakeGraphWithImplicitIdClause"/>.
+        /// </summary>
+        internal MakeGraphWithImplicitIdClause(SyntaxToken withNodeIdKeyword, SyntaxToken equalToken, NameDeclaration name, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.WithNodeIdKeyword = Attach(withNodeIdKeyword);
+            this.EqualToken = Attach(equalToken);
+            this.Name = Attach(name);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return WithNodeIdKeyword;
+                case 1: return EqualToken;
+                case 2: return Name;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(WithNodeIdKeyword);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(Name);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Declaration;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitMakeGraphWithImplicitIdClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitMakeGraphWithImplicitIdClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new MakeGraphWithImplicitIdClause((SyntaxToken)WithNodeIdKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (NameDeclaration)Name?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class MakeGraphWithImplicitIdClause */
     
     #region class GraphMarkComponentsOperator
     public sealed partial class GraphMarkComponentsOperator : QueryOperator
@@ -15536,7 +15621,8 @@ namespace Kusto.Language.Syntax
         public abstract void VisitInvokeOperator(InvokeOperator node);
         public abstract void VisitRenderOperator(RenderOperator node);
         public abstract void VisitMakeGraphOperator(MakeGraphOperator node);
-        public abstract void VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract void VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node);
+        public abstract void VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node);
         public abstract void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
@@ -16115,7 +16201,11 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
-        public override void VisitMakeGraphWithClause(MakeGraphWithClause node)
+        public override void VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node)
         {
             this.DefaultVisit(node);
         }
@@ -16512,7 +16602,8 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitInvokeOperator(InvokeOperator node);
         public abstract TResult VisitRenderOperator(RenderOperator node);
         public abstract TResult VisitMakeGraphOperator(MakeGraphOperator node);
-        public abstract TResult VisitMakeGraphWithClause(MakeGraphWithClause node);
+        public abstract TResult VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node);
+        public abstract TResult VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node);
         public abstract TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
@@ -17091,7 +17182,11 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
-        public override TResult VisitMakeGraphWithClause(MakeGraphWithClause node)
+        public override TResult VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node)
         {
             return this.DefaultVisit(node);
         }

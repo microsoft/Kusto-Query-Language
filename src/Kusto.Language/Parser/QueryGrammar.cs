@@ -2682,13 +2682,22 @@ namespace Kusto.Language.Parsing
                         new MakeGraphTableAndKeyClause(table, onKeyword, (NameReference)column))
                 .WithTag("<table-and-key-clause>");
 
-            var MakeGraphWithClause =
+            var MakeGraphWithTablesAndKeysClause =
                 Rule(
                     Token(SyntaxKind.WithKeyword),
                     CommaList(MakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, oneOrMore: true, endKinds: new[] { SyntaxKind.PartitionedByKeyword }),
                     (withKeyword, tablesAndKeys) =>
-                        new MakeGraphWithClause(withKeyword, tablesAndKeys))
-                .WithTag("<make-graph-with-clause>");
+                        (MakeGraphWithClause)new MakeGraphWithTablesAndKeysClause(withKeyword, tablesAndKeys))
+                .WithTag("<make-graph-with-tables-and-keys-clause>");
+
+            var MakeGraphWithImplicitIdClause =
+                Rule(
+                    Token(SyntaxKind.WithNodeIdKeyword, ctext: $"{SyntaxFacts.GetText(SyntaxKind.WithNodeIdKeyword)}="),
+                    RequiredToken(SyntaxKind.EqualToken),
+                    Required(SimpleNameDeclaration, CreateMissingNameDeclaration),
+                    (withNodeId, equals, name) =>
+                        (MakeGraphWithClause)new MakeGraphWithImplicitIdClause(withNodeId, equals, name))
+                .WithTag("<make-graph-with-implicit-node-id-clause>");
 
             var MakeGraphPartitionedByClause =
                 Rule(
@@ -2712,7 +2721,10 @@ namespace Kusto.Language.Parsing
                             Token("--", SyntaxKind.DashDashToken).Hide()),
                         () => CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken })),
                     Required(SimpleNameReference, CreateMissingNameReference),
-                    Optional(MakeGraphWithClause),
+                    Optional(
+                        First(
+                            MakeGraphWithImplicitIdClause, 
+                            MakeGraphWithTablesAndKeysClause)),
                     Optional(MakeGraphPartitionedByClause),
                     (keyword, parameters, sourceColumn, direction, targetColumn, withClause, partitionedByClause) =>
                         (QueryOperator)new MakeGraphOperator(keyword, parameters, (NameReference)sourceColumn, direction, (NameReference)targetColumn, withClause, partitionedByClause)

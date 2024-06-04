@@ -3554,12 +3554,12 @@ namespace Kusto.Language.Binding
                         diagnostics.Add(DiagnosticFacts.GetMakeGraphDynamicNodeIdColumnNotSupported().WithLocation(node.TargetColumn));
                     }
 
-                    if (node.WithClause != null)
+                    if (node.WithClause is MakeGraphWithTablesAndKeysClause tablesAndKeysClause)
                     {
                         nodesShape = s_tableListPool.AllocateFromPool();
-                        for (int i = 0; i < node.WithClause.TablesAndKeys.Count; i++)
+                        for (int i = 0; i < tablesAndKeysClause.TablesAndKeys.Count; i++)
                         {
-                            var tableAndKey = node.WithClause.TablesAndKeys[i].Element;
+                            var tableAndKey = tablesAndKeysClause.TablesAndKeys[i].Element;
                             _binder.CheckIsTabular(tableAndKey.Table, diagnostics);
                             if (!tableAndKey.Column.ResultType.IsAnyScalarExceptDynamic())
                             {
@@ -3571,6 +3571,18 @@ namespace Kusto.Language.Binding
                                 nodesShape.Add(table);
                             }
                         }
+                    }
+
+                    else if (node.WithClause is MakeGraphWithImplicitIdClause implicitIdClause)
+                    {
+                        nodesShape = s_tableListPool.AllocateFromPool();
+                        if (string.IsNullOrEmpty(implicitIdClause.Name.SimpleName))
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetMakeGraphImplicityIdShouldNotBeEmpty().WithLocation(implicitIdClause.Name));
+                        }
+                        // Create a symbol representing a "table" with only the implicit node id.
+                        var table = new TableSymbol(new ColumnSymbol(implicitIdClause.Name.SimpleName, node.SourceColumn.ResultType));
+                        nodesShape.Add(table);
                     }
                     
                     // Note that we don't handled the PartitionedByClause here but rather in the dedicated Visit* method.
@@ -3588,7 +3600,13 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            public override SemanticInfo VisitMakeGraphWithClause(MakeGraphWithClause node)
+            public override SemanticInfo VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node)
+            {
+                // handled by VisitMakeGraphOperator
+                return null;
+            }
+
+            public override SemanticInfo VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node)
             {
                 // handled by VisitMakeGraphOperator
                 return null;

@@ -1065,7 +1065,6 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Table:
                 case SymbolKind.Database:
                 case SymbolKind.Cluster:
-                case SymbolKind.Parameter:
                 case SymbolKind.Function:
                 case SymbolKind.Pattern:
                 case SymbolKind.Group:
@@ -1074,6 +1073,9 @@ namespace Kusto.Language.Binding
                 case SymbolKind.EntityGroup:
                 case SymbolKind.EntityGroupElement:
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics);
+                case SymbolKind.Parameter:
+                    // parameter is treated as probably constant so we don't raise an error diagnostic
+                    return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics, isConstant: ((ParameterSymbol)referencedSymbol).IsScalar);
                 case SymbolKind.Variable:
                     var v = (VariableSymbol)referencedSymbol;
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics, isConstant: v.IsConstant);
@@ -2044,8 +2046,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         private bool CheckIsConstant(Expression expression, List<Diagnostic> diagnostics)
         {
-            if (GetIsConstant(expression)
-                || expression.ReferencedSymbol is ParameterSymbol) // parameters might be constant
+            if (GetIsConstant(expression))
                 return true;
 
             if (!GetResultTypeOrError(expression).IsError)

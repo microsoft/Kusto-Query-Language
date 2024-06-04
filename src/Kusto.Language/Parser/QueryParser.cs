@@ -5418,7 +5418,7 @@ namespace Kusto.Language.Parsing
                     ?? ParseToken("--", SyntaxKind.DashDashToken) 
                     ?? CreateMissingDirectionToken();
                 var targetColumn = ParseNameReference() ?? CreateMissingNameReference();
-                var withClause = ParseMakeGraphWithClause();
+                var withClause = ParseMakeGraphWithImplicitIdClause() ?? ParseMakeGraphWithTablesAndKeysClause();
                 var partitionedByClause = ParseMakeGraphPartitionedByClause();
 
                 return new MakeGraphOperator(makeGraphKeyword, parameters, sourceColumn, directionToken, targetColumn, withClause, partitionedByClause);
@@ -5433,12 +5433,12 @@ namespace Kusto.Language.Parsing
         private static Func<SyntaxToken> CreateMissingDirectionToken = () =>
             CreateMissingToken(new[] { SyntaxKind.DashDashGreaterThanToken, SyntaxKind.DashDashToken });
 
-        private MakeGraphWithClause ParseMakeGraphWithClause()
+        private MakeGraphWithClause ParseMakeGraphWithTablesAndKeysClause()
         {
             if (ParseToken(SyntaxKind.WithKeyword) is SyntaxToken withKeyword)
             {
                 var tablesAndKeys = ParseCommaList(FnParseMakeGraphTableAndKeyClause, CreateMissingMakeGraphTableAndKeyClause, FnScanMakeGraphWhereClauseListEnd, oneOrMore: true);
-                return new MakeGraphWithClause(withKeyword, tablesAndKeys);
+                return new MakeGraphWithTablesAndKeysClause(withKeyword, tablesAndKeys);
             }
 
             return null;
@@ -5457,9 +5457,9 @@ namespace Kusto.Language.Parsing
             qp => qp.ParseMakeGraphTableAndKeyClause();
 
         private static readonly Func<QueryParser, bool> FnScanMakeGraphWhereClauseListEnd =
-            qp => qp.ScanMakeGraphWhereClauseListEnd();
+            qp => qp.ScanMakeGraphTableAndKeyClauseListEnd();
 
-        private bool ScanMakeGraphWhereClauseListEnd(int offset = 0)
+        private bool ScanMakeGraphTableAndKeyClauseListEnd(int offset = 0)
             => ScanCommonListEnd() || PeekToken(offset).Kind == SyntaxKind.PartitionedByKeyword;
         
         private MakeGraphTableAndKeyClause ParseMakeGraphTableAndKeyClause()
@@ -5471,6 +5471,18 @@ namespace Kusto.Language.Parsing
                 return new MakeGraphTableAndKeyClause(table, onKeyword, column);
             }
 
+            return null;
+        }
+
+        private MakeGraphWithClause ParseMakeGraphWithImplicitIdClause()
+        {
+            if (PeekToken().Kind == SyntaxKind.WithNodeIdKeyword)
+            {
+                var withNodeIdKeyword = ParseToken();
+                var equalToken = ParseRequiredToken(SyntaxKind.EqualToken);
+                var name = ParseNameDeclaration() ?? CreateMissingNameDeclaration();
+                return new MakeGraphWithImplicitIdClause(withNodeIdKeyword, equalToken, name);
+            }
             return null;
         }
 

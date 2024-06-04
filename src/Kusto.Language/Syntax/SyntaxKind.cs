@@ -280,6 +280,7 @@
         With_SourceKeyword,
         WithStepNameKeyword,
         WithSourceKeyword,
+        WithNodeIdKeyword,
         WriteAheadLogKeyword,
 
         // scalar type keyword tokens
@@ -569,7 +570,8 @@
 
         MacroExpandOperator,
         MakeGraphOperator,
-        MakeGraphWithClause,
+        MakeGraphWithTablesAndKeysClause,
+        MakeGraphWithImplicitIdClause,
         MakeGraphTableAndKeyClause,
         MakeGraphPartitionedByClause,
 
