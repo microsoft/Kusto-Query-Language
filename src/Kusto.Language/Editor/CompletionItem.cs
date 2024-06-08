@@ -134,6 +134,7 @@ namespace Kusto.Language.Editor
         /// <param name="matchText">The text to match against user typing. If not specified the displayText is used.</param>
         /// <param name="rank">The rank of the completion item determines the category for ordering in the completion list.</param>
         /// <param name="priority">The priority of the completion item determines the ordering within the items rank.</param>
+        /// <param name="retrigger">If true, the editor will retrigger completion after this item is inserted.</param>
         public CompletionItem(
             CompletionKind kind,
             string displayText,
@@ -156,6 +157,7 @@ namespace Kusto.Language.Editor
         /// <param name="matchText">The text to match against user typing. If not specified the displayText is used.</param>
         /// <param name="rank">The rank of the completion item determines the category for ordering in the completion list.</param>
         /// <param name="priority">The priority of the completion item determines the ordering within the items rank.</param>
+        /// <param name="retrigger">If true, the editor will retrigger completion after this item is inserted.</param>
         public CompletionItem(
             string displayText,
             string beforeText = null,
