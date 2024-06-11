@@ -1306,6 +1306,17 @@ namespace Kusto.Language
                 "ShowQueryPlan",
                 "(ResultType: string, Format: string, Content: string)");
 
+        public static readonly CommandSymbol ShowBasicAuthUsers =
+            new CommandSymbol(
+                "ShowBasicAuthUsers",
+                "(UserName: string)");
+
+        public static readonly CommandSymbol CreateBasicAuthUser =
+            new CommandSymbol("CreateBasicAuthUser", _schema18);
+
+        public static readonly CommandSymbol DropBasicAuthUser =
+            new CommandSymbol("DropBasicAuthUser", _schema18);
+
         public static readonly CommandSymbol ShowCache =
             new CommandSymbol(
                 "ShowCache",
@@ -2283,6 +2294,9 @@ namespace Kusto.Language
             ShowRunningQueries,
             CancelQuery,
             ShowQueryPlan,
+            ShowBasicAuthUsers,
+            CreateBasicAuthUser,
+            DropBasicAuthUser,
             ShowCache,
             AlterCache,
             ShowCommands,
