@@ -50,18 +50,22 @@ namespace Kusto.Language.Symbols
             }
         }
 
+        public string Construction { get; }
+
         public override SymbolKind Kind => SymbolKind.Command;
 
-        public CommandSymbol(string name, string resultSchema)
+        public CommandSymbol(string name, string resultSchema, string construction = null)
             : base(name)
         {
             _resultSchema = resultSchema;
+            this.Construction = construction ?? "";
         }
 
-        public CommandSymbol(string name, TableSymbol resultType)
+        public CommandSymbol(string name, TableSymbol resultType, string construction = null)
             : base(name)
         {
             _resultType = resultType;
+            this.Construction = construction ?? "";
         }
     }
 }

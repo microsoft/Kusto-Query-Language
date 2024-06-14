@@ -31,7 +31,7 @@ namespace Kusto.Language
         private static readonly string _schema1 = "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, AuthorizedPrincipals: string, RetentionPolicy: string, MergePolicy: string, ReservedSlot1: string, CachingPolicy: string, ShardingPolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string, TotalSize: real, DatabaseId: guid, InTransitionTo: string)";
         private static readonly string _schema2 = "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, CurrentUserIsUnrestrictedViewer: bool, DatabaseId: guid, InTransitionTo: string)";
         private static readonly string _schema3 = "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, DatabaseId: guid, AuthorizedPrincipals: string, RetentionPolicy: string, MergePolicy: string, CachingPolicy: string, ShardingPolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string)";
-        private static readonly string _schema4 = "(Step: string, Duration: string)";
+        private static readonly string _schema4 = "(DatabaseName: string, Version: string, PersistentStorage: string, MetadataPersistentStorage: string, DatabaseAccessMode: string)";
         private static readonly string _schema5 = "(DatabaseName: string, PrettyName: string)";
         private static readonly string _schema6 = "(DatabaseName: string, TableName: string, ColumnName: string, ColumnType: string, IsDefaultTable: bool, IsDefaultColumn: bool, PrettyName: string, Version: string, Folder: string, DocString: string)";
         private static readonly string _schema7 = "(DatabaseSchema: string)";
@@ -71,100 +71,160 @@ namespace Kusto.Language
         private static readonly string _schema41 = "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)";
 
         public static readonly CommandSymbol ShowDatabase =
-            new CommandSymbol("ShowDatabase", _schema0);
+            new CommandSymbol(
+                "ShowDatabase",
+                _schema0,
+                "DatabaseShowCommand(null, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabaseDetails =
-            new CommandSymbol("ShowDatabaseDetails", _schema1);
+            new CommandSymbol(
+                "ShowDatabaseDetails",
+                _schema1,
+                "DatabaseShowCommand(flavor, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabaseIdentity =
-            new CommandSymbol("ShowDatabaseIdentity", _schema2);
+            new CommandSymbol(
+                "ShowDatabaseIdentity",
+                _schema2,
+                "DatabaseShowCommand('identity', (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabasePolicies =
-            new CommandSymbol("ShowDatabasePolicies", _schema3);
+            new CommandSymbol(
+                "ShowDatabasePolicies",
+                _schema3,
+                "DatabaseShowCommand('policies', (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabaseDataStats =
             new CommandSymbol(
                 "ShowDatabaseDataStats",
-                "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, CurrentUseIsUnrestrictedViewer: bool, DatabaseId: guid, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)");
+                "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, CurrentUseIsUnrestrictedViewer: bool, DatabaseId: guid, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)",
+                "DatabaseShowCommand('datastats', (PropertyName, PropertyValue)*)");
+
+        public static readonly CommandSymbol ShowDatabaseMetadata =
+            new CommandSymbol(
+                "ShowDatabaseMetadata",
+                _schema4,
+                "DatabaseShowCommand('metadata', (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowClusterDatabases =
-            new CommandSymbol("ShowClusterDatabases", _schema0);
+            new CommandSymbol(
+                "ShowClusterDatabases",
+                _schema0,
+                "DatabasesShowCommand(null, DatabaseName*, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowClusterDatabasesDetails =
-            new CommandSymbol("ShowClusterDatabasesDetails", _schema1);
+            new CommandSymbol(
+                "ShowClusterDatabasesDetails",
+                _schema1,
+                "DatabasesShowCommand('details', DatabaseName*, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowClusterDatabasesIdentity =
-            new CommandSymbol("ShowClusterDatabasesIdentity", _schema2);
+            new CommandSymbol(
+                "ShowClusterDatabasesIdentity",
+                _schema2,
+                "DatabasesShowCommand('identity', DatabaseName*, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowClusterDatabasesPolicies =
-            new CommandSymbol("ShowClusterDatabasesPolicies", _schema3);
+            new CommandSymbol(
+                "ShowClusterDatabasesPolicies",
+                _schema3,
+                "DatabasesShowCommand('policies', DatabaseName*, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowClusterDatabasesDataStats =
             new CommandSymbol(
                 "ShowClusterDatabasesDataStats",
-                "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, DatabaseId: guid, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)");
+                "(DatabaseName: string, PersistentStorage: string, Version: string, IsCurrent: bool, DatabaseAccessMode: string, PrettyName: string, DatabaseId: guid, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, RowCount: long, HotOriginalSize: real, HotExtentSize: real, HotCompressedSize: real, HotIndexSize: real, HotRowCount: long)",
+                "DatabasesShowCommand('datastats', DatabaseName*, (PropertyName, PropertyValue)*)");
 
-        public static readonly CommandSymbol CreateDatabasePersist =
+        public static readonly CommandSymbol ShowClusterDatabasesMetadata =
             new CommandSymbol(
-                "CreateDatabasePersist",
-                "(DatabaseName: string, PersistentPath: string, Created: string, StoresMetadata: bool, StoresData: bool)");
+                "ShowClusterDatabasesMetadata",
+                _schema4,
+                "DatabasesShowCommand('metadata', DatabaseName*, (PropertyName, PropertyValue)*)");
 
-        public static readonly CommandSymbol CreateDatabaseVolatile =
+        public static readonly CommandSymbol CreateDatabase =
             new CommandSymbol(
-                "CreateDatabaseVolatile",
-                "(DatabaseName: string, PersistentPath: string, Created: bool, StoresMetadata: bool, StoresData: bool)");
+                "CreateDatabase",
+                "(DatabaseName: string, PersistentPath: string, Created: string, StoresMetadata: bool, StoresData: bool)",
+                "DatabaseCreateCommand(DatabaseName, Path*, IfNotExists?, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol AttachDatabase =
-            new CommandSymbol("AttachDatabase", _schema4);
-
-        public static readonly CommandSymbol AttachDatabaseMetadata =
-            new CommandSymbol("AttachDatabaseMetadata", _schema4);
+            new CommandSymbol(
+                "AttachDatabase",
+                "(Step: string, Duration: string)",
+                "DatabaseAttachCommand(DatabaseName, Path, ReadOnly ?? 'ReadWrite', Version, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol DetachDatabase =
             new CommandSymbol(
                 "DetachDatabase",
-                "(Table: string, NumberOfRemovedExtents: string)");
+                "(Table: string, NumberOfRemovedExtents: string)",
+                "DatabaseDetachCommand(DatabaseName, IfExists?, SkipSeal?)");
 
         public static readonly CommandSymbol AlterDatabasePrettyName =
-            new CommandSymbol("AlterDatabasePrettyName", _schema5);
+            new CommandSymbol(
+                "AlterDatabasePrettyName",
+                _schema5,
+                "DatabaseSetPrettyNameCommand(DatabaseName, PrettyName)");
 
         public static readonly CommandSymbol DropDatabasePrettyName =
-            new CommandSymbol("DropDatabasePrettyName", _schema5);
+            new CommandSymbol(
+                "DropDatabasePrettyName",
+                _schema5,
+                "DatabaseSetPrettyNameCommand(DatabaseName, null)");
 
         public static readonly CommandSymbol AlterDatabasePersistMetadata =
             new CommandSymbol(
                 "AlterDatabasePersistMetadata",
-                "(Moniker: guid, Url: string, State: string, CreatedOn: datetime, MaxDateTime: datetime, IsRecyclable: bool, StoresDatabaseMetadata: bool, HardDeletePeriod: timespan)");
+                "(Moniker: guid, Url: string, State: string, CreatedOn: datetime, MaxDateTime: datetime, IsRecyclable: bool, StoresDatabaseMetadata: bool, HardDeletePeriod: timespan)",
+                "DatabaseMetadataContainerAlterCommand(DatabaseName, Path, AllowNonEmptyContainer?)");
 
         public static readonly CommandSymbol SetAccess =
             new CommandSymbol(
                 "SetAccess",
-                "(DatabaseName: string, RequestedAccessMode: string, Status: string)");
+                "(DatabaseName: string, RequestedAccessMode: string, Status: string)",
+                "DatabaseSetAccessModeCommand(DatabaseName, AccessMode)");
 
         public static readonly CommandSymbol ShowDatabaseSchema =
-            new CommandSymbol("ShowDatabaseSchema", _schema6);
+            new CommandSymbol(
+                "ShowDatabaseSchema",
+                _schema6,
+                "SchemaShowCommand(Details?, (DatabaseName, Version))");
 
         public static readonly CommandSymbol ShowDatabaseSchemaAsJson =
-            new CommandSymbol("ShowDatabaseSchemaAsJson", _schema7);
+            new CommandSymbol(
+                "ShowDatabaseSchemaAsJson",
+                _schema7,
+                "SchemaShowAsJsonCommand((DatabaseName, Version), (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabaseSchemaAsCslScript =
             new CommandSymbol(
                 "ShowDatabaseSchemaAsCslScript",
-                "(DatabaseSchemaScript: string)");
+                "(DatabaseSchemaScript: string)",
+                "DatabaseSchemaShowAsCslCommand(Script?, (DatabaseName, Version), (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol ShowDatabaseCslSchema =
-            new CommandSymbol("ShowDatabaseCslSchema", _schema10);
+            new CommandSymbol(
+                "ShowDatabaseCslSchema",
+                _schema10,
+                "DatabaseSchemaShowAsCslCommand(Script?, (DatabaseName, Version))");
 
         public static readonly CommandSymbol ShowDatabaseSchemaViolations =
             new CommandSymbol(
                 "ShowDatabaseSchemaViolations",
-                "(EntityKind: string, EntityName: string, Property: string, Reason: string)");
+                "(EntityKind: string, EntityName: string, Property: string, Reason: string)",
+                "DatabaseSchemaViolationsShowCommand(DatabaseName)");
 
         public static readonly CommandSymbol ShowDatabasesSchema =
-            new CommandSymbol("ShowDatabasesSchema", _schema6);
+            new CommandSymbol(
+                "ShowDatabasesSchema",
+                _schema6,
+                "SchemaShowCommand(Details?, (DatabaseName, Version)*)");
 
         public static readonly CommandSymbol ShowDatabasesSchemaAsJson =
-            new CommandSymbol("ShowDatabasesSchemaAsJson", _schema7);
+            new CommandSymbol(
+                "ShowDatabasesSchemaAsJson",
+                _schema7,
+                "SchemaShowAsJsonCommand((DatabaseName, Version)*, (PropertyName, PropertyValue)*)");
 
         public static readonly CommandSymbol CreateDatabaseIngestionMapping =
             new CommandSymbol("CreateDatabaseIngestionMapping", _schema8);
@@ -191,9 +251,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowTables", _schema11);
 
         public static readonly CommandSymbol ShowTable =
-            new CommandSymbol(
-                "ShowTable",
-                "(AttributeName: string, AttributeType: string, ExtentSize: long, CompressionRatio: real, IndexSize: long, IndexSizePercent: real, OriginalSize: long, AttributeId: guid, SharedIndexSize: long, StorageEngineVersion: string)");
+            new CommandSymbol("ShowTable", "(AttributeName: string, AttributeType: string, ExtentSize: long, CompressionRatio: real, IndexSize: long, IndexSizePercent: real, OriginalSize: long, AttributeId: guid, SharedIndexSize: long, StorageEngineVersion: string)");
 
         public static readonly CommandSymbol ShowTablesDetails =
             new CommandSymbol("ShowTablesDetails", _schema9);
@@ -250,9 +308,7 @@ namespace Kusto.Language
             new CommandSymbol("DropTable", _schema12);
 
         public static readonly CommandSymbol UndoDropTable =
-            new CommandSymbol(
-                "UndoDropTable",
-                "(ExtentId: guid, NumberOfRecords: long, Status: string, FailureReason: string)");
+            new CommandSymbol("UndoDropTable", "(ExtentId: guid, NumberOfRecords: long, Status: string, FailureReason: string)");
 
         public static readonly CommandSymbol DropTables =
             new CommandSymbol("DropTables", _schema12);
@@ -315,9 +371,7 @@ namespace Kusto.Language
             new CommandSymbol("CreateOrAlterFunction", _schema15);
 
         public static readonly CommandSymbol DropFunction =
-            new CommandSymbol(
-                "DropFunction",
-                "(Name: string)");
+            new CommandSymbol("DropFunction", "(Name: string)");
 
         public static readonly CommandSymbol DropFunctions =
             new CommandSymbol("DropFunctions", _schema15);
@@ -341,9 +395,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowExternalTableSchema", _schema10);
 
         public static readonly CommandSymbol ShowExternalTableArtifacts =
-            new CommandSymbol(
-                "ShowExternalTableArtifacts",
-                "(Uri: string, Partition: dynamic, Size: long)");
+            new CommandSymbol("ShowExternalTableArtifacts", "(Uri: string, Partition: dynamic, Size: long)");
 
         public static readonly CommandSymbol DropExternalTable =
             new CommandSymbol("DropExternalTable", _schema16);
@@ -1102,14 +1154,10 @@ namespace Kusto.Language
             new CommandSymbol("DropClusterBlockedPrincipals", _schema24);
 
         public static readonly CommandSymbol IngestIntoTable =
-            new CommandSymbol(
-                "IngestIntoTable",
-                "(ExtentId: guid, ItemLoaded: string, Duration: string, HasErrors: string, OperationId: guid)");
+            new CommandSymbol("IngestIntoTable", "(ExtentId: guid, ItemLoaded: string, Duration: string, HasErrors: string, OperationId: guid)");
 
         public static readonly CommandSymbol IngestInlineIntoTable =
-            new CommandSymbol(
-                "IngestInlineIntoTable",
-                "(ExtentId: guid)");
+            new CommandSymbol("IngestInlineIntoTable", "(ExtentId: guid)");
 
         public static readonly CommandSymbol SetTable =
             new CommandSymbol("SetTable", _schema25);
@@ -1241,9 +1289,7 @@ namespace Kusto.Language
             new CommandSymbol("SetMaterializedViewCursor", _schema18);
 
         public static readonly CommandSymbol ShowTableOperationsMirroringStatus =
-            new CommandSymbol(
-                "ShowTableOperationsMirroringStatus",
-                "(TableName: string, IsEnabled: bool, ExportProperties: string, ManagedIdentityIdentifier: string, IsExportRunning: bool, LastExportStartTime: datetime, LastExportResult: string, LastExportedDataTime: datetime)");
+            new CommandSymbol("ShowTableOperationsMirroringStatus", "(TableName: string, IsEnabled: bool, ExportProperties: string, ManagedIdentityIdentifier: string, IsExportRunning: bool, LastExportStartTime: datetime, LastExportResult: string, LastExportedDataTime: datetime)");
 
         public static readonly CommandSymbol ShowTableOperationsMirroringExportedArtifacts =
             new CommandSymbol("ShowTableOperationsMirroringExportedArtifacts", _schema29);
@@ -1252,29 +1298,19 @@ namespace Kusto.Language
             new CommandSymbol("ShowTableOperationsMirroringFailures", _schema30);
 
         public static readonly CommandSymbol ShowCluster =
-            new CommandSymbol(
-                "ShowCluster",
-                "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
+            new CommandSymbol("ShowCluster", "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string)");
 
         public static readonly CommandSymbol ShowClusterDetails =
-            new CommandSymbol(
-                "ShowClusterDetails",
-                "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string, NetAndClsVersion: string)");
+            new CommandSymbol("ShowClusterDetails", "(NodeId: string, Address: string, Name: string, StartTime: datetime, IsAdmin: bool, MachineTotalMemory: long, MachineAvailableMemory: long, ProcessorCount: int, EnvironmentDescription: string, NetAndClsVersion: string)");
 
         public static readonly CommandSymbol ShowDiagnostics =
-            new CommandSymbol(
-                "ShowDiagnostics",
-                "(IsHealthy: bool, EnvironmentDescription: string, IsScaleOutRequired: bool, MachinesTotal: int, MachinesOffline: int, NodeLastRestartedOn: datetime, AdminLastElectedOn: datetime, ExtentsTotal: int, DiskColdAllocationPercentage: int, InstancesTargetBasedOnDataCapacity: int, TotalOriginalDataSize: real, TotalExtentSize: real, IngestionsLoadFactor: real, IngestionsInProgress: long, IngestionsSuccessRate: real, MergesInProgress: long, BuildVersion: string, BuildTime: datetime, ClusterDataCapacityFactor: real, IsDataWarmingRequired: bool, DataWarmingLastRunOn: datetime, MergesSuccessRate: real, NotHealthyReason: string, IsAttentionRequired: bool, AttentionRequiredReason: string, ProductVersion: string, FailedIngestOperations: int, FailedMergeOperations: int, MaxExtentsInSingleTable: int, TableWithMaxExtents: string, WarmExtentSize: real, NumberOfDatabases: int, PurgeExtentsRebuildLoadFactor: real, PurgeExtentsRebuildInProgress: long, PurgesInProgress: long, RowStoreLocalStorageCapacityFactor: real, ExportsLoadFactor: real, ExportsInProgress: long, PendingContinuousExports: long, MaxContinuousExportLatenessMinutes: long, RowStoreSealsInProgress: long, IsRowStoreUnhealthy: bool, MachinesSuspended: int, DataPartitioningLoadFactor: real, DataPartitioningOperationsInProgress: long, MinPartitioningPercentageInSingleTable: real, TableWithMinPartitioningPercentage: string, V3DataCapacityFactor: real, MaterializedViewsInProgress: long, DataPartitioningOperationsInProgress: real, IngestionCapacityUtilization: real, ShardsWarmingStatus: string, ShardsWarmingTemperature: real, ShardsWarmingDetails: string, StoredQueryResultsInProgress: long, HotDataDiskSpaceUsage: real, MirroringOperationsLoadFactor: real, MirroringOperationsInProgress: long, QueryAccelerationLoadFactor: real, QueryAccelerationInProgress: long)");
+            new CommandSymbol("ShowDiagnostics", "(IsHealthy: bool, EnvironmentDescription: string, IsScaleOutRequired: bool, MachinesTotal: int, MachinesOffline: int, NodeLastRestartedOn: datetime, AdminLastElectedOn: datetime, ExtentsTotal: int, DiskColdAllocationPercentage: int, InstancesTargetBasedOnDataCapacity: int, TotalOriginalDataSize: real, TotalExtentSize: real, IngestionsLoadFactor: real, IngestionsInProgress: long, IngestionsSuccessRate: real, MergesInProgress: long, BuildVersion: string, BuildTime: datetime, ClusterDataCapacityFactor: real, IsDataWarmingRequired: bool, DataWarmingLastRunOn: datetime, MergesSuccessRate: real, NotHealthyReason: string, IsAttentionRequired: bool, AttentionRequiredReason: string, ProductVersion: string, FailedIngestOperations: int, FailedMergeOperations: int, MaxExtentsInSingleTable: int, TableWithMaxExtents: string, WarmExtentSize: real, NumberOfDatabases: int, PurgeExtentsRebuildLoadFactor: real, PurgeExtentsRebuildInProgress: long, PurgesInProgress: long, RowStoreLocalStorageCapacityFactor: real, ExportsLoadFactor: real, ExportsInProgress: long, PendingContinuousExports: long, MaxContinuousExportLatenessMinutes: long, RowStoreSealsInProgress: long, IsRowStoreUnhealthy: bool, MachinesSuspended: int, DataPartitioningLoadFactor: real, DataPartitioningOperationsInProgress: long, MinPartitioningPercentageInSingleTable: real, TableWithMinPartitioningPercentage: string, V3DataCapacityFactor: real, MaterializedViewsInProgress: long, DataPartitioningOperationsInProgress: real, IngestionCapacityUtilization: real, ShardsWarmingStatus: string, ShardsWarmingTemperature: real, ShardsWarmingDetails: string, StoredQueryResultsInProgress: long, HotDataDiskSpaceUsage: real, MirroringOperationsLoadFactor: real, MirroringOperationsInProgress: long, QueryAccelerationLoadFactor: real, QueryAccelerationInProgress: long)");
 
         public static readonly CommandSymbol ShowCapacity =
-            new CommandSymbol(
-                "ShowCapacity",
-                "(Resource: string, Total: long, Consumed: long, Remaining: long)");
+            new CommandSymbol("ShowCapacity", "(Resource: string, Total: long, Consumed: long, Remaining: long)");
 
         public static readonly CommandSymbol ShowOperations =
-            new CommandSymbol(
-                "ShowOperations",
-                "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
+            new CommandSymbol("ShowOperations", "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
 
         public static readonly CommandSymbol ShowOperationDetails =
             new CommandSymbol("ShowOperationDetails", _schema18);
@@ -1289,27 +1325,19 @@ namespace Kusto.Language
             new CommandSymbol("ShowClusterJournal", _schema31);
 
         public static readonly CommandSymbol ShowQueries =
-            new CommandSymbol(
-                "ShowQueries",
-                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowQueries", "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowRunningQueries =
-            new CommandSymbol(
-                "ShowRunningQueries",
-                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowRunningQueries", "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol CancelQuery =
             new CommandSymbol("CancelQuery", _schema18);
 
         public static readonly CommandSymbol ShowQueryPlan =
-            new CommandSymbol(
-                "ShowQueryPlan",
-                "(ResultType: string, Format: string, Content: string)");
+            new CommandSymbol("ShowQueryPlan", "(ResultType: string, Format: string, Content: string)");
 
         public static readonly CommandSymbol ShowBasicAuthUsers =
-            new CommandSymbol(
-                "ShowBasicAuthUsers",
-                "(UserName: string)");
+            new CommandSymbol("ShowBasicAuthUsers", "(UserName: string)");
 
         public static readonly CommandSymbol CreateBasicAuthUser =
             new CommandSymbol("CreateBasicAuthUser", _schema18);
@@ -1318,37 +1346,25 @@ namespace Kusto.Language
             new CommandSymbol("DropBasicAuthUser", _schema18);
 
         public static readonly CommandSymbol ShowCache =
-            new CommandSymbol(
-                "ShowCache",
-                "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, MemoryCacheDetails: string, DiskCacheDetails: string, WarmedShardsSize: long, ShardsSizeToWarm: long, HotShardsSize: long)");
+            new CommandSymbol("ShowCache", "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, MemoryCacheDetails: string, DiskCacheDetails: string, WarmedShardsSize: long, ShardsSizeToWarm: long, HotShardsSize: long)");
 
         public static readonly CommandSymbol AlterCache =
             new CommandSymbol("AlterCache", _schema18);
 
         public static readonly CommandSymbol ShowCommands =
-            new CommandSymbol(
-                "ShowCommands",
-                "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowCommands", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
-            new CommandSymbol(
-                "ShowCommandsAndQueries",
-                "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowCommandsAndQueries", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandSymbol ShowIngestionFailures =
-            new CommandSymbol(
-                "ShowIngestionFailures",
-                "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
+            new CommandSymbol("ShowIngestionFailures", "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
 
         public static readonly CommandSymbol ShowDataOperations =
-            new CommandSymbol(
-                "ShowDataOperations",
-                "(Timestamp: datetime, Database: string, Table: string, ClientActivityId: string, IngressType: string, OriginalSize: long, ExtentSize: long, RowCount: long, Duration: timespan, TotalCpu: timespan, ExtentCount: long, Principal: string, Properties: string)");
+            new CommandSymbol("ShowDataOperations", "(Timestamp: datetime, Database: string, Table: string, ClientActivityId: string, IngressType: string, OriginalSize: long, ExtentSize: long, RowCount: long, Duration: timespan, TotalCpu: timespan, ExtentCount: long, Principal: string, Properties: string)");
 
         public static readonly CommandSymbol ShowDatabaseKeyVaultSecrets =
-            new CommandSymbol(
-                "ShowDatabaseKeyVaultSecrets",
-                "(KeyVaultSecretId: string)");
+            new CommandSymbol("ShowDatabaseKeyVaultSecrets", "(KeyVaultSecretId: string)");
 
         public static readonly CommandSymbol ShowClusterExtents =
             new CommandSymbol("ShowClusterExtents", _schema32);
@@ -1363,14 +1379,10 @@ namespace Kusto.Language
             new CommandSymbol("ShowDatabaseExtentsMetadata", _schema33);
 
         public static readonly CommandSymbol ShowDatabaseExtentTagsStatistics =
-            new CommandSymbol(
-                "ShowDatabaseExtentTagsStatistics",
-                "(TableName: string, TotalExtentsCount: long, TaggedExtentsCount: long, TotalTagsCount: long, TotalTagsLength: long, DropByTagsCount: long, DropByTagsLength: long, IngestByTagsCount: long, IngestByTagsLength: long)");
+            new CommandSymbol("ShowDatabaseExtentTagsStatistics", "(TableName: string, TotalExtentsCount: long, TaggedExtentsCount: long, TotalTagsCount: long, TotalTagsLength: long, DropByTagsCount: long, DropByTagsLength: long, IngestByTagsCount: long, IngestByTagsLength: long)");
 
         public static readonly CommandSymbol ShowDatabaseExtentsPartitioningStatistics =
-            new CommandSymbol(
-                "ShowDatabaseExtentsPartitioningStatistics",
-                "(TableName: string, PartitioningPolicy: dynamic, TotalRowCount: long, PartitionedRowCount: long, PartitionedRowsPercentage: double)");
+            new CommandSymbol("ShowDatabaseExtentsPartitioningStatistics", "(TableName: string, PartitioningPolicy: dynamic, TotalRowCount: long, PartitionedRowCount: long, PartitionedRowsPercentage: double)");
 
         public static readonly CommandSymbol ShowTableExtents =
             new CommandSymbol("ShowTableExtents", _schema32);
@@ -1385,9 +1397,7 @@ namespace Kusto.Language
             new CommandSymbol("TableShardsGroupMetadataShow", _schema33);
 
         public static readonly CommandSymbol TableShardGroupsShow =
-            new CommandSymbol(
-                "TableShardGroupsShow",
-                "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
+            new CommandSymbol("TableShardGroupsShow", "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
 
         public static readonly CommandSymbol TableShardGroupsStatisticsShow =
             new CommandSymbol("TableShardGroupsStatisticsShow", _schema34);
@@ -1432,19 +1442,13 @@ namespace Kusto.Language
             new CommandSymbol("DropPretendExtentsByProperties", _schema37);
 
         public static readonly CommandSymbol ShowVersion =
-            new CommandSymbol(
-                "ShowVersion",
-                "(BuildVersion: string, BuildTime: datetime, ServiceType: string, ProductVersion: string)");
+            new CommandSymbol("ShowVersion", "(BuildVersion: string, BuildTime: datetime, ServiceType: string, ProductVersion: string)");
 
         public static readonly CommandSymbol ClearTableData =
-            new CommandSymbol(
-                "ClearTableData",
-                "(Status: string)");
+            new CommandSymbol("ClearTableData", "(Status: string)");
 
         public static readonly CommandSymbol ClearTableCacheStreamingIngestionSchema =
-            new CommandSymbol(
-                "ClearTableCacheStreamingIngestionSchema",
-                "(NodeId: string, Status: string)");
+            new CommandSymbol("ClearTableCacheStreamingIngestionSchema", "(NodeId: string, Status: string)");
 
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol("StoredQueryResultSet", _schema18);
@@ -1456,9 +1460,7 @@ namespace Kusto.Language
             new CommandSymbol("StoredQueryResultsShow", _schema38);
 
         public static readonly CommandSymbol StoredQueryResultShowSchema =
-            new CommandSymbol(
-                "StoredQueryResultShowSchema",
-                "(StoredQueryResult:string, Schema:string)");
+            new CommandSymbol("StoredQueryResultShowSchema", "(StoredQueryResult:string, Schema:string)");
 
         public static readonly CommandSymbol StoredQueryResultDrop =
             new CommandSymbol("StoredQueryResultDrop", _schema38);
@@ -1530,9 +1532,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowClusterScaleIn", _schema18);
 
         public static readonly CommandSymbol ShowClusterServices =
-            new CommandSymbol(
-                "ShowClusterServices",
-                "(NodeId: string, IsClusterAdmin: bool, IsFabricManager: bool, IsDatabaseAdmin: bool, IsWeakConsistencyNode: bool, IsRowStoreHostNode: bool, IsDataNode: bool)");
+            new CommandSymbol("ShowClusterServices", "(NodeId: string, IsClusterAdmin: bool, IsFabricManager: bool, IsDatabaseAdmin: bool, IsWeakConsistencyNode: bool, IsRowStoreHostNode: bool, IsDataNode: bool)");
 
         public static readonly CommandSymbol ShowClusterNetwork =
             new CommandSymbol("ShowClusterNetwork", _schema18);
@@ -1745,14 +1745,10 @@ namespace Kusto.Language
             new CommandSymbol("DropRowStore", _schema18);
 
         public static readonly CommandSymbol ShowRowStore =
-            new CommandSymbol(
-                "ShowRowStore",
-                "(RowStoreName:string,RowStoreId:guid,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long, LocalStorageSize:long,LocalStorageStartOffset:long,Status:int,StatusLastUpdatedOn:datetime,DatabaseName:string,TableName:string,AssignedToNode:string,LatestIngestionTime:datetime)");
+            new CommandSymbol("ShowRowStore", "(RowStoreName:string,RowStoreId:guid,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long, LocalStorageSize:long,LocalStorageStartOffset:long,Status:int,StatusLastUpdatedOn:datetime,DatabaseName:string,TableName:string,AssignedToNode:string,LatestIngestionTime:datetime)");
 
         public static readonly CommandSymbol ShowRowStores =
-            new CommandSymbol(
-                "ShowRowStores",
-                "(RowStoreName:string,RowStoreId:guid,WriteAheadLogStorage:string,PersistentStorage:string,IsActive:bool,AssignedToNode:string,NumberOfKeys:long,WriteAheadLogSize:long, WriteAheadLogStartOffset:long,LocalStorageSize:long,WriteAheadDistanceToSizeRatioThreshold:real,InsertsConcurrencyLimit:long,KeyInsertsConcurrencyLimit:long,UnsealedSizePerKeyLimit:long, NodeInsertsConcurrencyLimit:long,Status:string,StatusLastUpdatedOn:datetime,UsageTags:string,IsEmpty:bool,IsDataAvailableForQuery:bool)");
+            new CommandSymbol("ShowRowStores", "(RowStoreName:string,RowStoreId:guid,WriteAheadLogStorage:string,PersistentStorage:string,IsActive:bool,AssignedToNode:string,NumberOfKeys:long,WriteAheadLogSize:long, WriteAheadLogStartOffset:long,LocalStorageSize:long,WriteAheadDistanceToSizeRatioThreshold:real,InsertsConcurrencyLimit:long,KeyInsertsConcurrencyLimit:long,UnsealedSizePerKeyLimit:long, NodeInsertsConcurrencyLimit:long,Status:string,StatusLastUpdatedOn:datetime,UsageTags:string,IsEmpty:bool,IsDataAvailableForQuery:bool)");
 
         public static readonly CommandSymbol ShowRowStoreTransactions =
             new CommandSymbol("ShowRowStoreTransactions", _schema18);
@@ -1767,14 +1763,10 @@ namespace Kusto.Language
             new CommandSymbol("ShowCallStacks", _schema18);
 
         public static readonly CommandSymbol ShowStreamingIngestionFailures =
-            new CommandSymbol(
-                "ShowStreamingIngestionFailures",
-                "(Database: string, Table: string, Principal: string, RootActivityId: guid, IngestionProperties: dynamic, Count: long, FirstFailureOn: datetime, LastFailureOn: datetime, FailureKind: string, ErrorCode: string, Details: string)");
+            new CommandSymbol("ShowStreamingIngestionFailures", "(Database: string, Table: string, Principal: string, RootActivityId: guid, IngestionProperties: dynamic, Count: long, FirstFailureOn: datetime, LastFailureOn: datetime, FailureKind: string, ErrorCode: string, Details: string)");
 
         public static readonly CommandSymbol ShowStreamingIngestionStatistics =
-            new CommandSymbol(
-                "ShowStreamingIngestionStatistics",
-                "(Database:string, Table:string, StartTime:datetime, EndTime:datetime, Count:long, MinDuration:timespan, MaxDuration:timespan, AvgDuration:timespan, TotalDataSize:long, MinDataSize:long, MaxDataSize:long, TotalRowCount:long, MinRowCount:long, MaxRowCount:long, IngestionStatus:string, NumOfRowStoresReferences:int, Principal:string, NodeId:string, IngestionProperties:dynamic)");
+            new CommandSymbol("ShowStreamingIngestionStatistics", "(Database:string, Table:string, StartTime:datetime, EndTime:datetime, Count:long, MinDuration:timespan, MaxDuration:timespan, AvgDuration:timespan, TotalDataSize:long, MinDataSize:long, MaxDataSize:long, TotalRowCount:long, MinRowCount:long, MaxRowCount:long, IngestionStatus:string, NumOfRowStoresReferences:int, Principal:string, NodeId:string, IngestionProperties:dynamic)");
 
         public static readonly CommandSymbol AlterTableRowStoreReferencesDropKey =
             new CommandSymbol("AlterTableRowStoreReferencesDropKey", _schema18);
@@ -1798,9 +1790,7 @@ namespace Kusto.Language
             new CommandSymbol("SetTableRowStoreReferences", _schema18);
 
         public static readonly CommandSymbol ShowTableRowStoreReferences =
-            new CommandSymbol(
-                "ShowTableRowStoreReferences",
-                "(DatabaseName:string, TableName:string, RowstoreReferenceKey:string, RowStoreName:string, EnabledForIngestion:bool)");
+            new CommandSymbol("ShowTableRowStoreReferences", "(DatabaseName:string, TableName:string, RowstoreReferenceKey:string, RowStoreName:string, EnabledForIngestion:bool)");
 
         public static readonly CommandSymbol AlterTableColumnStatistics =
             new CommandSymbol("AlterTableColumnStatistics", _schema18);
@@ -1830,9 +1820,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowTableColumnsClassification", _schema18);
 
         public static readonly CommandSymbol ShowTableRowStores =
-            new CommandSymbol(
-                "ShowTableRowStores",
-                "(DatabaseName:string,TableName:string,ExtentId:guid,IsSealed:bool,RowStoreName:string,RowStoreId:string,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,WriteAheadLogSize:long,LocalStorageSize:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long)");
+            new CommandSymbol("ShowTableRowStores", "(DatabaseName:string,TableName:string,ExtentId:guid,IsSealed:bool,RowStoreName:string,RowStoreId:string,RowStoreKey:string,OrdinalFrom:long,OrdinalTo:long,WriteAheadLogSize:long,LocalStorageSize:long,EstimatedDataSize:long,MinWriteAheadLogOffset:long)");
 
         public static readonly CommandSymbol ShowTableRowStoreSealInfo =
             new CommandSymbol("ShowTableRowStoreSealInfo", _schema18);
@@ -1841,9 +1829,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowTablesColumnStatistics", _schema18);
 
         public static readonly CommandSymbol ShowTableDataStatistics =
-            new CommandSymbol(
-                "ShowTableDataStatistics",
-                "(ColumnName: string, ColumnType: string, ColumnId: guid, OriginalSize: long, ExtentSize: long, CompressionRatio: real, DataCompressionSize: long, SharedIndexSize: long, IndexSize: long, IndexSizePercent: real,StorageEngineVersion: string, PresentRowCount: long, DeletedRowCount: long, SamplePercent: real, IncludeColdData: bool)");
+            new CommandSymbol("ShowTableDataStatistics", "(ColumnName: string, ColumnType: string, ColumnId: guid, OriginalSize: long, ExtentSize: long, CompressionRatio: real, DataCompressionSize: long, SharedIndexSize: long, IndexSize: long, IndexSizePercent: real,StorageEngineVersion: string, PresentRowCount: long, DeletedRowCount: long, SamplePercent: real, IncludeColdData: bool)");
 
         public static readonly CommandSymbol CreateTempStorage =
             new CommandSymbol("CreateTempStorage", _schema18);
@@ -1903,15 +1889,15 @@ namespace Kusto.Language
             ShowDatabaseIdentity,
             ShowDatabasePolicies,
             ShowDatabaseDataStats,
+            ShowDatabaseMetadata,
             ShowClusterDatabases,
             ShowClusterDatabasesDetails,
             ShowClusterDatabasesIdentity,
             ShowClusterDatabasesPolicies,
             ShowClusterDatabasesDataStats,
-            CreateDatabasePersist,
-            CreateDatabaseVolatile,
+            ShowClusterDatabasesMetadata,
+            CreateDatabase,
             AttachDatabase,
-            AttachDatabaseMetadata,
             DetachDatabase,
             AlterDatabasePrettyName,
             DropDatabasePrettyName,
