@@ -775,6 +775,13 @@ namespace Kusto.Language
                     new Parameter("ip", ParameterTypeKind.StringOrDynamic),
                     new Parameter("ranges", ParameterTypeKind.DynamicArray)))
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol Ipv6LookupRanges =
+            new FunctionSymbol("__ipv6_lookup_ranges",
+                new Signature(ScalarTypes.DynamicArray,
+                    new Parameter("ip", ParameterTypeKind.StringOrDynamic),
+                    new Parameter("ranges", ParameterTypeKind.DynamicArray)))
+            .WithResultNameKind(ResultNameKind.None).Hide();
         #endregion
 
         private static readonly TypeSymbol ParsePathResult =
@@ -4008,6 +4015,7 @@ namespace Kusto.Language
             Ipv4IsInRange,
             Ipv4IsInAnyRange,
             Ipv4NetmaskSuffix,
+            Ipv6LookupRanges,
             #endregion
 
             #region formatting functions

@@ -459,6 +459,39 @@ namespace Kusto.Language
                         }
                     }));
 
+        private static readonly Parameter Ipv6_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
+        private static readonly Parameter Ipv6_lookup_SourceIPv6Key = new Parameter("SourceIPv6Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
+        private static readonly Parameter Ipv6_lookup_IPv6LookupKey = new Parameter("IPv6LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
+
+        public static readonly FunctionSymbol Ipv6_Lookup =
+            new FunctionSymbol("ipv6_lookup",
+                new Signature(
+                    context => {
+                        var lookupTable = context.GetArgument(Ipv6_lookup_LookupTable.Name)?.ResultType as TableSymbol;
+                        if (lookupTable != null)
+                        {
+                            var cols = new List<ColumnSymbol>();
+                            cols.AddRange(context.RowScope.Columns);
+                            var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
+                            return new TableSymbol(combinedColumns);
+                        }
+                        else
+                        {
+                            // lookup table unknown, so default to input table
+                            return context.RowScope;
+                        }
+                    },
+                    Tabularity.Tabular,
+                    Ipv6_lookup_LookupTable,
+                    Ipv6_lookup_SourceIPv6Key,
+                    Ipv6_lookup_IPv6LookupKey)
+                    .WithLayout((signature, args, parameters) =>
+                    {
+                        parameters.Add(Ipv6_lookup_LookupTable);
+                        parameters.Add(Ipv4_lookup_SourceIPv4Key);
+                        parameters.Add(Ipv6_lookup_IPv6LookupKey);
+                    })).Hide();
+
         public static readonly FunctionSymbol SchemaMerge =
              new FunctionSymbol("schema_merge",
                  new TableSymbol(new[] {
@@ -754,6 +787,7 @@ namespace Kusto.Language
             InferStorageSchema,
             //InferStorageSchemaWithSuggestions,
             Ipv4_Lookup,
+            Ipv6_Lookup,
             Narrow,
             NewActivityMetrics,
             Pivot,
