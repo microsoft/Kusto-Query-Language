@@ -397,6 +397,11 @@ namespace Kusto.Language
                  new TableSymbol(new ColumnSymbol("CslSchema", ScalarTypes.String)),
                  new Parameter("Options", ParameterTypeKind.DynamicBag));
 
+        public static readonly FunctionSymbol InferStorageSchemaWithSuggestions =
+             new FunctionSymbol("infer_storage_schema_with_suggestions",
+                new TableSymbol(new ColumnSymbol("SuggestedTableSchema", ScalarTypes.String)),
+                new Parameter("Options", ParameterTypeKind.DynamicBag));
+
         private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
         private static readonly Parameter Ipv4_lookup_IPv4LookupKey = new Parameter("IPv4LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
@@ -747,6 +752,7 @@ namespace Kusto.Language
             Identity,
             IdentityV3,
             InferStorageSchema,
+            //InferStorageSchemaWithSuggestions,
             Ipv4_Lookup,
             Narrow,
             NewActivityMetrics,
