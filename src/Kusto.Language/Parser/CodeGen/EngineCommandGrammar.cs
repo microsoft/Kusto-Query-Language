@@ -10647,8 +10647,12 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("stored_query_results"),
                     Optional(
+                        Custom(
+                            If(Not(Token("with")), rules.NameDeclaration),
+                            shape240)),
+                    Optional(
                         fragment5),
-                    shape188));
+                    new [] {CD(), CD(), CD(CompletionHint.None, isOptional: true), CD(isOptional: true)}));
 
             var StoredQueryResultShowSchema = Command("StoredQueryResultShowSchema", 
                 Custom(
