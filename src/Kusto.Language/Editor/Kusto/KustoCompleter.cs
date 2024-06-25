@@ -126,14 +126,22 @@ namespace Kusto.Language.Editor
                 .Select(it => Retriggered(it))
                 .ToList();
 
-            // order completions by rank, priority & display name
+            // order completions by rank, priority & text
             var orderedItems = items
-                 .OrderBy(i => GetOrderingRank(i))
-                 .ThenBy(i => i.Priority)
-                 .ThenBy(i => i.DisplayText.ToLower())
+                 .Select(i => i.WithOrderText(CreateOrderText(i)))
+                 .OrderBy(i => i.OrderText)
                  .ToArray();
 
             return new CompletionInfo(orderedItems, editStart, editLength);
+        }
+
+        private string CreateOrderText(CompletionItem item)
+        {
+            return
+                ((int)GetOrderingRank(item)).ToString("D2")
+                + ((int)item.Priority).ToString("D1")
+                + "_"
+                + item.OrderText.ToLower(); // existing order text should not have rank & priority already
         }
 
         /// <summary>
