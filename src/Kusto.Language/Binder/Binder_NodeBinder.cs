@@ -481,22 +481,22 @@ namespace Kusto.Language.Binding
                         if (table.Columns.Count > 0)
                         {
                             var col = table.Columns[0];
-                            return new SemanticInfo(col.Type, dx);
+                            return new SemanticInfo(col.Type, dx, isConstant: true);
                         }
                         else
                         {
                             dx.Add(DiagnosticFacts.GetTableHasNoColumns().WithLocation(node.Expression));
-                            return new SemanticInfo(ErrorSymbol.Instance, dx);
+                            return new SemanticInfo(ErrorSymbol.Instance, dx, isConstant: true);
                         }
                     }
                     else if (resultType is ScalarSymbol)
                     {
-                        return new SemanticInfo(resultType, dx);
+                        return new SemanticInfo(resultType, dx, isConstant: true);
                     }
                     else
                     {
                         dx.Add(DiagnosticFacts.GetTableOrScalarExpected().WithLocation(node.Expression));
-                        return new SemanticInfo(ErrorSymbol.Instance, dx);
+                        return new SemanticInfo(ErrorSymbol.Instance, dx, isConstant: true);
                     }
                 }
                 finally

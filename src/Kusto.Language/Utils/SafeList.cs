@@ -5,8 +5,10 @@ using System.Collections.Generic;
 namespace Kusto.Language.Utils
 {
     /// <summary>
-    /// A list that restricts usage to read only semantics
-    /// and constructing copies with additional items using deferred copy semantics.
+    /// An immutable list over a normal mutable list that only supports adding new items.
+    /// Only one <see cref="SafeList{T}"/> instance owns the underlying list and can add to it. 
+    /// When a new <see cref="SafeList{T}"/> is constructed by adding items to the owner, it becomes the new owner.
+    /// When a new <see cref="SafeList{T}"/> is constructed by adding items to a non-owner, it copies the items it is allowed to see into a new list, making it the owner of the new list.
     /// </summary>
     public class SafeList<T> : IReadOnlyList<T>, IEnumerable<T>, IEnumerable
     {
@@ -14,15 +16,15 @@ namespace Kusto.Language.Utils
         private readonly int _length;
         private int _isOwner;
 
-        private SafeList(List<T> list, int isOwner = 1)
+        private SafeList(List<T> list, bool isOwner = true)
         {
             _list = list;
             _length = list.Count;
-            _isOwner = isOwner;
+            _isOwner = isOwner ? 1 : 0;
         }
 
         public SafeList(IEnumerable<T> items)
-            : this(new List<T>(items))
+            : this(items != null ? new List<T>(items) : new List<T>(0))
         {
         }
 
@@ -39,6 +41,8 @@ namespace Kusto.Language.Utils
             }
         }
 
+        internal bool IsOwner => _isOwner != 0;
+
         /// <summary>
         /// Creates a new list with the same elements as this list plus the item specified.
         /// </summary>
@@ -53,7 +57,7 @@ namespace Kusto.Language.Utils
             }
             else
             {
-                var newList = Copy(_list, _length);
+                var newList = Copy(_list, _length, _length + 1);
                 newList.Add(item);
                 return new SafeList<T>(newList);
             }
@@ -73,15 +77,15 @@ namespace Kusto.Language.Utils
             }
             else
             {
-                var newList = Copy(_list, _length);
+                var newList = Copy(_list, _length, _length);
                 newList.AddRange(items);
                 return new SafeList<T>(newList);
             }
         }
 
-        private static List<T> Copy(List<T> source, int length)
+        private static List<T> Copy(List<T> source, int length, int newLength)
         {
-            var newList = new List<T>(length);
+            var newList = new List<T>(newLength);
 
             for (int i = 0; i < length; i++)
             {
@@ -123,6 +127,10 @@ namespace Kusto.Language.Utils
             public void Reset() { }
         }
 
-        public static readonly SafeList<T> Empty = new SafeList<T>(new List<T>(0), isOwner: 0);
+        /// <summary>
+        /// An empty list
+        /// </summary>
+        public static readonly SafeList<T> Empty = 
+            new SafeList<T>(new List<T>(0), isOwner: false); // don't let anyone add to this global list
     }
 }

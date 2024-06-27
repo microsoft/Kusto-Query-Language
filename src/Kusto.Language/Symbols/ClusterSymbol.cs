@@ -11,7 +11,7 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public sealed class ClusterSymbol : TypeSymbol
     {
-        private readonly IReadOnlyList<Symbol> _members;
+        private readonly SafeList<Symbol> _members;
 
         /// <summary>
         /// If true, then the definition of the cluster is not fully known.
@@ -24,7 +24,8 @@ namespace Kusto.Language.Symbols
         private ClusterSymbol(string name, IEnumerable<Symbol> members, bool isOpen = false)
             : base(name)
         {
-            _members = members.ToReadOnly().CheckArgumentNullOrElementNull(nameof(members));
+            _members = members.ToSafeList();
+            _members.CheckArgumentNullOrElementNull(nameof(members));
             this.IsOpen = isOpen;
         }
 
@@ -84,6 +85,7 @@ namespace Kusto.Language.Symbols
         }
 
         private IReadOnlyList<DatabaseSymbol> _databases;
+        private Dictionary<string, DatabaseSymbol> _nameToDatabaseMap;
 
         /// <summary>
         /// Gets the database with the specified name or returns null.
@@ -93,8 +95,22 @@ namespace Kusto.Language.Symbols
             if (string.IsNullOrEmpty(databaseName))
                 return null;
 
-            return this.Databases.FirstOrDefault(d => d.Name == databaseName)
-                ?? this.Databases.FirstOrDefault(d => d.AlternateName == databaseName);
+            if (_nameToDatabaseMap == null)
+            {
+                var tmp = new Dictionary<string, DatabaseSymbol>();
+                
+                foreach (var db in this.Databases)
+                {
+                    tmp[db.Name] = db;
+                    if (!string.IsNullOrEmpty(db.AlternateName))
+                        tmp[db.AlternateName] = db;
+                }
+
+                Interlocked.CompareExchange(ref _nameToDatabaseMap, tmp, null);
+            }
+
+            _nameToDatabaseMap.TryGetValue(databaseName, out var databaseSymbol);
+            return databaseSymbol;
         }
 
         /// <summary>
@@ -110,7 +126,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public ClusterSymbol AddDatabase(DatabaseSymbol database)
         {
-            var newMembers = _members.Concat(new[] { database });
+            var newMembers = _members.AddItem(database);
             return new ClusterSymbol(this.Name, newMembers, this.IsOpen);
         }
 

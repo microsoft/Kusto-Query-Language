@@ -8,11 +8,11 @@ namespace Kusto.Language.Utils
     public static class ListExtensions
     {
         /// <summary>
-        /// Converts the list to an immutable/readonly list.
+        /// Converts the sequence to a read only list.
         /// </summary>
         public static IReadOnlyList<T> ToReadOnly<T>(this IEnumerable<T> list)
         {
-            if (list == null 
+            if (list == null
                 || list == EmptyReadOnlyList<T>.Instance
                 || (list is IReadOnlyList<T> rol && rol.Count == 0))
             {
@@ -21,12 +21,36 @@ namespace Kusto.Language.Utils
             }
             else if (list is SafeList<T> safeList)
             {
-                // safe-list has functually immutable semantics.
+                // SafeList is immutable
                 return safeList;
             }
             else
             {
-                // convert to a safe-list to make it immutable.
+                // convert to a SafeList to make it immutable.
+                return new SafeList<T>(list);
+            }
+        }
+
+        /// <summary>
+        /// Converts the sequence to a <see cref="SafeList{T}"/>
+        /// </summary>
+        public static SafeList<T> ToSafeList<T>(this IEnumerable<T> list)
+        {
+            if (list == null
+                || list == EmptyReadOnlyList<T>.Instance
+                || (list is IReadOnlyList<T> rol && rol.Count == 0))
+            {
+                // use an sharable empty SafeList
+                return SafeList<T>.Empty;
+            }
+            else if (list is SafeList<T> safeList)
+            {
+                // already a SafeList
+                return safeList;
+            }
+            else
+            {
+                // make a new SafeList
                 return new SafeList<T>(list);
             }
         }

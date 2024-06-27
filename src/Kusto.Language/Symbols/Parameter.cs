@@ -10,7 +10,7 @@ namespace Kusto.Language.Symbols
     /// <summary>
     /// A parameter declaration for a <see cref="Signature"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Parameter: {DebugDisplay}")]
+    [System.Diagnostics.DebuggerDisplay("Parameter: {DebugText}")]
     public class Parameter
     {
         private string DebugText =>
