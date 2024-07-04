@@ -246,6 +246,11 @@ namespace Kusto.Language
             "none", "all", "unique_edges"
         };
 
+        public static readonly IReadOnlyList<string> ShortestPathsOutputs = new string[]
+        {
+            "any", "all"
+        };
+
         public static readonly IReadOnlyList<string> UnionHintConcurrencies = HintConcurrencies;
         public static readonly IReadOnlyList<string> UnionHintSpreads = HintSpreads;
 

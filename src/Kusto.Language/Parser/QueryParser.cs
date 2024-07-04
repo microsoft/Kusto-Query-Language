@@ -5533,6 +5533,21 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        private GraphShortestPathsOperator ParseGraphShortestPathsOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphShortestPathsKeyword) is SyntaxToken keyword)
+            {
+                var parameters = ParseQueryOperatorParameterList(s_graphShortestPathsParameterMap, equalsNeeded: true);
+                var patterns = ParseCommaList(FnParseGraphMatchPattern, FnCreateMissingGraphMatchPattern, oneOrMore: true);
+                var whereClause = ParseWhereClause();
+                var projectClause = ParseProjectClause();
+
+                return new GraphShortestPathsOperator(keyword, parameters, patterns, whereClause, projectClause);
+            }
+
+            return null;
+        }
+
         private static readonly SyntaxKind[] s_rangeEndTokens = new SyntaxKind[]
         {
             SyntaxKind.BracketDashGreaterThanToken,
@@ -5662,6 +5677,9 @@ namespace Kusto.Language.Parsing
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphMatchParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphMatchParameters);
+
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphShortestPathsParameterMap =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphShortestPathsParameters);
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_graphToTableOperatorEdgesParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.GraphToTableEdgesParameters);
@@ -5845,6 +5863,8 @@ namespace Kusto.Language.Parsing
                     return ParseGraphMergeOperator();
                 case SyntaxKind.GraphMatchKeyword:
                     return ParseGraphMatchOperator();
+                case SyntaxKind.GraphShortestPathsKeyword:
+                    return ParseGraphShortestPathsOperator();
                 case SyntaxKind.GraphToTableKeyword: 
                     return ParseGraphToTableOperator();
                 case SyntaxKind.GraphMarkComponentsKeyword:

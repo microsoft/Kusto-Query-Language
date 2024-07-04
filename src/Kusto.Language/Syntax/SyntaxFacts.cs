@@ -121,6 +121,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GrannyAscKeyword, "granny-asc"),
                 new SyntaxData(SyntaxKind.GrannyDescKeyword, "granny-desc"),
                 new SyntaxData(SyntaxKind.GraphMatchKeyword, "graph-match"),
+                new SyntaxData(SyntaxKind.GraphShortestPathsKeyword, "graph-shortest-paths"),
                 new SyntaxData(SyntaxKind.GraphMergeKeyword, "graph-merge"),
                 new SyntaxData(SyntaxKind.GraphToTableKeyword, "graph-to-table"),
 
@@ -579,6 +580,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GetSchemaOperator, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.GraphMatchOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphShortestPathsOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPattern, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternNode, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdge, "", SyntaxCategory.Node),

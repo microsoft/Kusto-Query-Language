@@ -3750,6 +3750,87 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitGraphShortestPathsOperator(GraphShortestPathsOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var builder = s_projectionBuilderPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    TypeSymbol symbol = null;
+
+                    var leftGraph = GetGraphSymbol(node);
+                    if (leftGraph == null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphShortestPathsKeyword));
+                    }
+
+                    if (node.Patterns == null || node.Patterns.Count == 0)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetMissingGraphMatchPattern().WithLocation(node.Patterns));
+                    }
+                    else
+                    {
+                        foreach (var pattern in node.Patterns)
+                        {
+                            CheckGraphMatchPattern(pattern.Element, diagnostics);
+                        }
+                    }
+
+                    if (node.WhereClause != null)
+                    {
+                        _binder.CheckIsExactType(node.WhereClause.Condition, ScalarTypes.Bool, diagnostics);
+                    }
+
+                    if (node.ProjectClause != null)
+                    {
+                        // Getting all edges that are variable edges and has name
+                        var variableEdges = new HashSet<string>();
+                        node.Patterns.WalkElements(element =>
+                        {
+                            if (element is GraphMatchPatternEdge edge && edge.Range != null && edge.Name != null)
+                            {
+                                variableEdges.Add(edge.Name.SimpleName);
+                            }
+                        });
+
+                        foreach (var expr in node.ProjectClause.Expressions)
+                        {
+                            TypeSymbol columnType = null;
+                            var referencedElements = new HashSet<string>();
+                            expr.Element.WalkNodes(elementNode =>
+                            {
+                                if (elementNode is NameReference nameRef)
+                                {
+                                    referencedElements.Add(nameRef.SimpleName);
+                                }
+                            });
+                            if (variableEdges.Any(e => referencedElements.Contains(e)))
+                            {
+                                var colType = GetResultTypeOrError(expr.Element);
+                                columnType = ScalarTypes.GetDynamicArray(colType);
+                            }
+
+                            _binder.CreateProjectionColumns(expr.Element, builder, diagnostics, ProjectionStyle.GraphMatch, columnType: columnType);
+                        }
+
+                        symbol = new TableSymbol(builder.GetProjection());
+                    }
+                    else
+                    {
+                        symbol = (TypeSymbol)leftGraph ?? ErrorSymbol.Instance;
+                    }
+
+                    return new SemanticInfo(symbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_projectionBuilderPool.ReturnToPool(builder);
+                }
+            }
+
             private void CheckGraphMatchPattern(GraphMatchPattern node, List<Diagnostic> diagnostics)
             {
                 if (node.PatternElements == null || node.PatternElements.Count == 0)

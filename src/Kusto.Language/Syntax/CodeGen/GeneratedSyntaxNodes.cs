@@ -10855,6 +10855,103 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class GraphMatchOperator */
     
+    #region class GraphShortestPathsOperator
+    public sealed partial class GraphShortestPathsOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphShortestPathsOperator;
+        
+        public SyntaxToken GraphShortestPathsKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        public SyntaxList<SeparatedElement<GraphMatchPattern>> Patterns { get; }
+        
+        public WhereClause WhereClause { get; }
+        
+        public ProjectClause ProjectClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphShortestPathsOperator"/>.
+        /// </summary>
+        internal GraphShortestPathsOperator(SyntaxToken graphShortestPathsKeyword, SyntaxList<NamedParameter> parameters, SyntaxList<SeparatedElement<GraphMatchPattern>> patterns, WhereClause whereClause, ProjectClause projectClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphShortestPathsKeyword = Attach(graphShortestPathsKeyword);
+            this.Parameters = Attach(parameters);
+            this.Patterns = Attach(patterns);
+            this.WhereClause = Attach(whereClause, optional: true);
+            this.ProjectClause = Attach(projectClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphShortestPathsKeyword;
+                case 1: return Parameters;
+                case 2: return Patterns;
+                case 3: return WhereClause;
+                case 4: return ProjectClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphShortestPathsKeyword);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Patterns);
+                case 3: return nameof(WhereClause);
+                case 4: return nameof(ProjectClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                case 4:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphShortestPathsOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphShortestPathsOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphShortestPathsOperator((SyntaxToken)GraphShortestPathsKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<GraphMatchPattern>>)Patterns?.Clone(includeDiagnostics), (WhereClause)WhereClause?.Clone(includeDiagnostics), (ProjectClause)ProjectClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphShortestPathsOperator */
+    
     #region class GraphMatchPattern
     public sealed partial class GraphMatchPattern : QueryOperator
     {
@@ -15631,6 +15728,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract void VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract void VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract void VisitGraphShortestPathsOperator(GraphShortestPathsOperator node);
         public abstract void VisitGraphMatchPattern(GraphMatchPattern node);
         public abstract void VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract void VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
@@ -16241,6 +16339,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitGraphShortestPathsOperator(GraphShortestPathsOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitGraphMatchPattern(GraphMatchPattern node)
         {
             this.DefaultVisit(node);
@@ -16612,6 +16714,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract TResult VisitGraphToTableAsClause(GraphToTableAsClause node);
         public abstract TResult VisitGraphMatchOperator(GraphMatchOperator node);
+        public abstract TResult VisitGraphShortestPathsOperator(GraphShortestPathsOperator node);
         public abstract TResult VisitGraphMatchPattern(GraphMatchPattern node);
         public abstract TResult VisitGraphMatchPatternNode(GraphMatchPatternNode node);
         public abstract TResult VisitGraphMatchPatternEdge(GraphMatchPatternEdge node);
@@ -17219,6 +17322,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitGraphMatchOperator(GraphMatchOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphShortestPathsOperator(GraphShortestPathsOperator node)
         {
             return this.DefaultVisit(node);
         }

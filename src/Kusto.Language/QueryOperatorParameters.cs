@@ -76,6 +76,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter Kind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word);
 
+        public static readonly QueryOperatorParameter Output =
+            new QueryOperatorParameter("output", QueryOperatorParameterValueKind.Word);
+
         public static readonly QueryOperatorParameter WithComponentId =
             new QueryOperatorParameter("with_component_id", QueryOperatorParameterValueKind.NameDeclaration);
 
@@ -105,6 +108,9 @@ namespace Kusto.Language
 
         public static readonly QueryOperatorParameter Cycles =
             new QueryOperatorParameter("cycles", QueryOperatorParameterValueKind.Word, values: KustoFacts.CyclesKinds);
+
+        public static readonly QueryOperatorParameter ShortestPathsOutputs =
+            new QueryOperatorParameter("output", QueryOperatorParameterValueKind.Word, values: KustoFacts.ShortestPathsOutputs);
 
         /// <summary>
         /// All query operator parameters.
@@ -192,6 +198,11 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> GraphMatchParameters = new QueryOperatorParameter[]
         {
             Cycles.WithValues(KustoFacts.CyclesKinds),
+        }.ToReadOnly();
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> GraphShortestPathsParameters = new QueryOperatorParameter[]
+        {
+            Output.WithValues(KustoFacts.ShortestPathsOutputs),
         }.ToReadOnly();
 
 

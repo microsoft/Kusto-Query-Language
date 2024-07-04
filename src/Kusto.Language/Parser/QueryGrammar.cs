@@ -2868,6 +2868,17 @@ namespace Kusto.Language.Parsing
                         (QueryOperator)new GraphMatchOperator(keyword, parameters, patterns, whereClause, projectClause))
                 .WithTag("<graph-match-operator>");
 
+            var GraphShortestPathsOperator =
+                Rule(
+                    Token(SyntaxKind.GraphShortestPathsKeyword, CompletionKind.QueryPrefix),
+                    QueryParameterList(QueryOperatorParameters.GraphShortestPathsParameters, equalsNeeded: true),
+                    GraphMatchPatternClause,
+                    Optional(WhereClause),
+                    Optional(ProjectClause),
+                    (keyword, parameters, patterns, whereClause, projectClause) =>
+                        (QueryOperator)new GraphShortestPathsOperator(keyword, parameters, patterns, whereClause, projectClause))
+                .WithTag("<graph-shortest-paths-operator>");
+
             var PrePipeQueryOperator =
                 First(
                     EvaluateOperator,
@@ -2898,8 +2909,9 @@ namespace Kusto.Language.Parsing
                     ForkOperator,
                     GetSchemaOperator,
                     GraphMatchOperator,
+                    GraphShortestPathsOperator.Hide(),  // TODO Ameer: Enable once fully deployed.
                     GraphMergeOperaor,
-                    GraphMarkComponentsOperator.Hide(), // TODO: Enable once fully deployed.
+                    GraphMarkComponentsOperator.Hide(), // TODO Ameer: Enable once fully deployed.
                     GraphToTableOperator,
                     InvokeOperator,
                     JoinOperator,
