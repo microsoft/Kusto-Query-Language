@@ -462,6 +462,7 @@ namespace Kusto.Language
         private static readonly Parameter Ipv6_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv6_lookup_SourceIPv6Key = new Parameter("SourceIPv6Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
         private static readonly Parameter Ipv6_lookup_IPv6LookupKey = new Parameter("IPv6LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
+        private static readonly Parameter IPv6_lookup_return_unmatched = new Parameter("return_unmatched", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0);
 
         public static readonly FunctionSymbol Ipv6_Lookup =
             new FunctionSymbol("ipv6_lookup",
@@ -484,13 +485,15 @@ namespace Kusto.Language
                     Tabularity.Tabular,
                     Ipv6_lookup_LookupTable,
                     Ipv6_lookup_SourceIPv6Key,
-                    Ipv6_lookup_IPv6LookupKey)
+                    Ipv6_lookup_IPv6LookupKey,
+                    IPv6_lookup_return_unmatched)
                     .WithLayout((signature, args, parameters) =>
                     {
                         parameters.Add(Ipv6_lookup_LookupTable);
-                        parameters.Add(Ipv4_lookup_SourceIPv4Key);
+                        parameters.Add(Ipv6_lookup_SourceIPv6Key);
                         parameters.Add(Ipv6_lookup_IPv6LookupKey);
-                    })).Hide();
+                        parameters.Add(IPv6_lookup_return_unmatched);
+                    }));
 
         public static readonly FunctionSymbol SchemaMerge =
              new FunctionSymbol("schema_merge",
