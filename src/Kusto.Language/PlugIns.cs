@@ -788,7 +788,7 @@ namespace Kusto.Language
             Identity,
             IdentityV3,
             InferStorageSchema,
-            //InferStorageSchemaWithSuggestions,
+            InferStorageSchemaWithSuggestions,
             Ipv4_Lookup,
             Ipv6_Lookup,
             Narrow,
