@@ -1222,6 +1222,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
+        private static readonly Func<QueryParser, Expression> FnParseExpression =
+            qp => qp.ParseExpression();
+
         private static readonly Func<QueryParser, Expression> FnParseLiteral =
             qp => qp.ParseLiteral();
 
@@ -1860,7 +1863,7 @@ namespace Kusto.Language.Parsing
                     var parameters = ParseQueryOperatorParameterList(s_dataTableParameters);
                     var schema = ParseRowSchema() ?? CreateMissingRowSchema();
                     var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
-                    var values = ParseCommaList(FnParseLiteral, CreateMissingValue, FnScanCommonListEnd, allowTrailingComma: true);
+                    var values = ParseCommaList(FnParseExpression, CreateMissingValue, FnScanCommonListEnd, allowTrailingComma: true);
                     var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
                     var clause = ParseExternalDataWithClause();
                     return new ExternalDataExpression(keyword, parameters, schema, open, values, close, clause);

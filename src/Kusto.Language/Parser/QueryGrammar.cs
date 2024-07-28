@@ -1614,7 +1614,7 @@ namespace Kusto.Language.Parsing
                     QueryParameterList(QueryOperatorParameters.ExternalDataWithClauseProperties),
                     Required(RowSchema, CreateMissingRowSchema),
                     RequiredToken(SyntaxKind.OpenBracketToken),
-                    CommaList(Literal, fnMissingElement: CreateMissingExpression, allowTrailingComma: true, oneOrMore: true),
+                    CommaList(UnnamedExpression, fnMissingElement: CreateMissingExpression, allowTrailingComma: true, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     Optional(ExternalDataWithClause),
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
