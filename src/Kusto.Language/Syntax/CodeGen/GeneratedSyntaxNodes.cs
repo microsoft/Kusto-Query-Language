@@ -6140,7 +6140,7 @@ namespace Kusto.Language.Syntax
         /// </summary>
         internal MvExpandExpression(Expression expression, ToTypeOfClause toTypeOf, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
-            this.Expression = Attach(expression, optional: true);
+            this.Expression = Attach(expression);
             this.ToTypeOf = Attach(toTypeOf, optional: true);
             this.Init();
         }
@@ -6171,7 +6171,6 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0:
                 case 1:
                     return true;
                 default:

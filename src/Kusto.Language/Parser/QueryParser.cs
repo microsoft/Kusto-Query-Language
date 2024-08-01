@@ -4219,25 +4219,6 @@ namespace Kusto.Language.Parsing
 
         private SyntaxList<SeparatedElement<MvExpandExpression>> ParseMvExpandExpressionList()
         {
-            if (PeekToken().Kind == SyntaxKind.ToKeyword)
-            {
-                var position = GetResetPoint();
-
-                // if only one item that is just "to typeof(xxx)" then allow expression to be null w/o error
-                var clause = ParseToTypeOfClause();
-                if (PeekToken().Kind != SyntaxKind.CommaToken)
-                {
-                    return new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] 
-                    {
-                        new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause))
-                    });
-                }
-                else
-                {
-                    Reset(position);
-                }
-            }
-
             return ParseCommaList(FnParseMvExpandExpression, CreateMissingMvExpandExpression, FnScanMvExpandExpressionListEnd, oneOrMore: true);
         }
 

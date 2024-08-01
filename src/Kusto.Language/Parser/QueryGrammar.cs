@@ -2002,14 +2002,7 @@ namespace Kusto.Language.Parsing
                             new MvExpandExpression(expr, toTypeOfClause)));
 
             var MvExpandExpressionList =
-                First(
-                    // if only one item that is just "to typeof(xxx)" then allow expression to be null w/o error
-                    If(And(Token(SyntaxKind.ToKeyword), TypeofLiteral, Fails(Token(SyntaxKind.CommaToken))),
-                        Rule(ToTypeOfClause,
-                            clause => new SyntaxList<SeparatedElement<MvExpandExpression>>(new[] {
-                                new SeparatedElement<MvExpandExpression>(new MvExpandExpression(null, clause)) })))
-                        .Hide(),
-                    SeparatedList(MvExpandExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvExpandExpression, oneOrMore: true));
+               SeparatedList(MvExpandExpression, SyntaxKind.CommaToken, fnMissingElement: CreateMissingMvExpandExpression, oneOrMore: true);
 
             var MvExpandRowLimitClause =
                 Rule(
