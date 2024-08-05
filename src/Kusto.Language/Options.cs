@@ -13,177 +13,176 @@ namespace Kusto.Language
     /// </remarks>
     public class Options
     {
-        public static readonly OptionSymbol BestEffort =
-            new OptionSymbol("best_effort", @"If set, allows fuzzy resolution and connectivity issues of union legs. The set of union sources is reduced to the set of table references that exist and are accessible at the time." + "\r\n" +
-                "If at least one such table is found, any failure will yield a warning in the query status results, but will not prevent the query execution.", ScalarTypes.Bool);
+        public static readonly OptionSymbol BestEffort = new OptionSymbol("best_effort", @"If set, allows fuzzy resolution and connectivity issues of union legs. The set of union sources is reduced to the set of table references that exist and are accessible at the time.
+If at least one such table is found, any failure will yield a warning in the query status results, but will not prevent the query execution.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol DebugPython =
-            new OptionSymbol("query_python_debug", "If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
+            new OptionSymbol("query_python_debug", @"If set, generate python debug query for the enumerated python node (default first).", new[] { ScalarTypes.Bool, ScalarTypes.Int });
 
         public static readonly OptionSymbol DeferPartialQueryFailures =
-            new OptionSymbol("deferpartialqueryfailures", "If true, disables reporting partial query failures as part of the result set.", ScalarTypes.Bool);
-
-        public static readonly OptionSymbol ErrorReportingPlacement =
-            new OptionSymbol("results_error_reporting_placement", "Decides the placement of errors in the result set.", ScalarTypes.String, new[] { "'in_data'", "'end_of_table'", "'end_of_dataset'" });
+            new OptionSymbol("deferpartialqueryfailures", @"If true, disables reporting partial query failures as part of the result set.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol DoNotImpersonate =
-            new OptionSymbol("request_impersonation_disabled", "If specified, indicates that the service should not impersonate the caller's identity.", ScalarTypes.Bool);
+            new OptionSymbol("request_impersonation_disabled", @"If specified, indicates that the service should not impersonate the caller's identity.", ScalarTypes.Bool);
+
+        public static readonly OptionSymbol ErrorReportingPlacement =
+            new OptionSymbol("results_error_reporting_placement", @"Decides the placement of errors in the result set.", ScalarTypes.String, new[] { "'in_data'", "'end_of_table'", "'end_of_dataset'" });
 
         public static readonly OptionSymbol MaterializedViewShuffleQuery =
-            new OptionSymbol("materialized_view_shuffle", @"A hint to use shuffle strategy for materialized views that are referenced in the query." + "\r\n" +
-"The property is an array of materialized views names and the shuffle keys to use." + "\r\n" +
-"examples: 'dynamic(", ScalarTypes.Dynamic);
+            new OptionSymbol("materialized_view_shuffle", @"A hint to use shuffle strategy for materialized views that are referenced in the query.
+The property is an array of materialized views names and the shuffle keys to use.
+examples: 'dynamic(", ScalarTypes.Dynamic);
 
         public static readonly OptionSymbol MaxEntitiesToUnion =
-            new OptionSymbol("query_max_entities_in_union", "Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
+            new OptionSymbol("query_max_entities_in_union", @"Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
 
         public static readonly OptionSymbol MaxMemoryConsumptionPerIterator =
-            new OptionSymbol("maxmemoryconsumptionperiterator", "Overrides the default maximum amount of memory a query operator may allocate.", ScalarTypes.Long);
+            new OptionSymbol("maxmemoryconsumptionperiterator", @"Overrides the default maximum amount of memory a query operator may allocate.", ScalarTypes.Long);
 
         public static readonly OptionSymbol MaxMemoryConsumptionPerQueryPerNode =
-            new OptionSymbol("max_memory_consumption_per_query_per_node", "Overrides the default maximum amount of memory a whole query may allocate per node.", ScalarTypes.Long);
+            new OptionSymbol("max_memory_consumption_per_query_per_node", @"Overrides the default maximum amount of memory a whole query may allocate per node.", ScalarTypes.Long);
 
         public static readonly OptionSymbol MaxOutputColumns =
-            new OptionSymbol("maxoutputcolumns", "Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
+            new OptionSymbol("maxoutputcolumns", @"Overrides the default maximum number of columns a query is allowed to produce.", ScalarTypes.Long);
 
         public static readonly OptionSymbol NoRequestTimeout =
-            new OptionSymbol("norequesttimeout", "Enables setting the request timeout to its maximum value. This option cannot be set via a set-statement.", ScalarTypes.Bool);
+            new OptionSymbol("norequesttimeout", @"Enables setting the request timeout to its maximum value. This option cannot be set via a set-statement.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol NoTruncation =
-            new OptionSymbol("notruncation", "Enables suppressing truncation of the query results returned to the caller.", ScalarTypes.Bool);
+            new OptionSymbol("notruncation", @"Enables suppressing truncation of the query results returned to the caller.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol ProgressiveProgressReportPeriod =
-            new OptionSymbol("query_results_progressive_update_period", "Hint for Kusto as to how often to send progress frames (takes effect only if OptionResultsProgressiveEnabled is set)");
+            new OptionSymbol("query_results_progressive_update_period", @"Hint for Kusto as to how often to send progress frames (takes effect only if OptionResultsProgressiveEnabled is set)");
 
         public static readonly OptionSymbol ProgressiveQueryMinRowCountPerUpdate =
-            new OptionSymbol("query_results_progressive_row_count", "Hint for Kusto as to how many records to send in each update (takes effect only if OptionResultsProgressiveEnabled is set)");
+            new OptionSymbol("query_results_progressive_row_count", @"Hint for Kusto as to how many records to send in each update (takes effect only if OptionResultsProgressiveEnabled is set)");
 
         public static readonly OptionSymbol PushSelectionThroughAggregation =
-            new OptionSymbol("push_selection_through_aggregation", "If true, push simple selection through aggregation", ScalarTypes.Bool);
+            new OptionSymbol("push_selection_through_aggregation", @"If true, push simple selection through aggregation", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryBinAutoAt =
-            new OptionSymbol("query_bin_auto_at", "When evaluating the bin_auto() function, the start value to use.");
+            new OptionSymbol("query_bin_auto_at", @"When evaluating the bin_auto() function, the start value to use.");
 
         public static readonly OptionSymbol QueryBinAutoSize =
-            new OptionSymbol("query_bin_auto_size", "When evaluating the bin_auto() function, the bin size value to use.");
+            new OptionSymbol("query_bin_auto_size", @"When evaluating the bin_auto() function, the bin size value to use.");
 
         public static readonly OptionSymbol QueryCursorAfterDefault =
-            new OptionSymbol("query_cursor_after_default", "The default parameter value of the cursor_after() function when called without parameters.", ScalarTypes.String);
+            new OptionSymbol("query_cursor_after_default", @"The default parameter value of the cursor_after() function when called without parameters.", ScalarTypes.String);
 
         public static readonly OptionSymbol QueryCursorBeforeOrAtDefault =
-            new OptionSymbol("query_cursor_before_or_at_default", "The default parameter value of the cursor_before_or_at() function when called without parameters.", ScalarTypes.String);
+            new OptionSymbol("query_cursor_before_or_at_default", @"The default parameter value of the cursor_before_or_at() function when called without parameters.", ScalarTypes.String);
 
         public static readonly OptionSymbol QueryCursorCurrent =
-            new OptionSymbol("query_cursor_current", "Overrides the cursor value returned by the cursor_current() or current_cursor() functions.", ScalarTypes.String);
+            new OptionSymbol("query_cursor_current", @"Overrides the cursor value returned by the cursor_current() or current_cursor() functions.", ScalarTypes.String);
 
         public static readonly OptionSymbol QueryCursorDisabled =
-            new OptionSymbol("query_cursor_disabled", "Disables usage of cursor functions in the context of the query.", ScalarTypes.Bool);
+            new OptionSymbol("query_cursor_disabled", @"Disables usage of cursor functions in the context of the query.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryCursorScopedTables =
-            new OptionSymbol("query_cursor_scoped_tables", "List of table names that should be scoped to cursor_after_default .. cursor_before_or_at_default (upper bound is optional).", ScalarTypes.Dynamic);
+            new OptionSymbol("query_cursor_scoped_tables", @"List of table names that should be scoped to cursor_after_default .. cursor_before_or_at_default (upper bound is optional).", ScalarTypes.Dynamic);
 
         public static readonly OptionSymbol QueryDataScope =
-            new OptionSymbol("query_datascope", "Controls the query's datascope -- whether the query applies to all data or just part of it.", ScalarTypes.String, new[] { "'default'", "'all'", "'hotcache'" });
+            new OptionSymbol("query_datascope", @"Controls the query's datascope -- whether the query applies to all data or just part of it.", ScalarTypes.String, new[] { "'default'", "'all'", "'hotcache'" });
 
         public static readonly OptionSymbol QueryDateTimeScopeColumn =
-            new OptionSymbol("query_datetimescope_column", "Controls the column name for the query's datetime scope (query_datetimescope_to / query_datetimescope_from).", ScalarTypes.String);
+            new OptionSymbol("query_datetimescope_column", @"Controls the column name for the query's datetime scope (query_datetimescope_to / query_datetimescope_from).", ScalarTypes.String);
 
         public static readonly OptionSymbol QueryDateTimeScopeFrom =
-            new OptionSymbol("query_datetimescope_from", "Controls the query's datetime scope (earliest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
+            new OptionSymbol("query_datetimescope_from", @"Controls the query's datetime scope (earliest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
 
         public static readonly OptionSymbol QueryDateTimeScopeTo =
-            new OptionSymbol("query_datetimescope_to", "Controls the query's datetime scope (latest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
+            new OptionSymbol("query_datetimescope_to", @"Controls the query's datetime scope (latest) -- used as auto-applied filter on query_datetimescope_column only (if defined).", ScalarTypes.DateTime);
 
         public static readonly OptionSymbol QueryDistributionNodesSpanSize =
-            new OptionSymbol("query_distribution_nodes_span", @"If set, controls the way the subquery merge behaves: the executing node will introduce an additional level" + "\r\n" +
-"in the query hierarchy for each subgroup of nodes; the size of the subgroup is set by this option.", ScalarTypes.Int);
+            new OptionSymbol("query_distribution_nodes_span", @"If set, controls the way the subquery merge behaves: the executing node will introduce an additional level
+in the query hierarchy for each subgroup of nodes; the size of the subgroup is set by this option.", ScalarTypes.Int);
 
         public static readonly OptionSymbol QueryFanoutNodesPercent =
-            new OptionSymbol("query_fanout_nodes_percent", "The percentage of nodes to fan out execution to.", ScalarTypes.Int);
+            new OptionSymbol("query_fanout_nodes_percent", @"The percentage of nodes to fan out execution to.", ScalarTypes.Int);
 
         public static readonly OptionSymbol QueryFanoutThreadsPercent =
-            new OptionSymbol("query_fanout_threads_percent", "The percentage of threads to fan out execution to.", ScalarTypes.Int);
+            new OptionSymbol("query_fanout_threads_percent", @"The percentage of threads to fan out execution to.", ScalarTypes.Int);
 
         public static readonly OptionSymbol QueryForceRowLevelSecurity =
-            new OptionSymbol("query_force_row_level_security", "If specified, forces Row Level Security rules, even if row_level_security policy is disabled", ScalarTypes.Bool);
+            new OptionSymbol("query_force_row_level_security", @"If specified, forces Row Level Security rules, even if row_level_security policy is disabled", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryLanguage =
-            new OptionSymbol("query_language", "Controls how the query text is to be interpreted.", ScalarTypes.String, new[] { "'csl'", "'kql'", "'sql'" });
+            new OptionSymbol("query_language", @"Controls how the query text is to be interpreted.", ScalarTypes.String, new[] { "'csl'", "'kql'", "'sql'" });
 
         public static readonly OptionSymbol QueryLogQueryParameters =
-            new OptionSymbol("query_log_query_parameters", "Enables logging of the query parameters, so that they can be viewed later in the `.show queries` journal.", ScalarTypes.Bool);
+            new OptionSymbol("query_log_query_parameters", @"Enables logging of the query parameters, so that they can be viewed later in the `.show queries` journal.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryNow =
-            new OptionSymbol("query_now", "Overrides the datetime value returned by the now(0s) function.", ScalarTypes.DateTime);
+            new OptionSymbol("query_now", @"Overrides the datetime value returned by the now(0s) function.", ScalarTypes.DateTime);
 
         public static readonly OptionSymbol QueryResultsApplyGetSchema =
-            new OptionSymbol("query_results_apply_getschema", "If set, retrieves the schema of each tabular data in the results of the query instead of the data itself.", ScalarTypes.Bool);
+            new OptionSymbol("query_results_apply_getschema", @"If set, retrieves the schema of each tabular data in the results of the query instead of the data itself.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryResultsCacheForceRefresh =
-            new OptionSymbol("query_results_cache_force_refresh", "If set, forces query results cache refresh for a specific query. Must be used in combination with 'query_results_cache_max_age', and sent via ClientRequestProperties object (not as 'set' statement).", ScalarTypes.Bool);
+            new OptionSymbol("query_results_cache_force_refresh", @"If set, forces query results cache refresh for a specific query. Must be used in combination with 'query_results_cache_max_age', and sent via ClientRequestProperties object (not as 'set' statement).", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryResultsCacheMaxAge =
-            new OptionSymbol("query_results_cache_max_age", "If positive, controls the maximum age of the cached query results the service is allowed to return", ScalarTypes.TimeSpan);
+            new OptionSymbol("query_results_cache_max_age", @"If positive, controls the maximum age of the cached query results the service is allowed to return", ScalarTypes.TimeSpan);
 
         public static readonly OptionSymbol QueryResultsCachePerShardEnabled =
-            new OptionSymbol("query_results_cache_per_shard", "If set, enables per-shard query cache.", ScalarTypes.Bool);
+            new OptionSymbol("query_results_cache_per_shard", @"If set, enables per-shard query cache.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol QueryWeakConsistencySessionId =
-            new OptionSymbol("query_weakconsistency_session_id", "Sets the query weak consistency session id. Takes effect when 'queryconsistency' mode is set to 'weakconsistency_by_session_id'.", ScalarTypes.String);
+            new OptionSymbol("query_weakconsistency_session_id", @"Sets the query weak consistency session id. Takes effect when 'queryconsistency' mode is set to 'weakconsistency_by_session_id'.", ScalarTypes.String);
 
         public static readonly OptionSymbol RequestAppName =
-            new OptionSymbol("request_app_name", "Request application name to be used in the reporting (e.g. show queries).", ScalarTypes.String);
+            new OptionSymbol("request_app_name", @"Request application name to be used in the reporting (e.g. show queries).", ScalarTypes.String);
 
         public static readonly OptionSymbol RequestBlockRowLevelSecurity =
-            new OptionSymbol("request_block_row_level_security", "If specified, blocks access to tables for which row_level_security policy is enabled", ScalarTypes.Bool);
+            new OptionSymbol("request_block_row_level_security", @"If specified, blocks access to tables for which row_level_security policy is enabled", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestCalloutDisabled =
-            new OptionSymbol("request_callout_disabled", "If specified, indicates that the request can't call-out to a user-provided service.", ScalarTypes.Bool);
+            new OptionSymbol("request_callout_disabled", @"If specified, indicates that the request can't call-out to a user-provided service.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestDescription =
-            new OptionSymbol("request_description", "Arbitrary text that the author of the request wants to include as the request description.", ScalarTypes.String);
-
-        public static readonly OptionSymbol RequestExternalTableDisabled =
-            new OptionSymbol("request_external_table_disabled", "If specified, indicates that the request can't access external tables.", ScalarTypes.Bool);
+            new OptionSymbol("request_description", @"Arbitrary text that the author of the request wants to include as the request description.", ScalarTypes.String);
 
         public static readonly OptionSymbol RequestExternalDataDisabled =
-            new OptionSymbol("request_external_data_disabled", "If specified, indicates that the request can't access external data (using externaldata operator) or external tables.", ScalarTypes.Bool);
+            new OptionSymbol("request_external_data_disabled", @"If specified, indicates that the request can't access external data (using externaldata operator) or external tables.", ScalarTypes.Bool);
+
+        public static readonly OptionSymbol RequestExternalTableDisabled =
+            new OptionSymbol("request_external_table_disabled", @"If specified, indicates that the request can't access external tables.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestReadOnly =
-            new OptionSymbol("request_readonly", "If specified, indicates that the request can't write anything.", ScalarTypes.Bool);
+            new OptionSymbol("request_readonly", @"If specified, indicates that the request can't write anything.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestRemoteEntitiesDisabled =
-            new OptionSymbol("request_remote_entities_disabled", "If specified, indicates that the request can't access remote databases and clusters.", ScalarTypes.Bool);
+            new OptionSymbol("request_remote_entities_disabled", @"If specified, indicates that the request can't access remote databases and clusters.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestSandboxedExecutionDisabled =
-            new OptionSymbol("request_sandboxed_execution_disabled", "If specified, indicates that the request can't invoke code in the sandbox.", ScalarTypes.Bool);
+            new OptionSymbol("request_sandboxed_execution_disabled", @"If specified, indicates that the request can't invoke code in the sandbox.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol RequestUser =
-            new OptionSymbol("request_user", "Request user to be used in the reporting (e.g. show queries).", ScalarTypes.String);
+            new OptionSymbol("request_user", @"Request user to be used in the reporting (e.g. show queries).", ScalarTypes.String);
 
         public static readonly OptionSymbol ResultsProgressiveEnabled =
-            new OptionSymbol("results_progressive_enabled", "If set, enables the progressive query stream");
+            new OptionSymbol("results_progressive_enabled", @"If set, enables the progressive query stream");
+
+        public static readonly OptionSymbol ResultsV2NewlinesBetweenFrames =
+            new OptionSymbol("results_v2_newlines_between_frames", @"Adds new lines between frames in the results, in order to make it easier to parse them.", ScalarTypes.Bool);
 
         public static readonly OptionSymbol ServerTimeout =
-            new OptionSymbol("servertimeout", "Overrides the default request timeout. This option cannot be set via a set-statement.", ScalarTypes.TimeSpan);
+            new OptionSymbol("servertimeout", @"Overrides the default request timeout. This option cannot be set via a set-statement.", ScalarTypes.TimeSpan);
 
         public static readonly OptionSymbol TakeMaxRecords =
-            new OptionSymbol("query_take_max_records", "Enables limiting query results to this number of records.", ScalarTypes.Long);
+            new OptionSymbol("query_take_max_records", @"Enables limiting query results to this number of records.", ScalarTypes.Long);
 
         public static readonly OptionSymbol TruncationMaxRecords =
-            new OptionSymbol("truncationmaxrecords", "Overrides the default maximum number of records a query is allowed to return to the caller (truncation).", ScalarTypes.Long);
+            new OptionSymbol("truncationmaxrecords", @"Overrides the default maximum number of records a query is allowed to return to the caller (truncation).", ScalarTypes.Long);
 
         public static readonly OptionSymbol TruncationMaxSize =
-            new OptionSymbol("truncationmaxsize", "Overrides the default maximum data size a query is allowed to return to the caller (truncation).", ScalarTypes.Long);
-
-        public static readonly OptionSymbol ValidatePermissions =
-            new OptionSymbol("validate_permissions", "Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
-
-        public static readonly OptionSymbol V2NewlinesBetweenFrames =
-            new OptionSymbol("results_v2_newlines_between_frames", "Adds new lines between frames in the results, in order to make it easier to parse them.", ScalarTypes.Bool);
+            new OptionSymbol("truncationmaxsize", @"Overrides the default maximum data size a query is allowed to return to the caller (truncation).", ScalarTypes.Long);
 
         public static readonly OptionSymbol V2FragmentPrimaryTables =
-            new OptionSymbol("results_v2_fragment_primary_tables", "Causes primary tables to be sent in multiple fragments, each containing a subset of the rows.", ScalarTypes.Bool);
+            new OptionSymbol("results_v2_fragment_primary_tables", @"Causes primary tables to be sent in multiple fragments, each containing a subset of the rows.", ScalarTypes.Bool);
+
+        public static readonly OptionSymbol ValidatePermissions =
+            new OptionSymbol("validate_permissions", @"Validates user's permissions to perform the query and doesn't run the query itself.", ScalarTypes.Bool);
 
         public static readonly IReadOnlyList<OptionSymbol> All = new[]
         {
@@ -229,21 +228,20 @@ namespace Kusto.Language
     RequestBlockRowLevelSecurity,
     RequestCalloutDisabled,
     RequestDescription,
-    RequestExternalTableDisabled,
     RequestExternalDataDisabled,
+    RequestExternalTableDisabled,
     RequestReadOnly,
     RequestRemoteEntitiesDisabled,
     RequestSandboxedExecutionDisabled,
     RequestUser,
     ResultsProgressiveEnabled,
+    ResultsV2NewlinesBetweenFrames,
     ServerTimeout,
     TakeMaxRecords,
     TruncationMaxRecords,
     TruncationMaxSize,
-    ValidatePermissions,
-    V2NewlinesBetweenFrames,
     V2FragmentPrimaryTables,
+    ValidatePermissions,
 };
-
     }
 }
