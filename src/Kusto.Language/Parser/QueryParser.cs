@@ -2787,7 +2787,7 @@ namespace Kusto.Language.Parsing
             if (ScanIsQueryExpression())
             {
                 // if query, then list is one query expression
-                var query = ParseExpression();
+                var query = ParseExpression() ?? CreateMissingExpression();
                 exprList = new SyntaxList<SeparatedElement<Expression>>(
                     new SeparatedElement<Expression>(query));
             }
