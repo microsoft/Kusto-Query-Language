@@ -752,6 +752,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowExternalTablePolicyQueryAcceleration =
             new CommandSymbol("ShowExternalTablePolicyQueryAcceleration", _schema20);
 
+        public static readonly CommandSymbol ShowExternalTablesPolicyQueryAcceleration =
+            new CommandSymbol("ShowExternalTablesPolicyQueryAcceleration", _schema20);
+
         public static readonly CommandSymbol AlterExternalTablePolicyQueryAcceleration =
             new CommandSymbol("AlterExternalTablePolicyQueryAcceleration", _schema20);
 
@@ -1351,15 +1354,6 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol ShowQueryPlan =
             new CommandSymbol("ShowQueryPlan", "(ResultType: string, Format: string, Content: string)");
-
-        public static readonly CommandSymbol ShowBasicAuthUsers =
-            new CommandSymbol("ShowBasicAuthUsers", "(UserName: string)");
-
-        public static readonly CommandSymbol CreateBasicAuthUser =
-            new CommandSymbol("CreateBasicAuthUser", _schema18);
-
-        public static readonly CommandSymbol DropBasicAuthUser =
-            new CommandSymbol("DropBasicAuthUser", _schema18);
 
         public static readonly CommandSymbol ShowCache =
             new CommandSymbol("ShowCache", "(NodeId: string, TotalMemoryCapacity: long, MemoryCacheCapacity: long, MemoryCacheInUse: long, MemoryCacheHitCount: long, TotalDiskCapacity: long, DiskCacheCapacity: long, DiskCacheInUse: long, DiskCacheHitCount: long, DiskCacheMissCount: long, MemoryCacheDetails: string, DiskCacheDetails: string, WarmedShardsSize: long, ShardsSizeToWarm: long, HotShardsSize: long)");
@@ -2101,6 +2095,7 @@ namespace Kusto.Language
             DeleteDatabasePolicyMerge,
             DeleteTablePolicyMerge,
             ShowExternalTablePolicyQueryAcceleration,
+            ShowExternalTablesPolicyQueryAcceleration,
             AlterExternalTablePolicyQueryAcceleration,
             DeleteExternalTablePolicyQueryAcceleration,
             ShowExternalTableQueryAccelerationStatatistics,
@@ -2301,9 +2296,6 @@ namespace Kusto.Language
             ShowRunningQueries,
             CancelQuery,
             ShowQueryPlan,
-            ShowBasicAuthUsers,
-            CreateBasicAuthUser,
-            DropBasicAuthUser,
             ShowCache,
             AlterCache,
             ShowCommands,
