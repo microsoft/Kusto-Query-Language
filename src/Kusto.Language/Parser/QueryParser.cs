@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -104,12 +103,12 @@ namespace Kusto.Language.Parsing
             return ParseEntityPath(TokenParser.ParseTokens(text, options), 0, options);
         }
 
-        public static EntityGroup ParseEntityGroup(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
+        public static Expression ParseEntityGroup(LexicalToken[] tokens, int start = 0, ParseOptions options = null)
         {
             return new QueryParser(tokens, start, options).ParseEntityGroup();
         }
 
-        public static EntityGroup ParseEntityGroup(string text, ParseOptions options = null)
+        public static Expression ParseEntityGroup(string text, ParseOptions options = null)
         {
             return ParseEntityGroup(TokenParser.ParseTokens(text, options), 0, options);
         }
@@ -5334,10 +5333,10 @@ namespace Kusto.Language.Parsing
 #region MacroExpand
         private Expression ParseEntityGroupReference()
         {
-            var explicitEntityGroup = ParseEntityGroup();
-            if (explicitEntityGroup != null)
+            var explicitOrFunctionCallEntityGroup = ParseEntityGroup();
+            if (explicitOrFunctionCallEntityGroup != null)
             {
-                return explicitEntityGroup;
+                return explicitOrFunctionCallEntityGroup;
             }
 
             if (ScanQualifiedEntityStart())
@@ -6235,15 +6234,23 @@ namespace Kusto.Language.Parsing
             }
         }
 
-        private EntityGroup ParseEntityGroup()
+        private Expression ParseEntityGroup()
         {
-            var keyword = ParseToken(SyntaxKind.EntityGroupKeyword);
-            if (keyword != null)
+            if (PeekToken().Kind == SyntaxKind.EntityGroupKeyword)
             {
-                var open = ParseRequiredToken(SyntaxKind.OpenBracketToken);
+                // try parse it as a function call entity_group("eg").
+                var functionCallExpression = ParseFunctionCallExpression();
+                if (functionCallExpression != null)
+                {
+                    return functionCallExpression;
+                }
+
+                // if the above didn't work, try to parse explicit entity group: entity_group[cluster('c1').database('db1'), ...]
+                var keyword = ParseToken();
+                var openBracket = ParseRequiredToken(SyntaxKind.OpenBracketToken);
                 var expressions = ParseCommaList(FnParseUnnamedExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
-                var close = ParseRequiredToken(SyntaxKind.CloseBracketToken);
-                return new EntityGroup(keyword, open, expressions, close);
+                var closeBracket = ParseRequiredToken(SyntaxKind.CloseBracketToken);
+                return new EntityGroup(keyword, openBracket, expressions, closeBracket);
             }
 
             return null;

@@ -62,7 +62,7 @@ namespace Kusto.Language
         private static readonly string _schema32 = "(Event: string, EventTimestamp: datetime, Database: string, EntityName: string, UpdatedEntityName: string, EntityVersion: string, EntityContainerName: string, OriginalEntityState: string, UpdatedEntityState: string, ChangeCommand: string, Principal: string, RootActivityId: guid, ClientRequestId: string, User: string, OriginalEntityVersion: string)";
         private static readonly string _schema33 = "(ExtentId: guid, DatabaseName: string, TableName: string, MaxCreatedOn: datetime, OriginalSize: real, ExtentSize: real, CompressedSize: real, IndexSize: real, Blocks: long, Segments: long, ExtentContainerId: string, RowCount: long, MinCreatedOn: datetime, Tags: string, Kind: string, DeletedRowCount: long)";
         private static readonly string _schema34 = "(ExtentId: guid, DatabaseName: string, TableName: string, ExtentMetadata: string)";
-        private static readonly string _schema35 = "(TableId: guid, long ShardGroupCount: long, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, PartitionedRowCount: long)";
+        private static readonly string _schema35 = "(TableId: guid, long ShardGroupCount: long, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long)";
         private static readonly string _schema36 = "(OriginalExtentId: string, ResultExtentId: string, Duration: timespan)";
         private static readonly string _schema37 = "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
         private static readonly string _schema38 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
@@ -1407,7 +1407,7 @@ namespace Kusto.Language
             new CommandSymbol("TableShardsGroupMetadataShow", _schema34);
 
         public static readonly CommandSymbol TableShardGroupsShow =
-            new CommandSymbol("TableShardGroupsShow", "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, PartitionedRowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
+            new CommandSymbol("TableShardGroupsShow", "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, V2ShardCount: long, V2RowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
 
         public static readonly CommandSymbol TableShardGroupsStatisticsShow =
             new CommandSymbol("TableShardGroupsStatisticsShow", _schema35);

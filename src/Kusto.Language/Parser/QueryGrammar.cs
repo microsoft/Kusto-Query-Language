@@ -2657,7 +2657,7 @@ namespace Kusto.Language.Parsing
                 Rule(
                     Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
                     QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
-                    First(EntityGroup, If(ScanQualifiedEntityStart, EntityPathExpression), SimpleNameReference),
+                    First(EntityGroup, If(ScanQualifiedEntityStart, EntityPathExpression), FunctionCall, SimpleNameReference),
                     Optional(macroExpandScopeReferenceName),
                     RequiredToken(SyntaxKind.OpenParenToken),
                     MacroExpandSubQuery,
