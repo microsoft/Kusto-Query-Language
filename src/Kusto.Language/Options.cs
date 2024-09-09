@@ -151,6 +151,9 @@ in the query hierarchy for each subgroup of nodes; the size of the subgroup is s
         public static readonly OptionSymbol RequestReadOnly =
             new OptionSymbol("request_readonly", @"If specified, indicates that the request can't write anything.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol RequestReadOnlyHardline =
+            new OptionSymbol("request_readonly_hardline", @"If specified, indicates that the request must not be able to write anything, and any functionality (such as plugins) in which this flag can't be honored will be disabled.", ScalarTypes.Bool);
+
         public static readonly OptionSymbol RequestRemoteEntitiesDisabled =
             new OptionSymbol("request_remote_entities_disabled", @"If specified, indicates that the request can't access remote databases and clusters.", ScalarTypes.Bool);
 
@@ -231,6 +234,7 @@ in the query hierarchy for each subgroup of nodes; the size of the subgroup is s
     RequestExternalDataDisabled,
     RequestExternalTableDisabled,
     RequestReadOnly,
+    RequestReadOnlyHardline,
     RequestRemoteEntitiesDisabled,
     RequestSandboxedExecutionDisabled,
     RequestUser,
