@@ -50,7 +50,8 @@ namespace Kusto.Language.Syntax
         /// True if the tree depth is shallow enough to allow stack recursion
         /// to walk the nodes of this tree.
         /// </summary>
-        internal bool IsSafeToRecurse => Depth <= KustoCode.MaxAnalyzableSyntaxDepth;
+        internal bool IsSafeToRecurse(GlobalState state) => 
+            Depth <= state.GetProperty(Properties.MaxAnalysisDepth);
 
         /// <summary>
         /// Walks the entire syntax tree and evaluates the maximum depth of all the nodes.

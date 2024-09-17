@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kusto.Language
 {
@@ -43,7 +44,8 @@ namespace Kusto.Language
         /// <summary>
         /// True if semantic analysis has been performed.
         /// </summary>
-        public bool HasSemantics { get; }
+        public bool HasSemantics => 
+            _analysisState == AnalysisState.Performed;
 
         /// <summary>
         /// The resulting <see cref="TypeSymbol"/> of the query or control command in the code.
@@ -65,18 +67,22 @@ namespace Kusto.Language
         /// The tokens produced by the lexer.
         /// These are kept around to make reparsing faster, and are used by completion.
         /// </summary>
-        private readonly LexicalToken[] lexerTokens;
-        private readonly List<int> lexerTokenStarts;
+        private readonly LexicalToken[] _lexerTokens;
+        private readonly List<int> _lexerTokenStarts;
 
         /// <summary>
         /// The local cache to use for binding.  Stored here to aid debugging.
         /// </summary>
-        private readonly LocalBindingCache localCache;
+        private readonly LocalBindingCache _localCache;
 
-        /// <summary>
-        /// The maximum depth of nodes a syntax tree can have before it is considered non-analyzable.
-        /// </summary>
-        public static readonly int MaxAnalyzableSyntaxDepth = 500;
+        private enum AnalysisState
+        {
+            NotRequested,
+            Performed,
+            NotSafe
+        }
+
+        private AnalysisState _analysisState;
 
         private KustoCode(
             string text, 
@@ -84,7 +90,7 @@ namespace Kusto.Language
             GlobalState globals, 
             Parser<LexicalToken> grammar, 
             SyntaxTree tree, 
-            bool hasSemantics, 
+            AnalysisState analysisState, 
             TypeSymbol resultType,
             LexicalToken[] lexerTokens, 
             List<int> lexerTokenStarts,
@@ -95,11 +101,11 @@ namespace Kusto.Language
             this.Globals = globals;
             this.Grammar = grammar;
             this.Tree = tree;
-            this.HasSemantics = hasSemantics;
             this.ResultType = resultType;
-            this.lexerTokens = lexerTokens;
-            this.lexerTokenStarts = lexerTokenStarts;
-            this.localCache = localCache;
+            _lexerTokens = lexerTokens;
+            _lexerTokenStarts = lexerTokenStarts;
+            _localCache = localCache;
+            _analysisState = analysisState;
         }
 
         /// <summary>
@@ -231,7 +237,7 @@ namespace Kusto.Language
 
             LocalBindingCache localCache = null;
             TypeSymbol resultType = null;
-            var analyzed = false;
+            var analysisState = AnalysisState.NotRequested;
 
             if (analyze)
             {
@@ -241,11 +247,17 @@ namespace Kusto.Language
                 if (Binder.TryBind(tree, globals, localCache, null, cancellationToken))
                 {
                     resultType = DetermineResultType(syntax);
-                    analyzed = true;
+                    analysisState = AnalysisState.Performed;
+                }
+                else
+                {
+                    // if the tree is too deep, then don't bother trying to analyze it
+                    // because it will likely fail.
+                    analysisState = AnalysisState.NotSafe;
                 }
             }
 
-            return new KustoCode(text, kind, globals, grammar, tree, analyzed, resultType, tokens, tokenStarts, localCache);
+            return new KustoCode(text, kind, globals, grammar, tree, analysisState, resultType, tokens, tokenStarts, localCache);
         }
 
         /// <summary>
@@ -298,7 +310,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: true, cancellationToken);
+                return Create(this.Text, globals, _lexerTokens, _lexerTokenStarts, analyze: true, cancellationToken);
             }
         }
 
@@ -313,7 +325,7 @@ namespace Kusto.Language
             }
             else
             {
-                return Create(this.Text, globals, this.lexerTokens, this.lexerTokenStarts, analyze: this.HasSemantics, cancellationToken);
+                return Create(this.Text, globals, this._lexerTokens, this._lexerTokenStarts, analyze: this.HasSemantics, cancellationToken);
             }
         }
 
@@ -349,12 +361,13 @@ namespace Kusto.Language
             if (this.diagnostics == null)
             {
                 var include = DiagnosticsInclude.Syntactic | DiagnosticsInclude.Semantic;
-
-#if false
-            // eable this allow diagnostics from function body expansion to be included to help debugging.
-            include |= DiagnosticsInclude.Expansion;
-#endif
                 var diagnostics = this.Syntax.GetContainedDiagnostics(include, cancellationToken);
+
+                if (_analysisState == AnalysisState.NotSafe)
+                {
+                    diagnostics = diagnostics.ToSafeList().AddItem(DiagnosticFacts.GetQuerySyntaxDepthExceeded());
+                }
+
                 Interlocked.CompareExchange(ref this.diagnostics, diagnostics, null);
             }
 
@@ -447,16 +460,16 @@ namespace Kusto.Language
         /// </summary>
         public int GetTokenIndex(int position)
         {
-            if (this.lexerTokens.Length == 0)
+            if (this._lexerTokens.Length == 0)
                 return 0;
 
-            var lastTokenIndex = this.lexerTokens.Length - 1;
-            var lastToken = this.lexerTokens[lastTokenIndex];
-            var lastTokenStart = this.lexerTokenStarts[lastTokenIndex];
+            var lastTokenIndex = this._lexerTokens.Length - 1;
+            var lastToken = this._lexerTokens[lastTokenIndex];
+            var lastTokenStart = this._lexerTokenStarts[lastTokenIndex];
             if (position >= lastTokenStart + lastToken.Length)
-                return this.lexerTokens.Length - 1;
+                return this._lexerTokens.Length - 1;
 
-            var index = this.lexerTokenStarts.BinarySearch(position);
+            var index = this._lexerTokenStarts.BinarySearch(position);
             index = index >= 0 ? index : ~index - 1;
 
             return index;
@@ -467,7 +480,7 @@ namespace Kusto.Language
         /// </summary>
         public IReadOnlyList<LexicalToken> GetLexicalTokens()
         {
-            return this.lexerTokens;
+            return this._lexerTokens;
         }
     }
 

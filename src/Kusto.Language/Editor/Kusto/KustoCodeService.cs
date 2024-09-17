@@ -70,12 +70,14 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Returns true if the text appears parsable
         /// </summary>
-        private static bool CanBeParsed(string text) => text.Length <= 4 * 1024 * 1024;
+        private bool CanBeParsed(string text) =>
+            text.Length <= globals.GetProperty(Properties.MaxParseTextSize);
 
         /// <summary>
         /// Determines if the parsed syntax can be analyzed
         /// </summary>
-        private static bool CanBeAnalyzed(KustoCode code) => code.MaxDepth <= KustoCode.MaxAnalyzableSyntaxDepth;
+        private bool CanBeAnalyzed(KustoCode code) =>
+            code.Tree.IsSafeToRecurse(globals);
 
         /// <summary>
         /// Gets the <see cref="KustoCode"/> for the text without waiting for semantic analysis.
@@ -84,8 +86,7 @@ namespace Kusto.Language.Editor
         {
             if (this.lazyUnboundCode == null 
                 && this.codeException == null 
-                && waitForAnalysis
-                && CanBeParsed(this.Text))
+                && waitForAnalysis)
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -97,7 +98,7 @@ namespace Kusto.Language.Editor
                             code = this.lazyBoundCode;
                             return true;
                         }
-                        else
+                        else if (CanBeParsed(this.Text))
                         {
                             var newCode = KustoCode.Parse(this.Text, this.globals);
                             Interlocked.CompareExchange(ref this.lazyUnboundCode, newCode, null);
@@ -121,8 +122,7 @@ namespace Kusto.Language.Editor
         {
             if (this.lazyBoundCode == null 
                 && this.codeException == null 
-                && waitForAnalysis
-                && CanBeParsed(this.Text))
+                && waitForAnalysis)
             {
                 lock (this) // don't let multiple threads duplicate computation work
                 {
@@ -134,7 +134,7 @@ namespace Kusto.Language.Editor
                             var newCode = this.lazyUnboundCode.Analyze(cancellationToken: cancellationToken);
                             Interlocked.CompareExchange(ref this.lazyBoundCode, newCode, null);
                         }
-                        else
+                        else if (CanBeParsed(this.Text))
                         {
                             var newCode = KustoCode.ParseAndAnalyze(this.Text, this.globals, cancellationToken: cancellationToken);
                             Interlocked.CompareExchange(ref this.lazyBoundCode, newCode, null);
@@ -181,20 +181,30 @@ namespace Kusto.Language.Editor
 
         public override IReadOnlyList<Diagnostic> GetDiagnostics(bool waitForAnalysis = true, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (
-                this.lazyDiagnostics == null
-                && this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code)
-                && CanBeAnalyzed(code)) // if syntax too deep, don't try to gather diagnostics
+            if (this.lazyDiagnostics == null)
             {
-                // have try-catch to keep editor from crashing from parser bugs
-                try
+                if (this.TryGetBoundCode(cancellationToken, waitForAnalysis, out var code))
                 {
-                    var ds = code.GetDiagnostics(cancellationToken);                   
-                    Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
+                    // have try-catch to keep editor from crashing from parser bugs
+                    try
+                    {
+                        var ds = code.GetDiagnostics(cancellationToken);
+                        Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
+                    }
+                    catch (Exception)
+                    {
+                        Interlocked.CompareExchange(ref this.lazyDiagnostics, EmptyReadOnlyList<Diagnostic>.Instance, null);
+                    }
                 }
-                catch (Exception)
+                else if (this.codeException != null)
                 {
-                    Interlocked.CompareExchange(ref this.lazyDiagnostics, EmptyReadOnlyList<Diagnostic>.Instance, null);
+                    var tmp = new[] { DiagnosticFacts.GetInternalFailure() }.ToSafeList();
+                    Interlocked.CompareExchange(ref this.lazyDiagnostics, tmp, null);
+                }
+                else if (!this.CanBeParsed(this.Text))
+                {
+                    var tmp = new[] { DiagnosticFacts.GetQueryTextSizeExceeded() }.ToSafeList();
+                    Interlocked.CompareExchange(ref this.lazyDiagnostics, tmp, null);
                 }
             }
 
@@ -229,7 +239,7 @@ namespace Kusto.Language.Editor
                     }
                     catch (Exception e)
                     {
-                        analyzerDx.Add(DiagnosticFacts.AnalysisFailure(analyzer.Name, e.Message));
+                        analyzerDx.Add(DiagnosticFacts.GetAnalyzerFailure(analyzer.Name, e.Message));
                     }
                 }
 

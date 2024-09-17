@@ -716,7 +716,7 @@ namespace Kusto.Language
             return new Diagnostic("KS202", $"Materialized view name must be a string literal");
         }
 
-        public static Diagnostic AnalysisFailure(string analyzerName, string message)
+        public static Diagnostic GetAnalyzerFailure(string analyzerName, string message)
         {
             return new Diagnostic("KS203", $"Failure in analysis '{analyzerName}': {message}");
         }
@@ -954,6 +954,21 @@ namespace Kusto.Language
         public static Diagnostic GetMakeGraphImplicityIdShouldNotBeEmpty()
         {
             return new Diagnostic("KS243", "Implicit node ID should not be empty.");
+        }
+
+        public static Diagnostic GetQueryTextSizeExceeded()
+        {
+            return new Diagnostic("KS244", "Query text size exceeds maximum safe limit. Parsing not performed.");
+        }
+
+        public static Diagnostic GetQuerySyntaxDepthExceeded()
+        {
+            return new Diagnostic("KS245", "Query syntax depth exceeds maximum safe limit. Semantic analysis not performed.");
+        }
+
+        public static Diagnostic GetInternalFailure()
+        {
+            return new Diagnostic("KS246", "An internal failure occurred during parsing.");
         }
 
         #region command diagnostics

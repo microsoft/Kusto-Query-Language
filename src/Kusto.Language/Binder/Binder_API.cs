@@ -162,7 +162,7 @@ namespace Kusto.Language.Binding
             Action<SyntaxNode, SemanticInfo> semanticInfoSetter = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (!tree.IsSafeToRecurse)
+            if (!tree.IsSafeToRecurse(globals))
                 return false;
 
             globals = globals.WithCache();
@@ -222,7 +222,7 @@ namespace Kusto.Language.Binding
             LocalScope outerScope,
             IEnumerable<Symbol> locals)
         {
-            if (!bodyTree.IsSafeToRecurse)
+            if (!bodyTree.IsSafeToRecurse(outer._globals))
                 return false;
 
             var binder = new Binder(
@@ -309,7 +309,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         public static Symbol GetReferencedSymbol(SyntaxTree tree, int position, string name, GlobalState globals, SymbolMatch match, CancellationToken cancellationToken)
         {
-            if (tree.IsSafeToRecurse)
+            if (tree.IsSafeToRecurse(globals))
             {
                 globals = globals.WithCache();
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
@@ -344,7 +344,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         public static TableSymbol GetRowScope(SyntaxTree tree, int position, GlobalState globals, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (tree.IsSafeToRecurse)
+            if (tree.IsSafeToRecurse(globals))
             {
                 globals = globals.WithCache();
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
@@ -378,7 +378,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         public static void GetSymbolsInScope(SyntaxTree tree, int position, GlobalState globals, SymbolMatch match, IncludeFunctionKind include, List<Symbol> list, CancellationToken cancellationToken)
         {
-            if (tree.IsSafeToRecurse)
+            if (tree.IsSafeToRecurse(globals))
             {
                 globals = globals.WithCache();
                 var bindingCache = globals.Cache.GetOrCreate<GlobalBindingCache>();
