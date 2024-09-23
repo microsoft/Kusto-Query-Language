@@ -28,9 +28,7 @@ namespace Kusto.Language
     public static class AriaBridgeCommands
     {
         public static readonly CommandSymbol ShowVersion =
-            new CommandSymbol(
-                "ShowVersion",
-                "(BuildVersion: string, BuildTime: datetime, ServiceType: string, ProductVersion: string)");
+            new CommandSymbol("ShowVersion", "(BuildVersion: string, BuildTime: datetime, ServiceType: string, ProductVersion: string)");
 
         public static readonly IReadOnlyList<CommandSymbol> All = new CommandSymbol[]
         {
