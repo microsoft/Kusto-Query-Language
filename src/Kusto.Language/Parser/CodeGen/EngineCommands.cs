@@ -1479,6 +1479,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ClearTableCacheStreamingIngestionSchema =
             new CommandSymbol("ClearTableCacheStreamingIngestionSchema", "(NodeId: string, Status: string)");
 
+        public static readonly CommandSymbol ShowStorageArtifactsCleanupState =
+            new CommandSymbol("ShowStorageArtifactsCleanupState", "(DatabaseName: string, StorageAccount: string, ContainerId: guid, ContainerName: string, CleanupStateBlobName: string, LastModified: datetime, SizeInBytes: long, Content: string)");
+
         public static readonly CommandSymbol StoredQueryResultSet =
             new CommandSymbol("StoredQueryResultSet", _schema18);
 
@@ -2356,6 +2359,7 @@ namespace Kusto.Language
             ShowVersion,
             ClearTableData,
             ClearTableCacheStreamingIngestionSchema,
+            ShowStorageArtifactsCleanupState,
             StoredQueryResultSet,
             StoredQueryResultSetOrReplace,
             StoredQueryResultsShow,
