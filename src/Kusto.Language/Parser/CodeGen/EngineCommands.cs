@@ -48,7 +48,7 @@ namespace Kusto.Language
         private static readonly string _schema18 = "()";
         private static readonly string _schema19 = "(WorkloadGroupName: string, WorkloadGroup:string)";
         private static readonly string _schema20 = "(PolicyName: string, EntityName: string, Policy: string, ChildEntities: string, EntityType: string)";
-        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationCompletePercentage: double)";
+        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationCompletePercentage: double, NotHealthyReason: string)";
         private static readonly string _schema22 = "(Name: string, IsDefault: bool, Template: string)";
         private static readonly string _schema23 = "(Name: string, Kind: string, ConnectionString: string, AutoApplyToNewTables: bool)";
         private static readonly string _schema24 = "(Scope: string, DisplayName: string, AADObjectID: string, Role: string)";
@@ -1426,7 +1426,7 @@ namespace Kusto.Language
             new CommandSymbol("TableShardsGroupMetadataShow", _schema35);
 
         public static readonly CommandSymbol TableShardGroupsShow =
-            new CommandSymbol("TableShardGroupsShow", "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, PartitionedRowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic)");
+            new CommandSymbol("TableShardGroupsShow", "(Id: guid, ShardCount: long, RowCount: long, OriginalSize: long, ShardSize: long, CompressedSize: long, IndexSize: long, DeletedRowCount: long, PartitionedRowCount: long, DateTimeColumnRanges: dynamic, Partition: dynamic, CreationTimeRange: dynamic)");
 
         public static readonly CommandSymbol TableShardGroupsStatisticsShow =
             new CommandSymbol("TableShardGroupsStatisticsShow", _schema36);
