@@ -379,6 +379,36 @@ namespace Kusto.Language
                  new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
                  new Parameter("Content", ScalarTypes.String, ArgumentKind.Constant, minOccurring: 0));
 
+        public static readonly FunctionSymbol AIEmbedText =
+             new FunctionSymbol("ai_embed_text",
+                 context =>
+                 {
+                     var sourceColumns = context.RowScope.Columns;
+                     var columnPrefix = context.GetResultName(context.GetArgument("Text"));
+
+                     var embeddingColumnName = MakeColumnName(columnPrefix, "embedding");
+                     var addedColumns = new List<ColumnSymbol> { new ColumnSymbol(embeddingColumnName, ScalarTypes.Dynamic) };
+
+                     if (context.GetArgument("IncludeErrorMessages") != null && 
+                        bool.TryParse(GetConstantValue(context.GetArgument("IncludeErrorMessages")), out var includeErrorMessages))
+                     {
+                         if (includeErrorMessages)
+                         {
+                             var errorColumnName = MakeColumnName(columnPrefix, "embedding", "error");
+                             addedColumns.Add(new ColumnSymbol(errorColumnName, ScalarTypes.String));
+                         }
+                     }
+
+                     var resultColumns = sourceColumns.Concat(addedColumns);
+
+                     return new TableSymbol(resultColumns);
+                 },
+                 Tabularity.Tabular,
+                 new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Column | ArgumentKind.Literal),
+                 new Parameter("ConnectionString", ScalarTypes.String),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
+
         public static readonly FunctionSymbol Identity =
              new FunctionSymbol("identity",
                  new Signature(
@@ -445,7 +475,7 @@ namespace Kusto.Language
 
                         for (int i = 3; i < args.Count; i++)
                         {
-                            if (i == args.Count - 1 
+                            if (i == args.Count - 1
                                 && ((args[i] is SimpleNamedExpression sne
                                      && sne.Name.SimpleName == IPv4_lookup_return_unmatched.Name)
                                     || (args[i] is LiteralExpression lit && lit.Kind == SyntaxKind.BooleanLiteralExpression)))
@@ -805,6 +835,7 @@ namespace Kusto.Language
             SqlRequest,
             MySqlRequest,
             PostgreSqlRequest,
+            AIEmbedText
         };
 
         private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;
