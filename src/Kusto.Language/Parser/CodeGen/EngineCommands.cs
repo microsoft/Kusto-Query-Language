@@ -48,7 +48,7 @@ namespace Kusto.Language
         private static readonly string _schema18 = "()";
         private static readonly string _schema19 = "(WorkloadGroupName: string, WorkloadGroup:string)";
         private static readonly string _schema20 = "(PolicyName: string, EntityName: string, Policy: string, ChildEntities: string, EntityType: string)";
-        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationCompletePercentage: double, NotHealthyReason: string)";
+        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationPendingArtifactSize:long, AccelerationCompletePercentage: double, NotHealthyReason: string)";
         private static readonly string _schema22 = "(Name: string, IsDefault: bool, Template: string)";
         private static readonly string _schema23 = "(Name: string, Kind: string, ConnectionString: string, AutoApplyToNewTables: bool)";
         private static readonly string _schema24 = "(Scope: string, DisplayName: string, AADObjectID: string, Role: string)";
@@ -1794,6 +1794,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCallStacks =
             new CommandSymbol("ShowCallStacks", _schema18);
 
+        public static readonly CommandSymbol ShowRunningCallouts =
+            new CommandSymbol("ShowRunningCallouts", _schema18);
+
         public static readonly CommandSymbol ShowStreamingIngestionFailures =
             new CommandSymbol("ShowStreamingIngestionFailures", "(Database: string, Table: string, Principal: string, RootActivityId: guid, IngestionProperties: dynamic, Count: long, FirstFailureOn: datetime, LastFailureOn: datetime, FailureKind: string, ErrorCode: string, Details: string)");
 
@@ -2464,6 +2467,7 @@ namespace Kusto.Language
             ShowRowStoreSeals,
             ShowSchema,
             ShowCallStacks,
+            ShowRunningCallouts,
             ShowStreamingIngestionFailures,
             ShowStreamingIngestionStatistics,
             AlterTableRowStoreReferencesDropKey,

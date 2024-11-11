@@ -91,7 +91,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Returns the debug text for the <see cref="Signature"/>
         /// </summary>
-        public static string GetText(Signature sig, bool verbose = false)
+        public static string GetText(Signature sig, bool includeSymbolName = false, bool verbose = false)
         {
             var builder = new StringBuilder();
 
@@ -124,7 +124,14 @@ namespace Kusto.Language.Symbols
 
             var prms = builder.ToString();
 
-            return $"({prms})";
+            if (includeSymbolName && !string.IsNullOrEmpty(sig.Symbol.Name))
+            {
+                return $"{sig.Symbol.Name}({prms})";
+            }
+            else
+            {
+                return $"({prms})";
+            }
         }
 
         /// <summary>

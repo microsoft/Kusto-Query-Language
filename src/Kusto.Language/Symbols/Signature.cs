@@ -15,7 +15,7 @@ namespace Kusto.Language.Symbols
     public class Signature
     {
         private string DebugText =>
-            DebugDisplay.GetText(this);
+            DebugDisplay.GetText(this, includeSymbolName: true);
 
         /// <summary>
         /// The symbol this is a signature for.

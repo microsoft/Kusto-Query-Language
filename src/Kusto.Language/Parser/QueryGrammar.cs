@@ -100,6 +100,7 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxToken> WildcardedIdentifier { get; private set; }
         public Parser<LexicalToken, Expression> Literal { get; private set; }
         public Parser<LexicalToken, Expression> StringLiteral { get; private set; }
+        public Parser<LexicalToken, Expression> JsonValue { get; private set; }
         public Parser<LexicalToken, SyntaxList<SeparatedElement<Expression>>> LiteralList { get; private set; }
         public Parser<LexicalToken, SkippedTokens> SkippedTokens { get; private set; }
 
@@ -154,7 +155,7 @@ namespace Kusto.Language.Parsing
                 Forward(() => StringOrCompoundStringLiteralCore)
                 .WithTag("<string-literal>");
 
-            var JsonValue =
+            this.JsonValue =
                 Forward(() => JsonValueCore)
                 .WithTag("<json-value>");
 
@@ -2902,9 +2903,9 @@ namespace Kusto.Language.Parsing
                     ForkOperator,
                     GetSchemaOperator,
                     GraphMatchOperator,
-                    GraphShortestPathsOperator.Hide(),  // TODO Ameer: Enable once fully deployed.
+                    GraphShortestPathsOperator,
                     GraphMergeOperaor,
-                    GraphMarkComponentsOperator.Hide(), // TODO Ameer: Enable once fully deployed.
+                    GraphMarkComponentsOperator,
                     GraphToTableOperator,
                     InvokeOperator,
                     JoinOperator,

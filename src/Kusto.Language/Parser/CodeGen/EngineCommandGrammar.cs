@@ -2774,14 +2774,14 @@ namespace Kusto.Language.Parsing
 
             var AlterExternalTablePolicyQueryAcceleration = Command("AlterExternalTablePolicyQueryAcceleration", 
                 Custom(
-                    Token("alter"),
+                    Token("alter", CompletionKind.CommandPrefix),
                     Token("external"),
                     RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     RequiredToken("policy"),
                     RequiredToken("query_acceleration"),
                     Required(rules.StringLiteral, rules.MissingStringLiteral),
-                    new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD("Policy", CompletionHint.Literal)}).Hide());
+                    new [] {CD(), CD(), CD(), CD("ExternalTableName", CompletionHint.ExternalTable), CD(), CD(), CD("Policy", CompletionHint.Literal)}));
 
             var AlterFabricServiceAssignmentsCommand = Command("AlterFabricServiceAssignmentsCommand", 
                 Custom(
@@ -5194,13 +5194,13 @@ namespace Kusto.Language.Parsing
 
             var DeleteExternalTablePolicyQueryAcceleration = Command("DeleteExternalTablePolicyQueryAcceleration", 
                 Custom(
-                    Token("delete"),
+                    Token("delete", CompletionKind.CommandPrefix),
                     Token("external"),
                     RequiredToken("table"),
                     Required(rules.ExternalTableNameReference, rules.MissingNameReference),
                     RequiredToken("policy"),
                     RequiredToken("query_acceleration"),
-                    shape296).Hide());
+                    shape296));
 
             var DropFollowerTablesPolicyCaching = Command("DropFollowerTablesPolicyCaching", 
                 Custom(
@@ -10022,12 +10022,12 @@ namespace Kusto.Language.Parsing
 
             var ShowExternalTablesQueryAccelerationStatatistics = Command("ShowExternalTablesQueryAccelerationStatatistics", 
                 Custom(
-                    Token("show"),
+                    Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
                     Token("tables"),
                     Token("operations"),
                     RequiredToken("query_acceleration"),
-                    RequiredToken("statistics")).Hide());
+                    RequiredToken("statistics")));
 
             var ShowExternalTables = Command("ShowExternalTables", 
                 Custom(
@@ -10049,12 +10049,12 @@ namespace Kusto.Language.Parsing
 
             var ShowExternalTablesPolicyQueryAcceleration = Command("ShowExternalTablesPolicyQueryAcceleration", 
                 Custom(
-                    Token("show"),
+                    Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
                     Token("table"),
                     Token("*"),
                     RequiredToken("policy"),
-                    RequiredToken("query_acceleration")).Hide());
+                    RequiredToken("query_acceleration")));
 
             var ShowExternalTableArtifacts = Command("ShowExternalTableArtifacts", 
                 Custom(
@@ -10106,24 +10106,24 @@ namespace Kusto.Language.Parsing
 
             var ShowExternalTableQueryAccelerationStatatistics = Command("ShowExternalTableQueryAccelerationStatatistics", 
                 Custom(
-                    Token("show"),
+                    Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
                     Token("table"),
                     If(Not(Token("*")), rules.ExternalTableNameReference),
                     Token("operations"),
                     RequiredToken("query_acceleration"),
                     RequiredToken("statistics"),
-                    shape297).Hide());
+                    shape297));
 
             var ShowExternalTablePolicyQueryAcceleration = Command("ShowExternalTablePolicyQueryAcceleration", 
                 Custom(
-                    Token("show"),
+                    Token("show", CompletionKind.CommandPrefix),
                     Token("external"),
                     Token("table"),
                     If(Not(Token("*")), rules.ExternalTableNameReference),
                     Token("policy"),
                     RequiredToken("query_acceleration"),
-                    shape296).Hide());
+                    shape296));
 
             var ShowExternalTablePrincipals = Command("ShowExternalTablePrincipals", 
                 Custom(
@@ -10742,6 +10742,12 @@ namespace Kusto.Language.Parsing
                     Token("rowstore"),
                     Required(If(Not(And(Token("seals", "transactions"))), rules.NameDeclaration), rules.MissingNameDeclaration),
                     new [] {CD(), CD(), CD("rowStoreName", CompletionHint.None)}));
+
+            var ShowRunningCallouts = Command("ShowRunningCallouts", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("running"),
+                    Token("callouts")));
 
             var ShowRunningQueries = Command("ShowRunningQueries", 
                 Custom(
@@ -12461,6 +12467,7 @@ namespace Kusto.Language.Parsing
                 ShowRowStoreSeals,
                 ShowRowStoreTransactions,
                 ShowRowStore,
+                ShowRunningCallouts,
                 ShowRunningQueries,
                 ShowSchema2,
                 ShowServicePoints,

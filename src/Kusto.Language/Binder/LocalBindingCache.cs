@@ -18,5 +18,8 @@ namespace Kusto.Language.Binding
 
         internal readonly Dictionary<Signature, FunctionBodyFacts> NonDatabaseFunctionBodyFacts =
             new Dictionary<Signature, FunctionBodyFacts>();
+
+        internal readonly Dictionary<Signature, int> FunctionExpansionCounts =
+            new Dictionary<Signature, int>();   
     }
 }

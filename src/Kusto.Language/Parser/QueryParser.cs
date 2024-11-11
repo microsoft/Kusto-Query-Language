@@ -133,6 +133,74 @@ namespace Kusto.Language.Parsing
             return ParseRowSchema(TokenParser.ParseTokens(text, options), 0, options);
         }
 
+        #region Stack Safe Parsing
+
+        /// <summary>
+        /// The maximum expression depth recursive parsing will allow before switching to a stack safe parsing strategy.
+        /// </summary>
+        const int MaxDepth = 300; 
+
+        /// <summary>
+        /// The current expression depth.
+        /// </summary>
+        private int _depth;
+
+        /// <summary>
+        /// The safe safe grammar parser.
+        /// </summary>
+        private StackSafeParser<LexicalToken> _safeParser;
+
+        /// <summary>
+        /// The output list used for grammar parsing.
+        /// </summary>
+        private List<object> _safeOutput;
+
+        /// <summary>
+        /// The grammar to parse with the stack safe parser
+        /// </summary>
+        private QueryGrammar _safeQueryGrammar;
+
+        /// <summary>
+        /// Parse using fnParse unless max depth has been exceeded then safe parse fnGrammar.
+        /// </summary>
+        private TResult StackSafeParse<TResult>(
+            Func<QueryParser, TResult> fnParse,
+            Func<QueryGrammar, Parser<LexicalToken, TResult>> fnGrammar)
+        {
+            if (_depth > MaxDepth)
+            {
+                if (_safeParser == null)
+                {
+                    _safeOutput = new List<object>();
+                    _safeParser = new StackSafeParser<LexicalToken>(_source, _safeOutput);
+                    _safeQueryGrammar = QueryGrammar.From(GlobalState.Default.WithParseOptions(_options));
+                }
+
+                var grammar = fnGrammar(_safeQueryGrammar);
+                var len = _safeParser.Parse(grammar, _pos, 0);
+                if (len >= 0)
+                {
+                    _pos += len;
+                    var result = (TResult)_safeOutput[0];
+                    _safeOutput.Clear();
+                    return result;
+                }
+                else
+                {
+                    return default(TResult);
+                }
+            }
+            else
+            {
+                _depth++;
+                var result = fnParse(this);
+                _depth--;
+                return result;
+            }
+        }
+
+        #endregion
+
         #region Reset Points
 
         /// <summary>
@@ -1366,7 +1434,13 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-        private Expression ParseJsonValue()
+        private Expression ParseJsonValue() =>
+            StackSafeParse(
+                q => q.ParseJsonValue_Unsafe(),
+                g => g.JsonValue
+                );
+
+        private Expression ParseJsonValue_Unsafe()
         {
             switch (PeekToken().Kind)
             {
@@ -1547,7 +1621,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region Schemas
+        #region Schemas
         private bool ScanParamType(int offset = 0)
         {
             switch (PeekToken(offset).Kind)
@@ -2841,8 +2915,14 @@ namespace Kusto.Language.Parsing
             return expr;
         }
 
-        private Expression ParseUnnamedExpression()
-        {
+        private Expression ParseUnnamedExpression() =>
+            StackSafeParse(
+                q => q.ParseUnnamedExpression_Unsafe(),
+                g => g.UnnamedExpression
+                );
+
+        private Expression ParseUnnamedExpression_Unsafe()
+        { 
             // shortcut for identifier/literal followed by punctuation that would end an expression
             switch (PeekToken(1).Kind)
             {
@@ -2868,46 +2948,7 @@ namespace Kusto.Language.Parsing
                     break;
             }
 
-            if (_depth > MaxDepth)
-            {
-                return SafeParseUnnamedExpression();
-            }
-            else
-            {
-                _depth++;
-                var result = ParseLogicalOrExpression();
-                _depth--;
-                return result;
-            }
-        }
-
-        const int MaxDepth = 300;
-        private int _depth;
-        private StackSafeParser<LexicalToken> _safeParser;
-        private List<object> _safeOutput;
-        private Parser<LexicalToken> _safeGrammar;
-
-        private Expression SafeParseUnnamedExpression()
-        {
-            if (_safeParser == null)
-            {
-                _safeOutput = new List<object>();
-                _safeParser = new StackSafeParser<LexicalToken>(_source, _safeOutput);
-                _safeGrammar = QueryGrammar.From(GlobalState.Default).Expression;
-            }
-
-            var len = _safeParser.Parse(_safeGrammar, _pos, 0);
-            if (len >= 0)
-            {
-                _pos += len;
-                var result = (Expression)_safeOutput[0];
-                _safeOutput.Clear();
-                return result;
-            }
-            else
-            {
-                return null;
-            }
+            return ParseLogicalOrExpression();
         }
 
         private static readonly Func<QueryParser, Expression> FnParseUnnamedExpression =
@@ -2915,7 +2956,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region Query operator parameters
+        #region Query operator parameters
 
         private Expression ParseAnyQueryOperatorParameterValue()
         {
@@ -3333,7 +3374,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region Entity Names
+        #region Entity Names
 
         private Expression ParseBracketedEntityNamePathElementSelector() =>
             ParseBracketedWildcardedNameReference()
@@ -3479,7 +3520,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region count
+        #region count
 
         private CountAsIdentifierClause ParseCountAsIdentifierClause()
         {
@@ -3510,7 +3551,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region executeAndCache
+        #region executeAndCache
 
         private ExecuteAndCacheOperator ParseExecuteAndCacheOperator()
         {
@@ -3523,9 +3564,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region extend
+        #region extend
 
         private ExtendOperator ParseExtendOperator()
         {
@@ -3539,9 +3580,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region facet
+        #region facet
 
         private FacetWithClause ParseFacetWithClause()
         {
@@ -3583,9 +3624,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region filter / where
+        #region filter / where
 
         private static readonly IReadOnlyList<SyntaxKind> s_filterOperatorKeywords =
             new[] { SyntaxKind.WhereKeyword, SyntaxKind.FilterKeyword };
@@ -3606,9 +3647,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region getschema
+        #region getschema
 
         private GetSchemaOperator ParseGetSchemaOperator()
         {
@@ -3621,9 +3662,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region find
+        #region find
 
         private Expression ParseFindOperand_NameWithOptionalAsOperator()
         {
@@ -3763,9 +3804,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region search
+        #region search
 
         private Expression ParseSearchPredicate()
         {
@@ -3800,9 +3841,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region fork
+        #region fork
 
         private int ScanNameEqualsClause(int offset = 0)
         {
@@ -3887,9 +3928,9 @@ namespace Kusto.Language.Parsing
             ParsePipedQueryOperator()
             ?? ParseUnpipedQueryOperator(); // not legal, but let semantic analyzer flag the error.
 
-#endregion
+        #endregion
 
-#region partition
+        #region partition
 
         private PartitionQuery ParsePartitionQuery()
         {
@@ -3968,9 +4009,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region join
+        #region join
 
         private JoinConditionClause ParseJoinOnClause()
         {
@@ -4023,9 +4064,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region lookup
+        #region lookup
 
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_lookupOperatorParameterMap =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.LookupParameters);
@@ -4044,9 +4085,9 @@ namespace Kusto.Language.Parsing
             return null;
         }
 
-#endregion
+        #endregion
 
-#region make-series
+        #region make-series
 
         private DefaultExpressionClause ParseDefaultExpressionClause()
         {
@@ -5484,7 +5525,6 @@ namespace Kusto.Language.Parsing
         }
 #endregion
 
-
         #region GraphMergeOperator
         private GraphMergeOperator ParseGraphMergeOperator()
         {
@@ -5499,8 +5539,7 @@ namespace Kusto.Language.Parsing
         }
         #endregion
 
-
-#region GraphMatchOperator
+        #region GraphMatchOperator
         private GraphMatchOperator ParseGraphMatchOperator()
         {
             if (ParseToken(SyntaxKind.GraphMatchKeyword) is SyntaxToken keyword)
@@ -5632,7 +5671,7 @@ namespace Kusto.Language.Parsing
         }
         #endregion
 
-#region GraphToTableOperator
+        #region GraphToTableOperator
         private GraphToTableOperator ParseGraphToTableOperator()
         {
             if (ParseToken(SyntaxKind.GraphToTableKeyword) is SyntaxToken keyword)
@@ -5700,7 +5739,7 @@ namespace Kusto.Language.Parsing
         }
         #endregion
 
-#region GraphMarkComponentsOperator
+        #region GraphMarkComponentsOperator
         private GraphMarkComponentsOperator ParseGraphMarkComponentsOperator()
         {
             if (ParseToken(SyntaxKind.GraphMarkComponentsKeyword) is SyntaxToken keyword)
@@ -6039,11 +6078,11 @@ namespace Kusto.Language.Parsing
             return ParsePipeExpression();
         }
 
-#endregion
+        #endregion
 
-#region Statements
+        #region Statements
 
-#region alias
+        #region alias
 
         private AliasStatement ParseAliasStatement()
         {
@@ -6497,7 +6536,7 @@ namespace Kusto.Language.Parsing
 
 #endregion
 
-#region Query Block
+        #region Query Block
 
         private Statement ParseQueryBlockStatement()
         {
@@ -6622,6 +6661,6 @@ namespace Kusto.Language.Parsing
                 ParseSkippedTokens(),
                 ParseToken(SyntaxKind.EndOfTextToken));
 
-#endregion
+        #endregion
     }
 }

@@ -27,6 +27,7 @@ namespace Kusto.Language
             "bytes",
             "cachingpolicy",
             "callout",
+            "callouts",
             "callstacks",
             "cancel",
             "char",

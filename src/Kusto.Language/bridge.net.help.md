@@ -16,15 +16,17 @@ Things that trip up Bridge.Net and cause it to crash.
 Debugging Bridge.Net:
 To debug bridge.net when you get an build exception (without any useful information).
 
-1) Open Visual Studio w/o project or solution
+1) Open Visual Studio (elevated permissions) w/o project or solution
 2) Open project pointing to msbuild.exe on your machine
-3) Once project is open, set these values in general settings:
-     Executable:     Path to msbuild.exe (should be already set)
-     Arguments:      path to Kusto.Language.Bridge.csproj
-     DebuggerType:   Managed (.Net 4x)
-     Working Dir:    path to Kusto project root
-4) make sure "Just My Code" debug option is disabled
-5) Hit F5: 
-   ** You should stop at actual thrown exception and be able to deduce 
-      what part of Kusto.Language source code causes the problem by 
-      actual exception message or other data on call stack.**
+3) Once project is open, set these values in general properties:  
+     >Executable:     Path to msbuild.exe (should be already set)  
+     Arguments:      path to Kusto.Language.Bridge.csproj  
+     DebuggerType:   Managed (.Net 4x)  
+     Working Dir:    path to Kusto project root  
+4) Make sure "Just My Code" debug option is disabled
+5) Make sure all CLR exceptions are enabled
+6) Debug project (F5):  
+   **You should stop at actual thrown exception and be able to deduce 
+     what part of Kusto.Language source code causes the problem by 
+     actual exception message or other data on call stack.**
+7) If a new problem is discovered, add it to the list above.

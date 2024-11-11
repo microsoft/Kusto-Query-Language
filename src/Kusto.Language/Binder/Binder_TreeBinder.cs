@@ -120,7 +120,9 @@ namespace Kusto.Language.Binding
 
                 // result of left-side expression is in scope for right-side query operator
                 var oldRowScope = _binder._rowScope;
+                var oldScopeKind = _binder._scopeKind;
                 _binder._rowScope = GetResultType(node.Expression) as TableSymbol;
+                _binder._scopeKind = ScopeKind.Normal;
                 try
                 {
                     node.Operator.Accept(this);
@@ -128,6 +130,7 @@ namespace Kusto.Language.Binding
                 finally
                 {
                     _binder._rowScope = oldRowScope;
+                    _binder._scopeKind = oldScopeKind;
                 }
 
                 BindNode(node);

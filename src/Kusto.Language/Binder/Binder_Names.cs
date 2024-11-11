@@ -226,7 +226,7 @@ namespace Kusto.Language.Binding
         /// </summary>
         public bool IsInsideCurrentDatabaseFunctionBody(SyntaxNode location)
         {
-            if (IsInsideCurrentDatabaseFunctionSymbol())
+            if (GetCurrentDatabaseFunctionName(location) != null)
                 return true;
 
             if (IsInsideCreateFunctionCommand(location))
@@ -236,10 +236,23 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Gets the name of the current database function declaration the location is inside of.
+        /// </summary>
+        private string GetCurrentDatabaseFunctionName(SyntaxNode location)
+        {
+            if (GetCurrentDatabaseFunction() is FunctionSymbol fn)
+            {
+                return fn.Name;
+            }
+
+            return GetCreateFunctionCommandName(location);
+        }
+
+        /// <summary>
         /// Returns true if the function symbol we are currently analyzing
         /// is from the current database.
         /// </summary>
-        private bool IsInsideCurrentDatabaseFunctionSymbol()
+        private FunctionSymbol GetCurrentDatabaseFunction()
         {
             var binder = this;
 
@@ -248,7 +261,7 @@ namespace Kusto.Language.Binding
                 if (binder._currentFunction != null
                     && _globals.GetDatabase(binder._currentFunction) == _currentDatabase)
                 {
-                    return true;
+                    return binder._currentFunction;
                 }
 
                 // try outer binder in case the current function is a local function
@@ -259,7 +272,7 @@ namespace Kusto.Language.Binding
                     continue;
                 }
 
-                return false;
+                return null;
             }
         }
 
@@ -294,6 +307,53 @@ namespace Kusto.Language.Binding
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns the name of the function that the create function command is creating.
+        /// </summary>
+        private static string GetCreateFunctionCommandName(SyntaxNode location)
+        {
+            // get the node from in the original tree
+            // in case we are analyzing a tree fragment.
+            location = location.GetOriginalNode();
+
+            while (true)
+            {
+                var functionDeclaration = location.GetFirstAncestor<FunctionDeclaration>();
+                if (functionDeclaration != null)
+                {
+                    if (functionDeclaration.Parent is CustomNode cn)
+                        return GetFunctionName(cn);
+
+                    location = functionDeclaration;
+                    continue;
+                }
+
+                var functionBody = location.GetFirstAncestor<FunctionBody>();
+                if (functionBody != null)
+                {
+                    if (functionBody.Parent is CustomNode cn)
+                        return GetFunctionName(cn);
+                    location = functionBody;
+                    continue;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the text of the custom node named 'FunctionName'
+        /// </summary>
+        private static string GetFunctionName(CustomNode node)
+        {
+            if (node.GetFirstDescendant<SyntaxElement>(cn => cn.NameInParent == "FunctionName") is SyntaxElement element
+                && element.GetFirstDescendantOrSelf<Name>() is Name name)
+            {
+                return name.SimpleName;
+            }
+            return null;
         }
 
         private static bool IsInsideControlCommand(SyntaxNode location)
@@ -409,9 +469,12 @@ namespace Kusto.Language.Binding
             {
                 // don't match the database functions that have same name as database tables
                 // if we are inside declaration of a database function
-                if (IsInsideCurrentDatabaseFunctionBody(location) &&
-                    _currentDatabase.GetAnyTable(name) != null)
+                if ((_pathScope == null || _pathScope == _currentDatabase)
+                    && GetCurrentDatabaseFunctionName(location) == name
+                    && _currentDatabase.GetAnyTable(name) != null)
                 {
+                    // don't allow match to function this code is inside of
+                    // match same name table instead.
                     match &= ~SymbolMatch.Function;
                 }
 

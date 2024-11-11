@@ -336,6 +336,31 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
+        /// Gets the parameters that correspond to the arguments.
+        /// </summary>
+        private void GetArgumentParameters(
+            FunctionCallExpression functionCall,
+            List<Parameter> parameters)
+        {
+            if (functionCall.ReferencedSignature is Signature signature)
+            {
+                var arguments = s_expressionListPool.AllocateFromPool();
+                var argumentTypes = s_typeListPool.AllocateFromPool();
+
+                try
+                {
+                    GetArgumentsAndTypes(functionCall, arguments, argumentTypes);
+                    signature.GetArgumentParameters(arguments, parameters);
+                }
+                finally
+                {
+                    s_expressionListPool.ReturnToPool(arguments);
+                    s_typeListPool.ReturnToPool(argumentTypes);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the result information for the function call or operator invocation when invoked with the specified arguments.
         /// </summary>
         private FunctionCallResult GetFunctionCallResult(
@@ -1694,6 +1719,10 @@ namespace Kusto.Language.Binding
             {
                 TryGetFunctionBodyFacts(callsite.Signature, out var funFacts);
 
+                // record number of times each signature is expanded
+                _localBindingCache.FunctionExpansionCounts.AddOrUpdate(callsite.Signature, 1, c => c + 1);
+
+#if true // Temporarily disable
                 // if there is a call to unqualified table(t) then it may require resolving using dynamic scope, so don't cache anywhere
                 if (funFacts != null && funFacts.HasUnqualifiedTableCall)
                     return;
@@ -1702,6 +1731,11 @@ namespace Kusto.Language.Binding
                 // might need to rethink this if memory consumption is shown to be an issue
                 var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature)
                     && (funFacts != null && !funFacts.HasVariableReturnType);
+#else
+                // only add database functions that are not variable in nature to global cache
+                // might need to rethink this if memory consumption is shown to be an issue
+                var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature);
+#endif
 
                 if (shouldCacheGlobally)
                 {
@@ -1860,15 +1894,7 @@ namespace Kusto.Language.Binding
         {
             if (!TryGetFunctionBodyFacts(signature, out var facts))
             {
-                var bodyFacts = ComputeFunctionBodyFlags(signature, body);
-
-                var nonVariableReturnType = (bodyFacts & FunctionBodyFlags.VariableReturn) == 0
-                    ? GetBodyResultType(body) ?? ErrorSymbol.Instance
-                    : null;
-
-                var hasSyntaxErrors = HasSyntaxErrors(body);
-
-                facts = new FunctionBodyFacts(bodyFacts, nonVariableReturnType, hasSyntaxErrors);
+                facts = ComputeFunctionBodyFacts(signature, body);
                 SetFunctionBodyFacts(signature, facts);
             }
 
@@ -1899,12 +1925,18 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private FunctionBodyFlags ComputeFunctionBodyFlags(Signature signature, SyntaxNode body)
+        private FunctionBodyFacts ComputeFunctionBodyFacts(Signature signature, SyntaxNode body)
         {
-            var result = FunctionBodyFlags.None;
+            var result = FunctionBodyFacts.Default;
             var isTabular = GetBodyResultType(body) is TableSymbol;
 
-            // look for explicit calls to table(), database() or cluster() like functions
+            // if the function returns a table, mark all tabular parameters as dependent
+            if (isTabular && signature.Parameters.Any(p => p.IsTabular))
+            {
+                result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItems(signature.Parameters.Where(p => p.IsTabular)));
+            }
+
+            // identify dependent parameters and other function body facts
             SyntaxElement.WalkNodes(
                 body,
                 fnBefore: node =>
@@ -1915,41 +1947,45 @@ namespace Kusto.Language.Binding
                         if (fc.ReferencedSymbol == Functions.Table)
                         {
                             // distinguish between database(d).table(t) vs just table(t)
-                            // since table(t) can see variables in dynamic scope
+                            // since table(t) can see local variables from dynamic scope
                             if (fc.Parent is PathExpression p && p.Selector == fc)
                             {
-                                result |= FunctionBodyFlags.QualifiedTable;
+                                result = result.WithHasQualifiedTableCall(true);
                             }
                             else
                             {
                                 // unqualified table calls (even with literal arguments) can be dependent on the call site since
-                                // the names can reference local tabular variables in outer scopes
-                                result |= FunctionBodyFlags.UnqualifiedTable | FunctionBodyFlags.VariableReturn;
+                                // the names can reference tabular variables in outer scopes
+                                result = result.WithHasUnqualifiedTableCall(true);
                             }
                         }
                         else if (fc.ReferencedSymbol == Functions.ExternalTable)
                         {
-                            result |= FunctionBodyFlags.ExternalTable;
+                            result = result.WithHasExternalTableCall(true);
                         }
                         else if (fc.ReferencedSymbol == Functions.MaterializedView)
                         {
-                            result |= FunctionBodyFlags.MaterializedView;
+                            result = result.WithHasMaterializedViewCall(true);
                         }
                         else if (fc.ReferencedSymbol == Functions.Database)
                         {
-                            result |= FunctionBodyFlags.Database;
+                            result = result.WithHasDatabaseCall(true);
                         }
                         else if (fc.ReferencedSymbol == Functions.Cluster)
                         {
-                            result |= FunctionBodyFlags.Cluster;
+                            result = result.WithHasClusterCall(true);
                         }
 
-                        // if the argument is not a literal, then the function likely has a variable return schema
-                        // note: it might not, but that would require full flow analysis of result type back to inputs.
+                        // if the first argument is not a literal, then it might be being supplied by a parameter to the containing function
+                        // which means this function could be being called multiple times with different arguments.
                         var isLiteral = fc.ArgumentList.Expressions.Count > 0 && fc.ArgumentList.Expressions[0].Element.IsLiteral;
                         if (!isLiteral && isTabular)
                         {
-                            result |= FunctionBodyFlags.VariableReturn;
+                            var arg = fc.ArgumentList.Expressions[0].Element;
+                            if (GetReferencedParameter(signature, arg) is Parameter p)
+                            {
+                                result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItem(p));
+                            }
                         }
                     }
                     else if (
@@ -1957,15 +1993,34 @@ namespace Kusto.Language.Binding
                         && ex.ReferencedSignature is Signature sig
                         && !IsSymbolLookupFunction(sig.Symbol))
                     {
-                        var flags = GetFunctionBodyFlags(ex);
+                        var facts = GetFunctionBodyFacts(ex);
 
-                        // if the calling function has no parameters and the called function does not contain unqualified calls to table() function, then don't considered it having a variable return
-                        if (signature.Parameters.Count == 0 && (flags & FunctionBodyFlags.UnqualifiedTable) == 0)
+                        result = result.CombineCalledFunction(facts);
+
+                        // translate dependent parameters from the called function to parameters of the calling function
+                        if (facts.DependentParameters.Count > 0
+                            && ex is FunctionCallExpression fcall
+                            && isTabular)
                         {
-                            flags &= ~FunctionBodyFlags.VariableReturn;
-                        }
+                            var fcallParameters = s_parameterListPool.AllocateFromPool();
+                            GetArgumentParameters(fcall, fcallParameters);
 
-                        result |= flags;
+                            for (int i = 0; i < fcall.ArgumentList.Expressions.Count; i++)
+                            {
+                                var arg = fcall.ArgumentList.Expressions[i].Element;
+                                if (facts.DependentParameters.Contains(fcallParameters[i]))
+                                {
+                                    // this argument is dependent therefore any parameter that feeds it is also dependent
+                                    // note: these arguments should be constrained to only constant expressions due to requirements of symbol lookup functions.
+                                    if (GetReferencedParameter(signature, arg) is Parameter p)
+                                    {
+                                        result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItem(p));
+                                    }
+                                }
+                            }
+
+                            s_parameterListPool.ReturnToPool(fcallParameters);
+                        }
                     }
                 },
                 fnAfter: node =>
@@ -1974,7 +2029,8 @@ namespace Kusto.Language.Binding
                     {
                         foreach (var alt in node.Alternates)
                         {
-                            result |= ComputeFunctionBodyFlags(signature, alt);
+                            var facts = ComputeFunctionBodyFacts(signature, alt);
+                            result = result.CombineCalledFunction(facts);
                         }
                     }
                 },
@@ -1983,13 +2039,45 @@ namespace Kusto.Language.Binding
                     || (!(node is FunctionDeclaration) && !(node is FunctionBody))
                 );
 
-            // the function returns a table and at least one parameter is a tabular
-            if (isTabular && signature.Parameters.Any(p => p.IsTabular))
-            {
-                result |= FunctionBodyFlags.VariableReturn;
-            }
+            var nonVariableReturnType = !result.HasVariableReturnType
+                ? GetBodyResultType(body) ?? ErrorSymbol.Instance
+                : null;
+
+            result = result.WithNonVariableReturnType(nonVariableReturnType);
+
+            var hasSyntaxErrors = HasSyntaxErrors(body);
+            result = result.WithHasSyntaxErrors(hasSyntaxErrors);
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets the parameter referenced by the expression.
+        /// Sees through simple let-variable reassignments.
+        /// </summary>
+        private static Parameter GetReferencedParameter(Signature signature, Expression expression)
+        {
+            if (expression is SimpleNamedExpression sne)
+                expression = sne.Expression;
+
+            switch (expression.ReferencedSymbol)
+            {
+                case ParameterSymbol p:
+                    return signature.GetParameter(p.Name);
+                case VariableSymbol v:
+                    if (v.Source != null
+                        && v.Source.Tree != expression.Tree)
+                    {
+                        // this is a variable in place of a parameter symbol used for expansion binding to carry constant values.
+                        return signature.GetParameter(v.Name);
+                    }
+
+                    return v.Source != null 
+                        ? GetReferencedParameter(signature, v.Source) 
+                        : null;
+            }
+
+            return null;
         }
 
         private static bool IsSymbolLookupFunction(Symbol symbol) =>
@@ -2000,9 +2088,9 @@ namespace Kusto.Language.Binding
             || symbol == Functions.Cluster;
 
         /// <summary>
-        /// Gets the <see cref="FunctionBodyFlags"/> for the function invocation
+        /// Gets the <see cref="FunctionBodyFacts"/> for the function invocation
         /// </summary>
-        private FunctionBodyFlags GetFunctionBodyFlags(Expression expr)
+        private FunctionBodyFacts GetFunctionBodyFacts(Expression expr)
         {
             if (expr.ReferencedSignature is Signature signature)
             {
@@ -2034,10 +2122,10 @@ namespace Kusto.Language.Binding
                     TryGetFunctionBodyFacts(signature, out funFacts);
                 }
 
-                return funFacts?.Flags ?? FunctionBodyFlags.None;
+                return funFacts ?? FunctionBodyFacts.Default;
             }
 
-            return FunctionBodyFlags.None;
+            return FunctionBodyFacts.Default;
         }
     }
 }
