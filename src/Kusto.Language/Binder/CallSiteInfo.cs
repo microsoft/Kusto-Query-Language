@@ -5,11 +5,12 @@ using System.Linq;
 namespace Kusto.Language.Binding
 {
     using Symbols;
+    using Utils;
 
     /// <summary>
-    /// Represents the information known at the location of a user function call.
+    /// Represents the call site info needed used to identify a unique function call.
     /// </summary>
-    internal class CallSiteInfo
+    internal class CallSiteInfo : IEquatable<CallSiteInfo>
     {
         /// <summary>
         /// The signature of the function being called.
@@ -17,54 +18,70 @@ namespace Kusto.Language.Binding
         public Signature Signature { get; }
 
         /// <summary>
-        /// The parameters of the function represented as local variables.
+        /// The parameters that make this call site unique.
         /// </summary>
-        public IReadOnlyList<VariableSymbol> Locals { get; }
+        public IReadOnlyList<Parameter> Parameters { get; }
 
-        public CallSiteInfo(Signature signature, IReadOnlyList<VariableSymbol> locals)
+        /// <summary>
+        /// The list of values corresponding to the parameters.
+        /// </summary>
+        public IReadOnlyList<object> Values { get; }
+
+        public CallSiteInfo(
+            Signature signature, 
+            IReadOnlyList<Parameter> parameters, 
+            IReadOnlyList<object> values)
         {
             this.Signature = signature;
-            this.Locals = locals;
+            this.Parameters = parameters ?? EmptyReadOnlyList<Parameter>.Instance;
+            this.Values = values ?? EmptyReadOnlyList<object>.Instance;
+            System.Diagnostics.Debug.Assert(this.Parameters.Count == this.Values.Count, "parameter/values count mismatch");
         }
 
         public override string ToString()
         {
             return Signature.Symbol.Name + "("
-                + string.Join(",", this.Locals.Select(v => v.IsConstant && v.ConstantValue != null ? $"{v.Name}={v.ConstantValue}" : v.Name))
+                + string.Join(",", Enumerable.Range(0, this.Values.Count).Select(i => $"{this.Parameters[i].Name}={this.Values[i]}"))
                 + ")";
         }
 
-        internal class Comparer : IEqualityComparer<CallSiteInfo>
+        public bool Equals(CallSiteInfo other)
         {
-            public static readonly Comparer Instance = new Comparer();
+            if (this.Signature != other.Signature)
+                return false;
 
-            public bool Equals(CallSiteInfo x, CallSiteInfo y)
+            if (this.Parameters.Count != other.Parameters.Count)
+                return false;
+
+            for (int i = 0; i < this.Parameters.Count; i++)
             {
-                if (x.Signature != y.Signature)
+                if (this.Parameters[i] != other.Parameters[i])
                     return false;
+            }
 
-                if (x.Locals.Count != y.Locals.Count)
-                    return false;
+            for (int i = 0; i < this.Values.Count; i++)
+            {
+                var vx = this.Values[i];
+                var vy = other.Values[i];
 
-                for (int i = 0; i < x.Locals.Count; i++)
+                if (vx is TableSymbol tx && vy is TableSymbol ty)
                 {
-                    var lx = x.Locals[i];
-                    var ly = y.Locals[i];
-
-                    if (lx.Name != ly.Name
-                        || lx.Type != ly.Type
-                        || lx.IsConstant != ly.IsConstant
-                        || !object.Equals(lx.ConstantValue, ly.ConstantValue))
+                    if (!TableSymbol.AreResultEquivalent(tx, ty))
                         return false;
                 }
-
-                return true;
+                else
+                {
+                    if (!object.Equals(vx, vy))
+                        return false;
+                }
             }
 
-            public int GetHashCode(CallSiteInfo obj)
-            {
-                return obj.Signature.GetHashCode();
-            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Signature.GetHashCode();
         }
     }
 }

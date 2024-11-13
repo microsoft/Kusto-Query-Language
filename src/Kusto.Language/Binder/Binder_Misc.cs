@@ -270,7 +270,7 @@ namespace Kusto.Language.Binding
 
                 if (canCache)
                 {
-                    _globalBindingCache.UnifiedNameColumnsMap[tables] = unifiedColumnsTable;
+                    _globalBindingCache.UnifiedNameColumnsMap.AddOrUpdate(tables, unifiedColumnsTable);
                 }
             }
 
@@ -301,7 +301,7 @@ namespace Kusto.Language.Binding
 
                 if (canCache)
                 {
-                    _globalBindingCache.UnifiedNameAndTypeColumnsMap[tables] = unifiedColumnsTable;
+                    _globalBindingCache.UnifiedNameAndTypeColumnsMap.AddOrUpdate(tables, unifiedColumnsTable);
                 }
             }
 
@@ -333,7 +333,7 @@ namespace Kusto.Language.Binding
 
                 if (canCache)
                 {
-                    _globalBindingCache.CommonColumnsMap[tables] = commonColumnsTable;
+                    _globalBindingCache.CommonColumnsMap.AddOrUpdate(tables, commonColumnsTable);
                 }
             }
 
@@ -415,6 +415,9 @@ namespace Kusto.Language.Binding
 
         private static readonly ObjectPool<List<Parameter>> s_parameterListPool =
             new ObjectPool<List<Parameter>>(() => new List<Parameter>(), list => list.Clear());
+
+        private static readonly ObjectPool<List<object>> s_objectListPool =
+            new ObjectPool<List<object>>(() => new List<object>(), list => list.Clear());
 
         private static readonly ObjectPool<Dictionary<string, int>> s_stringToIntMapPool =
             new ObjectPool<Dictionary<string, int>>(() => new Dictionary<string, int>(), m => m.Clear());

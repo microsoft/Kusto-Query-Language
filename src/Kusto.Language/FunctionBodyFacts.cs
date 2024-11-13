@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kusto.Language
 {
@@ -11,17 +12,22 @@ namespace Kusto.Language
     /// </summary>
     public class FunctionBodyFacts
     {
-        private Flags _flags;
+        private readonly Flags _flags;
 
         /// <summary>
-        /// The return type of the function body when it is not dependent on arguments.
+        /// The return type of the function body when it is not dependent on parameters.
         /// </summary>
-        public TypeSymbol NonVariableComputedReturnType { get; }
+        public TypeSymbol NonVariableReturnType { get; }
 
         /// <summary>
         /// The parameters of the function that causes the return type to be variable.
         /// </summary>
         public IReadOnlyList<Parameter> DependentParameters { get; }
+
+        /// <summary>
+        /// The names used in unqualified table calls.
+        /// </summary>
+        public IReadOnlyList<string> UnqualifiedTableNames { get; }
 
         /// <summary>
         /// True if the function body had syntax or semantic errors.
@@ -32,18 +38,20 @@ namespace Kusto.Language
         /// The default <see cref="FunctionBodyFacts"/>.
         /// </summary>
         public static readonly FunctionBodyFacts Default =
-            new FunctionBodyFacts(Flags.None, null, false, null);
+            new FunctionBodyFacts(Flags.None, null, false, null, null);
 
         private FunctionBodyFacts(
             Flags flags,
             TypeSymbol nonVariableReturnType,
             bool hasSyntaxErrors,
-            IEnumerable<Parameter> dependentParameters)
+            IEnumerable<Parameter> dependentParameters,
+            IEnumerable<string> unqualifiedTableNames)
         {
             _flags = flags;
-            NonVariableComputedReturnType = nonVariableReturnType;
+            NonVariableReturnType = nonVariableReturnType;
             HasSyntaxErrors = hasSyntaxErrors;
             DependentParameters = dependentParameters.ToReadOnly();
+            UnqualifiedTableNames = unqualifiedTableNames.ToReadOnly();
         }
 
         /// <summary>
@@ -54,27 +62,36 @@ namespace Kusto.Language
             Flags? flags = null,
             Optional<TypeSymbol> nonVariableReturnType = default(Optional<TypeSymbol>),
             bool? hasSyntaxErrors = null,
-            Optional<IEnumerable<Parameter>> dependentParameters = default(Optional<IEnumerable<Parameter>>)
+            Optional<IEnumerable<Parameter>> dependentParameters = default(Optional<IEnumerable<Parameter>>),
+            Optional<IEnumerable<string>> unqualifiedTableNames = default(Optional<IEnumerable<string>>)
             )
         {
             var newFlags = flags.HasValue ? flags.Value : _flags;
-            var newNonVariableReturnType = nonVariableReturnType.HasValue ? nonVariableReturnType.Value : NonVariableComputedReturnType;
-            var newHasSyntaxErrors = hasSyntaxErrors.HasValue ? hasSyntaxErrors.Value : HasSyntaxErrors;
-            var newDependentParameters = dependentParameters.HasValue ? dependentParameters.Value : DependentParameters;
+            var newNonVariableReturnType = nonVariableReturnType.HasValue ? nonVariableReturnType.Value : this.NonVariableReturnType;
+            var newHasSyntaxErrors = hasSyntaxErrors.HasValue ? hasSyntaxErrors.Value : this.HasSyntaxErrors;
+            var newDependentParameters = dependentParameters.HasValue ? dependentParameters.Value : this.DependentParameters;
+            var newUnqualifiedTableNames = unqualifiedTableNames.HasValue ? unqualifiedTableNames.Value : this.UnqualifiedTableNames;
 
             if (newFlags != _flags
-                || newNonVariableReturnType != this.NonVariableComputedReturnType
+                || newNonVariableReturnType != this.NonVariableReturnType
                 || newHasSyntaxErrors != this.HasSyntaxErrors
-                || newDependentParameters != this.DependentParameters)
+                || newDependentParameters != this.DependentParameters
+                || newUnqualifiedTableNames != this.UnqualifiedTableNames)
             {
-                return new FunctionBodyFacts(newFlags, newNonVariableReturnType, newHasSyntaxErrors, newDependentParameters);
+                return new FunctionBodyFacts(
+                    newFlags, 
+                    newNonVariableReturnType, 
+                    newHasSyntaxErrors, 
+                    newDependentParameters,
+                    newUnqualifiedTableNames
+                    );
             }
 
             return this;
         }
 
         /// <summary>
-        /// Returns a <see cref="FunctionBodyFacts"/> with <see cref="NonVariableComputedReturnType"/> assigned.
+        /// Returns a <see cref="FunctionBodyFacts"/> with <see cref="NonVariableReturnType"/> assigned.
         /// </summary>
         public FunctionBodyFacts WithNonVariableReturnType(TypeSymbol type) =>
             With(nonVariableReturnType: type);
@@ -88,14 +105,78 @@ namespace Kusto.Language
         /// <summary>
         /// Returns a <see cref="FunctionBodyFacts"/> with <see cref="DependentParameters"/> assigned.
         /// </summary>
-        public FunctionBodyFacts WithDependentParameters(IEnumerable<Parameter> list) =>
-            With(dependentParameters: new Optional<IEnumerable<Parameter>>(list));
+        public FunctionBodyFacts WithDependentParameters(IEnumerable<Parameter> list)
+        {
+            if (this.DependentParameters == list)
+            {
+                return this;
+            }
+            else
+            {
+                return With(dependentParameters: new Optional<IEnumerable<Parameter>>(list.Distinct()));
+            }
+        }
 
         /// <summary>
         /// Returns a <see cref="FunctionBodyFacts"/> with an additional dependent parameter.
         /// </summary>
-        public FunctionBodyFacts AddDependentParameter(Parameter parameter) =>
-            With(dependentParameters: this.DependentParameters.ToSafeList().AddItem(parameter));
+        public FunctionBodyFacts AddDependentParameter(Parameter parameter)
+        {
+            if (!this.DependentParameters.Contains(parameter))
+            {
+                return With(dependentParameters: this.DependentParameters.ToSafeList().AddItem(parameter));
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="FunctionBodyFacts"/> with an additional dependent parameter.
+        /// </summary>
+        public FunctionBodyFacts AddDependentParameters(IEnumerable<Parameter> parameters)
+        {
+            var adding = parameters.Where(p => !this.DependentParameters.Contains(p));
+            if (adding.Any())
+            {
+                return With(dependentParameters: this.DependentParameters.ToSafeList().AddItems(adding));
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="FunctionBodyFacts"/> with <see cref="UnqualifiedTableNames"/> assigned.
+        /// </summary>
+        public FunctionBodyFacts WithUnqualifiedTableNames(IEnumerable<string> names)
+        {
+            if (this.UnqualifiedTableNames == names)
+            {
+                return this;
+            }
+            else
+            {
+                return With(unqualifiedTableNames: new Optional<IEnumerable<string>>(names.Distinct()));
+            }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="FunctionBodyFacts"/> with an additional unqualified table name.
+        /// </summary>
+        public FunctionBodyFacts AddUnqualifiedTableName(string name)
+        {
+            if (!this.UnqualifiedTableNames.Contains(name))
+            {
+                return With(unqualifiedTableNames: this.UnqualifiedTableNames.ToSafeList().AddItem(name));
+            }
+            else
+            {
+                return this;
+            }
+        }
 
         /// <summary>
         /// True if the function's return type is dependent on argument values at call site.
@@ -193,7 +274,17 @@ namespace Kusto.Language
         /// </summary>
         public FunctionBodyFacts CombineCalledFunction(FunctionBodyFacts facts)
         {
-            return With(flags: _flags | facts._flags);
+            var newFlags = _flags | facts._flags;
+            var newUnqualifiedTableNames =
+                this.UnqualifiedTableNames.Count == 0 && facts.UnqualifiedTableNames.Count == 0 ? (IEnumerable<string>)this.UnqualifiedTableNames
+                        : this.UnqualifiedTableNames.Count > 0 && facts.UnqualifiedTableNames.Count == 0 ? (IEnumerable<string>)this.UnqualifiedTableNames
+                        : this.UnqualifiedTableNames.Count == 0 && facts.UnqualifiedTableNames.Count > 0 ? (IEnumerable<string>)facts.UnqualifiedTableNames
+                        : this.UnqualifiedTableNames.Concat(facts.UnqualifiedTableNames).Distinct();
+
+            return With(
+                flags: newFlags,
+                unqualifiedTableNames: new Optional<IEnumerable<string>>(newUnqualifiedTableNames)
+                );
         }
 
         [Flags]

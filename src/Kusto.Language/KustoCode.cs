@@ -73,7 +73,7 @@ namespace Kusto.Language
         /// <summary>
         /// The local cache to use for binding.  Stored here to aid debugging.
         /// </summary>
-        private readonly LocalBindingCache _localCache;
+        internal readonly LocalBindingCache _localCache;
 
         private enum AnalysisState
         {

@@ -12,19 +12,22 @@ namespace Kusto.Language.Binding
     /// </summary>
     internal class GlobalBindingCache
     {
-        internal readonly Dictionary<IReadOnlyList<TableSymbol>, TableSymbol> UnifiedNameColumnsMap =
-            new Dictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
+        internal readonly ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol> UnifiedNameColumnsMap =
+            new ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
 
-        internal readonly Dictionary<IReadOnlyList<TableSymbol>, TableSymbol> UnifiedNameAndTypeColumnsMap =
-            new Dictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
+        internal readonly ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol> UnifiedNameAndTypeColumnsMap =
+            new ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
 
-        internal readonly Dictionary<IReadOnlyList<TableSymbol>, TableSymbol> CommonColumnsMap =
-            new Dictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
+        internal readonly ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol> CommonColumnsMap =
+            new ThreadSafeDictionary<IReadOnlyList<TableSymbol>, TableSymbol>(ReadOnlyListComparer<TableSymbol>.Default);
 
-        internal Dictionary<CallSiteInfo, FunctionCallExpansion> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, FunctionCallExpansion>(CallSiteInfo.Comparer.Instance);
+        internal ThreadSafeDictionary<Signature, MostRecentlyUsedCache<CallSiteInfo, FunctionCallExpansion>> CallSiteToExpansionMap =
+            new ThreadSafeDictionary<Signature, MostRecentlyUsedCache<CallSiteInfo, FunctionCallExpansion>>();
 
-        internal readonly Dictionary<Signature, FunctionBodyFacts> DatabaseFunctionBodyFacts =
-            new Dictionary<Signature, FunctionBodyFacts>();
+        internal ThreadSafeDictionary<Signature, MostRecentlyUsedCache<CallSiteInfo, TypeSymbol>> CallSiteToResultTypeMap =
+            new ThreadSafeDictionary<Signature, MostRecentlyUsedCache<CallSiteInfo, TypeSymbol>>();
+
+        internal readonly ThreadSafeDictionary<Signature, FunctionBodyFacts> DatabaseFunctionBodyFacts =
+            new ThreadSafeDictionary<Signature, FunctionBodyFacts>();
     }
 }

@@ -14,7 +14,10 @@ namespace Kusto.Language.Binding
             = new HashSet<Signature>();
 
         internal Dictionary<CallSiteInfo, FunctionCallExpansion> CallSiteToExpansionMap =
-            new Dictionary<CallSiteInfo, FunctionCallExpansion>(CallSiteInfo.Comparer.Instance);
+            new Dictionary<CallSiteInfo, FunctionCallExpansion>();
+
+        internal Dictionary<CallSiteInfo, TypeSymbol> CallSiteToResultTypeMap =
+            new Dictionary<CallSiteInfo, TypeSymbol>();
 
         internal readonly Dictionary<Signature, FunctionBodyFacts> NonDatabaseFunctionBodyFacts =
             new Dictionary<Signature, FunctionBodyFacts>();

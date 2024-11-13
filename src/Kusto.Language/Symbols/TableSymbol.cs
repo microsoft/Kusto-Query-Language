@@ -35,12 +35,12 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// The state of the table as bit flags
         /// </summary>
-        private readonly TableState state;
+        private readonly TableState _state;
 
         protected TableSymbol(string name, TableState state, IEnumerable<ColumnSymbol> columns, string description)
             : base(name)
         {
-            this.state = state;
+            _state = state;
             this.Columns = columns.ToReadOnly().CheckArgumentNullOrElementNull(nameof(columns));
             this.Description = description ?? "";
         }
@@ -51,7 +51,7 @@ namespace Kusto.Language.Symbols
         }
 
         internal TableSymbol(TableSymbol sourceTable)
-            : this(sourceTable.Name, sourceTable.state, sourceTable.Columns, sourceTable.Description)
+            : this(sourceTable.Name, sourceTable._state, sourceTable.Columns, sourceTable.Description)
         {
         }
 
@@ -118,17 +118,17 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// True if the table is sorted.
         /// </summary>
-        public bool IsSorted => (this.state & TableState.Sorted) != 0;
+        public bool IsSorted => (_state & TableState.Sorted) != 0;
 
         /// <summary>
         /// True if the table is serialized.
         /// </summary>
-        public bool IsSerialized => (this.state & TableState.Serialized) != 0;
+        public bool IsSerialized => (_state & TableState.Serialized) != 0;
 
         /// <summary>
         /// True if the table is open.
         /// </summary>
-        public bool IsOpen => (this.state & TableState.Open) != 0;
+        public bool IsOpen => (_state & TableState.Open) != 0;
 
         /// <summary>
         /// True if the table is external.
@@ -150,12 +150,12 @@ namespace Kusto.Language.Symbols
             string description = null)
         {
             var useName = name ?? this.Name;
-            var useState = state.HasValue ? state.Value : this.state;
+            var useState = state.HasValue ? state.Value : _state;
             var useColumns = columns ?? this.Columns;
             var useDescription = description ?? this.Description;
 
             if (useName != this.Name
-                || useState != this.state
+                || useState != _state
                 || useColumns != this.Columns
                 || useDescription != this.Description)
             {
@@ -239,7 +239,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithIsSerialized(bool isSerialized)
         {
-            return WithState(isSerialized ? (this.state | TableState.Serialized) : (this.state & ~TableState.Serialized));
+            return WithState(isSerialized ? (_state | TableState.Serialized) : (_state & ~TableState.Serialized));
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithIsSorted(bool isSorted)
         {
-            return WithState(isSorted ? (this.state | TableState.Sorted) : (this.state & ~TableState.Sorted));
+            return WithState(isSorted ? (_state | TableState.Sorted) : (_state & ~TableState.Sorted));
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Kusto.Language.Symbols
         /// </summary>
         public TableSymbol WithIsOpen(bool isOpen)
         {
-            return WithState(isOpen ? (this.state | TableState.Open) : (this.state & ~TableState.Open));
+            return WithState(isOpen ? (_state | TableState.Open) : (_state & ~TableState.Open));
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace Kusto.Language.Symbols
             if (table == null)
                 throw new ArgumentNullException(nameof(table));
 
-            var newState = (table.state & ~InheritableState) | (table.state & InheritableState);
+            var newState = (_state & ~InheritableState) | (table._state & InheritableState);
             return WithState(newState);
         }
 
@@ -412,6 +412,55 @@ namespace Kusto.Language.Symbols
         public static TableSymbol Combine(CombineKind kind, params TableSymbol[] tables)
         {
             return Combine(kind, (IEnumerable<TableSymbol>)tables);
+        }
+
+        /// <summary>
+        /// Returns true if the two tables have the same name, columns and properties.
+        /// </summary>
+        public static bool AreEquivalent(TableSymbol x, TableSymbol y)
+        {
+            if (x == y)
+                return true;
+            if (x.GetType() != y.GetType())
+                return false;
+            if (x.Name != y.Name
+                || x.AlternateName != y.AlternateName
+                || x.Description != y.Description)
+                return false;
+            return AreResultEquivalent(x, y);
+        }
+
+        /// <summary>
+        /// Returns true if the two tables have the same columns and properties,
+        /// such that they would be considered the logically equivalent result type.
+        /// </summary>
+        public static bool AreResultEquivalent(TableSymbol x, TableSymbol y)
+        {
+            if (x == y)
+                return true;
+            if (x._state != y._state)
+                return false;
+            return AreColumnsEquivalent(x, y);
+        }
+
+        /// <summary>
+        /// Returns true if the two tables have the same column names and types.
+        /// </summary>
+        public static bool AreColumnsEquivalent(TableSymbol x, TableSymbol y)
+        {
+            if (x == y)
+                return true;
+            if (x.Columns.Count != y.Columns.Count)
+                return false;
+            for (int i = 0; i < x.Columns.Count; i++)
+            {
+                var xc = x.Columns[i];
+                var yc = y.Columns[i];
+                if (xc.Name != yc.Name
+                    || xc.Type != yc.Type)
+                    return false;
+            }
+            return true;
         }
     }
 

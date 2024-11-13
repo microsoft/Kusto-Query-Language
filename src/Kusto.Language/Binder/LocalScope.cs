@@ -44,12 +44,78 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Returns true if the local scope constains a symbol with the given name.
+        /// Returns true if this scope has a matching symbol.
+        /// </summary>
+        public bool HasSymbol(string name)
+        {
+            return (_symbols != null && _symbols.ContainsKey(name))
+                || (_sharedSymbols != null && _sharedSymbols.HasSymbol(name));
+        }
+
+        /// <summary>
+        /// Returns true if this scope has a matching symbol.
+        /// </summary>
+        public bool HasSymbol(string name, SymbolMatch match)
+        {
+            return (_symbols != null && _symbols.TryGetValue(name, out var symbol) && symbol.Matches(match))
+                || (_sharedSymbols != null && _sharedSymbols.HasSymbol(name, match));
+        }
+
+        /// <summary>
+        /// Returns true if this scope has a matching symbol.
+        /// </summary>
+        public bool HasSymbol(SymbolMatch match)
+        {
+            return (_symbols != null && _symbols.Values.Any(s => s.Matches(match)))
+                || (_sharedSymbols != null && _sharedSymbols.HasSymbol(match));
+        }
+
+        /// <summary>
+        /// Returns true if this scope or any outer scope has a matching symbol.
         /// </summary>
         public bool ContainsSymbol(string name)
         {
-            return (_symbols != null && _symbols.ContainsKey(name))
-                || (_sharedSymbols != null && _sharedSymbols.ContainsSymbol(name));
+            var scope = this;
+            while (scope != null)
+            {
+                if (scope.HasSymbol(name))
+                    return true;
+                scope = scope._outerScope;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if this scope or any outer scope has a matching symbol.
+        /// </summary>
+        public bool ContainsSymbol(string name, SymbolMatch match)
+        {
+            var scope = this;
+            while (scope != null)
+            {
+                if (scope.HasSymbol(name, match))
+                    return true;
+                scope = scope._outerScope;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if this scope or any outer scope has a matching symbol.
+        /// </summary>
+        public bool ContainsSymbol(SymbolMatch match)
+        {
+            var scope = this;
+            while (scope != null)
+            {
+                if (scope.HasSymbol(match))
+                    return true;
+                scope = scope._outerScope;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -105,7 +171,7 @@ namespace Kusto.Language.Binding
         }
 
         /// <summary>
-        /// Gets all the matching symbols in the scope, and then from any outer scopes.
+        /// Gets all the matching symbols in this scope and then any outer scopes.
         /// If any named matches are found in this scope, all other named matches from outer scopes are ignored.
         /// </summary>
         public void GetSymbols(string name, SymbolMatch match, List<Symbol> symbols)
@@ -144,6 +210,15 @@ namespace Kusto.Language.Binding
             {
                 _outerScope.GetSymbols(name, match, symbols);
             }
+        }
+
+        /// <summary>
+        /// Gets all the matching symbols in this scope and then any outer scopes.
+        /// If any named matches are found in this scope, all other named matches from outer scopes are ignored.
+        /// </summary>
+        public void GetSymbols(string name, List<Symbol> symbols)
+        {
+            GetSymbols(name, SymbolMatch.Any, symbols);
         }
 
         /// <summary>

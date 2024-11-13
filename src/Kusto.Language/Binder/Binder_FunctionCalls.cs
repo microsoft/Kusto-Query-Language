@@ -710,9 +710,10 @@ namespace Kusto.Language.Binding
         /// </summary>
         private TypeSymbol GetMatchingDatabase(string nameOrPattern, Symbol clusterOrGroup)
         {
-            if (clusterOrGroup == _currentCluster
-                && !string.IsNullOrEmpty(nameOrPattern)
-                && (string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0
+            if ((clusterOrGroup == null 
+                || clusterOrGroup == _currentCluster)
+                && (string.IsNullOrEmpty(nameOrPattern)
+                    || string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0
                     || string.Compare(_currentDatabase.AlternateName, nameOrPattern, ignoreCase: true) == 0))
             {
                 return _currentDatabase;
@@ -1578,11 +1579,25 @@ namespace Kusto.Language.Binding
             // then compute the function body facts and return type for this location by getting the expansion.
             if (funFacts == null || funFacts.HasVariableReturnType)
             {
+                CallSiteInfo callSite = null;
+
+                if (funFacts != null
+                    && arguments != null
+                    && TryGetResultTypeCallSite(signature, funFacts.DependentParameters, arguments, out callSite)
+                    && CanCacheResultType(callSite)
+                    && TryGetResultTypeFromCache(callSite, out var resultType))
+                {
+                    // return known result type w/ deferred expansion
+                    return new FunctionCallResult(
+                        resultType,
+                        new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes), funFacts));
+                }
+
                 // use expansion at this call site to determine correct return type
                 // if signature facts was not yet known, it will be computed by calling GetCallSiteExpansion
                 var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes);
                 
-                // try again after evaluating expansion
+                // get computed fun facts
                 TryGetFunctionBodyFacts(signature, out funFacts);
 
                 var returnType = GetBodyResultType(expansion?.Root);
@@ -1590,14 +1605,165 @@ namespace Kusto.Language.Binding
                 if (returnType == null || returnType.IsError)
                     returnType = ScalarTypes.Unknown;
 
+                if (funFacts != null
+                    && arguments != null
+                    && (callSite != null || TryGetResultTypeCallSite(signature, funFacts.DependentParameters, arguments, out callSite))
+                    && CanCacheResultType(callSite))
+                {
+                    // add result type to cache for these arguments
+                    // so we don't have to recompute/re-expand it when referenced again.
+                    AddResultTypeToCache(callSite, returnType);
+                }
+
                 return new FunctionCallResult(returnType, new FunctionCallInfo(expansion, funFacts));
             }
             else
             {
                 // body has non-variable (fixed) return type.
                 return new FunctionCallResult(
-                    funFacts.NonVariableComputedReturnType,
+                    funFacts.NonVariableReturnType,
                     new FunctionCallInfo(GetDeferredFunctionCallExpansion(signature, arguments, argumentTypes), funFacts));
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the function call at this callsite allows caching of result type.
+        /// </summary>
+        private bool CanCacheResultType(CallSiteInfo callSite)
+        {
+            TryGetFunctionBodyFacts(callSite.Signature, out var funFacts);
+
+            if (funFacts == null)
+                return false;
+
+            if (!funFacts.HasVariableReturnType)
+                return false;
+
+            if (funFacts.HasUnqualifiedTableCall)
+            {
+                if (IsLocalTabularVariable(funFacts.UnqualifiedTableNames))
+                    return false;
+
+                foreach (var value in callSite.Values)
+                {
+                    if (value is string possibleTableName
+                        && IsLocalTabularVariable(possibleTableName))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a 'result type' callsite for a function call.
+        /// </summary>
+        private static bool TryGetResultTypeCallSite(
+            Signature signature,
+            IReadOnlyList<Parameter> dependentParameters,
+            IReadOnlyList<Expression> arguments,
+            out CallSiteInfo callSiteInfo
+            )
+        {
+            var argumentParameters = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                signature.GetArgumentParameters(arguments, argumentParameters);
+
+                var values = new object[dependentParameters.Count];
+                for (int i = 0; i < dependentParameters.Count; i++)
+                {
+                    var p = dependentParameters[i];
+                    if (p != null)
+                    {
+                        var index = argumentParameters.IndexOf(p);
+                        if (index < 0 || index >= arguments.Count)
+                        {
+                            callSiteInfo = null;
+                            return false;
+                        }
+
+                        var arg = arguments[index];
+                        if (TryGetCallSiteArgumentValue(arguments[index], out var value))
+                        {
+                            values[i] = value;
+                        }
+                        else
+                        {
+                            callSiteInfo = null;
+                            return false;
+                        }
+                    }
+                }
+
+                callSiteInfo = new CallSiteInfo(signature, dependentParameters, values);
+                return true;
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(argumentParameters);
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of a function call argument 
+        /// that can be used as a callsite value.
+        /// </summary>
+        private static bool TryGetCallSiteArgumentValue(Expression arg, out object value)
+        {
+            if (arg.ConstantValueInfo != null)
+            {
+                value = arg.ConstantValueInfo.Value;
+                return true;
+            }
+            else if (arg.ResultType is TableSymbol table)
+            {
+                value = table;
+                return true;
+            }
+            else
+            {
+                value = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the result type for the callsite, if cached.
+        /// </summary>
+        private bool TryGetResultTypeFromCache(CallSiteInfo callSiteInfo, out TypeSymbol type)
+        {
+            if (_localBindingCache.CallSiteToResultTypeMap.TryGetValue(callSiteInfo, out type))
+                return true;
+
+            if (_globalBindingCache.CallSiteToResultTypeMap.TryGetValue(callSiteInfo.Signature, out var globalMru)
+                && globalMru.TryGetValue(callSiteInfo, out type))
+                return true;
+
+            type = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Adds the result type for the call site to the cache
+        /// </summary>
+        private void AddResultTypeToCache(CallSiteInfo callsite, TypeSymbol resultType)
+        {
+            var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature);
+            if (shouldCacheGlobally)
+            {
+                if (!_globalBindingCache.CallSiteToResultTypeMap.TryGetValue(callsite.Signature, out var globalMru))
+                {
+                    globalMru = _globalBindingCache.CallSiteToResultTypeMap.GetOrAdd(
+                        callsite.Signature, _ => new MostRecentlyUsedCache<CallSiteInfo, TypeSymbol>(_globals.GetProperty(Properties.MaxCachedResultTypes))
+                        );
+                }
+
+                globalMru.AddOrUpdate(callsite, resultType);
+            }
+            else
+            {
+                _localBindingCache.CallSiteToResultTypeMap.Add(callsite, resultType);
             }
         }
 
@@ -1641,8 +1807,8 @@ namespace Kusto.Language.Binding
         /// Gets the inline expansion of a function call
         /// </summary>
         internal FunctionCallExpansion GetFunctionCallExpansion(
-            Signature signature, 
-            IReadOnlyList<Expression> arguments = null, 
+            Signature signature,
+            IReadOnlyList<Expression> arguments = null,
             IReadOnlyList<TypeSymbol> argumentTypes = null)
         {
             if (signature.ReturnKind != ReturnTypeKind.Computed)
@@ -1655,48 +1821,64 @@ namespace Kusto.Language.Binding
             _localBindingCache.SignaturesComputingExpansion.Add(signature);
             try
             {
-                var callSiteInfo = GetCallSiteInfo(signature, arguments, argumentTypes);
+                FunctionCallExpansion expansion = null;
 
-                if (!TryGetExpansionFromCache(callSiteInfo, out var expansion))
+                TryGetExpansionCallSiteInfo(signature, arguments, out var callSiteInfo);
+
+                if (callSiteInfo != null 
+                    && CanCacheExpansion(callSiteInfo)
+                    && TryGetExpansionFromCache(callSiteInfo, out expansion))
                 {
-                    try
+                    return expansion;
+                }
+
+                try
+                { 
+                    var body = GetUnboundBody(signature);
+                    if (body != null)
                     {
-                        var body = GetUnboundBody(signature);
-                        if (body != null)
+                        var isInDatabase = IsDatabaseSymbolSignature(signature);
+                        var currentDatabase = isInDatabase ? _globals.GetDatabase(signature.Symbol) : null;
+                        var currentCluster = isInDatabase ? _globals.GetCluster(currentDatabase) : null;
+
+                        if (signature.Declaration != null)
                         {
-                            var isInDatabase = IsDatabaseSymbolSignature(signature);
-                            var currentDatabase = isInDatabase ? _globals.GetDatabase(signature.Symbol) : null;
-                            var currentCluster = isInDatabase ? _globals.GetCluster(currentDatabase) : null;
+                            // associate new tree with tree it originated from
+                            expansion = new FunctionCallExpansion(body, signature.Declaration.Tree, signature.Declaration.TriviaStart);
+                        }
+                        else
+                        {
+                            expansion = new FunctionCallExpansion(body);
+                        }
 
-                            if (signature.Declaration != null)
-                            {
-                                // associate new tree with tree it originated from
-                                expansion = new FunctionCallExpansion(body, signature.Declaration.Tree, signature.Declaration.TriviaStart);
-                            }
-                            else
-                            {
-                                expansion = new FunctionCallExpansion(body);
-                            }
+                        var staticScope = GetOuterScope(signature);
 
-                            var staticScope = GetOuterScope(signature);
-                            if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, staticScope, callSiteInfo.Locals))
-                            {
-                                // compute function body facts as side effect
-                                var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);
-                            }
-                            else
-                            {
-                                // don't return expansion that did not bind
-                                expansion = null;
-                            }
+                        var locals = GetCallSiteArgumentsAsVariables(signature, arguments, argumentTypes);
+                        if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, staticScope, locals))
+                        {
+                            // compute function body facts as side effect
+                            var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);
+                        }
+                        else
+                        {
+                            // don't return expansion that did not bind
+                            expansion = null;
                         }
                     }
-                    catch (Exception)
-                    {
-                        // don't return expansion that failed in binding
-                        expansion = null;
-                    }
+                }
+                catch (Exception)
+                {
+                    // don't return expansion that failed in binding
+                    expansion = null;
+                }
 
+                // record number of times each signature is expanded
+                _localBindingCache.FunctionExpansionCounts.AddOrUpdate(signature, k => 1, (k, v) => v + 1);
+
+                if (expansion != null 
+                    && callSiteInfo != null
+                    && CanCacheExpansion(callSiteInfo))
+                {
                     AddExpansionToCache(callSiteInfo, expansion);
                 }
 
@@ -1706,45 +1888,92 @@ namespace Kusto.Language.Binding
             {
                 _localBindingCache.SignaturesComputingExpansion.Remove(signature);
             }
+        }
 
-            // Tries to get the expansion from global or local cache.
-            bool TryGetExpansionFromCache(CallSiteInfo callsite, out FunctionCallExpansion expansion)
+        /// <summary>
+        /// Gets the cached expansion for the function at the call site.
+        /// </summary>
+        bool TryGetExpansionFromCache(CallSiteInfo callsite, out FunctionCallExpansion expansion)
+        {
+            return _localBindingCache.CallSiteToExpansionMap.TryGetValue(callsite, out expansion)
+                || (_globalBindingCache.CallSiteToExpansionMap.TryGetValue(callsite.Signature, out var globalMru)
+                    && globalMru.TryGetValue(callsite, out expansion));
+        }
+
+        /// <summary>
+        /// Returns true if the function can have its expansions cached.
+        /// </summary>
+        private bool CanCacheExpansion(CallSiteInfo callSite)
+        {
+            TryGetFunctionBodyFacts(callSite.Signature, out var funFacts);
+
+            if (funFacts == null)
+                return false;
+
+            if (!funFacts.HasUnqualifiedTableCall)
+                return true;
+
+            if (IsLocalTabularVariable(funFacts.UnqualifiedTableNames))
+                return false;
+
+            // check any argument value that might end up as argument to unqualified table call
+            foreach (var dp in funFacts.DependentParameters)
             {
-                return _localBindingCache.CallSiteToExpansionMap.TryGetValue(callsite, out expansion)
-                    || _globalBindingCache.CallSiteToExpansionMap.TryGetValue(callsite, out expansion);
+                var index = callSite.Parameters.IndexOf(dp);
+                if (index >= 0 && index < callSite.Values.Count
+                    && callSite.Values[index] is string possibleTableName)
+                {
+                    if (IsLocalTabularVariable(possibleTableName))
+                        return false;
+                }
             }
 
-            // Adds expansion to global or local cache.
-            void AddExpansionToCache(CallSiteInfo callsite, FunctionCallExpansion expansion)
+            return true;
+        }
+
+        /// <summary>
+        /// Return true if the name can refer to a local tabular variable in dynamic scope.
+        /// </summary>
+        private bool IsLocalTabularVariable(string name)
+        {
+            return _localScope.ContainsSymbol(name, SymbolMatch.Tabular | SymbolMatch.Local);
+        }
+
+        /// <summary>
+        /// Returns true if any of the names can refer to a local tabular variable in dynamic scope.
+        /// </summary>
+        private bool IsLocalTabularVariable(IReadOnlyList<string> names)
+        {
+            if (names.Count == 0)
+                return false;
+
+            if (names.Count == 1)
+                return IsLocalTabularVariable(names[0]);
+
+            return names.Any(name => IsLocalTabularVariable(name));
+        }
+
+        /// <summary>
+        /// Adds expansion to either global or local cache.
+        /// </summary>
+        void AddExpansionToCache(CallSiteInfo callsite, FunctionCallExpansion expansion)
+        {
+            var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature);
+            if (shouldCacheGlobally)
             {
-                TryGetFunctionBodyFacts(callsite.Signature, out var funFacts);
-
-                // record number of times each signature is expanded
-                _localBindingCache.FunctionExpansionCounts.AddOrUpdate(callsite.Signature, 1, c => c + 1);
-
-#if true // Temporarily disable
-                // if there is a call to unqualified table(t) then it may require resolving using dynamic scope, so don't cache anywhere
-                if (funFacts != null && funFacts.HasUnqualifiedTableCall)
-                    return;
-
-                // only add database functions that are not variable in nature to global cache
-                // might need to rethink this if memory consumption is shown to be an issue
-                var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature)
-                    && (funFacts != null && !funFacts.HasVariableReturnType);
-#else
-                // only add database functions that are not variable in nature to global cache
-                // might need to rethink this if memory consumption is shown to be an issue
-                var shouldCacheGlobally = IsDatabaseSymbolSignature(callsite.Signature);
-#endif
-
-                if (shouldCacheGlobally)
+                if (!_globalBindingCache.CallSiteToExpansionMap.TryGetValue(callsite.Signature, out var globalMru))
                 {
-                    _globalBindingCache.CallSiteToExpansionMap.Add(callsite, expansion);
+                    globalMru = _globalBindingCache.CallSiteToExpansionMap.GetOrAdd(
+                        callsite.Signature,
+                        _ => new MostRecentlyUsedCache<CallSiteInfo, FunctionCallExpansion>(_globals.GetProperty(Properties.MaxCachedExpansions))
+                        );
                 }
-                else
-                {
-                    _localBindingCache.CallSiteToExpansionMap.Add(callsite, expansion);
-                }
+
+                globalMru.AddOrUpdate(callsite, expansion);
+            }
+            else
+            {
+                _localBindingCache.CallSiteToExpansionMap.Add(callsite, expansion);
             }
         }
 
@@ -1760,13 +1989,82 @@ namespace Kusto.Language.Binding
                 && _globals.IsDatabaseSymbol(signature.Symbol);       // and they are known by the global state
         }
 
-        private CallSiteInfo GetCallSiteInfo(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
+        /// <summary>
+        /// Gets the 'expansion' call site info for a function call.
+        /// </summary>
+        private bool TryGetExpansionCallSiteInfo(
+            Signature signature, 
+            IReadOnlyList<Expression> arguments, 
+            out CallSiteInfo callSite)
         {
-            var locals = GetArgumentsAsLocals(signature, arguments, argumentTypes);
-            return new CallSiteInfo(signature, locals);
+            if (arguments != null)
+            {
+                var parameters = new List<Parameter>(arguments.Count);
+                var values = new List<object>(arguments.Count);
+                if (TryGetCallSiteParametersAndValues(signature, arguments, parameters, values))
+                {
+                    callSite = new CallSiteInfo(signature, parameters, values);
+                    return true;
+                }
+            }
+
+            callSite = null;
+            return false;
         }
 
-        private IReadOnlyList<VariableSymbol> GetArgumentsAsLocals(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
+        /// <summary>
+        /// Gets the correpsonding set of parameters and argument values
+        /// for the function call.
+        /// </summary>
+        private bool TryGetCallSiteParametersAndValues(
+            Signature signature, 
+            IReadOnlyList<Expression> arguments, 
+            List<Parameter> parameters,
+            List<object> values)
+        {
+            if (arguments == null)
+                return false;
+
+            var argumentParameters = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                signature.GetArgumentParameters(arguments, argumentParameters);
+
+                foreach (var p in signature.Parameters)
+                {
+                    var argIndex = argumentParameters != null ? argumentParameters.IndexOf(p) : -1;
+
+                    if (argIndex >= 0 
+                        && argIndex < arguments.Count)
+                    {
+                        if (TryGetCallSiteArgumentValue(arguments[argIndex], out var value))
+                        {
+                            parameters.Add(argumentParameters[argIndex]);
+                            values.Add(value);
+                        }
+                    }
+                    else if (p.DefaultValue != null)
+                    {
+                        if (TryGetCallSiteArgumentValue(p.DefaultValue, out var value))
+                        {
+                            parameters.Add(p);
+                            values.Add(value);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(argumentParameters);
+            }
+        }
+
+        /// <summary>
+        /// Gets the set of local variables to use instead of argument parameters for the expansion of the function call.
+        /// </summary>
+        private IReadOnlyList<VariableSymbol> GetCallSiteArgumentsAsVariables(Signature signature, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes)
         {
             var locals = new List<VariableSymbol>();
 
@@ -1799,7 +2097,7 @@ namespace Kusto.Language.Binding
                             ? p.DeclaredTypes[0]
                             : argType;
 
-                        var isLiteral = Binding.Binder.TryGetLiteralValueInfo(arg, out var valueInfo);
+                        var isLiteral = Binder.TryGetLiteralValueInfo(arg, out var valueInfo);
                         locals.Add(new VariableSymbol(p.Name, localType, isLiteral, valueInfo, source: arg));
                     }
                     else
@@ -1917,7 +2215,7 @@ namespace Kusto.Language.Binding
         {
             if (IsDatabaseSymbolSignature(signature))
             {
-                _globalBindingCache.DatabaseFunctionBodyFacts[signature] = facts;
+                _globalBindingCache.DatabaseFunctionBodyFacts.AddOrUpdate(signature, facts);
             }
             else
             {
@@ -1933,7 +2231,7 @@ namespace Kusto.Language.Binding
             // if the function returns a table, mark all tabular parameters as dependent
             if (isTabular && signature.Parameters.Any(p => p.IsTabular))
             {
-                result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItems(signature.Parameters.Where(p => p.IsTabular)));
+                result = result.AddDependentParameters(signature.Parameters.Where(p => p.IsTabular));
             }
 
             // identify dependent parameters and other function body facts
@@ -1944,6 +2242,8 @@ namespace Kusto.Language.Binding
                     if (node is FunctionCallExpression fc
                         && IsSymbolLookupFunction(fc.ReferencedSymbol))
                     {
+                        var isUnqualifiedTableCall = false;
+
                         if (fc.ReferencedSymbol == Functions.Table)
                         {
                             // distinguish between database(d).table(t) vs just table(t)
@@ -1957,6 +2257,7 @@ namespace Kusto.Language.Binding
                                 // unqualified table calls (even with literal arguments) can be dependent on the call site since
                                 // the names can reference tabular variables in outer scopes
                                 result = result.WithHasUnqualifiedTableCall(true);
+                                isUnqualifiedTableCall = true;
                             }
                         }
                         else if (fc.ReferencedSymbol == Functions.ExternalTable)
@@ -1978,13 +2279,24 @@ namespace Kusto.Language.Binding
 
                         // if the first argument is not a literal, then it might be being supplied by a parameter to the containing function
                         // which means this function could be being called multiple times with different arguments.
-                        var isLiteral = fc.ArgumentList.Expressions.Count > 0 && fc.ArgumentList.Expressions[0].Element.IsLiteral;
-                        if (!isLiteral && isTabular)
+                        if (fc.ArgumentList.Expressions.Count > 0)
                         {
                             var arg = fc.ArgumentList.Expressions[0].Element;
-                            if (GetReferencedParameter(signature, arg) is Parameter p)
+
+                            var isLiteral = arg.IsLiteral;
+                            if (!isLiteral && isTabular)
                             {
-                                result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItem(p));
+                                if (GetReferencedParameter(signature, arg) is Parameter p)
+                                {
+                                    result = result.AddDependentParameter(p);
+                                }
+                            }
+
+                            if (isUnqualifiedTableCall
+                                && isTabular
+                                && arg.ConstantValueInfo?.Value is string tableName)
+                            {
+                                result = result.AddUnqualifiedTableName(tableName);
                             }
                         }
                     }
@@ -2014,7 +2326,7 @@ namespace Kusto.Language.Binding
                                     // note: these arguments should be constrained to only constant expressions due to requirements of symbol lookup functions.
                                     if (GetReferencedParameter(signature, arg) is Parameter p)
                                     {
-                                        result = result.WithDependentParameters(result.DependentParameters.ToSafeList().AddItem(p));
+                                        result = result.AddDependentParameter(p);
                                     }
                                 }
                             }

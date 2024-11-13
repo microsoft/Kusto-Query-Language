@@ -30,5 +30,17 @@ namespace Kusto.Language
         /// </summary>
         public static readonly GlobalStateProperty<int> MaxAnalysisDepth =
             new GlobalStateProperty<int>(nameof(MaxAnalysisDepth), 500);
+
+        /// <summary>
+        /// The maxmimum number of cached expansions per database function.
+        /// </summary>
+        public static readonly GlobalStateProperty<int> MaxCachedExpansions =
+            new GlobalStateProperty<int>(nameof(MaxCachedExpansions), 10);
+
+        /// <summary>
+        /// The maximum number of cache result types per database function.
+        /// </summary>
+        public static readonly GlobalStateProperty<int> MaxCachedResultTypes =
+            new GlobalStateProperty<int>(nameof(MaxCachedResultTypes), 50);
     }
 }

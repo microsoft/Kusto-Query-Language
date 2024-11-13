@@ -4209,7 +4209,7 @@ namespace Kusto.Language.Binding
                 {
                     var name = node.Name.Name.SimpleName;
 
-                    if (_binder._localScope.ContainsSymbol(name))
+                    if (_binder._localScope.HasSymbol(name))
                     {
                         diagnostics.Add(DiagnosticFacts.GetVariableAlreadyDeclared(name).WithLocation(node.Name));
                     }
