@@ -3911,8 +3911,20 @@ namespace Kusto.Language.Binding
                         _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.GraphMarkComponentsParameters, diagnostics);
                     }
 
-                    var symbol = new GraphSymbol(this.RowScopeOrEmpty);
-                    return new SemanticInfo(symbol, diagnostics);
+                    // get existing graph symbol from left-side of parent pipe operator
+                    var graphSymbol = (node.Parent as PipeExpression)?.Expression?.ResultType is GraphSymbol g
+                        ? new GraphSymbol(g.EdgeShape, g.NodeShape)
+                        : new GraphSymbol(this.RowScopeOrEmpty);
+
+                    // add component-id column to node shape
+                    var componentIdName = node.Parameters.GetParameterNameValue(QueryOperatorParameters.WithComponentId) as string ?? "ComponentId";
+                    var componentIdColumn = new ColumnSymbol(componentIdName, ScalarTypes.Long);
+                    var newNodeShape = graphSymbol.NodeShape != null
+                        ? graphSymbol.NodeShape.AddColumns(componentIdColumn)
+                        : new TableSymbol(new[] { componentIdColumn });
+                    graphSymbol = graphSymbol.WithNodeShape(newNodeShape);
+
+                    return new SemanticInfo(graphSymbol, diagnostics);
                 }
                 finally
                 {

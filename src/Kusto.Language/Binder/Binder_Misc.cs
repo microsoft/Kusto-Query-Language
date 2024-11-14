@@ -574,13 +574,13 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private void BindGraphMatchPatternDeclarations(GraphMatchOperator graphMatch)
+        private void BindGraphMatchPatternDeclarations(SyntaxNode operatorNode, SyntaxList<SeparatedElement<GraphMatchPattern>> patterns)
         {
-            var graphScope = GetGraphSymbol(graphMatch);
+            var graphScope = GetGraphSymbol(operatorNode);
             var edgeTuple = graphScope != null ? new TupleSymbol(graphScope.EdgeShape.Columns, graphScope.EdgeShape) : TupleSymbol.Empty;
             var nodeTuple = graphScope?.NodeShape != null ? new TupleSymbol(graphScope.NodeShape.Columns, graphScope.NodeShape) : TupleSymbol.Empty;
 
-            foreach (var pattern in graphMatch.Patterns)
+            foreach (var pattern in patterns)
             {
                 foreach (var notation in pattern.Element.PatternElements)
                 {
@@ -615,9 +615,9 @@ namespace Kusto.Language.Binding
             return new VariableSymbol(edge.Name.SimpleName, new TupleSymbol(newColumns));
         }
 
-        private void AddGraphMatchPatternDeclarationsToLocalScope(GraphMatchOperator graphMatch)
+        private void AddGraphMatchPatternDeclarationsToLocalScope(SyntaxList<SeparatedElement<GraphMatchPattern>> patterns)
         {
-            foreach (var pattern in graphMatch.Patterns)
+            foreach (var pattern in patterns)
             {
                 foreach (var notation in pattern.Element.PatternElements)
                 {

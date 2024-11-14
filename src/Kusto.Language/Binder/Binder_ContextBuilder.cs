@@ -501,7 +501,19 @@ namespace Kusto.Language.Binding
                     || (node.ProjectClause != null && _position >= node.ProjectClause.TextStart))
                 {
                     _binder._localScope = new LocalScope(_binder._localScope);
-                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node.Patterns);
+                }
+            }
+
+            public override void VisitGraphShortestPathsOperator(GraphShortestPathsOperator node)
+            {
+                base.VisitGraphShortestPathsOperator(node);
+
+                if ((node.WhereClause != null && _position >= node.WhereClause.TextStart)
+                    || (node.ProjectClause != null && _position >= node.ProjectClause.TextStart))
+                {
+                    _binder._localScope = new LocalScope(_binder._localScope);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node.Patterns);
                 }
             }
 

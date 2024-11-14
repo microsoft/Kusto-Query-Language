@@ -1118,8 +1118,35 @@ namespace Kusto.Language.Binding
                 _binder._localScope = new LocalScope(oldLocalScope);
                 try
                 {
-                    _binder.BindGraphMatchPatternDeclarations(node);
-                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node);
+                    node.Parameters.Accept(this);
+
+                    _binder.BindGraphMatchPatternDeclarations(node, node.Patterns);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node.Patterns);
+
+                    node.WhereClause?.Accept(this);
+                    node.ProjectClause?.Accept(this);
+                }
+                finally
+                {
+                    _binder._rowScope = oldScope;
+                    _binder._localScope = oldLocalScope;
+                }
+
+                BindNode(node);
+            }
+
+            public override void VisitGraphShortestPathsOperator(GraphShortestPathsOperator node)
+            {
+                var oldScope = _binder._rowScope;
+                var oldLocalScope = _binder._localScope;
+                _binder._rowScope = null;
+                _binder._localScope = new LocalScope(oldLocalScope);
+                try
+                {
+                    node.Parameters.Accept(this);
+
+                    _binder.BindGraphMatchPatternDeclarations(node, node.Patterns);
+                    _binder.AddGraphMatchPatternDeclarationsToLocalScope(node.Patterns);
 
                     node.WhereClause?.Accept(this);
                     node.ProjectClause?.Accept(this);
