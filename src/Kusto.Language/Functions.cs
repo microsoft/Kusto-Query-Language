@@ -3331,7 +3331,8 @@ namespace Kusto.Language
                 return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
                     && gm.WhereClause != null
                     && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
-            });            
+            })
+            .Hide();            
 
         public static readonly FunctionSymbol Map =
             new FunctionSymbol("map",
@@ -3353,7 +3354,8 @@ namespace Kusto.Language
                 return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
                     && gm.ProjectClause != null
                     && (gm.ProjectClause == context.Location || gm.ProjectClause.IsAncestorOf(context.Location));
-            });
+            })
+            .Hide();
 
         public static readonly FunctionSymbol InnerNodes =
             new FunctionSymbol("inner_nodes",
@@ -3390,7 +3392,8 @@ namespace Kusto.Language
                             && fc.ArgumentList.Expressions[0].Element.IsAncestorOf(context.Location)
                             ));
                 return inGM && inAllOrMap ;
-            });
+            })
+            .Hide();
 
         #endregion
 
