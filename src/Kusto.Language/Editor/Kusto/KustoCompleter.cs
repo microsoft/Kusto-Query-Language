@@ -1483,6 +1483,23 @@ namespace Kusto.Language.Editor
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
                     return true;
 
+                case ReturnTypeKind.Parameter0EntityGroup:
+                    // show either the dotted database's entity group names or the global database's entity group names
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression egdpl)
+                    {
+                        if (egdpl.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.EntityGroups));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.EntityGroups));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
                 default:
                     return false;
             }

@@ -524,6 +524,17 @@ namespace Kusto.Language.Binding
                     {
                         return TableSymbol.Empty.WithIsOpen(true);
                     }
+                case ReturnTypeKind.Parameter0EntityGroup:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[0]);
+                    if (iArg >= 0 && iArg < arguments.Count
+                        && TryGetLiteralStringValue(arguments[iArg], out var entityGroupName))
+                    {
+                        return GetEntityGroupFunctionResult(entityGroupName, arguments[iArg], diagnostics);
+                    }
+                    else
+                    {
+                        return new EntityGroupSymbol();
+                    }
                 case ReturnTypeKind.Custom:
                     var context = new BinderCallContext(this, location as SyntaxNode, arguments, argumentTypes, argumentParameters, signature);
                     return signature.CustomReturnType(context) ?? ErrorSymbol.Instance;
@@ -1021,6 +1032,34 @@ namespace Kusto.Language.Binding
             }
 
             return table;
+        }
+
+        /// <summary>
+        /// Gets the result of calling the entity_group() function in the current context.
+        /// </summary>
+        private TypeSymbol GetEntityGroupFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        {
+            var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
+            var entityGroup = db.GetEntityGroup(name);
+
+            if (entityGroup == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyEntityGroupNotDefined(name).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownEntityGroup(name).WithLocation(location));
+                    }
+                }
+
+                return new EntityGroupSymbol();
+            }
+
+            return entityGroup;
         }
 
         /// <summary>
@@ -2396,6 +2435,7 @@ namespace Kusto.Language.Binding
             symbol == Functions.Table
             || symbol == Functions.ExternalTable
             || symbol == Functions.MaterializedView
+            || symbol == Functions.EntityGroup
             || symbol == Functions.Database
             || symbol == Functions.Cluster;
 

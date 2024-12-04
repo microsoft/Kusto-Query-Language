@@ -24,20 +24,28 @@ namespace Kusto.Language
                 ReturnTypeKind.Parameter0Database,
                 new Parameter("name", ScalarTypes.String, minOccurring: 0));
 
-        public static readonly FunctionSymbol Table = new FunctionSymbol("table",
+        public static readonly FunctionSymbol Table =
+            new FunctionSymbol("table",
                 ReturnTypeKind.Parameter0Table,
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("query_data_scope", ScalarTypes.String, minOccurring: 0));
 
-        public static readonly FunctionSymbol ExternalTable = new FunctionSymbol("external_table",
+        public static readonly FunctionSymbol ExternalTable =
+            new FunctionSymbol("external_table",
                 ReturnTypeKind.Parameter0ExternalTable,
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("mapping", ScalarTypes.String, minOccurring: 0));
 
-        public static readonly FunctionSymbol MaterializedView = new FunctionSymbol("materialized_view",
+        public static readonly FunctionSymbol MaterializedView = 
+            new FunctionSymbol("materialized_view",
                 ReturnTypeKind.Parameter0MaterializedView,
                 new Parameter("name", ScalarTypes.String),
                 new Parameter("max_age", ScalarTypes.TimeSpan, minOccurring: 0));
+
+        public static readonly FunctionSymbol EntityGroup = 
+            new FunctionSymbol("entity_group",
+                ReturnTypeKind.Parameter0EntityGroup,
+                new Parameter("name", ScalarTypes.String));
 
         public static readonly FunctionSymbol StoredQueryResult =
             new FunctionSymbol("stored_query_result",
@@ -3600,6 +3608,7 @@ namespace Kusto.Language
             Table,
             ExternalTable,
             MaterializedView,
+            EntityGroup,
             StoredQueryResult,
 #endregion
 

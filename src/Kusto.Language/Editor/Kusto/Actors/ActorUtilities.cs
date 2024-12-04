@@ -349,7 +349,8 @@ namespace Kusto.Language.Editor
         public static bool IsEntityFunction(FunctionSymbol fs) =>
             fs == Functions.Table
             || fs == Functions.ExternalTable
-            || fs == Functions.MaterializedView;
+            || fs == Functions.MaterializedView
+            || fs == Functions.EntityGroup;
 
         /// <summary>
         /// Gets the portion of the entity expression from the start of the full entity expression
@@ -513,7 +514,8 @@ namespace Kusto.Language.Editor
             if (node is FunctionCallExpression fc
                 && (fc.ReferencedSymbol == Functions.Table
                     || fc.ReferencedSymbol == Functions.ExternalTable
-                    || fc.ReferencedSymbol == Functions.MaterializedView))
+                    || fc.ReferencedSymbol == Functions.MaterializedView
+                    || fc.ReferencedSymbol == Functions.EntityGroup))
             {
                 return fc.ResultType;
             }

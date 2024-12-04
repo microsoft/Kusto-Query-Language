@@ -505,6 +505,27 @@ namespace Kusto.Language.Binding
             }
         }
 
+        private void BindParameterDeclarationsAsVariables(SyntaxList<SeparatedElement<FunctionParameter>> parameters)
+        {
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var p = parameters[i].Element;
+                BindParameterDeclarationAsVariable(p);
+            }
+        }
+
+        private void BindParameterDeclarationAsVariable(FunctionParameter node)
+        {
+            var name = node.NameAndType.Name.SimpleName;
+            var type = GetTypeFromTypeExpression(node.NameAndType.Type);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                var variable = new VariableSymbol(name, type, node.DefaultValue?.Value?.IsConstant ?? false, node.DefaultValue?.Value?.ConstantValueInfo, node.DefaultValue?.Value);
+                SetSemanticInfo(node.NameAndType.Name, new SemanticInfo(variable, type));
+            }
+        }
+
         private void BindColumnDeclarations(SyntaxList<SeparatedElement<FunctionParameter>> parameters)
         {
             for (int i = 0; i < parameters.Count; i++)

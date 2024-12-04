@@ -757,6 +757,9 @@ namespace Kusto.Language
         public static Diagnostic GetFuzzyMaterializedViewNotDefined(string name = null) =>
             GetFuzzyEntityNotDefined(name, "materialized view");
 
+        public static Diagnostic GetFuzzyEntityGroupNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "entity group");
+
         public static Diagnostic GetFuzzyFunctionNotDefined(string name = null) =>
             GetFuzzyEntityNotDefined(name, "function");
 
@@ -969,6 +972,11 @@ namespace Kusto.Language
         public static Diagnostic GetInternalFailure()
         {
             return new Diagnostic("KS246", "An internal failure occurred during parsing.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownEntityGroup(string name)
+        {
+            return new Diagnostic("KS247", $"The name '{name}' does not refer to any known entity group.");
         }
 
         #region command diagnostics

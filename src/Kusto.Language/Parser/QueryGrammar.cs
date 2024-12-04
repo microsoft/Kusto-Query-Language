@@ -2657,7 +2657,7 @@ namespace Kusto.Language.Parsing
             var MacroExpandOperator =
                 Rule(
                     Token(SyntaxKind.MacroExpandKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
-                    QueryParameterList(QueryOperatorParameters.TakeParameters, equalsNeeded: true),
+                    QueryParameterList(QueryOperatorParameters.MacroExpandParameters, equalsNeeded: true),
                     First(EntityGroup, If(ScanQualifiedEntityStart, EntityPathExpression), FunctionCall, SimpleNameReference),
                     Optional(macroExpandScopeReferenceName),
                     RequiredToken(SyntaxKind.OpenParenToken),

@@ -418,6 +418,13 @@ namespace Kusto.Language
             HintDotSpread.WithValues(KustoFacts.UnionHintSpreads)
         }.ToReadOnly();
 
+        public static readonly IReadOnlyList<QueryOperatorParameter> MacroExpandParameters = new QueryOperatorParameter[]
+         {
+            ForceRemote,
+            IsFuzzy,
+            BestEffort
+         }.ToReadOnly();
+
         public static readonly QueryOperatorParameter GetSchemaKind =
             new QueryOperatorParameter("kind", QueryOperatorParameterValueKind.Word, values: new[] {"csl"});
     }

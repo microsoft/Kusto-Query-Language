@@ -418,7 +418,7 @@ namespace Kusto.Language.Binding
             {
                 base.VisitPartitionOperator(node);
 
-                if (_position >= node.Operand.TextStart && node.Operand is PartitionQuery)
+                if (_position >= node.Operand.TextStart)
                 {
                     var column = node.ByExpression.ReferencedSymbol as ColumnSymbol;
                     if (column != null)

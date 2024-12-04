@@ -451,6 +451,10 @@ namespace Kusto.Language.Binding
                     {
                         list.Add(Functions.MaterializedView);
                     }
+                    else if (name == Functions.EntityGroup.Name)
+                    {
+                        list.Add(Functions.EntityGroup);
+                    }
                     else
                     {
                         _pathScope.GetMembers(name, SymbolMatch.Function | SymbolMatch.View, list);

@@ -66,22 +66,26 @@ namespace Kusto.Language.Symbols
         Parameter0Promoted,
 
         /// <summary>
-        /// The return type is a cluster. If the argument for parameter 0 is a literal string, the named cluster is used.
+        /// The return type is a cluster. 
+        /// If the argument for parameter 0 is a constant string the named cluster is used.
         /// </summary>
         Parameter0Cluster,
 
         /// <summary>
-        /// The return type is a database. If the argument for parameter 0 is a literal string, the named database is used.
+        /// The return type is a database. 
+        /// If the argument for parameter 0 is a constant string the named database is used.
         /// </summary>
         Parameter0Database,
 
         /// <summary>
-        /// The return type is a table. If the argument for parameter 0 is a literal string, the named table is used.
+        /// The return type is a table. 
+        /// If the argument for parameter 0 is a constant string the named table is used.
         /// </summary>
         Parameter0Table,
 
         /// <summary>
-        /// The return type is a table. If the argument for parameter 0 is a literal string, the named external table is used.
+        /// The return type is a table. 
+        /// If the argument for parameter 0 is a constant string the named external table is used.
         /// </summary>
         Parameter0ExternalTable,
 
@@ -108,8 +112,15 @@ namespace Kusto.Language.Symbols
         Widest,
 
         /// <summary>
-        /// The return type is a materialized view. If the argument for parameter 0 is a literal string, the named materialized view is used.
+        /// The return type is a materialized view. 
+        /// If the argument for parameter 0 is a constant string the named materialized view is used.
         /// </summary>
         Parameter0MaterializedView,
+
+        /// <summary>
+        /// The return type is an entity group.  
+        /// If the argument for parameter 0 is a constant string the named entity group is returned.
+        /// </summary>
+        Parameter0EntityGroup,
     }
 }

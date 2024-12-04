@@ -54,12 +54,17 @@ namespace Kusto.Language.Utils
             _dictionary.GetOrAdd(key, valueFactory);
 
         public void AddOrUpdate(TKey key, TValue value) =>
-            _dictionary.AddOrUpdate(key, (k, ev) => ev, (k, ev, v) => v, value);
+            this.AddOrUpdate(key, (k, ev) => ev, (k, ev, v) => v, value);
 
         public void AddOrUpdate(TKey key, Func<TKey, TValue> addFactory, Func<TKey, TValue, TValue> updateFactory) =>
             _dictionary.AddOrUpdate(key, addFactory, updateFactory);
 
+#if NET472_OR_GREATER || NET || BRIDGE
         public void AddOrUpdate(TKey key, Func<TKey, TValue, TValue> addFactory, Func<TKey, TValue, TValue, TValue> updateFactory, TValue value) =>
             _dictionary.AddOrUpdate(key, addFactory, updateFactory, value);
+#else
+        public void AddOrUpdate(TKey key, Func<TKey, TValue, TValue> addFactory, Func<TKey, TValue, TValue, TValue> updateFactory, TValue value) =>
+            _dictionary.AddOrUpdate(key, k => addFactory(k, value), (k, v) => updateFactory(k, v, value));
+#endif
     }
 }

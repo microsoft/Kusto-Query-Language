@@ -631,6 +631,7 @@ namespace Kusto.Language.Binding
                                 functions.Add(Functions.Table);
                                 functions.Add(Functions.ExternalTable);
                                 functions.Add(Functions.MaterializedView);
+                                functions.Add(Functions.EntityGroup);
                             }
                             break;
                     }
