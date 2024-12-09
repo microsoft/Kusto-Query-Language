@@ -91,7 +91,7 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<string> ChartTypes = new string[]
         {
             "table", "list", "barchart", "piechart", "ladderchart", "timechart", "linechart", "anomalychart", "pivotchart", "areachart",
-            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card", "treemap", "plotly", "graph"
+            "stackedareachart", "scatterchart", "timepivot", "columnchart", "timeline", "3Dchart", "card", "treemap", "plotly", "graph", "sankey"
         };
 
         /// <summary>
@@ -99,7 +99,8 @@ namespace Kusto.Language
         /// </summary>
         public static readonly IReadOnlyList<string> HiddenChartTypes = new string[]
         {
-            "3Dchart", 
+            "3Dchart",
+            "sankey", // TODO: unhide it once service-side supports this
             "graph" // TODO: unhide it once service-side supports this
         };
 
