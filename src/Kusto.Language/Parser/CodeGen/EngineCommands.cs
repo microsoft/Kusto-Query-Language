@@ -68,9 +68,10 @@ namespace Kusto.Language
         private static readonly string _schema38 = "(OriginalExtentId: string, ResultExtentId: string, Details: string)";
         private static readonly string _schema39 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
         private static readonly string _schema40 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
-        private static readonly string _schema41 = "(Name: string, Entities: string)";
-        private static readonly string _schema42 = "(ExtentContainerId:guid, Url:string, State:string, CreatedOn:datetime, MaxDateTime:datetime, IsRecyclable:bool, StoresDatabaseMetadataPointer:bool, HardDeletePeriod:timespan, ActiveMetadataContainer:bool, MetadataContainer:bool)";
-        private static readonly string _schema43 = "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)";
+        private static readonly string _schema41 = "(Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, ModelCreationTime:datetime)";
+        private static readonly string _schema42 = "(Name: string, Entities: string)";
+        private static readonly string _schema43 = "(ExtentContainerId:guid, Url:string, State:string, CreatedOn:datetime, MaxDateTime:datetime, IsRecyclable:bool, StoresDatabaseMetadataPointer:bool, HardDeletePeriod:timespan, ActiveMetadataContainer:bool, MetadataContainer:bool)";
+        private static readonly string _schema44 = "(DatabaseName:string, EntityType:string, EntityName:string, DocString:string, Folder:string, CslInputSchema:string, Content:string, CslOutputSchema:string, Properties:dynamic)";
 
         public static readonly CommandSymbol ShowDatabase =
             new CommandSymbol(
@@ -1500,6 +1501,33 @@ namespace Kusto.Language
         public static readonly CommandSymbol StoredQueryResultsDrop =
             new CommandSymbol("StoredQueryResultsDrop", _schema40);
 
+        public static readonly CommandSymbol GraphModelCreateOrAlter =
+            new CommandSymbol("GraphModelCreateOrAlter", "(Name:string, CreationTime:datetime, Id:guid, SnapshotCount:long, Model:string, CachingPolicy:string, RetentionPolicy:string)");
+
+        public static readonly CommandSymbol GraphModelShow =
+            new CommandSymbol("GraphModelShow", _schema18);
+
+        public static readonly CommandSymbol GraphModelsShow =
+            new CommandSymbol("GraphModelsShow", _schema18);
+
+        public static readonly CommandSymbol GraphModelDrop =
+            new CommandSymbol("GraphModelDrop", "(Name:string, CreationTime:datetime, Id:guid)");
+
+        public static readonly CommandSymbol GraphSnapshotMake =
+            new CommandSymbol("GraphSnapshotMake", "(Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, ModelCreationTime:datetime, NodesCount: long, EdgesCount: long, CachingPolicy:string, RetentionPolicy:string)");
+
+        public static readonly CommandSymbol GraphSnapshotShow =
+            new CommandSymbol("GraphSnapshotShow", _schema18);
+
+        public static readonly CommandSymbol GraphSnapshotsShow =
+            new CommandSymbol("GraphSnapshotsShow", _schema18);
+
+        public static readonly CommandSymbol GraphSnapshotDrop =
+            new CommandSymbol("GraphSnapshotDrop", _schema41);
+
+        public static readonly CommandSymbol GraphSnapshotsDrop =
+            new CommandSymbol("GraphSnapshotsDrop", _schema41);
+
         public static readonly CommandSymbol ShowCertificates =
             new CommandSymbol("ShowCertificates", _schema18);
 
@@ -1582,28 +1610,28 @@ namespace Kusto.Language
             new CommandSymbol("DropFabricServiceAssignmentsCommand", _schema18);
 
         public static readonly CommandSymbol CreateEntityGroupCommand =
-            new CommandSymbol("CreateEntityGroupCommand", _schema41);
+            new CommandSymbol("CreateEntityGroupCommand", _schema42);
 
         public static readonly CommandSymbol CreateOrAlterEntityGroupCommand =
-            new CommandSymbol("CreateOrAlterEntityGroupCommand", _schema41);
+            new CommandSymbol("CreateOrAlterEntityGroupCommand", _schema42);
 
         public static readonly CommandSymbol AlterEntityGroup =
-            new CommandSymbol("AlterEntityGroup", _schema41);
+            new CommandSymbol("AlterEntityGroup", _schema42);
 
         public static readonly CommandSymbol AlterMergeEntityGroup =
-            new CommandSymbol("AlterMergeEntityGroup", _schema41);
+            new CommandSymbol("AlterMergeEntityGroup", _schema42);
 
         public static readonly CommandSymbol DropEntityGroup =
-            new CommandSymbol("DropEntityGroup", _schema41);
+            new CommandSymbol("DropEntityGroup", _schema42);
 
         public static readonly CommandSymbol ShowEntityGroup =
-            new CommandSymbol("ShowEntityGroup", _schema41);
+            new CommandSymbol("ShowEntityGroup", _schema42);
 
         public static readonly CommandSymbol ShowEntityGroups =
-            new CommandSymbol("ShowEntityGroups", _schema41);
+            new CommandSymbol("ShowEntityGroups", _schema42);
 
         public static readonly CommandSymbol AlterExtentContainersAdd =
-            new CommandSymbol("AlterExtentContainersAdd", _schema42);
+            new CommandSymbol("AlterExtentContainersAdd", _schema43);
 
         public static readonly CommandSymbol AlterExtentContainersDrop =
             new CommandSymbol("AlterExtentContainersDrop", _schema18);
@@ -1612,10 +1640,10 @@ namespace Kusto.Language
             new CommandSymbol("AlterExtentContainersRecycle", _schema18);
 
         public static readonly CommandSymbol AlterExtentContainersSet =
-            new CommandSymbol("AlterExtentContainersSet", _schema42);
+            new CommandSymbol("AlterExtentContainersSet", _schema43);
 
         public static readonly CommandSymbol ShowExtentContainers =
-            new CommandSymbol("ShowExtentContainers", _schema42);
+            new CommandSymbol("ShowExtentContainers", _schema43);
 
         public static readonly CommandSymbol DropEmptyExtentContainers =
             new CommandSymbol("DropEmptyExtentContainers", _schema18);
@@ -1909,10 +1937,10 @@ namespace Kusto.Language
             new CommandSymbol("ClearExternalArtifactsCache", _schema18);
 
         public static readonly CommandSymbol ShowDatabasesEntities =
-            new CommandSymbol("ShowDatabasesEntities", _schema43);
+            new CommandSymbol("ShowDatabasesEntities", _schema44);
 
         public static readonly CommandSymbol ShowDatabaseEntity =
-            new CommandSymbol("ShowDatabaseEntity", _schema43);
+            new CommandSymbol("ShowDatabaseEntity", _schema44);
 
         public static readonly CommandSymbol ReplaceDatabaseKeyVaultSecrets =
             new CommandSymbol("ReplaceDatabaseKeyVaultSecrets", _schema18);
@@ -2369,6 +2397,15 @@ namespace Kusto.Language
             StoredQueryResultShowSchema,
             StoredQueryResultDrop,
             StoredQueryResultsDrop,
+            GraphModelCreateOrAlter,
+            GraphModelShow,
+            GraphModelsShow,
+            GraphModelDrop,
+            GraphSnapshotMake,
+            GraphSnapshotShow,
+            GraphSnapshotsShow,
+            GraphSnapshotDrop,
+            GraphSnapshotsDrop,
             ShowCertificates,
             ShowCloudSettings,
             ShowCommConcurrency,
