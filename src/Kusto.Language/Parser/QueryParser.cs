@@ -1080,15 +1080,40 @@ namespace Kusto.Language.Parsing
             return name != null ? new NameDeclaration(name) : null;
         }
 
+        /// <summary>
+        /// Attempts to parse a client parameter name and returns amount of tokens it consumed.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         private bool ScanClientParameterName(int offset = 0)
         {
-            return PeekToken(offset).Kind == SyntaxKind.OpenBraceToken
-                && PeekToken(offset + 1) is LexicalToken name
-                && (name.Kind == SyntaxKind.IdentifierToken || (name.Kind.IsKeyword() && name.Kind.CanBeIdentifier()))
-                && name.Trivia.Length == 0
-                && PeekToken(offset + 2) is LexicalToken close
-                && close.Kind == SyntaxKind.CloseBraceToken
-                && close.Trivia.Length == 0;
+            if (PeekToken(offset).Kind == SyntaxKind.OpenBraceToken)
+            {
+                offset++;
+                var len = 0;
+                var token = PeekToken(offset);
+                while (token != NoToken
+                    && token.Kind != SyntaxKind.EndOfTextToken
+                    && token.Kind != SyntaxKind.CloseBraceToken
+                    && token.Text.Length > 0
+                    && token.Text.IndexOfAny(new char[] { '\'', '"', '~', '`' }) < 0
+                    // Punctuation is not allowed in client parameter names (brackets [] are ok)
+                    && (!token.Kind.IsPunctuation() || token.Kind == SyntaxKind.OpenBracketToken || token.Kind == SyntaxKind.CloseBracketToken))
+                {
+                    if (token.Trivia.Length > 0 
+                        || token.Kind == SyntaxKind.OpenBraceToken)
+                    {
+                        return false;
+                    }
+                    offset++;
+                    len++;
+                    token = PeekToken(offset);
+                }
+
+                return len > 0 && token.Kind == SyntaxKind.CloseBraceToken;
+            }
+
+            return false;
         }
 
         private Name ParseClientParameterName()
@@ -1097,7 +1122,6 @@ namespace Kusto.Language.Parsing
             {
                 return new BracedName(ParseToken(), ParseToken(), ParseToken());
             }
-
             return null;
         }
 

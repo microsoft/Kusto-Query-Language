@@ -88,7 +88,9 @@ namespace Kusto.Language.Editor
             }
 
             // check for known sql query keyword
-            return string.Compare(firstToken.Text, "select", ignoreCase: true) == 0;
+            return 
+                string.Compare(firstToken.Text, "select", ignoreCase: true) == 0
+                || string.Compare(firstToken.Text, "with", ignoreCase: true) == 0;
         }
     }
 }

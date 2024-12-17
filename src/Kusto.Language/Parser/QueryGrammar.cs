@@ -232,16 +232,20 @@ namespace Kusto.Language.Parsing
                     (open, name, close) => (Name)new BracketedName(open, name, close));
 
             this.BracedName =
-                // only match rule if parts are adjacent (no whitespace)
-                If(And(
-                    Token(SyntaxKind.OpenBraceToken),
-                    Match(t => t.Kind == SyntaxKind.IdentifierToken && t.Trivia.Length == 0),
-                    Match(t => t.Kind == SyntaxKind.CloseBraceToken && t.Trivia.Length == 0)),
-                Rule(
-                    Token(SyntaxKind.OpenBraceToken),
-                    Token(SyntaxKind.IdentifierToken),
-                    Token(SyntaxKind.CloseBraceToken),
-                    (open, name, close) => (Name)new BracedName(open, name, close)));
+            // only match rule if parts are adjacent (no whitespace)
+                Convert(
+                    And(
+                        Token(SyntaxKind.OpenBraceToken),
+                        OneOrMore(Match(t =>
+                        t.Kind != SyntaxKind.EndOfTextToken
+                        && t.Text.IndexOfAny(new char[] { '\'', '"', '~', '`', ':', '{', '}' }) < 0                        
+                        && t.Trivia.Length == 0)),
+                    Token(SyntaxKind.CloseBraceToken)),
+                    (IReadOnlyList<LexicalToken> list) =>
+                    {
+                        var name = SyntaxToken.Identifier("", list[1].Text);
+                        return (Name)new BracedName(SyntaxToken.From(list[0]), name, SyntaxToken.From(list[list.Count - 1]));
+                    });
 
             var IdentifierNameDeclaration =
                 Rule(
@@ -1209,6 +1213,8 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.CloseBracketToken),
                     (openBracket, expr, closeBracket) =>
                         (Expression)new BracketedExpression(openBracket, expr, closeBracket));
+
+         
 
             var BracketedPathElementSelector =
                 First(

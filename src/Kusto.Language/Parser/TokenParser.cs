@@ -1146,6 +1146,22 @@ namespace Kusto.Language.Parsing
                 {
                     if (Peek(text, start + idLen + 1) == '}')
                         return idLen + 2;
+                    else if (Peek(text, start + idLen + 1) == '[')
+                    {
+                        var indexerStart = start + idLen + 2;
+                        // If it's a negative number, skip the negative sign
+                        if (Peek(text, indexerStart) == '-')
+                        {
+                            indexerStart++;
+                        }
+                        var idLen2 = ScanLongLiteral(text, indexerStart);
+                        if (Peek(text, indexerStart + idLen2) == ']' &&
+                            Peek(text, indexerStart + idLen2 + 1) == '}'
+                            )
+                        {
+                            return (indexerStart + idLen2 + 2)- start;
+                        }
+                    }
                 }
             }
 
