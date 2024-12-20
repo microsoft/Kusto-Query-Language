@@ -828,7 +828,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.OpenBracketToken:
                     return ParseBracketedName();
                 case SyntaxKind.OpenBraceToken:
-                    return ParseClientParameterName();
+                    return ParseBracedName();
                 default:
                     return ParseIdentifierName();
             }
@@ -841,7 +841,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.OpenBracketToken:
                     return ParseBracketedName();
                 case SyntaxKind.OpenBraceToken:
-                    return ParseClientParameterName();
+                    return ParseBracedName();
                 default:
                     return ParseIdentifierName()
                         ?? ParseExtendedKeyordAsIdentifierName();
@@ -1081,53 +1081,74 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Attempts to parse a client parameter name and returns amount of tokens it consumed.
+        /// Scan a braced name (client parameter) and returns amount of tokens it consumes.
         /// </summary>
-        /// <param name="offset"></param>
-        /// <returns></returns>
-        private bool ScanClientParameterName(int offset = 0)
+        private int ScanBracedName(int offset = 0)
         {
-            if (PeekToken(offset).Kind == SyntaxKind.OpenBraceToken)
-            {
-                offset++;
-                var len = 0;
-                var token = PeekToken(offset);
-                while (token != NoToken
-                    && token.Kind != SyntaxKind.EndOfTextToken
-                    && token.Kind != SyntaxKind.CloseBraceToken
-                    && token.Text.Length > 0
-                    && token.Text.IndexOfAny(new char[] { '\'', '"', '~', '`' }) < 0
-                    // Punctuation is not allowed in client parameter names (brackets [] are ok)
-                    && (!token.Kind.IsPunctuation() || token.Kind == SyntaxKind.OpenBracketToken || token.Kind == SyntaxKind.CloseBracketToken))
-                {
-                    if (token.Trivia.Length > 0 
-                        || token.Kind == SyntaxKind.OpenBraceToken)
-                    {
-                        return false;
-                    }
-                    offset++;
-                    len++;
-                    token = PeekToken(offset);
-                }
+            var pos = offset;
+            var token = PeekToken(pos);
+            if (token.Kind != SyntaxKind.OpenBraceToken)
+                return -1;
+            pos++;
 
-                return len > 0 && token.Kind == SyntaxKind.CloseBraceToken;
+            token = PeekToken(pos);
+            if ((token.Kind != SyntaxKind.IdentifierToken 
+                   && token.Kind.GetCategory() != SyntaxCategory.Keyword)
+                || token.Trivia.Length > 0)
+                return -1;
+            pos++;
+
+            token = PeekToken(pos);
+            if (token.Kind == SyntaxKind.OpenBracketToken
+                && token.Trivia.Length == 0)
+            {
+                pos++;
+
+                token = PeekToken(pos);
+                if (token.Kind == SyntaxKind.MinusToken
+                    && token.Trivia.Length == 0)
+                    pos++;
+
+                token = PeekToken(pos);
+                if (token.Kind != SyntaxKind.LongLiteralToken
+                    || token.Trivia.Length > 0)
+                    return -1;
+                pos++;
+
+                token = PeekToken(pos);
+                if (token.Kind != SyntaxKind.CloseBracketToken
+                    || token.Trivia.Length > 0)
+                    return -1;
+                pos++;
             }
 
-            return false;
+            token = PeekToken(pos);
+            if (token.Kind != SyntaxKind.CloseBraceToken
+                || token.Trivia.Length > 0)
+                return -1;
+            pos++;
+
+            return pos - offset;
         }
 
-        private Name ParseClientParameterName()
+        private Name ParseBracedName()
         {
-            if (ScanClientParameterName())
+            var len = ScanBracedName();
+            if (len > 2)
             {
-                return new BracedName(ParseToken(), ParseToken(), ParseToken());
+                var open = SyntaxToken.From(PeekToken(0));
+                var nameText = GetCombinedTokenText(1, len - 2);
+                var close = SyntaxToken.From(PeekToken(len - 1));
+                var nameToken = SyntaxToken.Identifier("", nameText, nameText);
+                _pos += len;
+                return new BracedName(open, nameToken, close);
             }
             return null;
         }
 
-        private Expression ParseClientParameterReference()
+        private Expression ParseBracedNameReference()
         {
-            var name = ParseClientParameterName();
+            var name = ParseBracedName();
             return name != null ? new NameReference(name) : null;
         }
 
@@ -1307,7 +1328,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.TypeOfKeyword:
                     return ParseTypeOfLiteral();
                 case SyntaxKind.OpenBraceToken:
-                    return ParseClientParameterReference();
+                    return ParseBracedNameReference();
             }
 
             return null;
@@ -1417,7 +1438,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.MinusToken:
                     return ParseSignedForcedRealLiteral();
                 case SyntaxKind.OpenBraceToken:
-                    return ParseClientParameterReference();
+                    return ParseBracedNameReference();
             }
 
             return null;
@@ -1486,9 +1507,9 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.OpenBracketToken:
                     return ParseJsonArray();
                 case SyntaxKind.OpenBraceToken:
-                    if (ScanClientParameterName())
+                    if (ScanBracedName() > 0)
                     {
-                        return ParseClientParameterReference();
+                        return ParseBracedNameReference();
                     }
                     return ParseJsonObject();
             }
@@ -2265,7 +2286,7 @@ namespace Kusto.Language.Parsing
                 case SyntaxKind.OpenBracketToken:
                     return ParseBracketedName();
                 case SyntaxKind.OpenBraceToken:
-                    return ParseClientParameterName();
+                    return ParseBracedName();
                 default:
                     return ParseIdentifierName() 
                         ?? ParseExtendedKeyordAsIdentifierName();

@@ -1134,32 +1134,62 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Returns the number of characters in the client parameter of -1 if
-        /// there is not client parameter at the starting position.
+        /// Returns the number of characters in the client parameter of -1 if there is no client parameter.
+        /// This is not a normal token, but a special case for the client editor.
         /// </summary>
-        public static int ScanClientParameter(string text, int start = 0)
+        public static int ScanClientParameter(
+            string text, int start = 0)
         {
+            return ScanClientParameter(text, start, out _, out _, out _, out _);
+        }
+
+        /// <summary>
+        /// Returns the number of characters in the client parameter of -1 if there is no client parameter.
+        /// This is not a normal token, but a special case for the client editor.
+        /// </summary>
+        public static int ScanClientParameter(
+            string text, 
+            int start,
+            out int nameStart,
+            out int nameLength,
+            out int indexStart, 
+            out int indexLength)
+        {
+            nameStart = -1;
+            nameLength = 0;
+            indexStart = 0;
+            indexLength = 0;
+
             if (Peek(text, start) == '{')
             {
-                var idLen = ScanIdentifier(text, start + 1);
-                if (idLen > 0)
+                nameStart = start + 1;
+                nameLength = ScanIdentifier(text, nameStart);
+                if (nameLength > 0)
                 {
-                    if (Peek(text, start + idLen + 1) == '}')
-                        return idLen + 2;
-                    else if (Peek(text, start + idLen + 1) == '[')
+                    if (Peek(text, nameStart + nameLength) == '}')
                     {
-                        var indexerStart = start + idLen + 2;
+                        return nameLength + 2;
+                    }
+                    else if (Peek(text, nameStart + nameLength) == '[')
+                    {
+                        indexStart = nameStart + nameLength + 1;
+                        var indexEnd = indexStart;
+
                         // If it's a negative number, skip the negative sign
-                        if (Peek(text, indexerStart) == '-')
+                        if (Peek(text, indexEnd) == '-')
+                            indexEnd++;
+
+                        var litLen = ScanLongLiteral(text, indexEnd);
+                        if (litLen <= 0)
+                            return -1;
+
+                        indexEnd += litLen;
+
+                        if (Peek(text, indexEnd) == ']' 
+                            && Peek(text, indexEnd + 1) == '}')
                         {
-                            indexerStart++;
-                        }
-                        var idLen2 = ScanLongLiteral(text, indexerStart);
-                        if (Peek(text, indexerStart + idLen2) == ']' &&
-                            Peek(text, indexerStart + idLen2 + 1) == '}'
-                            )
-                        {
-                            return (indexerStart + idLen2 + 2)- start;
+                            indexLength = indexEnd - indexStart;
+                            return (indexEnd + 2) - start;
                         }
                     }
                 }

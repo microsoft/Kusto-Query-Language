@@ -351,7 +351,12 @@ namespace Kusto.Language.Editor
                 var openBrace = blockText.IndexOf("{", start);
                 if (openBrace >= 0)
                 {
-                    var len = Parsing.TokenParser.ScanClientParameter(blockText, openBrace);
+                    var len = Parsing.TokenParser.ScanClientParameter(
+                        blockText, openBrace, 
+                        out var nameStart, out var nameLength, 
+                        out var indexStart, out var indexLength
+                        );
+
                     if (len > 0)
                     {
                         if (list == null)
@@ -359,7 +364,10 @@ namespace Kusto.Language.Editor
                             list = new List<ClientParameter>();
                         }
 
-                        list.Add(new ClientParameter(blockText.Substring(openBrace + 1, len - 2), openBrace, len));
+                        var name = blockText.Substring(nameStart, nameLength);
+                        var index = indexLength > 0 && Int32.TryParse(blockText.Substring(indexStart, indexLength), out var value) ? value : 0;
+                        list.Add(new ClientParameter(name, index, openBrace, len));
+
                         start = openBrace + len;
                     }
                     else

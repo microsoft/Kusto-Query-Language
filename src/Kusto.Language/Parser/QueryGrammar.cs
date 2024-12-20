@@ -232,22 +232,73 @@ namespace Kusto.Language.Parsing
                     (open, name, close) => (Name)new BracketedName(open, name, close));
 
             this.BracedName =
-            // only match rule if parts are adjacent (no whitespace)
-                Convert(
-                    And(
-                        Token(SyntaxKind.OpenBraceToken),
-                        OneOrMore(Match(t =>
-                        t.Kind != SyntaxKind.EndOfTextToken
-                        && t.Text.IndexOfAny(new char[] { '\'', '"', '~', '`', ':', '{', '}' }) < 0                        
-                        && t.Trivia.Length == 0)),
-                    Token(SyntaxKind.CloseBraceToken)),
-                    (IReadOnlyList<LexicalToken> list) =>
+                // only match rule if name parts are adjacent (no whitespace)
+                Match(
+                    // consume (scan)
+                    (Source<LexicalToken> source, int start) =>
                     {
-                        var name = SyntaxToken.Identifier("", list[1].Text);
-                        return (Name)new BracedName(SyntaxToken.From(list[0]), name, SyntaxToken.From(list[list.Count - 1]));
+                        var pos = start;
+
+                        var token = source.Peek(pos);
+                        if (token == null || token.Kind != SyntaxKind.OpenBraceToken)    
+                            return -1;
+                        pos++;
+
+                        token = source.Peek(pos);
+                        if (token == null
+                            || (token.Kind != SyntaxKind.IdentifierToken && token.Kind.GetCategory() != SyntaxCategory.Keyword)
+                            || token.Trivia.Length > 0)
+                            return -1;
+                        pos++;
+
+                        token = source.Peek(pos);
+                        if (token != null 
+                            && token.Kind == SyntaxKind.OpenBracketToken
+                            && token.Trivia.Length == 0)
+                        {
+                            pos++;
+
+                            token = source.Peek(pos);
+                            if (token != null
+                                && token.Kind == SyntaxKind.MinusToken
+                                && token.Trivia.Length == 0)
+                                pos++;
+
+                            token = source.Peek(pos);
+                            if (token == null
+                                || token.Kind != SyntaxKind.LongLiteralToken
+                                || token.Trivia.Length > 0)
+                                return -1;
+                            pos++;
+
+                            token = source.Peek(pos);
+                            if (token == null
+                                || token.Kind != SyntaxKind.CloseBracketToken
+                                || token.Trivia.Length > 0)
+                                return -1;
+                            pos++;
+                        }
+
+                        token = source.Peek(pos);
+                        if (token == null
+                            || token.Kind != SyntaxKind.CloseBraceToken
+                            || token.Trivia.Length > 0)
+                            return -1;
+                        pos++;
+
+                        return pos - start;
+                    },
+                    // produce (convert)
+                    (Source<LexicalToken> source, int start, int length) =>
+                    {
+                        var open = SyntaxToken.From(source.Peek(start));
+                        var nameText = GetCombinedTokenText(source, start + 1, length - 2);
+                        var nameToken = SyntaxToken.Identifier("", nameText);
+                        var close = SyntaxToken.From(source.Peek(start + length - 1));
+                        return (Name)new BracedName(open, nameToken, close);
                     });
 
-            var IdentifierNameDeclaration =
+        var IdentifierNameDeclaration =
                 Rule(
                     Token(SyntaxKind.IdentifierToken),
                     id => (NameDeclaration)new NameDeclaration(id))
