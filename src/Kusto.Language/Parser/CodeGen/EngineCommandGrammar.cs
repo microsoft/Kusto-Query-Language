@@ -3192,6 +3192,16 @@ namespace Kusto.Language.Parsing
                     Required(rules.FunctionDeclaration, rules.MissingFunctionDeclaration),
                     shape227));
 
+            var AlterGraphModelPolicyRetention = Command("AlterGraphModelPolicyRetention", 
+                Custom(
+                    Token("alter", CompletionKind.CommandPrefix),
+                    Token("graph_model").Hide(),
+                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    RequiredToken("policy"),
+                    RequiredToken("retention"),
+                    Required(rules.StringLiteral, rules.MissingStringLiteral),
+                    new [] {CD(), CD(), CD("ModelName", CompletionHint.None), CD(), CD(), CD("RetentionPolicy", CompletionHint.Literal)}));
+
             var AlterMaterializedViewOverMaterializedView = Command("AlterMaterializedViewOverMaterializedView", 
                 Custom(
                     new Parser<LexicalToken>[] {
@@ -11961,6 +11971,7 @@ namespace Kusto.Language.Parsing
                 AlterFunctionDocString,
                 AlterFunctionFolder,
                 AlterFunction2,
+                AlterGraphModelPolicyRetention,
                 AlterMaterializedViewOverMaterializedView,
                 AlterMaterializedView,
                 AlterMaterializedViewAutoUpdateSchema,

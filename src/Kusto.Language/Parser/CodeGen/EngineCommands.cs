@@ -556,6 +556,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterDatabasePolicyRetention =
             new CommandSymbol("AlterDatabasePolicyRetention", _schema20);
 
+        public static readonly CommandSymbol AlterGraphModelPolicyRetention =
+            new CommandSymbol("AlterGraphModelPolicyRetention", _schema20);
+
         public static readonly CommandSymbol AlterTablesPolicyRetention =
             new CommandSymbol("AlterTablesPolicyRetention", _schema20);
 
@@ -2082,6 +2085,7 @@ namespace Kusto.Language
             AlterTablePolicyRetention,
             AlterMaterializedViewPolicyRetention,
             AlterDatabasePolicyRetention,
+            AlterGraphModelPolicyRetention,
             AlterTablesPolicyRetention,
             AlterMergeTablePolicyRetention,
             AlterMergeMaterializedViewPolicyRetention,
