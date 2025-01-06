@@ -252,8 +252,8 @@ namespace Kusto.Language.Parsing
             var shape209 = CD("UserName", CompletionHint.Literal);
             var shape210 = new [] {CD(), CD("UserName", CompletionHint.Literal)};
             var shape211 = CD("ContinuousExportName", CompletionHint.None);
-            var shape212 = new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD("Role"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD(CompletionHint.Literal, isOptional: true)};
-            var shape213 = CD("IfExists");
+            var shape212 = CD("IfExists");
+            var shape213 = new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD("Role"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD(CompletionHint.Literal, isOptional: true)};
             var shape214 = new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD()};
             var shape215 = CD("SkipSeal");
             var shape216 = CD("d", CompletionHint.Literal);
@@ -1342,7 +1342,10 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("add", CompletionKind.CommandPrefix),
                     Token("database"),
-                    Required(rules.DatabaseNameReference, rules.MissingNameReference),
+                    Optional(
+                        Custom(
+                            If(Not(And(Token("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"))), rules.DatabaseNameReference),
+                            shape20)),
                     RequiredToken("admins", "ingestors", "monitors", "unrestrictedviewers", "users", "viewers"),
                     RequiredToken("("),
                     Required(
@@ -1361,7 +1364,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    new [] {CD(), CD(), CD(CompletionHint.Database, isOptional: true), CD("Role"), CD(), CD(CompletionHint.Literal), CD(), CD(isOptional: true), CD(CompletionHint.Literal, isOptional: true)}));
 
             var AddExternalTableAdmins = Command("AddExternalTableAdmins", 
                 Custom(
@@ -5670,7 +5673,7 @@ namespace Kusto.Language.Parsing
                     Optional(
                         Custom(
                             Token("ifexists"),
-                            shape213)),
+                            shape212)),
                     Optional(
                         Custom(
                             Token("skip-seal"),
@@ -6086,7 +6089,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DetachDatabase2 = Command("DetachDatabase", 
                 Custom(
@@ -6134,7 +6137,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DropDatabaseRole3 = Command("DropDatabaseRole", 
                 Custom(
@@ -6159,7 +6162,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DropDatabasePrettyName = Command("DropDatabasePrettyName", 
                 Custom(
@@ -6200,7 +6203,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DropDatabaseRole5 = Command("DropDatabaseRole", 
                 Custom(
@@ -6225,7 +6228,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DropDatabaseRole6 = Command("DropDatabaseRole", 
                 Custom(
@@ -6250,7 +6253,7 @@ namespace Kusto.Language.Parsing
                         Custom(
                             rules.StringLiteral,
                             shape4)),
-                    shape212));
+                    shape213));
 
             var DetachDatabase4 = Command("DetachDatabase", 
                 Custom(
