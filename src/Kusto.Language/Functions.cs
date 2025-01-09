@@ -3402,6 +3402,35 @@ namespace Kusto.Language
             })
             .Hide();
 
+
+        public static readonly FunctionSymbol NodeDegreeIn =
+            new FunctionSymbol("node_degree_in",
+                ScalarTypes.Long,
+                new Parameter("node", ParameterTypeKind.Scalar))
+            .WithCustomAvailability(context =>
+            {
+                // must exist in where/ project clause of graph-match operator
+                return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
+                    && gm.WhereClause != null
+                    && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location))
+                    && (gm.ProjectClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
+            })
+            .Hide();
+
+        public static readonly FunctionSymbol NodeDegreeOut =
+            new FunctionSymbol("node_degree_out",
+                ScalarTypes.Long,
+                new Parameter("node", ParameterTypeKind.Scalar))
+            .WithCustomAvailability(context =>
+            {
+                // must exist in where/ project clause of graph-match operator
+                return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
+                    && gm.WhereClause != null
+                    && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location))
+                    && (gm.ProjectClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
+            })
+            .Hide();
+
         #endregion
 
         #region other
@@ -4018,6 +4047,8 @@ namespace Kusto.Language
             _All,
             Map,
             InnerNodes,
+            NodeDegreeIn,
+            NodeDegreeOut,
             #endregion
 
             #region ip-matching functions
