@@ -1101,6 +1101,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTablePrincipalRoles =
             new CommandSymbol("ShowTablePrincipalRoles", _schema23);
 
+        public static readonly CommandSymbol ShowGraphModelPrincipalRoles =
+            new CommandSymbol("ShowGraphModelPrincipalRoles", _schema23);
+
         public static readonly CommandSymbol ShowExternalTablesPrincipalRoles =
             new CommandSymbol("ShowExternalTablesPrincipalRoles", _schema23);
 
@@ -1487,6 +1490,15 @@ namespace Kusto.Language
 
         public static readonly CommandSymbol GraphModelDrop =
             new CommandSymbol("GraphModelDrop", "(Name:string, CreationTime:datetime, Id:guid)");
+
+        public static readonly CommandSymbol SetGraphModelAdmins =
+            new CommandSymbol("SetGraphModelAdmins", _schema18);
+
+        public static readonly CommandSymbol AddGraphModelAdmins =
+            new CommandSymbol("AddGraphModelAdmins", _schema18);
+
+        public static readonly CommandSymbol DropGraphModelAdmins =
+            new CommandSymbol("DropGraphModelAdmins", _schema18);
 
         public static readonly CommandSymbol GraphSnapshotMake =
             new CommandSymbol("GraphSnapshotMake", "(Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, ModelCreationTime:datetime, NodesCount: long, EdgesCount: long, CachingPolicy:string, RetentionPolicy:string)");
@@ -2239,6 +2251,7 @@ namespace Kusto.Language
             ShowPrincipalRoles,
             ShowDatabasePrincipalRoles,
             ShowTablePrincipalRoles,
+            ShowGraphModelPrincipalRoles,
             ShowExternalTablesPrincipalRoles,
             ShowFunctionPrincipalRoles,
             ShowClusterPrincipalRoles,
@@ -2368,6 +2381,9 @@ namespace Kusto.Language
             GraphModelShow,
             GraphModelsShow,
             GraphModelDrop,
+            SetGraphModelAdmins,
+            AddGraphModelAdmins,
+            DropGraphModelAdmins,
             GraphSnapshotMake,
             GraphSnapshotShow,
             GraphSnapshotsShow,
