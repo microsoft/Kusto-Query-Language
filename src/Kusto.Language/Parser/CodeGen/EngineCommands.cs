@@ -1122,6 +1122,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTablePrincipals =
             new CommandSymbol("ShowTablePrincipals", _schema24);
 
+        public static readonly CommandSymbol ShowGraphModelPrincipals =
+            new CommandSymbol("ShowGraphModelPrincipals", _schema24);
+
         public static readonly CommandSymbol ShowFunctionPrincipals =
             new CommandSymbol("ShowFunctionPrincipals", _schema24);
 
@@ -1327,7 +1330,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowCapacity", "(Resource: string, Total: long, Consumed: long, Remaining: long)");
 
         public static readonly CommandSymbol ShowOperations =
-            new CommandSymbol("ShowOperations", "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
+            new CommandSymbol("ShowOperations", "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime, VirtualCluster: string)");
 
         public static readonly CommandSymbol ShowOperationDetails =
             new CommandSymbol("ShowOperationDetails", _schema18);
@@ -1342,7 +1345,7 @@ namespace Kusto.Language
             new CommandSymbol("ShowClusterJournal", _schema32);
 
         public static readonly CommandSymbol ShowQueries =
-            new CommandSymbol("ShowQueries", "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowQueries", "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string, OverallQueryStats: string, VirtualCluster: string)");
 
         public static readonly CommandSymbol ShowRunningQueries =
             new CommandSymbol("ShowRunningQueries", "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
@@ -1360,10 +1363,10 @@ namespace Kusto.Language
             new CommandSymbol("AlterCache", _schema18);
 
         public static readonly CommandSymbol ShowCommands =
-            new CommandSymbol("ShowCommands", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowCommands", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string, VirtualCluster: string)");
 
         public static readonly CommandSymbol ShowCommandsAndQueries =
-            new CommandSymbol("ShowCommandsAndQueries", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
+            new CommandSymbol("ShowCommandsAndQueries", "(ClientActivityId: string, CommandType: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string, VirtualCluster: string)");
 
         public static readonly CommandSymbol ShowIngestionFailures =
             new CommandSymbol("ShowIngestionFailures", "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
@@ -2258,6 +2261,7 @@ namespace Kusto.Language
             ShowClusterPrincipals,
             ShowDatabasePrincipals,
             ShowTablePrincipals,
+            ShowGraphModelPrincipals,
             ShowFunctionPrincipals,
             AddClusterRole,
             DropClusterRole,
