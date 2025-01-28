@@ -364,12 +364,14 @@ namespace Kusto.Language.Parsing
             var shape321 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
             var shape322 = CD("eid", CompletionHint.Literal);
             var shape323 = CD("tableName", CompletionHint.None);
+            var shape324 = CD("DeleteIdentifier", CompletionHint.None);
+            var shape325 = CD("AppendIdentifier", CompletionHint.None);
 
             Func<Source<LexicalToken>, int, SyntaxElement> missing0 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing1 = (source, start) => (SyntaxElement)new CustomNode(shape45, CreateMissingToken("<|"), rules.MissingExpression(source, start));
             Func<Source<LexicalToken>, int, SyntaxElement> missing2 = (source, start) => (SyntaxElement)new CustomNode(shape19, CreateMissingToken("recoverability"), CreateMissingToken("="), CreateMissingToken("disabled", "enabled"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing3 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape82, CreateMissingToken("cluster"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")"), CreateMissingToken("."), CreateMissingToken("database"), CreateMissingToken("("), rules.MissingStringLiteral(source, start), CreateMissingToken(")"))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing4 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing4 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "Backfill", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing5 = (source, start) => (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing6 = (source, start) => (SyntaxElement)new CustomNode(shape149, CreateMissingToken("datetime"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")));
             Func<Source<LexicalToken>, int, SyntaxElement> missing7 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape91, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape149, CreateMissingToken("datetime"), CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))))));
@@ -398,7 +400,7 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing30 = (source, start) => (SyntaxElement)new CustomNode(shape119, CreateMissingToken("hotdata"), CreateMissingToken("="), rules.MissingValue(source, start), CreateMissingToken("hotindex"), CreateMissingToken("="), rules.MissingValue(source, start));
             Func<Source<LexicalToken>, int, SyntaxElement> missing31 = (source, start) => (SyntaxElement)new CustomNode(shape123, rules.MissingValue(source, start), CreateMissingToken(".."), rules.MissingValue(source, start));
             Func<Source<LexicalToken>, int, SyntaxElement> missing32 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape134, CreateMissingToken("dimensionMaterializedViews"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing33 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing33 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "Backfill", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing34 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingNameReference(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing35 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(new [] {CD("ColumnName", CompletionHint.None), CD()}, rules.MissingNameDeclaration(source, start), CreateMissingToken("asc", "desc"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing36 = (source, start) => (SyntaxElement)new CustomNode(shape165, CreateMissingToken("("), new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape86, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), rules.MissingType(source, start)))), CreateMissingToken(")"));
@@ -413,14 +415,14 @@ namespace Kusto.Language.Parsing
             Func<Source<LexicalToken>, int, SyntaxElement> missing45 = (source, start) => (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing46 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape91, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing47 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape134, CreateMissingToken("autoUpdateSchema"), CreateMissingToken("="), rules.MissingValue(source, start))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing48 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "Backfill", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing49 = (source, start) => (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing50 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape91, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing51 = (source, start) => (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing52 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape91, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing53 = (source, start) => (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing54 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(shape91, rules.MissingNameDeclaration(source, start), CreateMissingToken(":"), (SyntaxElement)new CustomNode(shape90, CreateMissingToken("datetime"), (SyntaxElement)new CustomNode(CreateMissingToken("="), (SyntaxElement)new CustomNode(shape88, CreateMissingToken("bin"), CreateMissingToken("("), rules.MissingNameDeclaration(source, start), CreateMissingToken(","), rules.MissingValue(source, start), CreateMissingToken(")")))))));
-            Func<Source<LexicalToken>, int, SyntaxElement> missing55 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
+            Func<Source<LexicalToken>, int, SyntaxElement> missing55 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>((SyntaxElement)new CustomNode(CreateMissingToken("AutoApplyToNewTables", "Backfill", "IsEnabled"), CreateMissingToken("="), CreateMissingToken("false", "true"))));
             Func<Source<LexicalToken>, int, SyntaxElement> missing56 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
             Func<Source<LexicalToken>, int, SyntaxElement> missing57 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingValue(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing58 = (source, start) => (SyntaxElement)new CustomNode(CreateMissingToken("all"), CreateMissingToken("tables"));
@@ -705,7 +707,7 @@ namespace Kusto.Language.Parsing
                     Required(
                         OneOrMoreCommaList(
                             Custom(
-                                Token("AutoApplyToNewTables", "IsEnabled"),
+                                Token("AutoApplyToNewTables", "Backfill", "IsEnabled"),
                                 RequiredToken("="),
                                 RequiredToken("false", "true"))),
                         missing33),
@@ -5728,6 +5730,12 @@ namespace Kusto.Language.Parsing
                     Optional(Token("ifexists")),
                     shape235));
 
+            var SetClusterMaintenanceMode = Command("SetClusterMaintenanceMode", 
+                Custom(
+                    Token("disable", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("maintenance_mode")));
+
             var DisableContinuousExport = Command("DisableContinuousExport", 
                 Custom(
                     Token("disable", CompletionKind.CommandPrefix),
@@ -6880,6 +6888,12 @@ namespace Kusto.Language.Parsing
                     RequiredToken("workload_group"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     new [] {CD(), CD(), CD("WorkloadGroupName", CompletionHint.None)}));
+
+            var SetClusterMaintenanceMode2 = Command("SetClusterMaintenanceMode", 
+                Custom(
+                    Token("enable", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    RequiredToken("maintenance_mode")));
 
             var EnableContinuousExport = Command("EnableContinuousExport", 
                 Custom(
@@ -12039,6 +12053,14 @@ namespace Kusto.Language.Parsing
                     Required(rules.QueryInput, rules.MissingExpression),
                     new [] {CD(), CD(isOptional: true), CD(), CD("tableName", CompletionHint.Table), CD(), CD(isOptional: true), CD(), CD("Query", CompletionHint.Tabular)}));
 
+            var UndoDropExtentContainer = Command("UndoDropExtentContainer", 
+                Custom(
+                    Token("undo", CompletionKind.CommandPrefix),
+                    Token("drop"),
+                    Token("extentcontainer"),
+                    Required(rules.AnyGuidLiteralOrString, rules.MissingValue),
+                    new [] {CD(), CD(), CD(), CD("ContainerID", CompletionHint.Literal)}));
+
             var UndoDropTable = Command("UndoDropTable", 
                 Custom(
                     Token("undo", CompletionKind.CommandPrefix),
@@ -12058,6 +12080,25 @@ namespace Kusto.Language.Parsing
 
             var TableDataUpdate = Command("TableDataUpdate", 
                 Custom(
+                    new Parser<LexicalToken>[] {
+                        Token("update", CompletionKind.CommandPrefix),
+                        Token("async"),
+                        RequiredToken("table"),
+                        Required(rules.TableNameReference, rules.MissingNameReference),
+                        RequiredToken("delete"),
+                        Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                        RequiredToken("append"),
+                        Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                        Optional(
+                            fragment5),
+                        Required(
+                            fragment4,
+                            missing1)}
+                    ,
+                    new [] {CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD(isOptional: true), CD("csl")}));
+
+            var TableDataUpdate2 = Command("TableDataUpdate", 
+                Custom(
                     Token("update", CompletionKind.CommandPrefix),
                     Token("table"),
                     rules.TableNameReference,
@@ -12065,10 +12106,12 @@ namespace Kusto.Language.Parsing
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
                     RequiredToken("append"),
                     Required(rules.NameDeclaration, rules.MissingNameDeclaration),
+                    Optional(
+                        fragment5),
                     Required(
                         fragment4,
                         missing1),
-                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD("csl")}));
+                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD(isOptional: true), CD("csl")}));
 
             var TableDataUpdateShortSyntax = Command("TableDataUpdateShortSyntax", 
                 Custom(
@@ -12419,6 +12462,7 @@ namespace Kusto.Language.Parsing
                 DeleteTableRecords2,
                 DetachDatabase,
                 DropRowStore,
+                SetClusterMaintenanceMode,
                 DisableContinuousExport,
                 DisableDatabaseStreamingIngestionMaintenanceMode,
                 DisableDatabaseMaintenanceMode,
@@ -12496,6 +12540,7 @@ namespace Kusto.Language.Parsing
                 DropTempStorage,
                 DropUnusedStoredQueryResultContainers,
                 DropWorkloadGroup,
+                SetClusterMaintenanceMode2,
                 EnableContinuousExport,
                 EnableDatabaseStreamingIngestionMaintenanceMode,
                 EnableDatabaseMaintenanceMode,
@@ -12953,8 +12998,10 @@ namespace Kusto.Language.Parsing
                 ShowExtentDetails4,
                 TableShuffleExtents,
                 TableShuffleExtentsQuery,
+                UndoDropExtentContainer,
                 UndoDropTable,
                 TableDataUpdate,
+                TableDataUpdate2,
                 TableDataUpdateShortSyntax
             };
 

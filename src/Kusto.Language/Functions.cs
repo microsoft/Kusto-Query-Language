@@ -3414,8 +3414,7 @@ namespace Kusto.Language
                     && gm.WhereClause != null
                     && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location))
                     && (gm.ProjectClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
-            })
-            .Hide();
+            });
 
         public static readonly FunctionSymbol NodeDegreeOut =
             new FunctionSymbol("node_degree_out",
@@ -3428,8 +3427,7 @@ namespace Kusto.Language
                     && gm.WhereClause != null
                     && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location))
                     && (gm.ProjectClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
-            })
-            .Hide();
+            });
 
         #endregion
 

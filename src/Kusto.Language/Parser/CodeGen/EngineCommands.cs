@@ -306,6 +306,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol RenameTables =
             new CommandSymbol("RenameTables", _schema11);
 
+        public static readonly CommandSymbol UndoDropExtentContainer =
+            new CommandSymbol("UndoDropExtentContainer", "(ContainerId: guid, RestoreContainerFinalState: string)");
+
         public static readonly CommandSymbol DropTable =
             new CommandSymbol("DropTable", _schema12);
 
@@ -1173,6 +1176,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol DropClusterBlockedPrincipals =
             new CommandSymbol("DropClusterBlockedPrincipals", _schema25);
 
+        public static readonly CommandSymbol SetClusterMaintenanceMode =
+            new CommandSymbol("SetClusterMaintenanceMode", _schema18);
+
         public static readonly CommandSymbol IngestIntoTable =
             new CommandSymbol("IngestIntoTable", "(ExtentId: guid, ItemLoaded: string, Duration: string, HasErrors: string, OperationId: guid)");
 
@@ -1989,6 +1995,7 @@ namespace Kusto.Language
             AlterTableFolder,
             RenameTable,
             RenameTables,
+            UndoDropExtentContainer,
             DropTable,
             UndoDropTable,
             DropTables,
@@ -2278,6 +2285,7 @@ namespace Kusto.Language
             ShowClusterBlockedPrincipals,
             AddClusterBlockedPrincipals,
             DropClusterBlockedPrincipals,
+            SetClusterMaintenanceMode,
             IngestIntoTable,
             IngestInlineIntoTable,
             SetTable,
