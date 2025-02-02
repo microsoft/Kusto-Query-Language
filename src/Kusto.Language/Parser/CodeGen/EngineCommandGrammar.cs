@@ -364,8 +364,6 @@ namespace Kusto.Language.Parsing
             var shape321 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table)};
             var shape322 = CD("eid", CompletionHint.Literal);
             var shape323 = CD("tableName", CompletionHint.None);
-            var shape324 = CD("DeleteIdentifier", CompletionHint.None);
-            var shape325 = CD("AppendIdentifier", CompletionHint.None);
 
             Func<Source<LexicalToken>, int, SyntaxElement> missing0 = (source, start) => new SyntaxList<SeparatedElement<SyntaxElement>>(new SeparatedElement<SyntaxElement>(rules.MissingStringLiteral(source, start)));
             Func<Source<LexicalToken>, int, SyntaxElement> missing1 = (source, start) => (SyntaxElement)new CustomNode(shape45, CreateMissingToken("<|"), rules.MissingExpression(source, start));
@@ -12082,7 +12080,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     new Parser<LexicalToken>[] {
                         Token("update", CompletionKind.CommandPrefix),
-                        Token("async"),
+                        Optional(Token("async")),
                         RequiredToken("table"),
                         Required(rules.TableNameReference, rules.MissingNameReference),
                         RequiredToken("delete"),
@@ -12095,35 +12093,7 @@ namespace Kusto.Language.Parsing
                             fragment4,
                             missing1)}
                     ,
-                    new [] {CD(), CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD(isOptional: true), CD("csl")}));
-
-            var TableDataUpdate2 = Command("TableDataUpdate", 
-                Custom(
-                    Token("update", CompletionKind.CommandPrefix),
-                    Token("table"),
-                    rules.TableNameReference,
-                    Token("delete"),
-                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
-                    RequiredToken("append"),
-                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
-                    Optional(
-                        fragment5),
-                    Required(
-                        fragment4,
-                        missing1),
-                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD(isOptional: true), CD("csl")}));
-
-            var TableDataUpdateShortSyntax = Command("TableDataUpdateShortSyntax", 
-                Custom(
-                    Token("update", CompletionKind.CommandPrefix),
-                    RequiredToken("table"),
-                    Required(rules.TableNameReference, rules.MissingNameReference),
-                    RequiredToken("on"),
-                    Required(rules.NameDeclaration, rules.MissingNameDeclaration),
-                    Required(
-                        fragment4,
-                        missing1),
-                    new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(CompletionHint.None), CD("csl")}));
+                    new [] {CD(), CD(isOptional: true), CD(), CD("TableName", CompletionHint.Table), CD(), CD("DeleteIdentifier", CompletionHint.None), CD(), CD("AppendIdentifier", CompletionHint.None), CD(isOptional: true), CD("csl")}));
 
             var commandParsers = new Parser<LexicalToken, Command>[]
             {
@@ -13000,9 +12970,7 @@ namespace Kusto.Language.Parsing
                 TableShuffleExtentsQuery,
                 UndoDropExtentContainer,
                 UndoDropTable,
-                TableDataUpdate,
-                TableDataUpdate2,
-                TableDataUpdateShortSyntax
+                TableDataUpdate
             };
 
             return commandParsers;
