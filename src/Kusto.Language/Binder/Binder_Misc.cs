@@ -6,6 +6,7 @@ namespace Kusto.Language.Binding
 {
     using Symbols;
     using Syntax;
+    using System.Reflection;
     using Utils;
 
     internal sealed partial class Binder
@@ -1357,37 +1358,42 @@ namespace Kusto.Language.Binding
             if (resultType == null)
                 resultType = GetResultType(expression);
 
-            if (resultType != null)
-            {
-                if (resultType.IsScalar)
-                    return true;
+            // we don't know anything
+            if (resultType == null)
+                return true;
 
-                if (!resultType.IsError)
-                {
-                    diagnostics.Add(DiagnosticFacts.GetScalarTypeExpected().WithLocation(expression));
-                }
+            if (resultType.IsScalar)
+                return true;
+
+            if (!resultType.IsError)
+            {
+                diagnostics.Add(DiagnosticFacts.GetScalarTypeExpected().WithLocation(expression));
             }
 
             return false;
         }
 
-        private void CheckIsScalar(SyntaxList<SeparatedElement<Expression>> list, List<Diagnostic> diagnostics)
+        private bool CheckIsScalar(TypeSymbol type, SyntaxElement location, List<Diagnostic> diagnostics)
         {
-            for (int i = 0; i < list.Count; i++)
+            if (type.IsScalar)
+                return true;
+
+            if (!type.IsError)
             {
-                var exp = list[i].Element;
-                CheckIsScalar(exp, diagnostics);
+                diagnostics.Add(DiagnosticFacts.GetScalarTypeExpected().WithLocation(location));
             }
+
+            return false;
         }
 
-
-        private void CheckAll(SyntaxList<SeparatedElement<Expression>> list, List<Diagnostic> diagnostics, Action<Expression, List<Diagnostic>> checkAction)
+        private bool CheckIsScalar(SyntaxList<SeparatedElement<Expression>> list, List<Diagnostic> diagnostics)
         {
-            for (int i = 0; i < list.Count; i++)
-            {
-                var exp = list[i].Element;
-                checkAction(exp, diagnostics);
-            }
+            return CheckAll(list, diagnostics, (expr, dx) => CheckIsScalar(expr, dx));
+        }
+
+        private bool CheckIsScalasr(IReadOnlyList<ColumnSymbol> columns, SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            return CheckAll(columns, location, diagnostics, (col, loc, dx) => CheckIsScalar(col.Type, loc, dx));
         }
 
         private bool CheckIsInteger(Expression expression, List<Diagnostic> diagnostics)
@@ -1691,10 +1697,26 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool IsType(Expression expression, TypeSymbol type, Conversion conversionKind = Conversion.None)
+        private bool IsType(Expression expression, TypeSymbol expectedType, Conversion conversionKind = Conversion.None)
         {
-            var exprType = GetResultTypeOrError(expression);
-            return SymbolsAssignable(type, exprType, conversionKind);
+            return IsType(GetResultTypeOrError(expression), expectedType, conversionKind);
+        }
+
+        private bool IsType(Symbol type, Symbol expectedType, Conversion conversionKind = Conversion.None)
+        {
+            if (type == ScalarTypes.Unknown)
+            {
+                // we don't know that it not the type
+                return true;
+            }
+            else if (expectedType == ScalarTypes.Dynamic)
+            {
+                return type is DynamicSymbol;
+            }
+            else
+            {
+                return SymbolsAssignable(expectedType, type, conversionKind);
+            }
         }
 
         private bool CheckIsType(Expression expression, TypeSymbol type, Conversion conversionKind, List<Diagnostic> diagnostics)
@@ -1739,26 +1761,73 @@ namespace Kusto.Language.Binding
             return false;
         }
 
-        private bool CheckIsNotType(Expression expression, Symbol type, List<Diagnostic> diagnostics)
+        private bool CheckIsNotType(Expression expression, Symbol expectedType, List<Diagnostic> diagnostics)
         {
             var exprType = GetResultTypeOrError(expression);
 
             if (exprType == ScalarTypes.Unknown)
                 return true;
 
-            if (type == ScalarTypes.Dynamic
+            if (expectedType == ScalarTypes.Dynamic
                 && !(exprType is DynamicSymbol))
                 return true;
 
-            if (!SymbolsAssignable(type, exprType))
+            if (!SymbolsAssignable(expectedType, exprType))
                 return true;
 
+            // avoid additional errors
             if (!GetResultTypeOrError(expression).IsError)
             {
-                diagnostics.Add(DiagnosticFacts.GetTypeNotAllowed(type).WithLocation(expression));
+                diagnostics.Add(DiagnosticFacts.GetTypeNotAllowed(expectedType).WithLocation(expression));
             }
 
             return false;
+        }
+
+        private bool CheckIsNotType(Symbol type, Symbol notExpectedType, SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            // we don't know that its the unexpected type.
+            if (type == ScalarTypes.Unknown)
+                return true;
+
+            if (!IsType(type, notExpectedType))
+                return true;
+
+            diagnostics.Add(DiagnosticFacts.GetTypeNotAllowed(type).WithLocation(location));
+            return false;
+        }
+
+        private bool CheckAll(SyntaxList<SeparatedElement<Expression>> expressions, List<Diagnostic> diagnostics, Func<Expression, List<Diagnostic>, bool> fnCheck)
+        {
+            for (int i = 0; i < expressions.Count; i++)
+            {
+                var expr = expressions[i].Element;
+                if (!fnCheck(expr, diagnostics))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckAll(IReadOnlyList<ColumnSymbol> columns, SyntaxElement location, List<Diagnostic> diagnostics, Func<ColumnSymbol, SyntaxElement, List<Diagnostic>, bool> fnCheck)
+        {
+            foreach (var col in columns)
+            {
+                if (!fnCheck(col, location, diagnostics))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool CheckIsNotDynamic(SyntaxList<SeparatedElement<Expression>> expressions, List<Diagnostic> diagnostics)
+        {
+            return CheckAll(expressions, diagnostics, (expr, dx) => CheckIsNotType(expr, ScalarTypes.Dynamic, dx));
+        }
+
+        private bool CheckIsNotDynamic(IReadOnlyList<ColumnSymbol> columns, SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            return CheckAll(columns, location, diagnostics, (col, loc, dx) => CheckIsNotType(col.Type, ScalarTypes.Dynamic, loc, diagnostics));
         }
 
         private bool CheckIsIntervalType(Expression expression, TypeSymbol rangeType, List<Diagnostic> diagnostics)

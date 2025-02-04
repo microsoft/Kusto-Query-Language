@@ -1347,7 +1347,8 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SampleDistinctParameters, diagnostics);
                     _binder.CheckIsInteger(node.Expression, diagnostics);
-                    _binder.CheckIsColumn(node.OfExpression, diagnostics);
+                    var _ = _binder.CheckIsColumn(node.OfExpression, diagnostics)
+                        && _binder.CheckIsNotType(node.OfExpression, ScalarTypes.Dynamic, diagnostics);
 
                     var ofCol = GetOrDeclareColumnForExpression(node.OfExpression, defaultName: "Column1");
 
@@ -1559,12 +1560,8 @@ namespace Kusto.Language.Binding
 
                     if (node.ByClause != null)
                     {
-                        for (int i = 0; i < node.ByClause.Expressions.Count; i++)
-                        {
-                            var expr = node.ByClause.Expressions[i].Element;
-                            if (!_binder.CheckIsScalar(expr, diagnostics))
-                                _binder.CheckIsNotType(expr, ScalarTypes.Dynamic, diagnostics);
-                        }
+                        var _ = _binder.CheckIsScalar(node.ByClause.Expressions, diagnostics)
+                            && _binder.CheckIsNotDynamic(node.ByClause.Expressions, diagnostics);
 
                         // all columns corresponding to by-clause expressions
                         _binder.CreateProjectionColumns(node.ByClause.Expressions, builder, diagnostics);
@@ -1598,11 +1595,16 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.DistinctParameters, diagnostics);
 
-                    _binder.CheckIsScalar(node.Expressions, diagnostics);
-
                     _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics);
 
-                    var resultTable = new TableSymbol(builder.GetProjection())
+                    var star = node.Expressions.FirstOrDefault(e => e.Element is StarExpression)?.Element;
+                    var projection = builder.GetProjection();
+
+                    var _ = _binder.CheckIsScalar(node.Expressions, diagnostics)
+                        && _binder.CheckIsNotDynamic(node.Expressions, diagnostics)
+                        && (star == null || _binder.CheckIsNotDynamic(projection, star, diagnostics));
+
+                    var resultTable = new TableSymbol(projection)
                         .WithInheritableProperties(RowScopeOrEmpty)
                         .WithIsSorted(false);
 
@@ -1856,11 +1858,8 @@ namespace Kusto.Language.Binding
                     CheckNotFirstInPipe(node, diagnostics);
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SortParameters, diagnostics);
 
-                    for (int i = 0, n = node.Expressions.Count; i < n; i++)
-                    {
-                        var expr = node.Expressions[i].Element;
-                        _binder.CheckIsScalar(expr, diagnostics);
-                    }
+                    var _ = _binder.CheckIsScalar(node.Expressions, diagnostics)
+                        && _binder.CheckIsNotDynamic(node.Expressions, diagnostics);
 
                     var resultTable = new TableSymbol(_binder.GetDeclaredAndInferredColumns(RowScopeOrEmpty))
                         .WithInheritableProperties(RowScopeOrEmpty)
@@ -1996,7 +1995,9 @@ namespace Kusto.Language.Binding
                     // todo: check parameters when the correct set is known
                     //_binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.PartitionParameters, diagnostics);
 
-                    _binder.CheckIsColumn(node.Entity, diagnostics);
+                    var _ = _binder.CheckIsColumn(node.Entity, diagnostics)
+                        && _binder.CheckIsNotType(node.Entity, ScalarTypes.Dynamic, diagnostics);
+
                     CheckQueryOperators(node.Subquery, KustoFacts.PostPipeOperatorKinds, diagnostics, allowContextualRoot: true);
 
                     var tableType = node.Subquery.ResultType as TableSymbol;
@@ -2027,7 +2028,8 @@ namespace Kusto.Language.Binding
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.PartitionParameters, diagnostics);
 
                     var operand = node.Operand;
-                    _binder.CheckIsColumn(node.ByExpression, diagnostics);
+                    var _ = _binder.CheckIsColumn(node.ByExpression, diagnostics)
+                        && _binder.CheckIsNotType(node.ByExpression, ScalarTypes.Dynamic, diagnostics);
                     _binder.CheckIsTabular(operand, diagnostics);
 
                     if (operand is PartitionSubquery ps)
@@ -2499,6 +2501,9 @@ namespace Kusto.Language.Binding
                         case JoinWhereClause c:
                             _binder.CheckIsExactType(c.Expression, ScalarTypes.Bool, diagnostics);
                             break;
+                        default:
+                            diagnostics.Add(DiagnosticFacts.GetMissingJoinOnClause().WithLocation(node));
+                            break;
                     }
 
                     var joinKind = node.Parameters.GetParameterLiteralValue<string>(QueryOperatorParameters.Kind);
@@ -2815,7 +2820,8 @@ namespace Kusto.Language.Binding
                     for (int i = 0, n = node.Expressions.Count; i < n; i++)
                     {
                         var expr = node.Expressions[i].Element;
-                        _binder.CheckIsColumn(expr, diagnostics);
+                        var _ = _binder.CheckIsColumn(expr, diagnostics)
+                            && _binder.CheckIsNotType(expr, ScalarTypes.Dynamic, diagnostics);
 
                         var name = GetExpressionResultName(expr);
                         var tableName = i == 0 ? "Facet" : "Facet_" + (i + 1);
