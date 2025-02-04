@@ -139,6 +139,9 @@ in the query hierarchy for each subgroup of nodes; the size of the subgroup is s
         public static readonly OptionSymbol RequestCalloutDisabled =
             new OptionSymbol("request_callout_disabled", @"If specified, indicates that the request can't call-out to a user-provided service.", ScalarTypes.Bool);
 
+        public static readonly OptionSymbol RequestCrossClusterToken =
+            new OptionSymbol("request_cross_cluster_token", @"Cryptographically-strong indication the query is being sent from one cluster to another, as a cross-cluster query", ScalarTypes.String);
+
         public static readonly OptionSymbol RequestDescription =
             new OptionSymbol("request_description", @"Arbitrary text that the author of the request wants to include as the request description.", ScalarTypes.String);
 
@@ -230,6 +233,7 @@ in the query hierarchy for each subgroup of nodes; the size of the subgroup is s
     RequestAppName,
     RequestBlockRowLevelSecurity,
     RequestCalloutDisabled,
+    RequestCrossClusterToken,
     RequestDescription,
     RequestExternalDataDisabled,
     RequestExternalTableDisabled,
