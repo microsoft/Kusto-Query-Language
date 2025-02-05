@@ -706,35 +706,35 @@ queryOperatorParameters:
 
 queryOperatorParameter:
     NameToken=(
-        'bagexpansion'
-        | 'bin_legacy'
-        | 'decodeblocks'
-        | 'expandoutput'
-        | 'hint.concurrency'
-        | 'hint.distribution'
-        | 'hint.materialized'
-        | 'hint.num_partitions'
-        | 'hint.pass_filters'
-        | 'hint.pass_filters_column'
-        | 'hint.progressive_top'
-        | 'hint.remote'
-        | 'hint.shufflekey'
-        | 'hint.spread'
-        | 'hint.strategy'
-        | 'isfuzzy'
-        | 'kind'
-        | 'with_itemindex'
-        | 'with_match_id'
-        | 'with_step_name'
-        | 'withsource'
-        | 'with_source'
-        | '__crossCluster'
-        | '__crossDB'
-        | '__id'
-        | '__isFuzzy'
-        | '__noWithSource'
-        | '__packedColumn'
-        | '__sourceColumnIndex'
+        BAGEXPANSION
+        | BIN_LEGACY
+        | DECODEBLOCKS
+        | EXPANDOUTPUT
+        | HINT_CONCURRENCY
+        | HINT_DISTRIBUTION
+        | HINT_MATERIALIZED
+        | HINT_NUM_PARTITIONS
+        | HINT_PASS_FILTERS
+        | HINT_PASS_FILTERS_COLUMN
+        | HINT_PROGRESSIVE_TOP
+        | HINT_REMOTE
+        | HINT_SUFFLEKEY
+        | HINT_SPREAD
+        | HINT_STRATEGY
+        | ISFUZZY
+        | KIND
+        | WITH_ITEM_INDEX
+        | WITH_MATCH_ID
+        | WITH_STEP_NAME
+        | WITHSOURCE
+        | WITH_SOURCE
+        | CROSSCLUSTER__
+        | CROSSDB__
+        | ID__
+        | ISFUZZY__
+        | WITHNOSOURCE__
+        | PACKEDCOLUMN__
+        | SOURCECOLUMNINDEX__
         )
     '=' Value=queryOperatorParameterValue;
 
@@ -823,38 +823,38 @@ stringBinaryOperator:
     (
           '=~'
         | '!~'
-        | 'has'
-        | '!has'
-        | 'has_cs'
-        | '!has_cs'
-        | 'hasprefix'
-        | '!hasprefix'
-        | 'hasprefix_cs'
-        | '!hasprefix_cs'
-        | 'hassuffix'
-        | '!hassuffix'
-        | 'hassuffix_cs'
-        | '!hassuffix_cs'
-        | 'like'
-        | 'notlike'
-        | 'likecs'
-        | 'notlikecs'
-        | 'contains'
-        | 'notcontains'
-        | 'containscs'
-        | 'notcontainscs'
-        | '!contains'
-        | 'contains_cs'
-        | '!contains_cs'
-        | 'startswith'
-        | '!startswith'
-        | 'startswith_cs'
-        | '!startswith_cs'
-        | 'endswith'
-        | '!endswith'
-        | 'endswith_cs'
-        | '!endswith_cs'
-        | 'matches regex'
+        | HAS
+        | NOT_HAS
+        | HAS_CS
+        | NOT_HAS_CS
+        | HASPREFIX
+        | NOT_HASPREFIX
+        | HASPREFIX_CS
+        | NOT_HASPREFIX_CS
+        | HASSUFFIX
+        | NOT_HASSUFFIX
+        | HASSUFFIX_CS
+        | NOT_HASSUFFIX_CS
+        | LIKE
+        | NOTLIKE
+        | LIKECS
+        | NOTLIKECS
+        | CONTAINS
+        | NOTCONTAINS
+        | CONTAINSCS
+        | NOTCONTAINSCS
+        | NOT_CONTAINS
+        | CONTAINS_CS
+        | NOT_CONTAINS_CS
+        | STARTSWITH
+        | NOT_STARTSWITH
+        | STARTSWITH_CS
+        | NOT_STARTSWITH_CS
+        | ENDSWITH
+        | NOT_ENDSWITH
+        | ENDSWITH_CS
+        | NOT_ENDSWITH_CS
+        | MATCHES_REGEX
     );
 
 stringStarOperatorExpression:
@@ -976,7 +976,7 @@ legacyEntityPathElementOperator:
     '.' '[' Expression=unnamedExpression ']';
 
 entityName:
-    AtSymbol=atSymbolName 
+    ATSIGN=atSignName 
     | Name=identifierOrExtendedKeywordOrEscapedName 
     | ExtendedName=extendedPathName;
 
@@ -984,7 +984,7 @@ entityNameReference:
     Name=entityName
     ;
 
-atSymbolName:
+atSignName:
     NameToken='@';
 
 extendedPathName:
