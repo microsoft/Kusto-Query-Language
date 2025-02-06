@@ -79,7 +79,7 @@ declarePatternStatement:
     DECLARE PATTERN Name=simpleNameReference (Definition=declarePatternDefinition)?;
 
 declarePatternDefinition:
-    '=' ParameterList=declarePatternParameterList (Path=declarePatternPathParameter)? '{' (declarePatternRule)+ '}';
+    '=' ParameterList=declarePatternParameterList (Path=declarePatternPathParameter)? '{' (Rules+=declarePatternRule)+ '}';
 
 declarePatternParameterList:
     '(' Parameters+=declarePatternParameter (',' Parameters+=declarePatternParameter)* ')';
@@ -136,13 +136,13 @@ expression:
     pipeExpression;
 
 pipeExpression:
-    Expression=beforePipeExpression (pipedOperator)*;
+    Expression=beforePipeExpression (PipedOperators+=pipedOperator)*;
 
 pipedOperator:
     '|' Operator=afterPipeOperator;
 
 pipeSubExpression:
-    Expression=afterPipeOperator (pipedOperator)*;
+    Expression=afterPipeOperator (PipedOperators+=pipedOperator)*;
 
 afterPipeOperator:
     queryOperator;
@@ -347,7 +347,7 @@ forkOperatorExpressionName:
     Name=identifierOrKeywordOrEscapedName '=';
 
 forkOperatorExpression:
-    Operator=forkPipeOperator (forkOperatorPipedOperator)*;
+    Operator=forkPipeOperator (PipedOperators+=forkOperatorPipedOperator)*;
 
 forkOperatorPipedOperator:
     '|' Operator=forkPipeOperator;
@@ -456,7 +456,7 @@ parseOperatorNameAndOptionalType:
     Name=simpleNameReference (':' Type=parameterType)?;
 
 parseOperatorPattern:
-    (LeadingColumn=parseOperatorNameAndOptionalType)? (parseOperatorPatternSegment)* (TrailingStar='*')?;
+    (LeadingColumn=parseOperatorNameAndOptionalType)? (Segments+=parseOperatorPatternSegment)* (TrailingStar='*')?;
 
 parseOperatorPatternSegment:
     ('*')? Text=stringLiteralExpression (Column=parseOperatorNameAndOptionalType)?;
@@ -695,14 +695,13 @@ contextualSubExpression:
     ;
 
 contextualPipeExpression:
-    Expression=contextualDataTableExpression (contextualPipeExpressionPipedOperator)*;
+    Expression=contextualDataTableExpression (PipedOperators+=contextualPipeExpressionPipedOperator)*;
 
 contextualPipeExpressionPipedOperator:
     '|' Operator=afterPipeOperator;
 
-
 queryOperatorParameters:
-    (queryOperatorParameter)+;
+    (Parameters+=queryOperatorParameter)+;
 
 queryOperatorParameter:
     NameToken=(
@@ -761,13 +760,13 @@ unnamedExpression:
     logicalOrExpression;
 
 logicalOrExpression:
-    Left=logicalAndExpression (logicalOrOperation)*;
+    Left=logicalAndExpression (Operations+=logicalOrOperation)*;
 
 logicalOrOperation:
     OR Right=logicalAndExpression;
 
 logicalAndExpression:
-    Left=equalityExpression (logicalAndOperation)*;
+    Left=equalityExpression (Operations+=logicalAndOperation)*;
 
 logicalAndOperation:
     AND Right=equalityExpression;
@@ -796,13 +795,13 @@ relationalExpression:
     Left=additiveExpression (OperatorToken=('<' | '>' | '<=' | '>=') Right=additiveExpression)?;
 
 additiveExpression:
-    Left=multiplicativeExpression (additiveOperation)*;
+    Left=multiplicativeExpression (Operations+=additiveOperation)*;
 
 additiveOperation:
     OperatorToken=('+' | '-') Right=multiplicativeExpression;
 
 multiplicativeExpression:
-    Left=stringOperatorExpression (multiplicativeOperation)*;
+    Left=stringOperatorExpression (Operations+=multiplicativeOperation)*;
 
 multiplicativeOperation:
     OperatorToken=('*' | '/' | '%') Right=stringOperatorExpression;
@@ -813,7 +812,7 @@ stringOperatorExpression:
     ;
 
 stringBinaryOperatorExpression:
-    Left=invocationExpression (stringBinaryOperation)*;
+    Left=invocationExpression (Operations+=stringBinaryOperation)*;
 
 stringBinaryOperation:
     (Operator=stringBinaryOperator | HasOperator=':') Right=invocationExpression;
@@ -876,7 +875,7 @@ functionCallOrPathRoot:
     ;
 
 functionCallOrPathPathExpression:
-    Expression=functionCallOrPathRoot (functionCallOrPathOperation)+;
+    Expression=functionCallOrPathRoot (Operations+=functionCallOrPathOperation)+;
 
 functionCallOrPathOperation:
     functionalCallOrPathPathOperation 
@@ -903,7 +902,7 @@ noOptimizationParameter:
     KIND '=' NOOPTIMIZATION;
 
 dotCompositeFunctionCallExpression:
-    Call=functionCallExpression (dotCompositeFunctionCallOperation)*;
+    Call=functionCallExpression (Operations+=dotCompositeFunctionCallOperation)*;
 
 dotCompositeFunctionCallOperation:
     '.' Call=functionCallExpression;
@@ -958,7 +957,7 @@ entityExpression:
     ;
 
 entityPathOrElementExpression:
-    Expression=entityNameReference (entityPathOrElementOperator)+;
+    Expression=entityNameReference (Operators+=entityPathOrElementOperator)+;
     
 entityPathOrElementOperator:
     Path=entityPathOperator
@@ -1342,7 +1341,7 @@ identifierOrExtendedKeywordName:
     ;
 
 wildcardedName:
-    (Prefix=wildcardedNamePrefix)? '*' (wildcardedNameSegment)*;
+    (Prefix=wildcardedNamePrefix)? '*' (Segments+=wildcardedNameSegment)*;
 
 wildcardedNamePrefix:
     Identifier=IDENTIFIER 
