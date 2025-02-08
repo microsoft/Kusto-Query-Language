@@ -19,29 +19,34 @@ statement:
 ;
 
 aliasDatabaseStatement:
-    ALIAS DATABASE Name=simpleNameReference '=' Expression=unnamedExpression;
+    ALIAS DATABASE Name=identifierOrKeywordOrEscapedName '=' Expression=unnamedExpression;
 
 letStatement:
       Function=letFunctionDeclaration
     | View=letViewDeclaration
     | Variable=letVariableDeclaration
     | Materialized=letMaterializeDeclaration
+    | EntityGroup=letEntityGroupDeclaration
     ;
 
 letVariableDeclaration:
-    LET Name=simpleNameReference '=' Expression=expression;
+    LET Name=identifierOrKeywordOrEscapedName '=' Expression=expression;
 
 letFunctionDeclaration:
-    LET Name=simpleNameReference '=' '(' (ParameterList=letFunctionParameterList)? ')' Body=letFunctionBody;
+    LET Name=identifierOrKeywordOrEscapedName '=' '(' (ParameterList=letFunctionParameterList)? ')' Body=letFunctionBody;
 
 letViewDeclaration:
-    LET Name=simpleNameReference '=' VIEW '(' (ParameterList=letViewParameterList)? ')' Body=letFunctionBody;
+    LET Name=identifierOrKeywordOrEscapedName '=' VIEW '(' (ParameterList=letViewParameterList)? ')' Body=letFunctionBody;
 
 letViewParameterList:
     Parameters+=scalarParameter (',' Parameters+=scalarParameter)*;
 
 letMaterializeDeclaration:
-    LET Name=simpleNameReference '=' MATERIALIZE '(' Expression=pipeExpression ')';
+    LET Name=identifierOrKeywordOrEscapedName '=' MATERIALIZE '(' Expression=pipeExpression ')';
+
+letEntityGroupDeclaration:
+    LET Name=identifierOrKeywordOrEscapedName '=' entityGroupExpression;
+
 
 letFunctionParameterList:
     TabularParameters+=tabularParameter (',' TabularParameters+=tabularParameter) (',' ScalarParameters+=scalarParameter)
@@ -49,7 +54,7 @@ letFunctionParameterList:
     ;
 
 scalarParameter:
-    Name=parameterName ':' Type=parameterType (Default=scalarParameterDefault)?;
+    Name=parameterName ':' Type=scalarType (Default=scalarParameterDefault)?;
 
 scalarParameterDefault:
     '=' Value=literalExpression;
@@ -64,7 +69,7 @@ tabularParameterRowSchema:
     '(' Columns+=tabularParameterRowSchemaColumnDeclaration (',' Columns+=tabularParameterRowSchemaColumnDeclaration)* ')';
 
 tabularParameterRowSchemaColumnDeclaration:
-    Name=parameterName ':' Type=parameterType;
+    Name=parameterName ':' Type=scalarType;
 
 letFunctionBody:
     '{' (Statements+=letFunctionBodyStatement ';')* (Expression=expression)? (';')? '}';
@@ -85,7 +90,7 @@ declarePatternParameterList:
     '(' Parameters+=declarePatternParameter (',' Parameters+=declarePatternParameter)* ')';
 
 declarePatternParameter:
-	Name=parameterName ':' Type=parameterType;
+	Name=parameterName ':' Type=scalarType;
 
 declarePatternPathParameter:
     '[' Parameter=declarePatternParameter ']';
@@ -125,7 +130,7 @@ declareQueryParametersStatement:
      DECLARE QUERYPARAMETERS '(' Parameters+=declareQueryParametersStatementParameter (',' Parameters+=declareQueryParametersStatementParameter)* ')';
 
 declareQueryParametersStatementParameter:
-    Name=parameterName ':' Type=parameterType (Default=scalarParameterDefault)?;
+    Name=parameterName ':' Type=scalarType (Default=scalarParameterDefault)?;
 
 queryStatement:
     Expression=expression;
@@ -144,64 +149,68 @@ pipedOperator:
 pipeSubExpression:
     Expression=afterPipeOperator (PipedOperators+=pipedOperator)*;
 
-afterPipeOperator:
-    queryOperator;
-
 beforePipeExpression:
-      unnamedExpression 
-    | rangeExpression 
+      beforeOrAfterPipeOperator 
     | printOperator 
-    | queryOperatorPipedOrUnpiped 
-    | entityGroupExpression 
     | macroExpandOperator 
+    | rangeExpression 
     | scopedFunctionCallExpression
+    | unnamedExpression 
     ;
 
-queryOperator:
-      consumeOperator
+afterPipeOperator:
+      asOperator
+    | assertSchemaOperator
+    | consumeOperator
     | countOperator
+    | distinctOperator
     | executeAndCacheOperator
     | extendOperator
     | facetByOperator
-    | whereOperator
-    | getSchemaOperator
     | findOperator
-    | searchOperator
     | forkOperator
-    | partitionOperator
-    | partitionByOperator
+    | getSchemaOperator
+    | graphMarkComponentsOperator
+    | graphMatchOperator
+    | graphMergeOperator
+    | graphShortestPathsOperator
+    | graphToTableOperator
+    | invokeOperator
     | joinOperator
+    | lookupOperator
+    | makeGraphOperator
     | makeSeriesOperator
     | mvexpandOperator
     | mvapplyOperator
     | evaluateOperator
     | parseOperator
+    | parseKvOperator
     | parseWhereOperator
+    | partitionOperator
+    | partitionByOperator
     | projectOperator
-    | sampleOperator
-    | sampleDistinctOperator
     | projectAwayOperator
     | projectRenameOperator
     | projectReorderOperator
     | projectKeepOperator
     | reduceByOperator
-    | summarizeOperator
-    | distinctOperator
-    | takeOperator
+    | renderOperator
+    | sampleOperator
+    | sampleDistinctOperator
+    | scanOperator
+    | searchOperator
+    | serializeOperator
     | sortOperator
+    | summarizeOperator
+    | takeOperator
     | topHittersOperator
     | topOperator
     | topNestedOperator
     | unionOperator
-    | renderOperator
-    | asOperator
-    | serializeOperator
-    | invokeOperator
-    | lookupOperator
-    | scanOperator
+    | whereOperator
     ;
 
-queryOperatorPipedOrUnpiped:
+beforeOrAfterPipeOperator:
       findOperator
     | searchOperator
     | unionOperator
@@ -237,19 +246,22 @@ forkPipeOperator:
     ;
 
 asOperator:
-    AS (Parameters=queryOperatorParameters)? Name=identifierOrKeywordOrEscapedName;
+    AS (Parameters+=relaxedQueryOperatorParameter)* Name=identifierOrKeywordOrEscapedName;
+
+assertSchemaOperator:
+    ASSERTSCHEMA Schema=rowSchema;
 
 consumeOperator:
-    CONSUME (Parameters=queryOperatorParameters)?;
+    CONSUME (Parameters+=relaxedQueryOperatorParameter)*;
 
 countOperator:
-    COUNT (AsClause=countOperatorAsClause)?;
+    COUNT (Parameters+=relaxedQueryOperatorParameter)*;
 
 countOperatorAsClause:
     AS Name=identifierName;
 
 distinctOperator:
-    DISTINCT (Parameters=queryOperatorParameters)? 
+    DISTINCT (Parameters+=relaxedQueryOperatorParameter)* 
         (Star=distinctOperatorStarTarget | ColumnList=distinctOperatorColumnListTarget)
     ;
 
@@ -261,7 +273,7 @@ distinctOperatorColumnListTarget:
 
 
 evaluateOperator:
-    EVALUATE (Parameters=queryOperatorParameters)? PlugInCall=functionCallExpression (SchemaClause=evaluateOperatorSchemaClause)?;
+    EVALUATE (Parameters+=relaxedQueryOperatorParameter)* PlugInCall=functionCallExpression (SchemaClause=evaluateOperatorSchemaClause)?;
 
 evaluateOperatorSchemaClause:
     ':' Schema=rowSchema;
@@ -293,7 +305,7 @@ findOperator:
         (ProjectAwayClause=findOperatorProjectAwayClause)?;
 
 findOperatorParametersWhereClause:
-    (Parameters=queryOperatorParameters)? (InClause=findOperatorInClause)? WHERE;
+    (Parameters+=relaxedQueryOperatorParameter)* (InClause=findOperatorInClause)? WHERE;
 
 findOperatorInClause:
     IN '(' Expressions+=findOperatorSource (',' Expressions+=findOperatorSource)* ')';
@@ -310,7 +322,7 @@ findOperatorColumnExpression:
     Name=parameterName (OptionalType=findOperatorOptionalColumnType)?;
 
 findOperatorOptionalColumnType:
-    ':' Type=extendedParameterType;
+    ':' Type=extendedScalarType;
 
 findOperatorPackExpression:
     PACK '(' '*' ')';
@@ -355,11 +367,69 @@ forkOperatorPipedOperator:
 getSchemaOperator:
     GETSCHEMA;
 
+graphMarkComponentsOperator:
+    GRAPHMARKCOMPONENTS (Parametems+=relaxedQueryOperatorParameter)*;
+
+graphMatchOperator:
+    GRAPHMATCH
+    (Parameters+=relaxedQueryOperatorParameter)*
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    (WhereClause=graphMatchWhereClause)?
+    (ProjectClause=graphMatchProjectClause)?
+    ;
+
+graphMatchPattern:
+      Node=graphMatchPatternNode
+    | UnnamedEdge=graphMatchPatternUnnamedEdge
+    | NamedEdge=graphMatchPatternNamedEdge;
+
+graphMatchPatternNode:
+    '(' Name=identifierOrKeywordOrEscapedName ')';
+
+graphMatchPatternUnnamedEdge:
+    Direction=(DASHDASH_GREATERTHAN | LESSTHAN_DASHDASH | DASHDASH);
+
+graphMatchPatternNamedEdge:
+    OpenBracket=(DASH_OPENBRACKET | LESSTHAN_DASH_OPENBRACKET)
+    Name=identifierOrKeywordOrEscapedName
+    (Range=graphMatchPatternRange)?
+    CloseBracket=(CLOSEBRACKET_DASH_GREATERTHAN | CLOSEBRACKET_DASH)
+    ;
+
+graphMatchPatternRange:
+    ASTERISK Start=invocationExpression DOTDOT End=invocationExpression;
+
+graphMatchWhereClause:
+    WHERE Expression=expression;
+
+graphMatchProjectClause:
+    PROJECT Expressions+=namedExpression (',' Expressions+=namedExpression)*;
+
+graphMergeOperator:
+    GRAPHMERGE Graph=invocationExpression (OnClause=joinOperatorOnClause)?;
+
+graphToTableOperator:
+    GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput);
+
+graphToTableOutput:
+    Keyword=(NODES | EDGES) (AsClause=graphToTableAsClause)? (Parameters+=relaxedQueryOperatorParameter)*;
+
+graphToTableAsClause:
+    AS Name=identifierOrKeywordOrEscapedName;
+
+graphShortestPathsOperator:
+    GRAPHSHORTESTPATHS
+    (Parameters+=relaxedQueryOperatorParameter)*
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    (WhereClause=graphMatchWhereClause)?
+    (ProjectClause=graphMatchProjectClause)?
+    ;
+
 invokeOperator:
     INVOKE FunctionCall=dotCompositeFunctionCallExpression;
 
 joinOperator:
-    JOIN (Parameters=queryOperatorParameters)? Table=unnamedExpression 
+    JOIN (Parameters+=relaxedQueryOperatorParameter)* Table=unnamedExpression 
     (OnClause=joinOperatorOnClause | WhereClause=joinOperatorWhereClause)?;
 
 joinOperatorOnClause:
@@ -369,26 +439,46 @@ joinOperatorWhereClause:
     WHERE Predicate=unnamedExpression;
 
 lookupOperator:
-    LOOKUP (Parameters=queryOperatorParameters)? Table=unnamedExpression OnClause=joinOperatorOnClause;
-
+    LOOKUP (Parameters+=relaxedQueryOperatorParameter)* Table=unnamedExpression OnClause=joinOperatorOnClause;
 
 macroExpandOperator:
-    MACROEXPAND (Parameters=queryOperatorParameters)? 
-    EntityGroup=macroExpandEntityGroup AS Name=identifierOrKeywordOrEscapedName
-    '('Statements+=statement (';' Statements+=statement)* (';')? ')';
+    MACROEXPAND 
+    (Parameters+=relaxedQueryOperatorParameter)*
+    EntityGroup=macroExpandEntityGroup 
+    AS ScopeName=identifierOrKeywordOrEscapedName
+    '(' Statements+=statement (';' Statements+=statement)* (';')? ')';
 
 macroExpandEntityGroup:
-      entityGroupExpression
-    | simpleNameReference
-    | entityExpression
+      EntityGroup=entityGroupExpression
+    | Name=simpleNameReference
+    | Entity=entityExpression
     ;
 
 entityGroupExpression:
     ENTITYGROUP '[' Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)* ']';
 
+makeGraphOperator:
+    MAKEGRAPH 
+    (Parameters+=relaxedQueryOperatorParameter)*
+    SourceColumn=simpleNameReference
+    Direction=(DASHDASH_GREATERTHAN | DASHDASH)
+    TargetColumn=simpleNameReference   
+    (IdClause=makeGraphIdClause | TablesAndKeysClause=makeGraphTablesAndKeysClause)?
+    (PartitionedByClause=makeGraphPartitionedByClause)?
+    ;
+
+makeGraphIdClause:
+    WITH_NODE_ID '=' Name=identifierOrKeywordOrEscapedName;
+
+makeGraphTablesAndKeysClause:
+    WITH Table=invocationExpression ON Column=simpleNameReference;
+
+makeGraphPartitionedByClause:
+    PARTITIONEDBY Entity=entityPathOrElementExpression '(' SubQuery=contextualSubExpression ')';   
+
 makeSeriesOperator:
-    MAKE_SERIES 
-    (Parameters=queryOperatorParameters)?
+    MAKESERIES 
+    (Parameters+=relaxedQueryOperatorParameter)*
 	Aggregations+=makeSeriesOperatorAggregation (',' Aggregations+=makeSeriesOperatorAggregation)*
     OnClause=makeSeriesOperatorOnClause
     (InRangeClause=makeSeriesOperatorInRangeClause | FromToStepClause=makeSeriesOperatorFromToStepClause)
@@ -415,7 +505,7 @@ makeSeriesOperatorByClause:
 
 mvapplyOperator:
     Keyword=(MVAPPLY | MV_APPLY) 
-    (Parameters=queryOperatorParameters)?
+    (Parameters+=strictQueryOperatorParameter)*
     Expressions+=mvapplyOperatorExpression (',' Expressions+=mvapplyOperatorExpression)* 
     (LimitClause=mvapplyOperatorLimitClause)? 
     (IdClause=mvapplyOperatorIdClause)? 
@@ -436,7 +526,7 @@ mvapplyOperatorExpressionToClause:
 
 mvexpandOperator:
     Keyword=(MVEXPAND | MV_EXPAND) 
-    (Parameters=queryOperatorParameters)? 
+    (Parameters+=strictQueryOperatorParameter)*
     Expressions+=mvexpandOperatorExpression (',' Expressions+=mvexpandOperatorExpression)* 
     (LimitClause=mvapplyOperatorLimitClause)?;
 
@@ -453,7 +543,7 @@ parseOperatorFlagsClause:
     FLAGS '=' Flags=IDENTIFIER;
 
 parseOperatorNameAndOptionalType:
-    Name=simpleNameReference (':' Type=parameterType)?;
+    Name=simpleNameReference (':' Type=scalarType)?;
 
 parseOperatorPattern:
     (LeadingColumn=parseOperatorNameAndOptionalType)? (Segments+=parseOperatorPatternSegment)* (TrailingStar='*')?;
@@ -464,10 +554,15 @@ parseOperatorPatternSegment:
 parseWhereOperator:
     PARSEWHERE (KindClause=parseOperatorKindClause)? Expression=unnamedExpression WITH Pattern=parseOperatorPattern;
 
+parseKvOperator:
+    PARSEKV Expressions=unnamedExpression Keys=rowSchema (WithClause=parseKvWithClause)?;
+
+parseKvWithClause:
+    WITH '(' Properties+=queryOperatorProperty (',' Properties+=queryOperatorProperty)* ')';
 
 partitionOperator:
     PARTITION 
-    (Parameters=queryOperatorParameters)? 
+    (Parameters+=relaxedQueryOperatorParameter)* 
     BY ByExpression=entityExpression 
     (InClause=partitionOperatorInClause)? 
     (SubExpressionBody=partitionOperatorSubExpressionBody | FullExpressionBody=partitionOperatorFullExpressionBody);
@@ -483,7 +578,7 @@ partitionOperatorFullExpressionBody:
 
 
 partitionByOperator:
-    PARTITIONBY (Parameters=queryOperatorParameters)? Column=entityExpression (IdClause=partitionByOperatorIdClause)? '(' SubExpression=contextualSubExpression ')';
+    PARTITIONBY (Parameters+=relaxedQueryOperatorParameter)* Column=entityExpression (IdClause=partitionByOperatorIdClause)? '(' SubExpression=contextualSubExpression ')';
 
 partitionByOperatorIdClause:
     ID IdValue=GUIDLITERAL;
@@ -511,23 +606,22 @@ projectReorderExpression:
 
 
 reduceByOperator:
-    REDUCE (Parameters=queryOperatorParameters)? BY ByExpression=namedExpression (WithClause=reduceByWithClause)?;
+    REDUCE (Parameters+=strictQueryOperatorParameter)* BY ByExpression=namedExpression (WithClause=reduceByWithClause)?;
 
 reduceByWithClause:
     WITH Expressions+=namedExpression (',' Expressions+=namedExpression)*;
 
-
 renderOperator:
     RENDER 
     CharType=(
-        TABLE
+          TABLE
         | LIST
         | BARCHART
         | PIECHART
         | LADDERCHART
         | TIMECHART
         | LINECHART
-        | ANOMALYCOLUMNS
+        | ANOMALYCHART
         | PIVOTCHART
         | AREACHART
         | STACKEDAREACHART
@@ -561,8 +655,8 @@ renderOperatorProperty:
     | (Name=LEGEND '=' TokenValue=(VISIBLE | HIDDEN_))
     | (Name=YSPLIT '=' TokenValue=(NONE | AXES | PANELS))
     | (Name=ACCUMULATE '=' BoolValue=BOOLEANLITERAL)
-    | (Name=YMIN '=' NumberValue=numberLiteralExpression)
-    | (Name=YMAX '=' NumberValue=numberLiteralExpression)
+    | (Name=YMIN '=' NumberValue=numericLiteralExpression)
+    | (Name=YMAX '=' NumberValue=numericLiteralExpression)
     | (Name=XMIN '=' LiteralValue=literalExpression)
     | (Name=XMAX '=' LiteralValue=literalExpression)
     ;
@@ -580,14 +674,14 @@ renderOperatorLegacyProperty:
 
 
 sampleDistinctOperator:
-    SAMPLE_DISTINCT (Parameters=queryOperatorParameters)? Expression=namedExpression OF OfExpression=namedExpression;
+    SAMPLE_DISTINCT (Parameters+=strictQueryOperatorParameter)* Expression=namedExpression OF OfExpression=namedExpression;
 
 sampleOperator:
-    SAMPLE (Parameters=queryOperatorParameters)? Expression=namedExpression;
+    SAMPLE (Parameters+=strictQueryOperatorParameter)* Expression=namedExpression;
 
 scanOperator:
     SCAN 
-      (Parameters=queryOperatorParameters)?
+      (Parameters+=relaxedQueryOperatorParameter)*
       (OrderByClause=scanOperatorOrderByClause)?
       (PartitionByClause=scanOperatorPartitionByClause)? 
       (DeclareClause=scanOperatorDeclareClause)? 
@@ -618,7 +712,7 @@ scanOperatorAssignment:
 
 searchOperator:
     SEARCH 
-      (Parameters=queryOperatorParameters)? 
+      (Parameters+=relaxedQueryOperatorParameter)*
       (DataScope=dataScopeClause)? 
       (InClause=searchOperatorInClause)? 
       (Expression=unnamedExpression | Star=starExpression | StarAndExpression=searchOperatorStarAndExpression);
@@ -631,11 +725,11 @@ searchOperatorInClause:
 
 
 serializeOperator:
-    SERIALIZE (Parameters=queryOperatorParameters)? Expressions+=namedExpression (',' Expressions+=namedExpression)*;
+    SERIALIZE (Parameters+=strictQueryOperatorParameter)* Expressions+=namedExpression (',' Expressions+=namedExpression)*;
 
 
 sortOperator:
-    Keyword=(SORT | ORDER) (Parameters=queryOperatorParameters)? BY Expressions+=orderedExpression (',' Expressions+=orderedExpression)*;
+    Keyword=(SORT | ORDER) (Parameters+=relaxedQueryOperatorParameter)* BY Expressions+=orderedExpression (',' Expressions+=orderedExpression)*;
 
 orderedExpression:
     Expression=namedExpression Ordering=sortOrdering;
@@ -645,20 +739,20 @@ sortOrdering:
 
 
 summarizeOperator:
-    SUMMARIZE (Parameters=queryOperatorParameters)? (Expressions+=namedExpression (',' Expressions+=namedExpression)*)? (ByClause=summarizeOperatorByClause)?;
+    SUMMARIZE (Parameters+=strictQueryOperatorParameter)* (Expressions+=namedExpression (',' Expressions+=namedExpression)*)? (ByClause=summarizeOperatorByClause)?;
 
 summarizeOperatorByClause:
     BY Expressions+=namedExpression (',' Expressions+=namedExpression) (BinClause=summarizeOperatorLegacyBinClause)?;
 
 summarizeOperatorLegacyBinClause:
-    BIN '=' Expression=numericLiteralExpression;
+    BIN '=' Expression=numberLikeLiteralExpression;
 
 
 takeOperator:
-    Keyword=(LIMIT | TAKE) (Parameters=queryOperatorParameters)? Expression=namedExpression;
+    Keyword=(LIMIT | TAKE) (Parameters+=strictQueryOperatorParameter)* Expression=namedExpression;
 
 topOperator:
-    TOP (Parameters=queryOperatorParameters)? Expression=namedExpression BY ByExpression=orderedExpression;
+    TOP (Parameters+=strictQueryOperatorParameter)* Expression=namedExpression BY ByExpression=orderedExpression;
 
 topHittersOperator:
     TOP_HITTERS Expression=namedExpression OF OfExpression=namedExpression (ByClause=topHittersOperatorByClause)?;
@@ -677,7 +771,7 @@ topNestedOperatorWithOthersClause:
 
 
 unionOperator:
-    UNION (Parameters=queryOperatorParameters)? Expressions+=unionOperatorExpression (',' Expressions+=unionOperatorExpression)*;
+    UNION (Parameters+=relaxedQueryOperatorParameter)* Expressions+=unionOperatorExpression (',' Expressions+=unionOperatorExpression)*;
 
 unionOperatorExpression:
       wildcardedEntityExpression
@@ -686,7 +780,7 @@ unionOperatorExpression:
     ;
 
 whereOperator:
-    Keyword=(FILTER | WHERE) (Parameters=queryOperatorParameters)? Predicate=namedExpression;
+    Keyword=(FILTER | WHERE) (Parameters+=strictQueryOperatorParameter)* Predicate=namedExpression;
 
 
 contextualSubExpression:
@@ -700,13 +794,12 @@ contextualPipeExpression:
 contextualPipeExpressionPipedOperator:
     '|' Operator=afterPipeOperator;
 
-queryOperatorParameters:
-    (Parameters+=queryOperatorParameter)+;
-
-queryOperatorParameter:
+strictQueryOperatorParameter:
     NameToken=(
         BAGEXPANSION
         | BIN_LEGACY
+        | CROSSCLUSTER__
+        | CROSSDB__
         | DECODEBLOCKS
         | EXPANDOUTPUT
         | HINT_CONCURRENCY
@@ -721,26 +814,61 @@ queryOperatorParameter:
         | HINT_SPREAD
         | HINT_STRATEGY
         | ISFUZZY
+        | ISFUZZY__
+        | ID__
         | KIND
+        | PACKEDCOLUMN__
+        | SOURCECOLUMNINDEX__
         | WITH_ITEM_INDEX
         | WITH_MATCH_ID
         | WITH_STEP_NAME
         | WITHSOURCE
         | WITH_SOURCE
+        | WITHNOSOURCE__
+        )
+    '=' (NameValue=identifierOrKeywordName | LiteralValue=literalExpression)
+    ;
+
+// allows any identifier
+relaxedQueryOperatorParameter:
+    NameToken=(
+          IDENTIFIER
+        | BAGEXPANSION
+        | BIN_LEGACY
         | CROSSCLUSTER__
         | CROSSDB__
-        | ID__
+        | DECODEBLOCKS
+        | EXPANDOUTPUT
+        | HINT_CONCURRENCY
+        | HINT_DISTRIBUTION
+        | HINT_MATERIALIZED
+        | HINT_NUM_PARTITIONS
+        | HINT_PASS_FILTERS
+        | HINT_PASS_FILTERS_COLUMN
+        | HINT_PROGRESSIVE_TOP
+        | HINT_REMOTE
+        | HINT_SUFFLEKEY
+        | HINT_SPREAD
+        | HINT_STRATEGY
+        | ISFUZZY
         | ISFUZZY__
-        | WITHNOSOURCE__
+        | ID__
+        | KIND
         | PACKEDCOLUMN__
         | SOURCECOLUMNINDEX__
+        | WITH_ITEM_INDEX
+        | WITH_MATCH_ID
+        | WITH_STEP_NAME
+        | WITHSOURCE
+        | WITH_SOURCE
+        | WITHNOSOURCE__
         )
-    '=' Value=queryOperatorParameterValue;
-
-queryOperatorParameterValue:
-      identifierOrKeywordName
-    | literalExpression
+    '=' (NameValue=identifierOrKeywordName | LiteralValue=literalExpression)
     ;
+
+queryOperatorProperty:
+    Name=IDENTIFIER '=' (NameValue=identifierOrKeywordName | LiteralValue=literalExpression);
+
 
 // Non-query expressions
 
@@ -1009,17 +1137,29 @@ contextualDataTableExpression:
     CONTEXTUAL_DATATABLE Id=GUIDLITERAL Schema=rowSchema;
 
 dataTableExpression:
-    DATATABLE (Parameters=queryOperatorParameters)? Schema=rowSchema '[' (Values+=literalExpression)? (',' Values+=literalExpression)* (',')? ']';
+    DATATABLE (Parameters+=relaxedQueryOperatorParameter)* Schema=rowSchema '[' (Values+=literalExpression)? (',' Values+=literalExpression)* (',')? ']';
 
 rowSchema:
     '('  (Columns+=rowSchemaColumnDeclaration)? (',' Columns+=rowSchemaColumnDeclaration)* (',')? ')';
 
 rowSchemaColumnDeclaration:
-    Name=parameterName ':' Type=parameterType;
+    Name=parameterName ':' Type=scalarType;
 
 externalDataExpression:
-    Keyword=(EXTERNALDATA | EXTERNAL_DATA) (Parameters=queryOperatorParameters)? Schema=rowSchema '[' ConnectionStrings+=stringLiteralExpression (',' ConnectionStrings+=stringLiteralExpression)* ']' (Properties=withPropertiesClause)?;
+    Keyword=(EXTERNALDATA | EXTERNAL_DATA) 
+    (Parameters+=relaxedQueryOperatorParameter)* 
+    Schema=rowSchema '[' ConnectionStrings+=stringLiteralExpression (',' ConnectionStrings+=stringLiteralExpression)* ']' 
+    (WithClause=externalDataWithClause)?;
 
+externalDataWithClause:
+    WITH '(' (Properties+=externalDataWithClauseProperty (',' Properties+=externalDataWithClauseProperty)* (',')?)? ')';
+
+externalDataWithClauseProperty:
+      Name=parameterName '=' 
+      ( StringValue=stringLiteralExpression 
+      | TokenValue=(LONGLITERAL | REALLITERAL | BOOLEANLITERAL | DATETIMELITERAL | TYPELITERAL | GUIDLITERAL | RAWGUIDLITERAL)
+      | NameValue=parameterName)
+    ;
 
 materializedViewCombineExpression:
     MATERIALIZED_VIEW_COMBINE '(' Name=stringLiteralExpression ')'
@@ -1036,19 +1176,9 @@ materializedViewCombineDeltaClause:
 materializedViewCombineAggregationsClause:
     AGGREGATIONS '(' Operator=summarizeOperator ')';
 
-withPropertiesClause:
-    WITH '(' (Properties+=withPropertiesProperty (',' Properties+=withPropertiesProperty)* (',')?)? ')';
-
-withPropertiesProperty:
-      Name=parameterName '=' 
-      ( StringValue=stringLiteralExpression 
-      | TokenValue=(LONGLITERAL | REALLITERAL | BOOLEANLITERAL | DATETIMELITERAL | TYPELITERAL | UUIDLITERAL)
-      | NameValue=parameterName)
-    ;
-
-parameterType:
+scalarType:
     Token=(
-        BOOL
+          BOOL
         | BOOLEAN
         | DATE
         | DATETIME
@@ -1067,9 +1197,9 @@ parameterType:
         | UNIQUEID
     );
 
-extendedParameterType:
+extendedScalarType:
     Token=(
-        BOOL
+          BOOL
         | BOOLEAN
         | DATE
         | DATETIME
@@ -1121,10 +1251,10 @@ simpleOrWildcardedNameReference:
 // names
 
 identifierName:
-    NameToken=IDENTIFIER;
+    Token=IDENTIFIER;
 
 keywordName:
-    NameToken=
+    Token=
     (
         ACCESS
         | AGGREGATIONS
@@ -1139,6 +1269,7 @@ keywordName:
         | DECLARE
         | DEFAULT
         | DELTA
+        | EDGES
         | EVALUATE
         | EXECUTE
         | FACET
@@ -1158,6 +1289,7 @@ keywordName:
         | LOOKUP
         | LIST
         | MAP
+        | NODES
         | NONE
         | NULL
         | NULLS
@@ -1200,83 +1332,9 @@ keywordName:
     );
 
 extendedKeywordName:
-    NameToken=
+    Token=
     (
-        // same as keywordName
-        ACCESS
-        | AGGREGATIONS
-        | ALIAS
-        | ALL
-        | AXES
-        | BASE
-        | BIN
-        | BOOL
-        | CLUSTER
-        | DATABASE
-        | DECLARE
-        | DEFAULT
-        | DELTA
-        | EVALUATE
-        | EXECUTE
-        | FACET
-        | FORK
-        | FROM
-        | GUID
-        | HIDDEN_
-        | HOT
-        | HOTDATA
-        | HOTINDEX
-        | ID
-        | INTO
-        | LEGEND
-        | LET
-        | LINEAR
-        | LOG
-        | LOOKUP
-        | LIST
-        | MAP
-        | NONE
-        | NULL
-        | NULLS
-        | ON
-        | OPTIONAL
-        | OUTPUT
-        | PACK
-        | PARTITION
-        | PARTITIONBY
-        | PATTERN
-        | PLUGIN
-        | QUERYPARAMETERS
-        | RANGE
-        | REDUCE
-        | REPLACE
-        | RENDER
-        | RESTRICT
-        | SERIES
-        | STACKED
-        | STACKED100
-        | STEP
-        | THRESHOLD
-        | TYPEOF
-        | UNSTACKED
-        | UUID
-        | VIEW
-        | VISIBLE
-        | WITH
-        | XAXIS
-        | XCOLUMN
-        | XMAX
-        | XMIN
-        | XTITLE
-        | YAXIS
-        | YCOLUMNS
-        | YMAX
-        | YMIN
-        | YTITLE
-        | YSPLIT
-
-        // additional keywords
-        | ACCUMULATE
+          ACCUMULATE
         | AS
         | BY
         | CONTAINS
@@ -1319,166 +1377,56 @@ escapedName:
     '[' StringLiteral=stringLiteralExpression ']';
 
 identifierOrKeywordName:
-      IdentifierName=identifierName
-    | KeywordName=keywordName
+      Identifier=identifierName
+    | Keyword=keywordName
     ;
 
 identifierOrKeywordOrEscapedName:
-      IdentifierName=identifierName
-    | KeywordName=keywordName
-    | EscapedName=escapedName
+      Identifier=identifierName
+    | Keyword=keywordName
+    | Escaped=escapedName
     ;
 
 identifierOrExtendedKeywordOrEscapedName:
-      IdentifierName=identifierName
-    | KeywordName=extendedKeywordName
-    | EscapedName=escapedName
+      Identifier=identifierName
+    | Keyword=keywordName
+    | ExtendedKeyword=extendedKeywordName
+    | Escaped=escapedName
     ;
 
 identifierOrExtendedKeywordName:
-      IdentifierName=identifierName
-    | KeywordName=extendedKeywordName
+      Identifier=identifierName
+    | Keyword=keywordName
+    | ExtendedKeyword=extendedKeywordName
     ;
 
 wildcardedName:
     (Prefix=wildcardedNamePrefix)? '*' (Segments+=wildcardedNameSegment)*;
 
 wildcardedNamePrefix:
-    Identifier=IDENTIFIER 
-    | Keyword=extendedNameKeywords;
+      Identifier=IDENTIFIER 
+    | Keyword=keywordName
+    | ExtendedKeyword=extendedKeywordName
+    ;
 
 wildcardedNameSegment:
-    Identifier=IDENTIFIER 
-    | Keyword=extendedNameKeywords 
+      Identifier=IDENTIFIER 
+    | Keyword=keywordName
+    | ExtendedKeyword=extendedKeywordName
     | Number=LONGLITERAL 
     | Star='*';
 
-nameKeywords:
-    NameToken=
-    (
-        ACCESS
-        | AGGREGATIONS
-        | ALIAS
-        | ALL
-        | AXES
-        | BASE
-        | BIN
-        | BOOL
-        | CLUSTER
-        | DATABASE
-        | DECLARE
-        | DEFAULT
-        | DELTA
-        | EVALUATE
-        | EXECUTE
-        | FACET
-        | FORK
-        | FROM
-        | GUID
-        | HIDDEN_
-        | HOT
-        | HOTDATA
-        | HOTINDEX
-        | ID
-        | INTO
-        | LEGEND
-        | LET
-        | LINEAR
-        | LOG
-        | LOOKUP
-        | LIST
-        | MAP
-        | NONE
-        | NULL
-        | NULLS
-        | ON
-        | OPTIONAL
-        | OUTPUT
-        | PACK
-        | PARTITION
-        | PARTITIONBY
-        | PATTERN
-        | PLUGIN
-        | QUERYPARAMETERS
-        | RANGE
-        | REDUCE
-        | REPLACE
-        | RENDER
-        | RESTRICT
-        | SERIES
-        | STACKED
-        | STACKED100
-        | STEP
-        | THRESHOLD
-        | TYPEOF
-        | UNSTACKED
-        | UUID
-        | VIEW
-        | VISIBLE
-        | WITH
-        | XAXIS
-        | XCOLUMN
-        | XMAX
-        | XMIN
-        | XTITLE
-        | YAXIS
-        | YCOLUMNS
-        | YMAX
-        | YMIN
-        | YTITLE
-        | YSPLIT
-    );
-
-extendedNameKeywords:
-      nameKeywords
-    | ACCUMULATE
-    | AS
-    | BY
-    | CONTAINS
-    | CONSUME
-    | COUNT
-    | DATATABLE
-    | DISTINCT
-    | EXTEND
-    | EXTERNALDATA
-    | FIND
-    | FILTER
-    | HAS
-    | IN
-    | INVOKE
-    | LIMIT
-    | MATERIALIZE
-    | OF
-    | PARSE
-    | PRINT
-    | SAMPLE
-    | SAMPLE_DISTINCT
-    | SCAN
-    | SEARCH
-    | SERIALIZE
-    | SET
-    | SORT
-    | SUMMARIZE
-    | TAKE
-    | TITLE
-    | TO
-    | TOP
-    | TOSCALAR
-    | TOTABLE
-    | TOP_NESTED
-    | TOP_HITTERS
-    | WHERE
-    ;
 
 ///////////////////////////////////////
 // Literals
 
+// all literals including with a sign prefix
 literalExpression:
-      SignedNumber=signedNumberLiteralExpression
-    | UnsignedNumber=unsignedLiteralExpression
+      Signed=signedLiteralExpression
+    | Unsigned=unsignedLiteralExpression
     ;
 
-// any literal that does not have a sign
+// any literal without allowing for a sign prefix
 unsignedLiteralExpression:
       Long=longLiteralExpression
     | Int=intLiteralExpression
@@ -1494,26 +1442,26 @@ unsignedLiteralExpression:
     ;
 
 // any number like literal (numbers, date and time) 
+numberLikeLiteralExpression:
+      Long=longLiteralExpression
+    | Int=intLiteralExpression
+    | Real=realLiteralExpression
+    | Decimal=decimalLiteralExpression
+    | Signed=signedLiteralExpression
+    | DateTime=dateTimeLiteralExpression
+    | TimeSpan=timeSpanLiteralExpression
+    ;
+
 numericLiteralExpression:
       Long=longLiteralExpression
     | Int=intLiteralExpression
     | Real=realLiteralExpression
     | Decimal=decimalLiteralExpression
-    | DateTime=dateTimeLiteralExpression
-    | TimeSpan=timeSpanLiteralExpression
-    | Signed=signedNumberLiteralExpression
-    ;
-
-numberLiteralExpression:
-      Long=longLiteralExpression
-    | Int=intLiteralExpression
-    | Real=realLiteralExpression
-    | Decimal=decimalLiteralExpression
-    | Signed=signedNumberLiteralExpression
+    | Signed=signedLiteralExpression
     ;
 
 // a number with a sign prefix
-signedNumberLiteralExpression:
+signedLiteralExpression:
     Long=signedLongLiteralExpression
     | Real=signedRealLiteralExpression
     ;

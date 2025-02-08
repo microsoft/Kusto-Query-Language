@@ -25,40 +25,44 @@ fragment EscapeSequence:
 ASTERISK: '*';
 ATSIGN: '@';
 BAR: '|';
-CLOSE_BRACE: '}';
-CLOSE_BRACKET: ']';
-CLOSE_PAREN: ')';
+CLOSEBRACE: '}';
+CLOSEBRACKET: ']';
+CLOSEBRACKET_DASH: ']-';
+CLOSEBRACKET_DASH_GREATERTHAN: ']->';
+CLOSEPAREN: ')';
 COMMA: ',';
 COLON: ':';
 DASH: '-';
+DASHDASH: '--';
+DASHDASH_GREATERTHAN: '-->';
+DASH_OPENBRACKET: '-[';
 DOT: '.';
 DOTDOT: '..';
 EQUAL: '=';
 EQUALEQUAL: '==';
 EQUALTILDE: '=~';
-EXCLAIMATIONPOINT: '!';
 EXCLAIMATIONPOINT_EQUAL: '!=';
 EXCLAIMATIONPOINT_TILDE: '!~';
 GREATERTHAN: '>';
 GREATERTHAN_EQUAL: '>=';
 LESSTHAN: '<';
+LESSTHAN_DASHDASH: '<--';
+LESSTHAN_DASH_OPENBRACKET: '<-[';
 LESSTHAN_EQUAL: '<=';
 LESSTHAN_GREATERTHAN: '<>';
-OPEN_BRACE: '{';
-OPEN_BRACKET: '[';
-OPEN_PAREN: '(';
+OPENBRACE: '{';
+OPENBRACKET: '[';
+OPENPAREN: '(';
 PERCENTSIGN: '%';
 PLUS: '+';
-QUESTIONMARK: '?';
 SEMICOLON: ';';
 SLASH: '/';
-FATARROW: '=>';
+EQUAL_GREATERTHAN: '=>';
 
-// keyword tokens
+// keywords and contextual keywords
 CHART3D_: '3Dchart';
 ACCESS: 'access';
 ACCUMULATE: 'accumulate';
-ADMINS: 'admins';
 AGGREGATIONS: 'aggregations';
 ALIAS: 'alias';
 ALL: 'all';
@@ -68,6 +72,7 @@ ANOMALYCOLUMNS: 'anomalycolumns';
 AREACHART: 'areachart';
 AS: 'as';
 ASC: 'asc';
+ASSERTSCHEMA: 'assert-schema';
 AXES: 'axes';
 BAGEXPANSION: 'bagexpansion';
 BARCHART: 'barchart';
@@ -96,6 +101,7 @@ DEFAULT: 'default';
 DELTA: 'delta';
 DESC: 'desc';
 DISTINCT: 'distinct';
+EDGES: 'edges';
 ENDSWITH: 'endswith';
 ENDSWITH_CS: 'endswith_cs';
 ENTITYGROUP: 'entity_group';
@@ -111,14 +117,16 @@ FILTER: 'filter';
 FIND: 'find';
 FIRST: 'first';
 FLAGS: 'flags';
-FOLDER: 'folder';
 FORK: 'fork';
 FROM: 'from';
-FUNCTION: 'function';
 GETSCHEMA: 'getschema';
 GRANNYASC: 'granny-asc';
 GRANNYDESC: 'granny-desc';
-GROUPS: 'groups';
+GRAPHMARKCOMPONENTS: 'graph-mark-components';
+GRAPHMATCH: 'graph-match';
+GRAPHMERGE: 'graph-merge';
+GRAPHSHORTESTPATHS: 'graph-shortest-paths';
+GRAPHTOTABLE: 'graph-to-table';
 HAS: 'has';
 HAS_ALL: 'has_all';
 HAS_ANY: 'has_any';
@@ -166,19 +174,19 @@ LIST: 'list';
 LOOKUP: 'lookup';
 LOG: 'log';
 MACROEXPAND: 'macro-expand';
-MAKE_SERIES: 'make-series';
+MAKEGRAPH: 'make-graph';
+MAKESERIES: 'make-series';
 MAP: 'map';
 MATCHES_REGEX: 'matches regex';
 MATERIALIZE: 'materialize';
-MATERIALIZED_VIEW: 'materialized-view';
 MATERIALIZED_VIEW_COMBINE: 'materialized-view-combine';
 MV_APPLY: 'mv-apply';
 MV_EXPAND: 'mv-expand';
 MVAPPLY: 'mvapply';
 MVEXPAND: 'mvexpand';
+NODES: 'nodes';
 NONE: 'none';
 NOOPTIMIZATION: 'nooptimization';
-
 NOT_BETWEEN: '!between';
 NOT_CONTAINS: '!contains';
 NOT_CONTAINS_CS: '!contains_cs';
@@ -210,9 +218,11 @@ OUTPUT: 'output';
 PACK: 'pack';
 PANELS: 'panels';
 PARSE: 'parse';
+PARSEKV: 'parse-kv';
 PARSEWHERE: 'parse-where';
 PARTITION: 'partition';
 PARTITIONBY: '__partitionby';
+PARTITIONEDBY: 'partitioned-by';
 PATTERN: 'pattern';
 PACKEDCOLUMN__: '__packedColumn';
 PIECHART: 'piechart';
@@ -251,7 +261,6 @@ STACKEDAREACHART: 'stackedareachart';
 STARTSWITH: 'startswith';
 STARTSWITH_CS: 'startswith_cs';
 STEP: 'step';
-STORED_QUERY_RESULTS: 'stored-query-results';
 SUMMARIZE: 'summarize';
 TABLE: 'table';
 TAKE: 'take';
@@ -267,7 +276,6 @@ TOP_NESTED: 'top-nested';
 TOSCALAR: 'toscalar';
 TOTABLE: 'totable';
 TREEMAP: 'treemap';
-TYPE: 'type';
 TYPEOF: 'typeof';
 UNION: 'union';
 UNSTACKED: 'unstacked';
@@ -280,51 +288,48 @@ WITHNOSOURCE__: '__noWithSource';
 WITHSOURCE: 'withsource';
 WITH_ITEM_INDEX: 'with_itemindex';
 WITH_MATCH_ID: 'with_match_id';
-WITH_STEP_NAME: 'with_step_name';
+WITH_NODE_ID: 'with_node_id';
 WITH_SOURCE: 'with_source';
-
-// render properties
+WITH_STEP_NAME: 'with_step_name';
 XAXIS: 'xaxis';
 XCOLUMN: 'xcolumn';
-XMIN: 'xmin';
 XMAX: 'xmax';
+XMIN: 'xmin';
 XTITLE: 'xtitle';
 YAXIS: 'yaxis';
 YCOLUMNS: 'ycolumns';
-YMIN: 'ymin';
 YMAX: 'ymax';
+YMIN: 'ymin';
 YSPLIT: 'ysplit';
 YTITLE: 'ytitle';
 
 // types
 BOOL: 'bool';
 BOOLEAN: 'boolean';
-INT8: 'int8';
-CHAR: 'char';
-UINT8: 'uint8';
-BYTE: 'byte';
-INT16: 'int16';
-UINT16: 'uint16';
-INT: 'int';
-INT32: 'int32';
-UINT: 'uint';
-UINT32: 'uint32';
-LONG: 'long';
-INT64: 'int64';
-ULONG: 'ulong';
-UINT64: 'uint64';
-FLOAT: 'float';
-REAL: 'real';
-DOUBLE: 'double';
-STRING: 'string';
-TIME: 'time';
-TIMESPAN: 'timespan';
 DATE: 'date';
 DATETIME: 'datetime';
-GUID: 'guid';
-UNIQUEID: 'uniqueid';
-DYNAMIC: 'dynamic';
 DECIMAL: 'decimal';
+DOUBLE: 'double';
+DYNAMIC: 'dynamic';
+FLOAT: 'float';
+GUID: 'guid';
+INT: 'int';
+INT8: 'int8';
+INT16: 'int16';
+INT32: 'int32';
+INT64: 'int64';
+LONG: 'long';
+STRING: 'string';
+REAL: 'real';
+TIME: 'time';
+TIMESPAN: 'timespan';
+UINT: 'uint';
+UINT8: 'uint8';
+UINT16: 'uint16';
+UINT32: 'uint32';
+UINT64: 'uint64';
+ULONG: 'ulong';
+UNIQUEID: 'uniqueid';
 
 fragment LparenGooRparen:
     '(' (~')')* ')';
@@ -425,14 +430,14 @@ TIMESPANLITERAL:
 TYPELITERAL:
     TYPEOF LparenGooRparen;
 
-UUIDLITERAL:
+RAWGUIDLITERAL:
     EightHexDigits '-' FourHexDigits '-' FourHexDigits '-' FourHexDigits '-' TwelveHexDigits;
 
 GUIDLITERAL:
       GUID LparenGooRparen
     | UUID LparenGooRparen
     | UNIQUEID LparenGooRparen
-;
+    ;
 
 fragment FourHexDigits:
     HexDigit HexDigit HexDigit HexDigit;
@@ -446,37 +451,36 @@ fragment TwelveHexDigits:
 IDENTIFIER:
       ('$' | '_' | 'a'..'z' | 'A'..'Z') ('_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*
     | ('0'..'9')+ ('_' | 'a'..'z' | 'A'..'Z') ('_' | 'a'..'z' | 'A'..'Z' | '0'..'9')*
-;
-
-SP:
-    (WHITESPACE)+ -> channel(HIDDEN);
+    ;
 
 WHITESPACE:
-      '\t'
-    | ' '
-    | '\r'
-    | '\n'
-    | '\f'
-    | '\u00a0'
-    | '\u1680'
-    | '\u180e'
-    | '\u2000'
-    | '\u2001'
-    | '\u2002'
-    | '\u2003'
-    | '\u2004'
-    | '\u2005'
-    | '\u2006'
-    | '\u2007'
-    | '\u2008'
-    | '\u2009'
-    | '\u200a'
-    | '\u200b'
-    | '\u202f'
-    | '\u205f'
-    | '\u3000'
-    | '\ufeff'
-;
+    (
+          '\t'
+        | ' '
+        | '\r'
+        | '\n'
+        | '\f'
+        | '\u00a0'
+        | '\u1680'
+        | '\u180e'
+        | '\u2000'
+        | '\u2001'
+        | '\u2002'
+        | '\u2003'
+        | '\u2004'
+        | '\u2005'
+        | '\u2006'
+        | '\u2007'
+        | '\u2008'
+        | '\u2009'
+        | '\u200a'
+        | '\u200b'
+        | '\u202f'
+        | '\u205f'
+        | '\u3000'
+        | '\ufeff'
+    )+ 
+    -> channel(HIDDEN);
 
-LineComment:
+COMMENT:
     '//' ~('\n' | '\r' | '\u2028' | '\u2029')* -> channel(HIDDEN);
