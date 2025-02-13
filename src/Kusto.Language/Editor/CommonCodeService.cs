@@ -365,7 +365,7 @@ namespace Kusto.Language.Editor
                         }
 
                         var name = blockText.Substring(nameStart, nameLength);
-                        int? index = indexLength > 0 && Int32.TryParse(blockText.Substring(indexStart, indexLength), out var value) ? value : null;
+                        int? index = indexLength > 0 && Int32.TryParse(blockText.Substring(indexStart, indexLength), out var value) ? value : (int?)null;
                         list.Add(new ClientParameter(name, index, openBrace, len));
 
                         start = openBrace + len;
