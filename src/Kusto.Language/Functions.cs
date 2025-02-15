@@ -2907,6 +2907,13 @@ namespace Kusto.Language
         #endregion
 
         #region geospatial functions
+        public static readonly FunctionSymbol GeoFromWkt =
+            new FunctionSymbol("geo_from_wkt", ScalarTypes.GeoShape,
+                new Parameter("wkt", ParameterTypeKind.StringOrArray))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoAngle =
             new FunctionSymbol("geo_angle",
                 ScalarTypes.Real,
@@ -3987,6 +3994,7 @@ namespace Kusto.Language
 #endregion
 
 #region geospatial functions
+            GeoFromWkt,
             GeoAngle,
             GeoAzimuth,
             GeoDistance2Points,

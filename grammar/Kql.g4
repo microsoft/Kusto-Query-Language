@@ -397,7 +397,7 @@ graphMatchPatternNamedEdge:
     ;
 
 graphMatchPatternRange:
-    ASTERISK Start=invocationExpression DOTDOT End=invocationExpression;
+    ASTERISK LowerBound=invocationExpression DOTDOT UpperBound=invocationExpression;
 
 graphMatchWhereClause:
     WHERE Expression=expression;
