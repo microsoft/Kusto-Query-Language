@@ -82,6 +82,11 @@ namespace Kusto.Language.Symbols
         Graph = Option << 1,
 
         /// <summary>
+        /// Any stored query result
+        /// </summary>
+        StoredQueryResult = Graph << 1,
+
+        /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
         Any = Column | Table | Function | View | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup | Graph,
@@ -118,7 +123,7 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Column) != 0 && symbol is ColumnSymbol)
                 return true;
 
-            if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal && !ts.IsMaterializedView)
+            if ((match & SymbolMatch.Table) != 0 && symbol is TableSymbol ts && !ts.IsExternal && !ts.IsMaterializedView && !ts.IsStoredQueryResult)
                 return true;
 
             if ((match & SymbolMatch.ExternalTable) != 0 && symbol is TableSymbol ets && ets.IsExternal)
@@ -137,6 +142,9 @@ namespace Kusto.Language.Symbols
                 return true;
 
             if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
+                return true;
+
+            if ((match & SymbolMatch.StoredQueryResult) != 0 && symbol is StoredQueryResultSymbol)
                 return true;
 
             if ((match & SymbolMatch.Scalar) != 0 && (match & SymbolMatch.Tabular) == 0 && !symbol.IsScalar)

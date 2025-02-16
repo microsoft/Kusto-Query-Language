@@ -150,6 +150,11 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// An external table
         /// </summary>
-        ExternalTable = Option << 1
+        ExternalTable = Option << 1,
+
+        /// <summary>
+        /// A stored query result
+        /// </summary>
+        StoredQueryResult = ExternalTable << 1,
     }
 }

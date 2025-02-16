@@ -50,15 +50,16 @@ namespace Kusto.Language
         public static readonly FunctionSymbol StoredQueryResult =
             new FunctionSymbol("stored_query_result",
                 new Signature(
-                    context => TableSymbol.Empty.WithIsOpen(true), // we don't want to resolve schema of SQR for now
-                    Tabularity.Tabular,
-                    new Parameter("name", ScalarTypes.String),
-                    new Parameter("index", ScalarTypes.Long, minOccurring: 0)),
+                    ReturnTypeKind.Parameter0StoredQueryResult,
+                    new Parameter("name", ScalarTypes.String)),
                 new Signature(
-                    context => TableSymbol.Empty.WithIsOpen(true), // we don't want to resolve schema of SQR for now
-                    Tabularity.Tabular,
+                    ReturnTypeKind.Parameter0StoredQueryResult,
                     new Parameter("name", ScalarTypes.String),
-                    new Parameter("table_name", ScalarTypes.String, minOccurring: 0)));
+                    new Parameter("index", ScalarTypes.Long)),
+                new Signature(
+                    ReturnTypeKind.Parameter0StoredQueryResult,
+                    new Parameter("name", ScalarTypes.String),
+                    new Parameter("table_name", ScalarTypes.String)));
 
         #endregion
 

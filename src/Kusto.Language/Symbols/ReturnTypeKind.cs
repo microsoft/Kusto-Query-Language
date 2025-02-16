@@ -122,5 +122,11 @@ namespace Kusto.Language.Symbols
         /// If the argument for parameter 0 is a constant string the named entity group is returned.
         /// </summary>
         Parameter0EntityGroup,
+
+        /// <summary>
+        /// The return type is a stored query result.
+        /// If the argument for parameter 0 is a constant string the named stored query result is returned.
+        /// </summary>
+        Parameter0StoredQueryResult,
     }
 }

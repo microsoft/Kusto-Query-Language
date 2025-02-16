@@ -535,6 +535,17 @@ namespace Kusto.Language.Binding
                     {
                         return new EntityGroupSymbol();
                     }
+                case ReturnTypeKind.Parameter0StoredQueryResult:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[0]);
+                    if (iArg >= 0 && iArg < arguments.Count
+                        && TryGetLiteralStringValue(arguments[iArg], out var sqrName))
+                    {
+                        return GetStoredQueryResultFunctionResult(sqrName, arguments[iArg], diagnostics);
+                    }
+                    else
+                    {
+                        return StoredQueryResultSymbol.Empty;
+                    }
                 case ReturnTypeKind.Custom:
                     var context = new BinderCallContext(this, location as SyntaxNode, arguments, argumentTypes, argumentParameters, signature);
                     return signature.CustomReturnType(context) ?? ErrorSymbol.Instance;
@@ -1060,6 +1071,34 @@ namespace Kusto.Language.Binding
             }
 
             return entityGroup;
+        }
+
+        /// <summary>
+        /// Gets the result of calling the stored_query_result() function in the current context.
+        /// </summary>
+        private TypeSymbol GetStoredQueryResultFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        {
+            var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
+            StoredQueryResultSymbol sqr = db.GetStoredQueryResult(name);
+
+            if (sqr == null)
+            {
+                if (diagnostics != null && location != null)
+                {
+                    if (_isFuzzy)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetFuzzyStoredQueryResultNotDefined(name).WithLocation(location));
+                    }
+                    else
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownStoredQueryResult(name).WithLocation(location));
+                    }
+                }
+
+                sqr = new StoredQueryResultSymbol(name, EmptyReadOnlyList<ColumnSymbol>.Instance);
+            }
+
+            return sqr;
         }
 
         /// <summary>
@@ -2436,6 +2475,7 @@ namespace Kusto.Language.Binding
             || symbol == Functions.ExternalTable
             || symbol == Functions.MaterializedView
             || symbol == Functions.EntityGroup
+            || symbol == Functions.StoredQueryResult
             || symbol == Functions.Database
             || symbol == Functions.Cluster;
 

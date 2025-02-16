@@ -1097,6 +1097,7 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Graph:
                 case SymbolKind.EntityGroup:
                 case SymbolKind.EntityGroupElement:
+                case SymbolKind.StoredQueryResult:
                     return new SemanticInfo(referencedSymbol, GetResultType(referencedSymbol), diagnostics);
                 case SymbolKind.Parameter:
                     // parameter is treated as probably constant so we don't raise an error diagnostic

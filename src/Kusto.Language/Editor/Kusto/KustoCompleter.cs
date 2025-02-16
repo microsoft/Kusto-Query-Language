@@ -430,6 +430,7 @@ namespace Kusto.Language.Editor
                 case CompletionKind.MaterialiedView:
                 case CompletionKind.EntityGroup:
                 case CompletionKind.Graph:
+                case CompletionKind.StoredQueryResult:
                     return CompletionRank.Entity;
 
                 case CompletionKind.Variable:
@@ -1500,6 +1501,23 @@ namespace Kusto.Language.Editor
                     GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
                     return true;
 
+                case ReturnTypeKind.Parameter0StoredQueryResult:
+                    // show either the dotted database's table names or the global database's table names
+                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression sqr)
+                    {
+                        if (sqr.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.StoredQueryResults));
+                        }
+                    }
+                    else
+                    {
+                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.StoredQueryResults));
+                    }
+
+                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                    return true;
+
                 default:
                     return false;
             }
@@ -1777,6 +1795,9 @@ namespace Kusto.Language.Editor
 
             if ((hint & CompletionHint.Graph) != 0)
                 match |= SymbolMatch.Graph;
+
+            if ((hint & CompletionHint.StoredQueryResult) != 0)
+                match |= SymbolMatch.StoredQueryResult;
 
             return match;
         }
@@ -2852,6 +2873,8 @@ namespace Kusto.Language.Editor
                     return CompletionKind.EntityGroup;
                 case SymbolKind.Graph:
                     return CompletionKind.Graph;
+                case SymbolKind.StoredQueryResult:
+                    return CompletionKind.StoredQueryResult;
                 case SymbolKind.Primitive:
                 case SymbolKind.Tuple:
                 case SymbolKind.Array:

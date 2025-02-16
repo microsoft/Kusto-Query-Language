@@ -425,6 +425,7 @@ namespace Kusto.Language.Symbols
                         case ReturnTypeKind.Parameter0Database:
                         case ReturnTypeKind.Parameter0Cluster:
                         case ReturnTypeKind.Parameter0EntityGroup:
+                        case ReturnTypeKind.Parameter0StoredQueryResult:
                             return Tabularity.Tabular;
                         default:
                             return Tabularity.Scalar;
@@ -499,6 +500,9 @@ namespace Kusto.Language.Symbols
 
                 case ReturnTypeKind.Parameter0EntityGroup:
                     return new EntityGroupSymbol();
+
+                case ReturnTypeKind.Parameter0StoredQueryResult:
+                    return StoredQueryResultSymbol.Empty;
 
                 default:
                     return this.Tabularity == Tabularity.Tabular
@@ -610,6 +614,9 @@ namespace Kusto.Language.Symbols
 
                 case ReturnTypeKind.Parameter0EntityGroup:
                     return new EntityGroupSymbol();
+
+                case ReturnTypeKind.Parameter0StoredQueryResult:
+                    return StoredQueryResultSymbol.Empty;
 
                 default:
                     return this.Tabularity == Tabularity.Tabular

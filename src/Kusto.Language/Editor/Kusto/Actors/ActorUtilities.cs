@@ -350,7 +350,8 @@ namespace Kusto.Language.Editor
             fs == Functions.Table
             || fs == Functions.ExternalTable
             || fs == Functions.MaterializedView
-            || fs == Functions.EntityGroup;
+            || fs == Functions.EntityGroup
+            || fs == Functions.StoredQueryResult;
 
         /// <summary>
         /// Gets the portion of the entity expression from the start of the full entity expression
@@ -515,7 +516,8 @@ namespace Kusto.Language.Editor
                 && (fc.ReferencedSymbol == Functions.Table
                     || fc.ReferencedSymbol == Functions.ExternalTable
                     || fc.ReferencedSymbol == Functions.MaterializedView
-                    || fc.ReferencedSymbol == Functions.EntityGroup))
+                    || fc.ReferencedSymbol == Functions.EntityGroup
+                    || fc.ReferencedSymbol == Functions.StoredQueryResult))
             {
                 return fc.ResultType;
             }

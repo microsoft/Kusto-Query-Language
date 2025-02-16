@@ -145,5 +145,10 @@ namespace Kusto.Language.Editor
         /// A query option
         /// </summary>
         Option,
+
+        /// <summary>
+        /// The name of a stored query result.
+        /// </summary>
+        StoredQueryResult,
     }
 }

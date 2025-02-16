@@ -455,6 +455,10 @@ namespace Kusto.Language.Binding
                     {
                         list.Add(Functions.EntityGroup);
                     }
+                    else if (name == Functions.StoredQueryResult.Name)
+                    {
+                        list.Add(Functions.StoredQueryResult);
+                    }
                     else
                     {
                         _pathScope.GetMembers(name, SymbolMatch.Function | SymbolMatch.View, list);

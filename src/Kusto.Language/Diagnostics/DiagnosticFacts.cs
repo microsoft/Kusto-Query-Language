@@ -763,6 +763,9 @@ namespace Kusto.Language
         public static Diagnostic GetFuzzyFunctionNotDefined(string name = null) =>
             GetFuzzyEntityNotDefined(name, "function");
 
+        public static Diagnostic GetFuzzyStoredQueryResultNotDefined(string name = null) =>
+            GetFuzzyEntityNotDefined(name, "stored query result");
+
         public static Diagnostic GetExpressionMustBeOrderable()
         {
             return new Diagnostic("KS206", "The argument value must be orderable: a number, timespan, datetime, string or boolean.");
@@ -977,6 +980,11 @@ namespace Kusto.Language
         public static Diagnostic GetNameDoesNotReferToAnyKnownEntityGroup(string name)
         {
             return new Diagnostic("KS247", $"The name '{name}' does not refer to any known entity group.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownStoredQueryResult(string name)
+        {
+            return new Diagnostic("KS248", $"The name '{name}' does not refer to any known stored query result.");
         }
 
         #region command diagnostics

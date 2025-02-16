@@ -127,5 +127,10 @@ namespace Kusto.Language.Symbols
         /// A named entity group element (via macro-expand)
         /// </summary>
         EntityGroupElement,
+
+        /// <summary>
+        /// A stored query result element.
+        /// </summary>
+        StoredQueryResult,
     }
 }

@@ -26,6 +26,7 @@ namespace Kusto.Language.Symbols
         private IReadOnlyList<MaterializedViewSymbol> _materializedViews;
         private IReadOnlyList<FunctionSymbol> _functions;
         private IReadOnlyList<EntityGroupSymbol> _entityGroups;
+        private IReadOnlyList<StoredQueryResultSymbol> _storedQueryResults;
         private HashSet<Symbol> _symbolSet;
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace Kusto.Language.Symbols
                 if (_tables == null)
                 {
                     _tables = this.Members.OfType<TableSymbol>()
-                        .Where(ts => !ts.IsExternal && !ts.IsMaterializedView).ToReadOnly();
+                        .Where(ts => !ts.IsExternal && !ts.IsMaterializedView && !ts.IsStoredQueryResult).ToReadOnly();
                 }
 
                 return _tables;
@@ -156,6 +157,21 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// The stored query results contained by the database.
+        /// </summary>
+        public IReadOnlyList<StoredQueryResultSymbol> StoredQueryResults
+        {
+            get
+            {
+                if (_storedQueryResults == null)
+                {
+                    _storedQueryResults = this.Members.OfType<StoredQueryResultSymbol>().ToReadOnly();
+                }
+                return _storedQueryResults;
+            }
+        }
+
+        /// <summary>
         /// Gets the member with the specified name or returns null.
         /// </summary>
         public Symbol GetMember(string name)
@@ -211,6 +227,14 @@ namespace Kusto.Language.Symbols
         public EntityGroupSymbol GetEntityGroup(string name)
         {
             return this.EntityGroups.FirstOrDefault(eg => eg.Name == name);
+        }
+
+        /// <summary>
+        /// Gets the stored query result with the specified name or returns null.
+        /// </summary>
+        public StoredQueryResultSymbol GetStoredQueryResult(string name)
+        {
+            return this.StoredQueryResults.FirstOrDefault(sqr => sqr.Name == name);
         }
 
         /// <summary>

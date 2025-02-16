@@ -109,7 +109,7 @@ namespace Kusto.Language.Symbols
             return new TableSymbol(columns);
         }
 
-        public override SymbolKind Kind => IsMaterializedView ? SymbolKind.MaterializedView : SymbolKind.Table;
+        public override SymbolKind Kind => SymbolKind.Table;
 
         public override IReadOnlyList<Symbol> Members => this.Columns;
 
@@ -139,6 +139,11 @@ namespace Kusto.Language.Symbols
         /// True if the table is a materialized view.
         /// </summary>
         public bool IsMaterializedView => this is MaterializedViewSymbol;
+
+        /// <summary>
+        /// True if the table is a stored query result.
+        /// </summary>
+        public bool IsStoredQueryResult => this is StoredQueryResultSymbol;
 
         /// <summary>
         /// Construct a new <see cref="TableSymbol"/> if one of the optional arguments is different that the current values.
@@ -516,6 +521,8 @@ namespace Kusto.Language.Symbols
         {
             return new MaterializedViewSymbol(name, state, columns, description, this.MaterializedViewQuery);
         }
+
+        public override SymbolKind Kind => SymbolKind.MaterializedView;
     }
 
     /// <summary>
@@ -552,5 +559,20 @@ namespace Kusto.Language.Symbols
         {
             return new ExternalTableSymbol(name, state, columns, description);
         }
+    }
+
+    public sealed class StoredQueryResultSymbol : TableSymbol
+    {
+        public StoredQueryResultSymbol(string name)
+            : base(name, EmptyReadOnlyList<ColumnSymbol>.Instance)
+        {
+        }
+
+        public StoredQueryResultSymbol(string name, IEnumerable<ColumnSymbol> columns)
+            : base(name, columns)
+        {
+        }
+
+        public override SymbolKind Kind => SymbolKind.StoredQueryResult;
     }
 }
