@@ -684,8 +684,9 @@ namespace Kusto.Language.Parsing
                     First(
                         Token("dimensionMaterializedViews"),
                         Token("dimensionTables"),
+                        Token("lookback_column"),
                         Token("lookback"),
-                        If(Not(And(Token("dimensionMaterializedViews", "dimensionTables", "lookback"))), rules.NameDeclaration)),
+                        If(Not(And(Token("dimensionMaterializedViews", "dimensionTables", "lookback_column", "lookback"))), rules.NameDeclaration)),
                     RequiredToken("="),
                     Required(rules.Value, rules.MissingValue),
                     shape134);
@@ -821,9 +822,10 @@ namespace Kusto.Language.Parsing
                                     Token("docString"),
                                     Token("effectiveDateTime"),
                                     Token("folder"),
+                                    Token("lookback_column"),
                                     Token("lookback"),
                                     Token("updateExtentsCreationTime"),
-                                    If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionMaterializedViews", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback", "updateExtentsCreationTime"))), rules.NameDeclaration)),
+                                    If(Not(And(Token("autoUpdateSchema", "backfill", "dimensionMaterializedViews", "dimensionTables", "docString", "effectiveDateTime", "folder", "lookback_column", "lookback", "updateExtentsCreationTime"))), rules.NameDeclaration)),
                                 RequiredToken("="),
                                 Required(rules.Value, rules.MissingValue),
                                 shape134)),
