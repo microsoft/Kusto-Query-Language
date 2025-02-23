@@ -3178,6 +3178,45 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
+        public static readonly FunctionSymbol GeoLineLocatePoint =
+            new FunctionSymbol("geo_line_locate_point",
+                ScalarTypes.Real,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoLineInterpolatePoint =
+            new FunctionSymbol("geo_line_interpolate_point",
+                ScalarTypes.GeoShape,
+                new Parameter("lineString", ParameterTypeKind.DynamicBag),
+                new Parameter("fraction", ParameterTypeKind.Number))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoClosestPointOnLine =
+            new FunctionSymbol("geo_closest_point_on_line",
+                ScalarTypes.GeoShape,
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("lineString", ParameterTypeKind.DynamicBag))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
+        public static readonly FunctionSymbol GeoClosestPointOnPolygon =
+            new FunctionSymbol("geo_closest_point_on_polygon",
+                ScalarTypes.GeoShape,
+                new Parameter("longitude", ParameterTypeKind.Number),
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("polygon", ParameterTypeKind.DynamicBag))
+            .WithResultNameKind(ResultNameKind.None)
+            .ConstantFoldable()
+            .Hide();
+
         public static readonly FunctionSymbol GeoPolygonSimplify =
             new FunctionSymbol("geo_polygon_simplify",
                 ScalarTypes.GeoShape,
@@ -3998,6 +4037,8 @@ namespace Kusto.Language
             GeoFromWkt,
             GeoAngle,
             GeoAzimuth,
+            GeoClosestPointOnLine,
+            GeoClosestPointOnPolygon,
             GeoDistance2Points,
             GeoDistancePointToLine,
             GeoDistancePointToPolygon,
@@ -4028,6 +4069,8 @@ namespace Kusto.Language
             GeoLineCentroid,
             GeoLineDensify,
             GeoLineSimplify,
+            GeoLineLocatePoint,
+            GeoLineInterpolatePoint,
             GeoLineValidate,
             GeoLineToS2Cells,
             GeoLengthToS2CellLevel,
