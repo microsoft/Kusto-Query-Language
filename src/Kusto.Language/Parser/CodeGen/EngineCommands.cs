@@ -48,7 +48,7 @@ namespace Kusto.Language
         private static readonly string _schema18 = "()";
         private static readonly string _schema19 = "(WorkloadGroupName: string, WorkloadGroup:string)";
         private static readonly string _schema20 = "(PolicyName: string, EntityName: string, Policy: string, ChildEntities: string, EntityType: string)";
-        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationPendingArtifactSize:long, AccelerationCompletePercentage: double, NotHealthyReason: string)";
+        private static readonly string _schema21 = "(ExternalTableName: string, IsEnabled: bool, Hot: timespan, HotSize: long, LastUpdatedDateTime: datetime, AccelerationPendingArtifactCount:long, AccelerationPendingArtifactSize:long, AccelerationCompletePercentage: double, NotHealthyReason: string)";
         private static readonly string _schema22 = "(Name: string, Kind: string, ConnectionString: string, IsEnabled: bool, AutoApplyToNewTables: bool)";
         private static readonly string _schema23 = "(Scope: string, DisplayName: string, AADObjectID: string, Role: string)";
         private static readonly string _schema24 = "(Role: string, PrincipalType: string, PrincipalDisplayName: string, PrincipalObjectId: string, PrincipalFQN: string, Notes: string, RoleAssignmentIdentifier: string)";
