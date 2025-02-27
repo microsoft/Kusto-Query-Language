@@ -575,5 +575,18 @@ namespace Kusto.Language.Parsing
             var startOfLine = GetLineStart(text, position);
             return GetWhitespace(text, startOfLine);
         }
+
+        /// <summary>
+        /// Gets the text of the line for the specified 1-based line number.
+        /// </summary>
+        public static string GetLineText(string text, int line)
+        {
+            if (TryGetLineStart(text, line, out var lineStart))
+            {
+                var lineEnd = GetLineEnd(text, lineStart);
+                return text.Substring(lineStart, lineEnd - lineStart);
+            }
+            return "";
+        }
     }
 }

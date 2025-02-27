@@ -3681,6 +3681,13 @@ namespace Kusto.Language
                 new Parameter("ip", ScalarTypes.String))
             .ConstantFoldable()
             .WithResultNameKind(ResultNameKind.None);
+
+        public static readonly FunctionSymbol ColumnNamesOf =
+            new FunctionSymbol("column_names_of", ScalarTypes.DynamicArrayOfString,
+                new Parameter("table", ParameterTypeKind.Tabular))
+            .ConstantFoldable()
+            .WithResultNameKind(ResultNameKind.None)
+            .Hide();
         #endregion
 
         #region All
@@ -4165,7 +4172,8 @@ namespace Kusto.Language
             NewGuid,
             Invoke,
             Cast,
-            IpGeoLocation
+            IpGeoLocation,
+            ColumnNamesOf,
 #endregion
         };
         #endregion

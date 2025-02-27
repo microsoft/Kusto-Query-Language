@@ -1048,7 +1048,7 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// Gets the result of calling the entity_group() function in the current context.
         /// </summary>
-        private TypeSymbol GetEntityGroupFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
+        private FunctionCallResult GetEntityGroupFunctionResult(string name, SyntaxNode location, List<Diagnostic> diagnostics)
         {
             var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
             var entityGroup = db.GetEntityGroup(name);
@@ -1069,6 +1069,11 @@ namespace Kusto.Language.Binding
 
                 return new EntityGroupSymbol();
             }
+
+            // return the computed result of the signature that refers to the entity group declaration.
+            // This will allow the facts about the entities in the group to be visible to analysis.
+            if (entityGroup.Signature != null)
+                return this.GetComputedFunctionCallResult(entityGroup.Signature);
 
             return entityGroup;
         }
