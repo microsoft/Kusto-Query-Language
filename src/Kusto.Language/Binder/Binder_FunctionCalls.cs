@@ -1445,7 +1445,7 @@ namespace Kusto.Language.Binding
             Expression argument,
             TypeSymbol argumentType)
         {
-            return GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType, AllowLooseParameterMatching(signature));
+            return GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType, AllowImplicitArgumentCoercion(signature));
         }
 
         /// <summary>
@@ -1458,7 +1458,7 @@ namespace Kusto.Language.Binding
             Parameter parameter,
             Expression argument,
             TypeSymbol argumentType,
-            bool allowLooseParameterMatching)
+            bool allowImplicitArgumentCoercion)
         {
             if (parameter == null)
                 return ParameterMatchKind.None;
@@ -1504,12 +1504,12 @@ namespace Kusto.Language.Binding
                     {
                         return ParameterMatchKind.Promoted;
                     }
-                    else if (allowLooseParameterMatching
+                    else if (allowImplicitArgumentCoercion
                         && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Dynamic))
                     {
                         return ParameterMatchKind.Dynamic;
                     }
-                    else if (allowLooseParameterMatching
+                    else if (allowImplicitArgumentCoercion
                         && SymbolsAssignable(parameter.DeclaredTypes, argumentType, Conversion.Compatible))
                     {
                         return ParameterMatchKind.Compatible;
@@ -1606,13 +1606,13 @@ namespace Kusto.Language.Binding
                     break;
 
                 case ParameterTypeKind.Parameter0:
-                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[0], argument, argumentType, allowLooseParameterMatching);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[0], argument, argumentType, allowImplicitArgumentCoercion);
 
                 case ParameterTypeKind.Parameter1:
-                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[1], argument, argumentType, allowLooseParameterMatching);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[1], argument, argumentType, allowImplicitArgumentCoercion);
 
                 case ParameterTypeKind.Parameter2:
-                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[2], argument, argumentType, allowLooseParameterMatching);
+                    return GetParameterMatchKind(signature, argumentParameters, argumentTypes, argumentParameters[2], argument, argumentType, allowImplicitArgumentCoercion);
 
                 case ParameterTypeKind.CommonScalar:
                 case ParameterTypeKind.CommonNumber:
@@ -1634,7 +1634,7 @@ namespace Kusto.Language.Binding
                         {
                             return ParameterMatchKind.Dynamic;
                         }
-                        else if (allowLooseParameterMatching
+                        else if (allowImplicitArgumentCoercion
                             && SymbolsAssignable(commonType, argumentType, Conversion.Compatible))
                         {
                             return ParameterMatchKind.Compatible;

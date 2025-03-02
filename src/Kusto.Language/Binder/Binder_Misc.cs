@@ -1889,7 +1889,7 @@ namespace Kusto.Language.Binding
 
                 if (!resultType.IsError)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetTableExpected().WithLocation(expression));
+                    diagnostics.Add(DiagnosticFacts.GetTabularValueExpected().WithLocation(expression));
                 }
             }
 
@@ -2392,11 +2392,17 @@ namespace Kusto.Language.Binding
             return fn != null && !_globals.IsBuiltInFunction(fn);
         }
 
-        private bool AllowLooseParameterMatching(Signature signature)
+        /// <summary>
+        /// True if the signature allows implicit argument coercion.
+        /// Most built-in function require arguments to explicitly match types of parameters.
+        /// User functions, however, allow implicit coercion of scalar arguments.
+        /// </summary>
+        private bool AllowImplicitArgumentCoercion(Signature signature)
         {
+            // check to see if function is user function.
             return signature.Symbol is FunctionSymbol fs
-                && (_globals.IsDatabaseFunction(fs)
-                || fs.Signatures[0].Declaration != null); // user function have declarations
+                && (_globals.IsDatabaseFunction(fs)  // user function stored in database
+                    || fs.Signatures[0].Declaration != null); // local user function have declarations (built-in functions do not).
         }
 
         private void CheckArgument(Signature signature, IReadOnlyList<Parameter> argumentParameters, IReadOnlyList<Expression> arguments, IReadOnlyList<TypeSymbol> argumentTypes, int argumentIndex, List<Diagnostic> diagnostics)
@@ -2436,15 +2442,34 @@ namespace Kusto.Language.Binding
                             break;
 
                         case ParameterTypeKind.Declared:
-                            switch (GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType))
+                            if (parameter.DeclaredTypes.Count == 1 
+                                && parameter.DeclaredTypes[0] is TableSymbol tablePattern)
                             {
-                                case ParameterMatchKind.Compatible:
-                                case ParameterMatchKind.None:
-                                    if (!AllowLooseParameterMatching(signature))
+                                if (argumentType is TableSymbol argumentTable)
+                                {
+                                    var compatible = tablePattern.Columns.All(c => argumentTable.TryGetColumn(c.Name, out var ac) && SymbolsAssignable(c.Type, ac.Type, Conversion.None));
+                                    if (!compatible)
                                     {
-                                        diagnostics.Add(DiagnosticFacts.GetTypeExpected(parameter.DeclaredTypes).WithLocation(argument));
+                                        diagnostics.Add(DiagnosticFacts.GetTabularValueDoesNotHaveRequiredColumns().WithLocation(argument));
                                     }
-                                    break;
+                                }
+                                else
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetTabularValueExpected().WithLocation(argument));
+                                }
+                            }
+                            else
+                            {
+                                switch (GetParameterMatchKind(signature, argumentParameters, argumentTypes, parameter, argument, argumentType))
+                                {
+                                    case ParameterMatchKind.Compatible:
+                                    case ParameterMatchKind.None:
+                                        if (!AllowImplicitArgumentCoercion(signature))
+                                        {
+                                            diagnostics.Add(DiagnosticFacts.GetTypeExpected(parameter.DeclaredTypes).WithLocation(argument));
+                                        }
+                                        break;
+                                }
                             }
                             break;
 

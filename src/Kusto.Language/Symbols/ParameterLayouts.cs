@@ -173,14 +173,14 @@ namespace Kusto.Language.Symbols
                     var arg = arguments != null ? arguments[iArg] : null;
                     var argType = argumentTypes[iArg];
                     var currentMatch = Binding.Binder.GetParameterMatchKind(
-                        signature, argumentParameters, argumentTypes, currentParam, arg, argType, allowLooseParameterMatching: false);
+                        signature, argumentParameters, argumentTypes, currentParam, arg, argType, allowImplicitArgumentCoercion: false);
 
                     var iNextParameter = iCurrentParameter + 1;
                     while (iNextParameter < signature.Parameters.Count)
                     {
                         var nextParam = signature.Parameters[iNextParameter];
                         var nextMatch = Binding.Binder.GetParameterMatchKind(
-                            signature, argumentParameters, argumentTypes, nextParam, arg, argType, allowLooseParameterMatching: false);
+                            signature, argumentParameters, argumentTypes, nextParam, arg, argType, allowImplicitArgumentCoercion: false);
 
                         if (currentMatch >= nextMatch && currentMatch != Binding.ParameterMatchKind.None)
                         {

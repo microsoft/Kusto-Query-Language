@@ -266,19 +266,19 @@ namespace Kusto.Language
             return new Diagnostic("KS110", "Column rename assignment expected.");
         }
 
-        public static Diagnostic GetTableExpected()
+        public static Diagnostic GetTabularValueExpected()
         {
-            return new Diagnostic("KS111", "Table expected.");
+            return new Diagnostic("KS111", "Tabular value expected.");
         }
 
         public static Diagnostic GetTableOrScalarExpected()
         {
-            return new Diagnostic("KS112", "A table or scalar value expected.");
+            return new Diagnostic("KS112", "A tabular or scalar value expected.");
         }
 
         public static Diagnostic GetSingleColumnTableExpected()
         {
-            return new Diagnostic("KS113", "A table with only one column expected.");
+            return new Diagnostic("KS113", "A tabular value with only one column expected.");
         }
 
         public static Diagnostic GetDatabaseExpected()
@@ -985,6 +985,19 @@ namespace Kusto.Language
         public static Diagnostic GetNameDoesNotReferToAnyKnownStoredQueryResult(string name)
         {
             return new Diagnostic("KS248", $"The name '{name}' does not refer to any known stored query result.");
+        }
+
+        public static Diagnostic GetTabularValueDoesNotHaveRequiredColumns()
+        {
+            return new Diagnostic("KS249", $"The tabular value does not have the required columns.");
+        }
+
+        /// <summary>
+        /// This is for expecting exactly a table reference, and not any other tabular expression.
+        /// </summary>
+        public static Diagnostic GetTableExpected()
+        {
+            return new Diagnostic("KS250", "Table expected.");
         }
 
         #region command diagnostics
