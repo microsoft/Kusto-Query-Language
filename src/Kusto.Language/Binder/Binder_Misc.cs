@@ -613,28 +613,11 @@ namespace Kusto.Language.Binding
                     }
                     else if (notation is GraphMatchPatternEdge edge && edge.Name != null)
                     {
-                        var local = CreateGraphMatchEdgeVariableSymbol(edge, edgeTuple);
+                        var local = new VariableSymbol(edge.Name.SimpleName, edgeTuple);
                         SetSemanticInfo(edge.Name, new SemanticInfo(local, edgeTuple));
                     }
                 }
             }
-        }
-
-        private VariableSymbol CreateGraphMatchEdgeVariableSymbol(GraphMatchPatternEdge edge, TupleSymbol edgeTuple)
-        {
-            if (edge.Range == null)
-            {
-                return new VariableSymbol(edge.Name.SimpleName, edgeTuple);
-            }
-
-            var newColumns = new ColumnSymbol[edgeTuple.Columns.Count];
-            for (int i = 0; i < edgeTuple.Columns.Count; i++)
-            {
-                var column = edgeTuple.Columns[i];
-                newColumns[i] = column.WithType(ScalarTypes.GetDynamicArray(column.Type));
-            }
-
-            return new VariableSymbol(edge.Name.SimpleName, new TupleSymbol(newColumns));
         }
 
         private void AddGraphMatchPatternDeclarationsToLocalScope(SyntaxList<SeparatedElement<GraphMatchPattern>> patterns)
@@ -796,10 +779,9 @@ namespace Kusto.Language.Binding
                 if (anyP0_Expression
                     && fc.ArgumentList.Expressions.Count > 0
                     && fc.ArgumentList.Expressions[0].Element.ResultType is TypeSymbol argType
-                    && argType is DynamicArraySymbol da
-                    && da.ElementType is DynamicBagSymbol db)
+                    && argType is TupleSymbol tuple)
                 {
-                    return new TableSymbol(db.Properties);
+                    return new TableSymbol(tuple.Columns);
                 }
 
                 if ((anyP0 || anyP0_Common)

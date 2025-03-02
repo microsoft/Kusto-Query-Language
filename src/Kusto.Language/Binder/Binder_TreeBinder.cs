@@ -621,11 +621,9 @@ namespace Kusto.Language.Binding
                                 break;
 
                             case ArgumentKind.Expression_Parameter0_Element:
-                                if (i > 0
-                                    && arguments[0].ResultType is DynamicArraySymbol da
-                                    && da.ElementType is DynamicBagSymbol db)
+                                if (i > 0 && arguments[0].ResultType is TupleSymbol tuple)
                                 {
-                                    this.VisitInRowScope(arg, new TableSymbol(db.Properties));
+                                    this.VisitInRowScope(arg, new TableSymbol(tuple.Columns));
                                 }
                                 else
                                 {

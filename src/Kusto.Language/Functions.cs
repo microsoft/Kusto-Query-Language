@@ -3377,7 +3377,7 @@ namespace Kusto.Language
         public static readonly FunctionSymbol _All =
             new FunctionSymbol("all",
                 ScalarTypes.Bool,
-                new Parameter("items", ParameterTypeKind.DynamicArray),
+                new Parameter("pattern_element", ParameterTypeKind.Scalar),
                 new Parameter("expression", ScalarTypes.Bool, ArgumentKind.Expression_Parameter0_Element))
             .WithCustomAvailability(context =>
             {
@@ -3385,70 +3385,65 @@ namespace Kusto.Language
                 return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
                     && gm.WhereClause != null
                     && (gm.WhereClause == context.Location || gm.WhereClause.IsAncestorOf(context.Location));
-            })
-            .Hide();            
+            });
 
         public static readonly FunctionSymbol Map =
             new FunctionSymbol("map",
-                context =>
-                {
-                    if (context.Arguments.Count > 1)
+                    context =>
                     {
-                        var expr = context.Arguments[1];
-                        return ScalarTypes.GetDynamicArray(expr.ResultType);
-                    }
-                    return ScalarTypes.DynamicArray;
-                },
-                Tabularity.Scalar,
-                new Parameter("items", ParameterTypeKind.DynamicArray),
-                new Parameter("expression", ParameterTypeKind.Scalar, ArgumentKind.Expression_Parameter0_Element))
-            .WithCustomAvailability(context =>
-            {
-                // must exist in project clause of graph-match operator
-                return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
-                    && gm.ProjectClause != null
-                    && (gm.ProjectClause == context.Location || gm.ProjectClause.IsAncestorOf(context.Location));
-            })
-            .Hide();
+                        if (context.Arguments.Count > 1)
+                        {
+                            var expr = context.Arguments[1];
+                            return ScalarTypes.GetDynamicArray(expr.ResultType);
+                        }
+                        return ScalarTypes.DynamicArray;
+                    },
+                    Tabularity.Scalar,
+                    new Parameter("pattern_element", ParameterTypeKind.Scalar),
+                    new Parameter("expression", ParameterTypeKind.Scalar, ArgumentKind.Expression_Parameter0_Element))
+                .WithCustomAvailability(context =>
+                {
+                    // must exist in project clause of graph-match operator
+                    return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm
+                           && gm.ProjectClause != null
+                           && (gm.ProjectClause == context.Location || gm.ProjectClause.IsAncestorOf(context.Location));
+                });
 
         public static readonly FunctionSymbol InnerNodes =
             new FunctionSymbol("inner_nodes",
-                context =>
-                {
-                    if (context.Arguments.Count > 0
-                        && context.Arguments[0] is Expression arg)
+                    context =>
                     {
-                        if (arg.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator graphMatch)
+                        if (context.Arguments.Count > 0
+                            && context.Arguments[0] is Expression arg)
                         {
-                            if (graphMatch.Parent is PipeExpression p
-                                && p.Expression.ResultType is GraphSymbol gs)
+                            if (arg.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator graphMatch)
                             {
-                                return ScalarTypes.GetDynamicArray(ScalarTypes.GetDynamicBag(gs.NodeShape.Columns));
+                                if (graphMatch.Parent is PipeExpression p
+                                    && p.Expression.ResultType is GraphSymbol gs)
+                                {
+                                    return new TupleSymbol(gs.NodeShape.Columns);
+                                }
                             }
                         }
-                    }
 
-                    // could not find node schema
-                    return ScalarTypes.DynamicArrayOfBag;
-                },
-                Tabularity.Scalar,
-                new Parameter("edge", ParameterTypeKind.Scalar))
-            .WithCustomAvailability(context =>
-            {
-                var inGM = context.Location.GetFirstAncestor<GraphMatchOperator>() != null;
+                        // could not find node schema
+                        return ScalarTypes.DynamicArrayOfBag;
+                    },
+                    Tabularity.Scalar,
+                    new Parameter("edge", ParameterTypeKind.Scalar))
+                .WithCustomAvailability(context =>
+                {
+                    var inGM = context.Location.GetFirstAncestor<GraphMatchOperator>() != null;
 
-                // can only occur in first argument to all() or map() function
-                var inAllOrMap = context.Location.GetFirstAncestor<FunctionCallExpression>(
-                    fce => fce.Name.SimpleName != Functions.InnerNodes.Name) is FunctionCallExpression fc
-                    && (fc.Name.SimpleName == Functions._All.Name || fc.Name.SimpleName == Functions.Map.Name)
-                    && (context.Location == fc.ArgumentList 
-                        || (fc.ArgumentList.Expressions.Count > 0 
-                            && fc.ArgumentList.Expressions[0].Element.IsAncestorOf(context.Location)
-                            ));
-                return inGM && inAllOrMap ;
-            })
-            .Hide();
-
+                    // can only occur in first argument to all() or map() function
+                    var inAllOrMap =
+                        context.Location.GetFirstAncestor<FunctionCallExpression>(fce => fce.Name.SimpleName != Functions.InnerNodes.Name) is FunctionCallExpression fc
+                        && (fc.Name.SimpleName == Functions._All.Name || fc.Name.SimpleName == Functions.Map.Name)
+                        && (context.Location == fc.ArgumentList
+                            || (fc.ArgumentList.Expressions.Count > 0
+                                && fc.ArgumentList.Expressions[0].Element.IsAncestorOf(context.Location)));
+                    return inGM && inAllOrMap;
+                });
 
         public static readonly FunctionSymbol NodeDegreeIn =
             new FunctionSymbol("node_degree_in",
