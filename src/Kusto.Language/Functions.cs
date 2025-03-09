@@ -2943,7 +2943,8 @@ namespace Kusto.Language
                 new Parameter("p1_longitude", ParameterTypeKind.Number),
                 new Parameter("p1_latitude", ParameterTypeKind.Number),
                 new Parameter("p2_longitude", ParameterTypeKind.Number),
-                new Parameter("p2_latitude", ParameterTypeKind.Number))
+                new Parameter("p2_latitude", ParameterTypeKind.Number),
+                new Parameter("use_spheroid", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable();
 
@@ -3183,7 +3184,8 @@ namespace Kusto.Language
                 ScalarTypes.Real,
                 new Parameter("lineString", ParameterTypeKind.DynamicBag),
                 new Parameter("longitude", ParameterTypeKind.Number),
-                new Parameter("latitude", ParameterTypeKind.Number))
+                new Parameter("latitude", ParameterTypeKind.Number),
+                new Parameter("use_spheroid", ParameterTypeKind.NumberOrBool, minOccurring: 0))
             .WithResultNameKind(ResultNameKind.None)
             .ConstantFoldable()
             .Hide();

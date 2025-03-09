@@ -2359,6 +2359,12 @@ namespace Kusto.Language.Binding
                         {
                             result = result.WithHasClusterCall(true);
                         }
+                        else if (fc.ReferencedSymbol == Functions.EntityGroup
+                            && fc.GetCalledFunctionFacts() is FunctionBodyFacts egCallFacts)
+                        {
+                            // get facts from analysis of the entity-group definition
+                            result = result.CombineCalledFunction(egCallFacts);
+                        }
 
                         // if the first argument is not a literal, then it might be being supplied by a parameter to the containing function
                         // which means this function could be being called multiple times with different arguments.
@@ -2385,11 +2391,10 @@ namespace Kusto.Language.Binding
                     }
                     else if (
                         node is Expression ex
-                        && ex.ReferencedSignature is Signature sig
+                        && ex.ReferencedSignature is Signature sig 
                         && !IsSymbolLookupFunction(sig.Symbol))
                     {
                         var facts = GetFunctionBodyFacts(ex);
-
                         result = result.CombineCalledFunction(facts);
 
                         // translate dependent parameters from the called function to parameters of the calling function

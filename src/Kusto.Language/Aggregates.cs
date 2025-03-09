@@ -432,6 +432,20 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
             .WithResultNamePrefix("variancep");
 
+        public static readonly FunctionSymbol Covariance =
+            new FunctionSymbol("covariance", ScalarTypes.Real,
+                new Parameter("expr", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("covariance");
+
+        public static readonly FunctionSymbol Covariancep =
+            new FunctionSymbol("covariancep", ScalarTypes.Real,
+                new Parameter("expr", ParameterTypeKind.Summable),
+                new Parameter("expr", ParameterTypeKind.Summable))
+            .WithResultNameKind(ResultNameKind.PrefixAndFirstArgument)
+            .WithResultNamePrefix("covariancep");
+
         public static readonly FunctionSymbol Any =
             new FunctionSymbol("any",
                 new Signature(
@@ -801,6 +815,8 @@ namespace Kusto.Language
             Variance,
             VarianceIf,
             Variancep,
+            Covariance,
+            Covariancep,
             Any,
             TakeAny,
             AnyIf,
