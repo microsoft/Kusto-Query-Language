@@ -24,23 +24,36 @@ namespace Kusto.Language.Editor
         public CodeServiceFactory Factory { get; }
 
         /// <summary>
+        /// An optional function that splits the document text into separate blocks.
+        /// If not specified, the blocks are separated by blank lines.
+        /// </summary>
+        public BlockSeparator Separator { get; }
+
+        /// <summary>
         /// The collection of individual <see cref="CodeBlock"/>s.
         /// </summary>
-        public IReadOnlyList<CodeBlock> Blocks => blocks;
+        public IReadOnlyList<CodeBlock> Blocks => _blocks;
 
-        private readonly List<int> lineStarts;
-        private readonly List<CodeBlock> blocks;
+        /// <summary>
+        /// The starting positions for all lines in the document.
+        /// </summary>
+        public IReadOnlyList<int> LineStarts => _lineStarts;
+
+        private readonly List<int> _lineStarts;
+        private readonly List<CodeBlock> _blocks;
 
         private CodeScript(
-            string text, 
+            string text,
+            BlockSeparator separator,
             List<int> lineStarts,
             List<CodeBlock> blocks,
             CodeServiceFactory factory)
         {
             this.Text = text;
-            this.lineStarts = lineStarts;
-            this.blocks = blocks;
+            this.Separator = separator;
             this.Factory = factory;
+            _lineStarts = lineStarts;
+            _blocks = blocks;
         }
 
         /// <summary>
@@ -48,7 +61,7 @@ namespace Kusto.Language.Editor
         /// </summary>
         public static CodeScript From(string text, CodeServiceFactory factory)
         {
-            return CreateScript(text ?? "", factory);
+            return CreateScript(text ?? "", factory, null, null);
         }
 
         /// <summary>
@@ -57,7 +70,7 @@ namespace Kusto.Language.Editor
         public CodeScript WithText(string newText)
         {
             // reuse any existing blocks and their queries that have not changed.
-            return CreateScript(newText ?? "", this.Factory, this.Blocks);
+            return CreateScript(newText ?? "", this.Factory, this.Blocks, this.Separator);
         }
 
         /// <summary>
@@ -67,7 +80,23 @@ namespace Kusto.Language.Editor
         {
             if (factory != this.Factory)
             {
-                return CreateScript(this.Text, factory, null);
+                return CreateScript(this.Text, factory, null, this.Separator);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CodeScript"/> with the optional block separator changed.
+        /// This function produces a list of text positions that start new blocks.
+        /// </summary>
+        public CodeScript WithSeparator(BlockSeparator separator)
+        {
+            if (separator != this.Separator)
+            {
+                return CreateScript(this.Text, this.Factory, this.Blocks, separator);
             }
             else
             {
@@ -87,9 +116,9 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Create a new <see cref="CodeScript"/> from the specified text and globals.
         /// </summary>
-        public static CodeScript From(string text, GlobalState globals)
+        public static CodeScript From(string text, GlobalState globals = null)
         {
-            return From(text, new KustoCodeServiceFactory(globals));
+            return From(text, new KustoCodeServiceFactory(globals ?? GlobalState.Default));
         }
 
         /// <summary>
@@ -118,11 +147,14 @@ namespace Kusto.Language.Editor
         private static CodeScript CreateScript(
             string text,
             CodeServiceFactory factory,
-            IEnumerable<CodeBlock> existingBlocks = null)
+            IEnumerable<CodeBlock> existingBlocks,
+            BlockSeparator separator)
         {
             var lineStarts = new List<int>();
-            var blockStarts = new List<int>();
-            GetStarts(text, lineStarts, blockStarts);
+            Parsing.TextFacts.GetLineStarts(text, lineStarts);
+
+            var blockStarts = separator?.Invoke(text, lineStarts)
+                ?? Parsing.ScriptFacts.GetKustoBlockStarts(text, lineStarts);
 
             var existingBlockMap = existingBlocks != null
                 ? existingBlocks.ToTextKeyedDictionary(b => b.Text, b => b)
@@ -153,99 +185,8 @@ namespace Kusto.Language.Editor
                 blocks.Add(block);
             }
 
-            return new CodeScript(text, lineStarts, blocks, factory);
-        }
+            return new CodeScript(text, separator, lineStarts, blocks, factory);
 
-        /// <summary>
-        /// Gets the starting offset of all the lines and script blocks.
-        /// </summary>
-        private static void GetStarts(string text, List<int> lineStarts, List<int> blockStarts)
-        {
-            lineStarts.Add(0);
-            blockStarts.Add(0);
-
-            bool allWhitespace = true; // until proven otherwise
-            bool newBlockNextWhitespaceLine = false; // no prior block
-            bool newBlockNextNonWhitespaceLine = false; // already added first block
-            int lineStart = 0;
-            int skipToEnd = 0;  // region to ignore linebreaks informing block breaks
-
-            for (int i = 0, n = text.Length; i < n;)
-            {
-                var lb = Parsing.TextFacts.GetLineBreakLength(text, i);
-                if (lb > 0)
-                {
-                    i += lb;
-
-                    // next block start happens after one all whitespace line gap
-                    if (allWhitespace && i > skipToEnd)
-                    {
-                        if (newBlockNextWhitespaceLine)
-                        {
-                            // this is a one line empty block
-                            blockStarts.Add(lineStart);
-                        }
-
-                        newBlockNextWhitespaceLine = true;
-                        newBlockNextNonWhitespaceLine = true;
-                    }
-                    else if (newBlockNextNonWhitespaceLine)
-                    {
-                        blockStarts.Add(lineStart);
-                        newBlockNextWhitespaceLine = false;
-                        newBlockNextNonWhitespaceLine = false;
-                    }
-                    else
-                    {
-                        // first gap line belongs to prior block
-                        newBlockNextWhitespaceLine = false;
-                    }
-
-                    lineStart = i;
-                    lineStarts.Add(lineStart);
-                    allWhitespace = true;
-                    continue;
-                }
-
-                if (i >= skipToEnd)
-                {
-                    // skip over strings in case they contain blank lines
-                    // or they may contain characters that would otherwise appear to be the start
-                    // of multi-line string
-                    int strlen = Parsing.TokenParser.ScanStringLiteral(text, i);
-                    if (strlen > 0)
-                    {
-                        skipToEnd = i + strlen;
-                    }
-                    else
-                    {
-                        // skip over comments as they may contain characters that appear to be the start
-                        // of a multi-line string
-                        int commentLen = Parsing.TokenParser.ScanComment(text, i);
-                        if (commentLen > 0)
-                        {
-                            skipToEnd = i + commentLen;
-                        }
-                    }
-                }
-
-                if (!Parsing.TextFacts.IsWhitespace(text[i]))
-                {
-                    i++;
-                    allWhitespace = false;
-                }
-                else
-                {
-                    i++;
-                }
-            }
-
-            // end case
-            if ((allWhitespace && newBlockNextWhitespaceLine) ||
-                 (!allWhitespace && newBlockNextNonWhitespaceLine))
-            {
-                blockStarts.Add(lineStart);
-            }
         }
 
         /// <summary>
@@ -265,7 +206,7 @@ namespace Kusto.Language.Editor
             }
             else if (position >= 0 && position < this.Text.Length)
             {
-                var index = this.blocks.BinarySearch(b => position < b.Start ? 1 : position >= b.End ? -1 : 0);
+                var index = _blocks.BinarySearch(b => position < b.Start ? 1 : position >= b.End ? -1 : 0);
                 return this.Blocks[index];
             }
             else
@@ -288,12 +229,12 @@ namespace Kusto.Language.Editor
 
             position = 0;
 
-            if (line < 0 || line >= this.lineStarts.Count)
+            if (line < 0 || line >= _lineStarts.Count)
                 return false;
 
-            var lineStart = this.lineStarts[line];
-            var lineEnd = (line < this.lineStarts.Count - 1) 
-                ? this.lineStarts[line + 1] 
+            var lineStart = _lineStarts[line];
+            var lineEnd = (line < _lineStarts.Count - 1) 
+                ? _lineStarts[line + 1] 
                 : this.Text.Length;
 
             // don't include line break characters in line length
@@ -320,9 +261,12 @@ namespace Kusto.Language.Editor
         /// </summary>
         public bool TryGetLineAndOffset(int position, out int line, out int lineOffset)
         {
-            return Parsing.TextFacts.TryGetLineAndOffset(this.lineStarts, position, out line, out lineOffset);
+            return Parsing.TextFacts.TryGetLineAndOffset(_lineStarts, position, out line, out lineOffset);
         }
-
-        public IReadOnlyList<int> LineStarts => this.lineStarts;
     }
+
+    /// <summary>
+    /// A function that produces a list of positions that start new blocks.
+    /// </summary>
+    public delegate IReadOnlyList<int> BlockSeparator(string text, IReadOnlyList<int> lineStarts);
 }

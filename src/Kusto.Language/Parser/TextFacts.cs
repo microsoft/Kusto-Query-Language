@@ -43,11 +43,17 @@ namespace Kusto.Language.Parsing
             }
         }
 
+        /// <summary>
+        /// True if the text is all whitespace.
+        /// </summary>
         public static bool IsWhitespaceOnly(string text)
         {
             return IsWhitespaceOnly(text, 0, text.Length);
         }
 
+        /// <summary>
+        /// True if the range of text is all whitespace.
+        /// </summary>
         public static bool IsWhitespaceOnly(string text, int start, int length)
         {
             for (int i = start, n = Math.Min(text.Length, start + length); i < n; i++)
@@ -57,6 +63,15 @@ namespace Kusto.Language.Parsing
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// True if the line starting at start position is only whitespace.
+        /// </summary>
+        public static bool IsWhitespaceLine(string text, int start)
+        {
+            var length = GetLineLength(text, start);
+            return IsWhitespaceOnly(text, start, length);
         }
 
         /// <summary>
@@ -287,12 +302,21 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static bool IsBlankLine(string text, int lineStart)
         {
+            var pos = GetPositionAfterLeadingWhitespace(text, lineStart);
+            return pos == text.Length || IsLineBreakStart(text[pos]);
+        }
+
+        /// <summary>
+        /// Gets the text position after the leading whitespace on the line.
+        /// </summary>
+        public static int GetPositionAfterLeadingWhitespace(string text, int lineStart)
+        {
             var pos = lineStart;
 
             while (pos < text.Length && IsWhitespace(text[pos]) && !IsLineBreakStart(text[pos]))
                 pos++;
 
-            return pos == text.Length || IsLineBreakStart(text[pos]);
+            return pos;
         }
 
         /// <summary>
@@ -363,6 +387,16 @@ namespace Kusto.Language.Parsing
                     i++;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the starting offset of all the lines.
+        /// </summary>
+        public static IReadOnlyList<int> GetLineStarts(string text)
+        {
+            var starts = new List<int>();
+            GetLineStarts(text, starts);
+            return starts;
         }
 
         /// <summary>
@@ -587,6 +621,22 @@ namespace Kusto.Language.Parsing
                 return text.Substring(lineStart, lineEnd - lineStart);
             }
             return "";
+        }
+
+        /// <summary>
+        /// Gets the text of the lines for each line in the text.
+        /// </summary>
+        public static IReadOnlyList<string> GetLineTexts(string text)
+        {
+            var lineStarts = GetLineStarts(text);
+            var lines = new List<string>(lineStarts.Count);
+            for (int i = 0; i < lineStarts.Count; i++)
+            {
+                var lineStart = lineStarts[i];
+                var lineLength = GetLineLength(text, lineStart);
+                lines.Add(text.Substring(lineStart, lineLength));
+            }
+            return lines;
         }
     }
 }

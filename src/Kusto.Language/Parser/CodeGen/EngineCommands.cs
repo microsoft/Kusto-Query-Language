@@ -546,6 +546,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowTableStarPolicyRetention =
             new CommandSymbol("ShowTableStarPolicyRetention", _schema20);
 
+        public static readonly CommandSymbol ShowGraphPolicyRetention =
+            new CommandSymbol("ShowGraphPolicyRetention", _schema20);
+
         public static readonly CommandSymbol ShowDatabasePolicyRetention =
             new CommandSymbol("ShowDatabasePolicyRetention", _schema20);
 
@@ -2072,6 +2075,7 @@ namespace Kusto.Language
             DeleteTablePolicyIngestionTime,
             ShowTablePolicyRetention,
             ShowTableStarPolicyRetention,
+            ShowGraphPolicyRetention,
             ShowDatabasePolicyRetention,
             AlterTablePolicyRetention,
             AlterMaterializedViewPolicyRetention,
