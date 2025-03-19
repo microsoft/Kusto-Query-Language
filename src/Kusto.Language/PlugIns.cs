@@ -409,6 +409,67 @@ namespace Kusto.Language
                  new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
                  new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
 
+        public static readonly FunctionSymbol AIChatCompletion =
+             new FunctionSymbol("ai_chat_completion",
+                 context =>
+                 {
+                     var sourceColumns = context.RowScope.Columns;
+                     var columnPrefix = context.GetResultName(context.GetArgument("Prompt"));
+
+                     var completionColumnName = MakeColumnName(columnPrefix, "completion");
+                     var addedColumns = new List<ColumnSymbol> { new ColumnSymbol(completionColumnName, ScalarTypes.String) };
+
+                     if (context.GetArgument("IncludeErrorMessages") != null &&
+                        bool.TryParse(GetConstantValue(context.GetArgument("IncludeErrorMessages")), out var includeErrorMessages))
+                     {
+                         if (includeErrorMessages)
+                         {
+                             var errorColumnName = MakeColumnName(columnPrefix, "completion", "error");
+                             addedColumns.Add(new ColumnSymbol(errorColumnName, ScalarTypes.String));
+                         }
+                     }
+
+                     var resultColumns = sourceColumns.Concat(addedColumns);
+
+                     return new TableSymbol(resultColumns);
+                 },
+                 Tabularity.Tabular,
+                 new Parameter("Prompt", ParameterTypeKind.DynamicArray, ArgumentKind.Column | ArgumentKind.Literal),
+                 new Parameter("ConnectionString", ScalarTypes.String),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
+
+        public static readonly FunctionSymbol AIChatCompletionPrompt =
+             new FunctionSymbol("ai_chat_completion_prompt",
+                 context =>
+                 {
+                     var sourceColumns = context.RowScope.Columns;
+                     var columnPrefix = context.GetResultName(context.GetArgument("Prompt"));
+
+                     var completionColumnName = MakeColumnName(columnPrefix, "completion");
+                     var addedColumns = new List<ColumnSymbol> { new ColumnSymbol(completionColumnName, ScalarTypes.String) };
+
+                     if (context.GetArgument("IncludeErrorMessages") != null &&
+                        bool.TryParse(GetConstantValue(context.GetArgument("IncludeErrorMessages")), out var includeErrorMessages))
+                     {
+                         if (includeErrorMessages)
+                         {
+                             var errorColumnName = MakeColumnName(columnPrefix, "completion", "error");
+                             addedColumns.Add(new ColumnSymbol(errorColumnName, ScalarTypes.String));
+                         }
+                     }
+
+                     var resultColumns = sourceColumns.Concat(addedColumns);
+
+                     return new TableSymbol(resultColumns);
+                 },
+                 Tabularity.Tabular,
+                 new Parameter("Prompt", ScalarTypes.String, ArgumentKind.Column | ArgumentKind.Literal),
+                 new Parameter("ConnectionString", ScalarTypes.String),
+                 new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
+
+
         public static readonly FunctionSymbol Identity =
              new FunctionSymbol("identity",
                  new Signature(
@@ -835,7 +896,9 @@ namespace Kusto.Language
             SqlRequest,
             MySqlRequest,
             PostgreSqlRequest,
-            AIEmbedText
+            AIEmbedText,
+            AIChatCompletion,
+            AIChatCompletionPrompt,
         };
 
         private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;
