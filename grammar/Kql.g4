@@ -269,7 +269,7 @@ distinctOperatorStarTarget:
     '*';
 
 distinctOperatorColumnListTarget:
-    Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)*;
+    Expressions+=namedExpression (',' Expressions+=namedExpression)*;
 
 
 evaluateOperator:
