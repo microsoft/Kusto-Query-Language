@@ -373,7 +373,7 @@ graphMarkComponentsOperator:
 graphMatchOperator:
     GRAPHMATCH
     (Parameters+=relaxedQueryOperatorParameter)*
-    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)*
     (WhereClause=graphMatchWhereClause)?
     (ProjectClause=graphMatchProjectClause)?
     ;
@@ -409,7 +409,7 @@ graphMergeOperator:
     GRAPHMERGE Graph=invocationExpression (OnClause=joinOperatorOnClause)?;
 
 graphToTableOperator:
-    GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput);
+    GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput)*;
 
 graphToTableOutput:
     Keyword=(NODES | EDGES) (AsClause=graphToTableAsClause)? (Parameters+=relaxedQueryOperatorParameter)*;
@@ -420,7 +420,7 @@ graphToTableAsClause:
 graphShortestPathsOperator:
     GRAPHSHORTESTPATHS
     (Parameters+=relaxedQueryOperatorParameter)*
-    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)*
     (WhereClause=graphMatchWhereClause)?
     (ProjectClause=graphMatchProjectClause)?
     ;
@@ -433,7 +433,7 @@ joinOperator:
     (OnClause=joinOperatorOnClause | WhereClause=joinOperatorWhereClause)?;
 
 joinOperatorOnClause:
-    ON (Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)*)?;
+    ON Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)*;
 
 joinOperatorWhereClause:
     WHERE Predicate=unnamedExpression;
@@ -555,7 +555,7 @@ parseWhereOperator:
     PARSEWHERE (KindClause=parseOperatorKindClause)? Expression=unnamedExpression WITH Pattern=parseOperatorPattern;
 
 parseKvOperator:
-    PARSEKV Expressions=unnamedExpression Keys=rowSchema (WithClause=parseKvWithClause)?;
+    PARSEKV Expressions=unnamedExpression AS Keys=rowSchema (WithClause=parseKvWithClause)?;
 
 parseKvWithClause:
     WITH '(' Properties+=queryOperatorProperty (',' Properties+=queryOperatorProperty)* ')';
@@ -725,7 +725,7 @@ searchOperatorInClause:
 
 
 serializeOperator:
-    SERIALIZE (Parameters+=strictQueryOperatorParameter)* Expressions+=namedExpression (',' Expressions+=namedExpression)*;
+    SERIALIZE (Parameters+=strictQueryOperatorParameter)* (Expressions+=namedExpression (',' Expressions+=namedExpression)*)?;
 
 
 sortOperator:
