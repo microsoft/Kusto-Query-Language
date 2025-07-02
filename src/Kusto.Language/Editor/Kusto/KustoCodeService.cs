@@ -582,7 +582,7 @@ namespace Kusto.Language.Editor
 
                     if (code.HasSemantics)
                     {
-                        GetClusterReferences(code.Syntax, null, clusters, cancellationToken);
+                        new KustoReferenceFinder(code).GetClusterReferences(code.Syntax, null, clusters, cancellationToken);
                     }
 
                     return clusters.ToReadOnly();
@@ -598,86 +598,6 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private void GetClusterReferences(SyntaxNode root, SyntaxNode location, List<ClusterReference> clusters, CancellationToken cancellationToken)
-        {
-            SyntaxElement.WalkNodes(
-                root,
-                fnBefore: element =>
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (element is Expression ex)
-                    {
-                        if (element is FunctionCallExpression fc
-                            && ex.ReferencedSymbol == Functions.Cluster)
-                        {
-                            // this is a call to cluster('ccc'), report 'ccc' as a referenced cluster
-                            var cluster = GetClusterReference(fc, location);
-                            if (cluster != null)
-                            {
-                                clusters.Add(cluster);
-                            }
-                        }
-                        else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts)
-                        {
-                            if (funFacts.HasClusterCall)
-                            {
-                                // also get all cluster references inside the bodies of called functions
-                                var calledBody = ex.GetCalledFunctionBody();
-                                if (calledBody != null)
-                                {
-                                    GetClusterReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), clusters, cancellationToken);
-                                }
-                            }
-                        }
-                    }
-                },
-                fnAfter: node =>
-                {
-                    if (node.Alternates != null)
-                    {
-                        foreach (var alt in node.Alternates)
-                        {
-                            GetClusterReferences(alt, location, clusters, cancellationToken);
-                        }
-                    }
-                });
-        }
-
-        private static SyntaxNode GetBestFunctionCallLocation(Expression ex)
-        {
-            if (ex is FunctionCallExpression fc)
-            {
-                return fc.Name;
-            }
-
-            return ex;
-        }
-
-        private static ClusterReference GetClusterReference(FunctionCallExpression fc, SyntaxNode location)
-        {
-            if (fc.ReferencedSymbol == Functions.Cluster
-                && TryGetConstantStringArgumentValue(fc, 0, out var name))
-            {
-                location = location ?? fc.ArgumentList.Expressions[0].Element;
-                return new ClusterReference(name, location.TextStart, location.Width);
-            }
-
-            return null;
-        }
-
-        private static bool TryGetConstantStringArgumentValue(FunctionCallExpression fc, int index, out string constant)
-        {
-            if (fc.ArgumentList.Expressions.Count > index && fc.ArgumentList.Expressions[index].Element.IsConstant)
-            {
-                constant = fc.ArgumentList.Expressions[index].Element.ConstantValue as string;
-                return constant != null;
-            }
-
-            constant = null;
-            return false;
-        }
-
         public override IReadOnlyList<DatabaseReference> GetDatabaseReferences(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (this.TryGetBoundCode(cancellationToken, true, out var code)
@@ -689,7 +609,7 @@ namespace Kusto.Language.Editor
 
                     if (code.HasSemantics)
                     {
-                        GetDatabaseReferences(code.Syntax, null, this.globals.Cluster, this.globals.Database, refs, cancellationToken);
+                        new KustoReferenceFinder(code).GetDatabaseReferences(code.Syntax, null, this.globals.Cluster, this.globals.Database, refs, cancellationToken);
                     }
 
                     return refs;
@@ -703,83 +623,6 @@ namespace Kusto.Language.Editor
             {
                 return EmptyReadOnlyList<DatabaseReference>.Instance;
             }
-        }
-
-        private void GetDatabaseReferences(SyntaxNode root, SyntaxNode location, ClusterSymbol defaultCluster, DatabaseSymbol defaultDatabase, List<DatabaseReference> refs, CancellationToken cancellationToken)
-        {
-            SyntaxElement.WalkNodes(
-                root,
-                fnBefore: node =>
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (node is Expression ex)
-                    {
-                        if (ex is FunctionCallExpression fc
-                            && ex.ReferencedSymbol == Functions.Database)
-                        {
-                            // this is a call to database('xxx').. record 'xxx' as a database referenced
-                            var dbref = GetDatabaseReference(fc, location, defaultCluster);
-                            if (dbref != null)
-                            {
-                                refs.Add(dbref);
-                            }
-                        }
-                        else if (ex.GetCalledFunctionFacts() is FunctionBodyFacts funFacts)
-                        {
-                            if (funFacts.HasDatabaseCall)
-                            {
-                                // also get all database references inside the bodies of called functions
-                                var calledBody = ex.GetCalledFunctionBody();
-                                if (calledBody != null)
-                                {
-                                    var db = this.globals.GetDatabase(ex.ReferencedSymbol) ?? defaultDatabase;
-                                    var cluster = this.globals.GetCluster(db) ?? defaultCluster;
-                                    GetDatabaseReferences(calledBody, location ?? GetBestFunctionCallLocation(ex), cluster, db, refs, cancellationToken);
-                                }
-                            }
-                        }
-                    }              
-                },
-                fnAfter: node =>
-                {
-                    if (node.Alternates != null)
-                    {
-                        foreach (var alternate in node.Alternates)
-                        {
-                            GetDatabaseReferences(alternate, location, defaultCluster, defaultDatabase, refs, cancellationToken);
-                        }
-                    }
-                }
-            );
-        }
-
-        private DatabaseReference GetDatabaseReference(FunctionCallExpression fc, SyntaxNode location, ClusterSymbol defaultCluster)
-        {
-            if (fc.ReferencedSymbol == Functions.Database
-                && TryGetConstantStringArgumentValue(fc, 0, out var databaseName))
-            {
-                location = location ?? fc.ArgumentList.Expressions[0].Element;
-
-                string clusterName;
-
-                // get cluster name from path expression if possible
-                if (fc.Parent is PathExpression p
-                    && p.Selector == fc
-                    && p.Expression.ResultType is ClusterSymbol cs)
-                {
-                    clusterName = cs.Name;
-                }
-                else
-                {
-                    // otherwise use the default cluster
-                    clusterName = defaultCluster?.Name ?? globals.Cluster.Name;
-                }
-
-                return new DatabaseReference(databaseName, clusterName, location.GetPositionInOriginalTree(location.TextStart), location.Width);
-            }
-
-            return null;
         }
 
         public static IncludeTrivia GetIncludeTrivia(MinimalTextKind kind)

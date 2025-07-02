@@ -33,12 +33,12 @@ namespace Kusto.Language.Binding
         /// <summary>
         /// The cluster assumed when resolveing unqualified calls to database() 
         /// </summary>
-        private readonly ClusterSymbol _currentCluster;
+        private ClusterSymbol _currentCluster;
 
         /// <summary>
         /// The database assumed when resolving unqualified references table/function names or calls to table()
         /// </summary>
-        private readonly DatabaseSymbol _currentDatabase;
+        private DatabaseSymbol _currentDatabase;
 
         /// <summary>
         /// The function being declared.
@@ -441,8 +441,12 @@ namespace Kusto.Language.Binding
             }
             else if (_pathScope != null)
             {
+                var isInsideControlCommand = IsInsideControlCommandProper(contextNode);
+                var memberMatch = match;
+
                 // so far only columns, tables, materialized-views, entity_groups and functions can be dot accessed.
-                var memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.MaterializedView | SymbolMatch.EntityGroup | SymbolMatch.Function);
+                if (!isInsideControlCommand)
+                    memberMatch = match & (SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.MaterializedView | SymbolMatch.EntityGroup | SymbolMatch.Function);
 
                 // if this is an entity group element then add special members
                 if (GetMacroExpandScope(contextNode) != null)
@@ -450,8 +454,14 @@ namespace Kusto.Language.Binding
                     list.AddRange(EntityGroupElementSymbol.SpecialMembers);
                 }
 
+                if (_pathScope is DatabaseSymbol)
+                {
+                    // cannot directly get to external tables
+                    memberMatch &= ~SymbolMatch.ExternalTable;
+                }
+
                 // table.column only works in commands
-                if (_pathScope is TableSymbol && !IsInsideControlCommandProper(contextNode))
+                if (_pathScope is TableSymbol && !isInsideControlCommand)
                 {
                     memberMatch &= ~SymbolMatch.Column;
                 }
@@ -633,6 +643,7 @@ namespace Kusto.Language.Binding
                                 functions.Add(Functions.MaterializedView);
                                 functions.Add(Functions.EntityGroup);
                                 functions.Add(Functions.StoredQueryResult);
+                                functions.Add(Functions.Graph);
                             }
                             break;
                     }

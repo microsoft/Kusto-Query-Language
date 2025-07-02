@@ -10,20 +10,35 @@ namespace Kusto.Language.Symbols
     /// </summary>
     public class GraphSymbol : TypeSymbol
     {
+        /// <summary>
+        /// The shape an edge in the graph.
+        /// </summary>
         public TableSymbol EdgeShape { get; }
+
+        /// <summary>
+        /// The shape of an node in the graph.
+        /// This may be null.
+        /// </summary>
         public TableSymbol NodeShape { get; }
 
         public GraphSymbol(string name, TableSymbol edgeShape, TableSymbol nodeShape = null)
             : base(name)
         {
-            this.EdgeShape = edgeShape.CheckArgumentNull(nameof(edgeShape));
+            this.EdgeShape = edgeShape ?? TableSymbol.Empty;
             this.NodeShape = nodeShape;
         }
 
         public GraphSymbol(string name, TableSymbol edgeShape, IReadOnlyList<TableSymbol> nodeShapes)
             : base(name)
         {
-            this.EdgeShape = edgeShape.CheckArgumentNull(nameof(EdgeShape));
+            this.EdgeShape = edgeShape ?? TableSymbol.Empty;
+            this.NodeShape = nodeShapes != null && nodeShapes.Count > 0 ? TableSymbol.Combine(CombineKind.UnifySameName, nodeShapes) : null;
+        }
+
+        public GraphSymbol(string name, IReadOnlyList<TableSymbol> edgeShapes, IReadOnlyList<TableSymbol> nodeShapes)
+            : base(name)
+        {
+            this.EdgeShape = edgeShapes != null && edgeShapes.Count > 0 ? TableSymbol.Combine(CombineKind.UnifySameName, edgeShapes) : null;
             this.NodeShape = nodeShapes != null && nodeShapes.Count > 0 ? TableSymbol.Combine(CombineKind.UnifySameName, nodeShapes) : null;
         }
 
@@ -37,8 +52,20 @@ namespace Kusto.Language.Symbols
         {
         }
 
+        public GraphSymbol(IReadOnlyList<TableSymbol> edgeShapes, IReadOnlyList<TableSymbol> nodeShapes)
+            : this("", edgeShapes, nodeShapes)
+        {
+        }
+
+        public GraphSymbol(string name, string edgeSchema, string nodeSchema = null)
+            : this(name, 
+                  edgeSchema != null ? TableSymbol.From(edgeSchema) : null, 
+                  nodeSchema != null ? TableSymbol.From(nodeSchema) : null)
+        {
+        }
+
         public override SymbolKind Kind => SymbolKind.Graph;
-        public override Tabularity Tabularity => Tabularity.Graph;
+        public override Tabularity Tabularity => Tabularity.Other;
 
         public GraphSymbol WithName(string name)
         {
@@ -114,5 +141,16 @@ namespace Kusto.Language.Symbols
                 return null;
             }
         }
+
+        /// <summary>
+        /// Create a graph symbol from edge and node schemas only.
+        /// </summary>
+        public static GraphSymbol From(string edgeSchema, string nodeSchema = null)
+        {
+            return new GraphSymbol("", edgeSchema, nodeSchema);
+        }
+
+        public static readonly GraphSymbol Empty =
+            new GraphSymbol("", TableSymbol.Empty, TableSymbol.Empty);
     }
 }

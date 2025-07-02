@@ -1520,6 +1520,29 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitProjectByNamesOperator(ProjectByNamesOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var builder = s_projectionBuilderPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+
+                    _binder.CreateProjectionColumns(node.Expressions, builder, diagnostics, style: ProjectionStyle.ByNames, doNotRepeat: true);
+
+                    var resultTable = new TableSymbol(builder.GetProjection())
+                        .WithInheritableProperties(RowScopeOrEmpty);
+
+                    var info = new SemanticInfo(resultTable, diagnostics);
+                    return info;
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_projectionBuilderPool.ReturnToPool(builder);
+                }
+            }
+
             public override SemanticInfo VisitExtendOperator(ExtendOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -1847,6 +1870,77 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
+                }
+            }
+
+            public override SemanticInfo VisitInlineExternalTableExpression(InlineExternalTableExpression node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                var columns = s_columnListPool.AllocateFromPool();
+                var partitionColumnNames = s_stringSetPool.AllocateFromPool();
+                try
+                {
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SortParameters, diagnostics);
+
+                    CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
+
+                    //TODO: Validate correct expression binding to Partition columns: 1. Type Match, 2. Functions subset for each type
+                    if (node.PartitionClause != null)
+                    {
+                        foreach (var partitionColumn in node.PartitionClause.PartitionColumns)
+                        {
+                            // Check Partition column names uniqueness
+                            if (!DeclareColumnName(partitionColumnNames, partitionColumn.Element.Name.SimpleName, diagnostics, partitionColumn.Element.Name.Name)
+                                || columns.Any(item => item.Name == partitionColumn.Element.Name.SimpleName))
+                            {
+                                diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
+                                break;
+                            }
+
+                            TypeSymbol type = null;
+                            switch (partitionColumn.Element.Type)
+                            {
+                                case PrimitiveTypeExpression p:
+                                    type = Binder.GetType(p);
+                                    break;
+                                default:
+                                    diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnType().WithLocation(partitionColumn.Element));
+                                    break;
+                            }
+
+                            if (type == null)
+                            {
+                                break;
+                            }
+                            if (partitionColumn.Element.Expr == null)
+                            {
+                                // Virtual Column need to be added to the list of columns
+                                columns.Add(new ColumnSymbol(partitionColumn.Element.Name.SimpleName, type, source: partitionColumn.Element.Name));
+                            }
+                            else
+                            {
+                                _binder.CheckIsExactType(partitionColumn.Element.Expr, type, diagnostics);
+                                // Validate that only closed list of functions is allowed for partition column
+                                if (partitionColumn.Element.Expr.Kind == SyntaxKind.FunctionCallExpression)
+                                {
+                                    if (!KustoFacts.InlineExternalTablePartitionColumnFunctions.Contains(((FunctionCallExpression)partitionColumn.Element.Expr).Name.SimpleName))
+                                    {
+                                        diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnFunction().WithLocation(partitionColumn.Element));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    node.ConnectionStrings.ConnectionStrings.Select(item => _binder.CheckIsExactType(item.Element, ScalarTypes.String, diagnostics));
+
+                    return new SemanticInfo(new TableSymbol(columns), diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                    s_columnListPool.ReturnToPool(columns);
+                    s_stringSetPool.ReturnToPool(partitionColumnNames);
                 }
             }
 
@@ -3646,35 +3740,6 @@ namespace Kusto.Language.Binding
                 }
             }
 
-            public override SemanticInfo VisitGraphMergeOperator(GraphMergeOperator node)
-            {
-                var diagnostics = s_diagnosticListPool.AllocateFromPool();
-                try
-                {
-                    CheckNotFirstInPipe(node, diagnostics);
-
-                    var leftGraph = GetGraphSymbol(node);
-                    if (leftGraph == null)
-                    {
-                        diagnostics.Add(DiagnosticFacts.GetQueryOperatorExpectsGraph().WithLocation(node.GraphMergeKeyword));
-                    }
-
-                    _binder.CheckIsGraph(node.Graph, diagnostics);
-
-                    var rightGraph = node.Graph.ResultType as GraphSymbol;
-
-                    var symbol = (TypeSymbol)GraphSymbol.Merge(leftGraph, rightGraph) ?? ErrorSymbol.Instance;
-
-                    // TODO: handle possible implications of on-clause
-
-                    return new SemanticInfo(symbol, diagnostics);
-                }
-                finally
-                {
-                    s_diagnosticListPool.ReturnToPool(diagnostics);
-                }
-            }
-
             public override SemanticInfo VisitGraphMatchOperator(GraphMatchOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -4061,6 +4126,46 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitInlineExternalTableKindClause(InlineExternalTableKindClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitInlineExternalTablePathFormatPartitionColumnReference(InlineExternalTablePathFormatPartitionColumnReference node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitInlineExternalTableDataFormatClause(InlineExternalTableDataFormatClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitInlineExternalTablePathFormatClause(InlineExternalTablePathFormatClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitPartitionColumnDeclaration(PartitionColumnDeclaration node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitInlineExternalTablePartitionClause(InlineExternalTablePartitionClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node)
+            {
+                return null;
+            }
+
+            public override SemanticInfo VisitDateTimePattern(DateTimePattern node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitFacetWithOperatorClause(FacetWithOperatorClause node)
             {
                 return null;
@@ -4350,7 +4455,22 @@ namespace Kusto.Language.Binding
             #region Directives
             public override SemanticInfo VisitDirectiveBlock(DirectiveBlock node)
             {
+                // no longer used
                 return null;
+            }
+
+            public override SemanticInfo VisitDirective(Directive node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    _binder.ApplyDirective(node, diagnostics);
+                    return new SemanticInfo(diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
             }
             #endregion
         }

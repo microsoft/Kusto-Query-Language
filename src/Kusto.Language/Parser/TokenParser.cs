@@ -105,7 +105,7 @@ namespace Kusto.Language.Parsing
                 }
                 else if (ch == '#')
                 {
-                    var directiveEnd = GetNextLineStart(text, pos);
+                    var directiveEnd = TextFacts.GetLineEnd(text, pos);
                     return new LexicalToken(SyntaxKind.DirectiveToken, trivia, GetSubstring(text, pos, directiveEnd - pos));
                 }
                 else if (IsAtEnd(text, pos))
@@ -1200,7 +1200,7 @@ namespace Kusto.Language.Parsing
 
         private static char Peek(string text, int position)
         {
-            if (position < text.Length)
+            if (position >= 0 && position < text.Length)
             {
                 return text[position];
             }
@@ -1217,7 +1217,7 @@ namespace Kusto.Language.Parsing
 
         private static bool Matches(string text, int start, string match)
         {
-            if (start + match.Length > text.Length)
+            if (start < 0 || start + match.Length > text.Length)
                 return false;
 
             switch (match.Length)

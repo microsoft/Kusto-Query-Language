@@ -427,6 +427,8 @@ namespace Kusto.Language.Symbols
                         case ReturnTypeKind.Parameter0EntityGroup:
                         case ReturnTypeKind.Parameter0StoredQueryResult:
                             return Tabularity.Tabular;
+                        case ReturnTypeKind.Parameter0Graph:
+                            return Tabularity.Other;
                         default:
                             return Tabularity.Scalar;
                     }

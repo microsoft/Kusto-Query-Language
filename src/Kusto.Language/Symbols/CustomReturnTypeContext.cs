@@ -41,6 +41,26 @@ namespace Kusto.Language.Symbols
         public virtual Signature Signature => null;
 
         /// <summary>
+        /// The <see cref="GlobalState"/> in use.
+        /// </summary>
+        public virtual GlobalState Globals => null;
+
+        /// <summary>
+        /// The current cluster at the call site.
+        /// </summary>
+        public virtual ClusterSymbol CurrentCluster => null;
+
+        /// <summary>
+        /// The current database as the call site.
+        /// </summary>
+        public virtual DatabaseSymbol CurrentDatabase => null;
+
+        /// <summary>
+        /// The function the call site is within.
+        /// </summary>
+        public virtual FunctionSymbol CurrentFunction => null;
+
+        /// <summary>
         /// Returns the symbol referenced by the name or null if no such symbol exists in scope.
         /// </summary>
         public abstract Symbol GetReferencedSymbol(string name);

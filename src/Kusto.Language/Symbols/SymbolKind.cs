@@ -132,5 +132,15 @@ namespace Kusto.Language.Symbols
         /// A stored query result element.
         /// </summary>
         StoredQueryResult,
+
+        /// <summary>
+        /// A model of a graph that contains one or more snapshots
+        /// </summary>
+        GraphModel,
+
+        /// <summary>
+        /// A snapshot of a graph model
+        /// </summary>
+        GraphSnapshot
     }
 }

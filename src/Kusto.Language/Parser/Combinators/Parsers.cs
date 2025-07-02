@@ -732,6 +732,14 @@ namespace Kusto.Language.Parsing
             Produce(OneOrMore(parser), producer);
 
         /// <summary>
+        /// A parser that combines one or more parsed values into a single value.
+        /// </summary>
+        public static Parser<TInput, IReadOnlyList<TParser>> OneOrMoreList<TParser>(
+            Parser<TInput, TParser> parser)
+            =>
+            OneOrMore(parser, list => list.ToReadOnly());
+
+        /// <summary>
         /// A parser that parsers one or more values from the specified parser.
         /// </summary>
         public static Parser<TInput> OneOrMore(Parser<TInput> parser) =>
@@ -1470,12 +1478,22 @@ namespace Kusto.Language.Parsing
         public static Parser<TInput> ZeroOrMore(Parser<TInput> parser) =>
             new ZeroOrMoreParser<TInput>(parser);
 
+        /// <summary>
+        /// A parser that parses zero or more values from the specified parser
+        /// and produces a list of those values.
+        /// </summary>
+        public static Parser<TInput, IReadOnlyList<TParser>> ZeroOrMoreList<TParser>(
+            Parser<TInput, TParser> parser)
+            => ZeroOrMore(parser, list => list.ToReadOnly());
 
         /// <summary>
         /// A parser that parses zero or one value from the specified parser.
         /// </summary>
         public static Parser<TInput> ZeroOrOne(Parser<TInput> parser) =>
             new ZeroOrMoreParser<TInput>(parser, zeroOrOne: true);
+
+
+
     }
 
     public struct ElementAndSeparator<TElement, TSeparator>

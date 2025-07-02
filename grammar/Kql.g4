@@ -172,7 +172,6 @@ afterPipeOperator:
     | getSchemaOperator
     | graphMarkComponentsOperator
     | graphMatchOperator
-    | graphMergeOperator
     | graphShortestPathsOperator
     | graphToTableOperator
     | invokeOperator
@@ -269,7 +268,7 @@ distinctOperatorStarTarget:
     '*';
 
 distinctOperatorColumnListTarget:
-    Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)*;
+    Expressions+=namedExpression (',' Expressions+=namedExpression)*;
 
 
 evaluateOperator:
@@ -404,9 +403,6 @@ graphMatchWhereClause:
 
 graphMatchProjectClause:
     PROJECT Expressions+=namedExpression (',' Expressions+=namedExpression)*;
-
-graphMergeOperator:
-    GRAPHMERGE Graph=invocationExpression (OnClause=joinOperatorOnClause)?;
 
 graphToTableOperator:
     GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput);
@@ -742,7 +738,7 @@ summarizeOperator:
     SUMMARIZE (Parameters+=strictQueryOperatorParameter)* (Expressions+=namedExpression (',' Expressions+=namedExpression)*)? (ByClause=summarizeOperatorByClause)?;
 
 summarizeOperatorByClause:
-    BY Expressions+=namedExpression (',' Expressions+=namedExpression) (BinClause=summarizeOperatorLegacyBinClause)?;
+    BY Expressions+=namedExpression (',' Expressions+=namedExpression)* (BinClause=summarizeOperatorLegacyBinClause)?;
 
 summarizeOperatorLegacyBinClause:
     BIN '=' Expression=numberLikeLiteralExpression;

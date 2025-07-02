@@ -128,5 +128,11 @@ namespace Kusto.Language.Symbols
         /// If the argument for parameter 0 is a constant string the named stored query result is returned.
         /// </summary>
         Parameter0StoredQueryResult,
+
+        /// <summary>
+        /// The return type is a graph.
+        /// If the argument for parameter 0 is a constant string the named graph is returned
+        /// </summary>
+        Parameter0Graph,
     }
 }

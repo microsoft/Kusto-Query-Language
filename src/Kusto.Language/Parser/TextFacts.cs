@@ -86,7 +86,7 @@ namespace Kusto.Language.Parsing
         }
 
         /// <summary>
-        /// Gets the count of contiguous whitespace in the text from the starting position.
+        /// Gets the count of contiguous whitespace in the text after the starting position.
         /// </summary>
         public static int GetWhitespaceCount(string text, int start)
         {
@@ -98,6 +98,20 @@ namespace Kusto.Language.Parsing
             }
 
             return end - start;
+        }
+
+        /// <summary>
+        /// Gets the count of continguous whitespace before the starting position.
+        /// </summary>
+        public static int GetWhitespaceCountBefore(string text, int start)
+        {
+            var pos = start - 1;
+            while (pos >= 0 && TextFacts.IsWhitespace(text[pos]))
+            {
+                pos--;
+            }
+
+            return start - pos;
         }
 
         public static bool IsLineBreakStart(char ch)

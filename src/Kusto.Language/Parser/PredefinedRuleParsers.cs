@@ -37,6 +37,9 @@ namespace Kusto.Language.Parsing
         public Parser<LexicalToken, SyntaxElement> EntityGroupNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> DatabaseNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> ClusterNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> GraphModelNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> GraphSnapshotNameReference { get; }
+        public Parser<LexicalToken, SyntaxElement> GraphModelSnapshotNameReference { get; }
 
         public Parser<LexicalToken, SyntaxElement> DatabaseOrTableNameReference { get; }
         public Parser<LexicalToken, SyntaxElement> DatabaseOrTableOrColumnNameReference { get; }
@@ -196,6 +199,24 @@ namespace Kusto.Language.Parsing
                     .WithCompletionHint(Editor.CompletionHint.EntityGroup)
                     .WithTag("<entitygroup>");
 
+            this.GraphModelNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.GraphModel))
+                    .WithCompletionHint(Editor.CompletionHint.GraphModel)
+                    .WithTag("<graphmodel>");
+
+            this.GraphSnapshotNameReference =
+                Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.GraphSnapshot))
+                    .WithCompletionHint(Editor.CompletionHint.GraphSnapshot)
+                    .WithTag("<graphsnapshot>");
+
+            this.GraphModelSnapshotNameReference =
+                ApplyOptional(
+                    GraphModelNameReference,
+                    _left =>
+                        Rule(_left, Token(".").Hide(), Required(GraphSnapshotNameReference, MissingNameReference),
+                            (expr, dot, selector) => (SyntaxElement)new PathExpression((Expression)expr, dot, (Expression)selector)))
+                    .WithTag("<graphmodelsnapshot>");
+
             this.DatabaseNameReference =
                 Rule(Name, name => (SyntaxElement)new NameReference(name, SymbolMatch.Database))
                     .WithCompletionHint(Editor.CompletionHint.Database)
@@ -321,7 +342,7 @@ namespace Kusto.Language.Parsing
                     If(And(NameDeclaration, Token("."), WildcardedOrNameDeclaration),
                         Rule(NameDeclaration, Token("."), WildcardedOrNameDeclaration,
                             (qual, dot, name) => (SyntaxElement)new PathExpression((Expression)qual, dot, (Expression)name))),
-                    WildcardedNameDeclaration.Cast<SyntaxElement>());
+                    WildcardedOrNameDeclaration.Cast<SyntaxElement>());
 
             this.FunctionDeclaration =
                 Rule(

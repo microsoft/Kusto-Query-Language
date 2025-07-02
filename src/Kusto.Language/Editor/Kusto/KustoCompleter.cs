@@ -347,15 +347,16 @@ namespace Kusto.Language.Editor
         /// </summary>
         private bool ShouldComplete(int position)
         {
-            var token = this._code.Syntax.GetTokenAt(position);
+            var token = _code.Syntax.GetTokenAt(position);
             var previous = token.GetPreviousToken();
             var affinity = GetTokenWithAffinity(_code, position) ?? token;
 
             var leftOrSurrounding = (position == token.TriviaStart)
                 ? (previous ?? token) : token;
 
-            // don't show completions if position is inside a literal
-            if (IsInsideLiteral(leftOrSurrounding, position))
+            // don't show completions if position is inside a literal or a directive
+            if (IsInsideLiteral(leftOrSurrounding, position)
+                || IsInsideDirective(leftOrSurrounding, position))
             {
                 return false;
             }
@@ -396,6 +397,12 @@ namespace Kusto.Language.Editor
         private static bool IsInsideLiteral(SyntaxToken token, int position)
         {
             return token.Kind.GetCategory() == SyntaxCategory.Literal
+                && (position >= token.TextStart && position <= token.End);
+        }
+
+        private static bool IsInsideDirective(SyntaxToken token, int position)
+        {
+            return token.Kind == SyntaxKind.DirectiveToken
                 && (position >= token.TextStart && position <= token.End);
         }
 
@@ -472,66 +479,6 @@ namespace Kusto.Language.Editor
 
         #region Symbol Completions
 
-        private bool IsInCommand(SyntaxElement element, int contextChildIndex)
-        {
-            if (element == null)
-                return false;
-
-            if (contextChildIndex > 0
-                && element.GetChild(contextChildIndex - 1) is SyntaxToken e
-                && e.Text == "<|")
-            {
-                return false;
-            }
-
-            // actually inside a function body, even if it is part of a create command this is not part of the command proper.
-            var body = element.GetFirstAncestorOrSelf<FunctionBody>();
-            if (body != null)
-                return false;
-
-            var statementList = element.GetFirstAncestorOrSelf<SyntaxList<SeparatedElement<Statement>>>();
-            var command = element.GetFirstAncestorOrSelf<Command>();
-
-            if (command != null)
-            {
-                if (statementList != null && command.IsAncestorOf(statementList))
-                {
-                    // statements inside commands are part of input pipe and are not considered part of the command for completion
-                    return false;
-                }
-                else
-                {
-                    // this is truly part of a command
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsQueryPart(SyntaxElement element, int contextChildIndex)
-        {
-            if (element.Root is QueryBlock)
-                return true;
-
-            if (element.Root is CommandBlock)
-            {
-                // right of <| or | is query
-                if (contextChildIndex > 0
-                    && element.GetChild(contextChildIndex - 1) is SyntaxToken e
-                    && (e.Text == "<|" || e.Text == "|"))
-                {
-                    return true;
-                }
-
-                // part of a function body
-                if (element.GetFirstAncestorOrSelf<FunctionBody>() != null)
-                    return true;
-            }
-
-            return false;
-        }
-
         private CompletionMode GetSymbolCompletions(int position, CompletionBuilder builder)
         {
             CompletionHint hint = CompletionHint.None;
@@ -542,7 +489,7 @@ namespace Kusto.Language.Editor
                 if (mode == CompletionMode.Isolated)
                     return mode;
 
-                hint = GetCompletionHint(contextNode, contextChildIndex);
+                hint = GetCompletionHint(position, contextNode, contextChildIndex);
             }
 
             var symbols = new List<Symbol>();
@@ -605,6 +552,66 @@ namespace Kusto.Language.Editor
             }
 
             return CompletionMode.Combined;
+        }
+
+        private bool IsInCommand(SyntaxElement element, int contextChildIndex)
+        {
+            if (element == null)
+                return false;
+
+            if (contextChildIndex > 0
+                && element.GetChild(contextChildIndex - 1) is SyntaxToken e
+                && e.Text == "<|")
+            {
+                return false;
+            }
+
+            // actually inside a function body, even if it is part of a create command this is not part of the command proper.
+            var body = element.GetFirstAncestorOrSelf<FunctionBody>();
+            if (body != null)
+                return false;
+
+            var statementList = element.GetFirstAncestorOrSelf<SyntaxList<SeparatedElement<Statement>>>();
+            var command = element.GetFirstAncestorOrSelf<Command>();
+
+            if (command != null)
+            {
+                if (statementList != null && command.IsAncestorOf(statementList))
+                {
+                    // statements inside commands are part of input pipe and are not considered part of the command for completion
+                    return false;
+                }
+                else
+                {
+                    // this is truly part of a command
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsQueryPart(SyntaxElement element, int contextChildIndex)
+        {
+            if (element.Root is QueryBlock)
+                return true;
+
+            if (element.Root is CommandBlock)
+            {
+                // right of <| or | is query
+                if (contextChildIndex > 0
+                    && element.GetChild(contextChildIndex - 1) is SyntaxToken e
+                    && (e.Text == "<|" || e.Text == "|"))
+                {
+                    return true;
+                }
+
+                // part of a function body
+                if (element.GetFirstAncestorOrSelf<FunctionBody>() != null)
+                    return true;
+            }
+
+            return false;
         }
 
         private bool IsInvokeApplicable(FunctionSymbol function, Symbol implicitFirstArgumentType)
@@ -842,14 +849,14 @@ namespace Kusto.Language.Editor
 
             if (TryGetCompletionContext(position, out var contextNode, out var index))
             {
-                var hint = GetCompletionHint(contextNode, index);
+                var hint = GetCompletionHint(position, contextNode, index);
                 match |= GetSymbolMatch(hint);
             }
 
             // special case for parenthesis; get hint from outside
             while (contextNode is ParenthesizedExpression && contextNode.Parent != null)
             {
-                var hint = GetCompletionHint(contextNode.Parent, contextNode.IndexInParent);
+                var hint = GetCompletionHint(position, contextNode.Parent, contextNode.IndexInParent);
                 match |= GetSymbolMatch(hint);
                 contextNode = contextNode.Parent;
             }
@@ -1285,8 +1292,7 @@ namespace Kusto.Language.Editor
                 foreach (var sig in signatures)
                 {
                     // check for examples based off of ReturnTypeKind.Parameter0XXX
-                    if (argumentIndex == 0
-                        && TryGetReturnTypeKindCompletions(sig.ReturnKind, position, contextNode, builder))
+                    if (TryGetReturnTypeKindCompletions(sig.ReturnKind, position, contextNode, argumentIndex, builder))
                     {
                         return CompletionMode.Isolated;
                     }
@@ -1406,121 +1412,167 @@ namespace Kusto.Language.Editor
             }
         }
 
-        private bool TryGetReturnTypeKindCompletions(ReturnTypeKind kind, int position, SyntaxNode contextNode, CompletionBuilder builder)
+        private bool TryGetReturnTypeKindCompletions(ReturnTypeKind kind, int position, SyntaxNode contextNode, int argumentIndex, CompletionBuilder builder)
         {
+            var path = GetInstanceExpressionOfFunctionCall(contextNode) as Expression;
+
             switch (kind)
             {
                 case ReturnTypeKind.Parameter0Cluster:
-                    // show the known cluster names
-                    builder.AddRange(GetMemberNameExamples(this._code.Globals.Clusters));
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                    if (argumentIndex == 0)
+                    {
+                        // show the known cluster names
+                        builder.AddRange(GetMemberNameExamples(_code.Globals.Clusters));
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0Database:
-                    // show either the dotted cluster's database names or the global cluster's database names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression cpl)
+                    if (argumentIndex == 0)
                     {
-                        if (cpl.ResultType is ClusterSymbol cc)
+                        // show either the dotted cluster's database names or the global cluster's database names
+                        if (path?.ResultType is ClusterSymbol cc)
                         {
                             builder.AddRange(GetMemberNameExamples(cc.Databases));
                         }
-                    }
-                    else
-                    {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Cluster.Databases));
-                    }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Cluster.Databases));
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0Table:
-                    // show either the dotted database's table names or the global database's table names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression dpl)
+                    if (argumentIndex == 0)
                     {
-                        if (dpl.ResultType is DatabaseSymbol ds)
+                        // show either the dotted database's table names or the global database's table names
+                        if (path?.ResultType is DatabaseSymbol ds)
                         {
                             builder.AddRange(GetMemberNameExamples(ds.Tables));
                         }
-                    }
-                    else
-                    {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.Tables));
-                    }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.Tables));
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0ExternalTable:
-                    // show either the dotted database's table names or the global database's table names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression edpl)
+                    if (argumentIndex == 0)
                     {
-                        if (edpl.ResultType is DatabaseSymbol ds)
+                        // show either the dotted database's table names or the global database's table names
+                        if (path?.ResultType is DatabaseSymbol ds)
                         {
                             builder.AddRange(GetMemberNameExamples(ds.ExternalTables));
                         }
-                    }
-                    else
-                    {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.ExternalTables));
-                    }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.ExternalTables));
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0MaterializedView:
-                    // show either the dotted database's table names or the global database's table names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression mvdpl)
+                    if (argumentIndex == 0)
                     {
-                        if (mvdpl.ResultType is DatabaseSymbol ds)
+                        // show either the dotted database's table names or the global database's table names
+                        if (path?.ResultType is DatabaseSymbol ds)
                         {
                             builder.AddRange(GetMemberNameExamples(ds.MaterializedViews));
                         }
-                    }
-                    else
-                    {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.MaterializedViews));
-                    }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.MaterializedViews));
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0EntityGroup:
-                    // show either the dotted database's entity group names or the global database's entity group names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression egdpl)
+                    if (argumentIndex == 0)
                     {
-                        if (egdpl.ResultType is DatabaseSymbol ds)
+                        // show either the dotted database's entity group names or the global database's entity group names
+                        if (path?.ResultType is DatabaseSymbol ds)
                         {
                             builder.AddRange(GetMemberNameExamples(ds.EntityGroups));
                         }
-                    }
-                    else
-                    {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.EntityGroups));
-                    }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.EntityGroups));
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
 
                 case ReturnTypeKind.Parameter0StoredQueryResult:
-                    // show either the dotted database's table names or the global database's table names
-                    if (GetInstanceExpressionOfFunctionCall(contextNode) is Expression sqr)
+                    if (argumentIndex == 0)
                     {
-                        if (sqr.ResultType is DatabaseSymbol ds)
+                        // show either the dotted database's table names or the global database's table names
+                        if (path?.ResultType is DatabaseSymbol ds)
                         {
                             builder.AddRange(GetMemberNameExamples(ds.StoredQueryResults));
                         }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.StoredQueryResults));
+                        }
+
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
                     }
-                    else
+                    break;
+
+                case ReturnTypeKind.Parameter0Graph:
+                    if (argumentIndex == 0)
                     {
-                        builder.AddRange(GetMemberNameExamples(this._code.Globals.Database.StoredQueryResults));
+                        if (path?.ResultType is DatabaseSymbol ds)
+                        {
+                            builder.AddRange(GetMemberNameExamples(ds.GraphModels));
+                        }
+                        else
+                        {
+                            builder.AddRange(GetMemberNameExamples(_code.Globals.Database.GraphModels));
+                        }
+
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
                     }
+                    else if (argumentIndex == 1)
+                    {
+                        if (contextNode is SyntaxList<SeparatedElement<Expression>> list
+                            && list.Count > 0
+                            && list[0].Element.ConstantValueInfo?.Value is string modelName)
+                        {
+                            var model = path?.ResultType is DatabaseSymbol ds
+                                ? ds.GetGraphModel(modelName)
+                                : _code.Globals.Database.GetGraphModel(modelName);
+                            if (model != null)
+                            {
+                                builder.AddRange(GetMemberNameExamples(model.Snapshots));
+                            }
+                        }
 
-                    GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
-                    return true;
-
-                default:
-                    return false;
+                        GetMatchingSymbolCompletions(SymbolMatch.Local, ScalarTypes.String, position, contextNode, builder);
+                        return true;
+                    }
+                    break;
             }
+
+            return false;
         }
 
         private static void GetPossibleParameters(Signature sig, IReadOnlyList<Expression> arguments, string parameterName, int argumentIndex, List<Parameter> possibleParameters)
@@ -1766,11 +1818,16 @@ namespace Kusto.Language.Editor
             if ((hint & (CompletionHint.Scalar | CompletionHint.Boolean | CompletionHint.Number)) != 0)
                 match |= SymbolMatch.Scalar | SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.Local;
 
-            if ((hint & CompletionHint.Tabular) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local;
+            if ((hint & CompletionHint.NonScalar) != 0)
+                match |= SymbolMatch.NonScalar | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.EntityGroupElement | SymbolMatch.Graph;
 
+            if ((hint & CompletionHint.Tabular) != 0)
+                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.EntityGroupElement | SymbolMatch.Graph;
+
+            // any expression scalar or tabular or other
+            // incluide scalar & non-scalar in case others have added either.
             if ((hint & CompletionHint.Expression) != 0)
-                match |= SymbolMatch.Tabular | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.EntityGroup | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.Scalar | SymbolMatch.Column;
+                match |= SymbolMatch.Scalar | SymbolMatch.NonScalar | SymbolMatch.Column | SymbolMatch.Table | SymbolMatch.ExternalTable | SymbolMatch.MaterializedView | SymbolMatch.Function | SymbolMatch.Local | SymbolMatch.EntityGroup | SymbolMatch.EntityGroupElement | SymbolMatch.Graph;
 
             if ((hint & CompletionHint.Table) != 0)
                 match |= SymbolMatch.Table;
@@ -1796,6 +1853,12 @@ namespace Kusto.Language.Editor
             if ((hint & CompletionHint.Graph) != 0)
                 match |= SymbolMatch.Graph;
 
+            if ((hint & CompletionHint.GraphModel) != 0)
+                match |= SymbolMatch.GraphModel;
+
+            if ((hint & CompletionHint.GraphSnapshot) != 0)
+                match |= SymbolMatch.GraphSnapshot;
+
             if ((hint & CompletionHint.StoredQueryResult) != 0)
                 match |= SymbolMatch.StoredQueryResult;
 
@@ -1809,7 +1872,7 @@ namespace Kusto.Language.Editor
         {
             if (TryGetCompletionContext(position, out var contextNode, out var index))
             {
-                return GetCompletionHint(contextNode, index, CompletionHint.Query);
+                return GetCompletionHint(position, contextNode, index, CompletionHint.Query);
             }
             else
             {
@@ -1822,7 +1885,7 @@ namespace Kusto.Language.Editor
         /// Gets the <see cref="CompletionHint"/> for the specified child slot of the context node
         /// and any following slots that can offer additional hints.
         /// </summary>
-        private CompletionHint GetCompletionHint(SyntaxNode contextNode, int childIndex, CompletionHint defaultHint = CompletionHint.None)
+        private CompletionHint GetCompletionHint(int position, SyntaxNode contextNode, int childIndex, CompletionHint defaultHint = CompletionHint.None)
         {
             var hint = GetChildHint(contextNode, childIndex, defaultHint);
 
@@ -1843,7 +1906,8 @@ namespace Kusto.Language.Editor
                 || IsChildOnNewLine(contextNode, childIndex)
                 || contextNode is SyntaxList)
             {
-                while (contextNode != null)
+                while (contextNode != null
+                    && IsWithinLineConstraint(contextNode, position))
                 {
                     // get hints for all following missing or empty children
                     for (int i = childIndex + 1, n = contextNode.ChildCount; i < n; i++)
@@ -1865,12 +1929,60 @@ namespace Kusto.Language.Editor
                     // also get hints for contextNode's missing or empty following siblings in parent
                     var parent = contextNode.Parent as SyntaxNode;
                     var indexInParent = parent != null ? parent.GetChildIndex(contextNode) : 0;
+
+                    if (parent != null 
+                        && HasLineConstraint(contextNode)
+                        && !HasLineConstraint(parent))
+                    {
+                        // siblings of parent w/o a constraint are not within child's line constraint
+                        return hint;
+                    }
+
                     contextNode = parent;
                     childIndex = indexInParent;
                 }
             }
 
             return hint;
+        }
+
+        /// <summary>
+        /// True if the node is line constrained (it must exist in a single line).
+        /// </summary>
+        private static bool HasLineConstraint(SyntaxElement element)
+        {
+            return TryGetLineConstraint(element, out _);
+        }
+
+        /// <summary>
+        /// Gets the ancestor element that has a line constraint.
+        /// </summary>
+        private static bool TryGetLineConstraint(SyntaxElement element, out SyntaxNode constrained)
+        {
+            constrained = element.GetFirstAncestorOrSelf<Directive>();
+            return constrained != null;
+        }
+
+        /// <summary>
+        /// True if the position is within the line range of the specified syntax element.
+        /// </summary>
+        private bool IsWithinLineConstraint(SyntaxElement element, int position)
+        {
+            if (TryGetLineConstraint(element, out var constraint))
+            {
+                return constraint.GetFirstToken() is SyntaxToken firstToken
+                    && constraint.GetLastToken() is SyntaxToken lastToken
+                    && _code.TryGetLineAndOffset(firstToken.TextStart, out var firstLine, out _)
+                    && _code.TryGetLineAndOffset(Math.Max(firstToken.TextStart, lastToken.End - 1), out var lastLine, out _)
+                    && _code.TryGetLineAndOffset(position, out var positionLine, out _)
+                    && positionLine >= firstLine
+                    && positionLine <= lastLine;
+            }
+            else
+            {
+                // has no line constraint.
+                return true;
+            }
         }
 
         /// <summary>
@@ -2039,11 +2151,10 @@ namespace Kusto.Language.Editor
                                 return CompletionHint.Scalar;
                             }
                         }
-                        else if (parameter.DeclaredTypes[0].IsTabular)
+                        else
                         {
-                            return CompletionHint.Tabular;
+                            return CompletionHint.NonScalar;
                         }
-                        break;
                     case ParameterTypeKind.Parameter0:
                         return GetParameterHint(signature, signature.Parameters.Count > 0 ? signature.Parameters[0] : null);
                     case ParameterTypeKind.Parameter1:
@@ -2051,7 +2162,7 @@ namespace Kusto.Language.Editor
                     case ParameterTypeKind.Parameter2:
                         return GetParameterHint(signature, signature.Parameters.Count > 2 ? signature.Parameters[2] : null);
                     case ParameterTypeKind.Tabular:
-                        return CompletionHint.Tabular;
+                        return CompletionHint.NonScalar;
                     case ParameterTypeKind.Database:
                         return CompletionHint.Database;
                     case ParameterTypeKind.Cluster:
@@ -2191,7 +2302,7 @@ namespace Kusto.Language.Editor
             contextNode = null;
             contextChildIndex = 0;
 
-            SyntaxToken token = this._code.Syntax.GetTokenAt(position);
+            var token = _code.Syntax.GetTokenAt(position);
 
             if (token == null)
                 return false;
@@ -2206,14 +2317,18 @@ namespace Kusto.Language.Editor
                     return false;
                 }
 
-                contextNode = token.Parent;
-                contextChildIndex = GetChildIndex(contextNode, position);
-                return true;
+                if (IsWithinLineConstraint(token, position))
+                {
+                    contextNode = token.Parent;
+                    contextChildIndex = GetChildIndex(contextNode, position);
+                    return true;
+                }
             }
 
             var tokenNode = GetNearestAncestorWithEmptyChild(token, position);
 
-            if (position <= token.TextStart && !hasAffinity || token.Kind == SyntaxKind.EndOfTextToken)
+            if (position <= token.TextStart && !hasAffinity 
+                || token.Kind == SyntaxKind.EndOfTextToken)
             {
                 var prevToken = token.GetPreviousToken();
                 if (prevToken != null)
@@ -2221,7 +2336,8 @@ namespace Kusto.Language.Editor
                     var prevNode = GetNearestAncestorWithEmptyChild(prevToken, position);
                     if (prevNode != null)
                     {
-                        if (tokenNode == null || prevNode.Depth >= tokenNode.Depth)
+                        if ((tokenNode == null || prevNode.Depth >= tokenNode.Depth)
+                            && IsWithinLineConstraint(prevNode, position))
                         {
                             contextNode = prevNode;
                             contextChildIndex = GetChildIndex(contextNode, position);
@@ -2238,7 +2354,8 @@ namespace Kusto.Language.Editor
                     var nextNode = GetNearestAncestorWithEmptyChild(nextToken, position);
                     if (nextNode != null)
                     {
-                        if (tokenNode == null || nextNode.Depth > tokenNode.Depth)
+                        if ((tokenNode == null || nextNode.Depth > tokenNode.Depth)
+                            && IsWithinLineConstraint(nextNode, position))
                         {
                             contextNode = nextNode;
                             contextChildIndex = GetChildIndex(contextNode, position);
@@ -2248,7 +2365,8 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            if (tokenNode != null)
+            if (tokenNode != null
+                && IsWithinLineConstraint(tokenNode, position))
             {
                 contextNode = tokenNode;
                 contextChildIndex = GetChildIndex(contextNode, position);
@@ -2316,7 +2434,7 @@ namespace Kusto.Language.Editor
                 }
             }
 
-            if (_options.IncludeExtendedSytnax)
+            if (_options.IncludeExtendedSyntax)
             {
                 // get all extended completions derived from syntax
                 GetExtendedSyntaxCompletions(position, builder);
@@ -2599,9 +2717,11 @@ namespace Kusto.Language.Editor
                 case CompletionKind.QueryPrefix:
                     return (hints & CompletionHint.Query) != 0
                         || (hints & CompletionHint.Keyword) != 0
-                        || (match & SymbolMatch.Tabular) != 0;
+                        || (match & SymbolMatch.Tabular) != 0
+                        || (match & SymbolMatch.NonScalar) != 0;
                 case CompletionKind.TabularPrefix:
-                    return (match & SymbolMatch.Tabular) != 0;
+                    return (match & SymbolMatch.Tabular) != 0
+                        || (match & SymbolMatch.NonScalar) != 0;
                 case CompletionKind.TabularSuffix:
                     return left != null && left.ResultType != null && left.ResultType.IsTabular;
                 case CompletionKind.ScalarPrefix:
@@ -2872,6 +2992,7 @@ namespace Kusto.Language.Editor
                 case SymbolKind.EntityGroup:
                     return CompletionKind.EntityGroup;
                 case SymbolKind.Graph:
+                case SymbolKind.GraphSnapshot:
                     return CompletionKind.Graph;
                 case SymbolKind.StoredQueryResult:
                     return CompletionKind.StoredQueryResult;
@@ -2904,7 +3025,7 @@ namespace Kusto.Language.Editor
 
         #region Extended Syntax Completions
         /// <summary>
-        /// Adds extended completion items generated from syntax
+        /// Adds multi-term completion items generated from syntax look ahead.
         /// </summary>
         private void GetExtendedSyntaxCompletions(int position, CompletionBuilder builder)
         {
@@ -3228,6 +3349,8 @@ namespace Kusto.Language.Editor
                 || rules.DatabaseFunctionNameReference == parser
                 || rules.DatabaseNameReference == parser
                 || rules.ClusterNameReference == parser
+                || rules.GraphModelNameReference == parser
+                || rules.GraphModelSnapshotNameReference == parser
                 || rules.DatabaseOrTableNameReference == parser
                 || rules.DatabaseOrTableOrColumnNameReference == parser
                 || rules.TableOrColumnNameReference == parser

@@ -96,6 +96,7 @@ namespace Kusto.Language.Parsing
 
             this.CommandBlock =
                 Rule(
+                    List(queryParser.Directive), 
                     SeparatedList(
                         commandStatement, // first one is a command statement
                         SyntaxKind.SemicolonToken,
@@ -106,8 +107,8 @@ namespace Kusto.Language.Parsing
                         allowTrailingSeparator: true),
                     Optional(commandBlockSkippedTokens), // consumes all remaining tokens (no diagnostic)
                     Optional(SP.Token(SyntaxKind.EndOfTextToken)),
-                    (statements, skipped, end) =>
-                        new CommandBlock(statements, skipped, end));
+                    (directives, statements, skipped, end) =>
+                        new CommandBlock(directives, statements, skipped, end));
 
             var scriptElement =
                 Rule(

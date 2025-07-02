@@ -7,6 +7,7 @@ using Kusto.Language.Editor;
 namespace Kusto.Language.Syntax
 {
     using Utils;
+    using Parsing;
 
     /// <summary>
     /// A non-terminal element in the syntax (contains one or more nodes/tokens/lists).
@@ -256,5 +257,41 @@ namespace Kusto.Language.Syntax
                 return base.GetCompletionHint(index);
             }
         }
+    }
+
+    public partial class Directive
+    {
+        /// <summary>
+        /// The name of the directive
+        /// </summary>
+        public string Name => this.Info.Name;
+
+        /// <summary>
+        /// The text after the name contain any arguments
+        /// </summary>
+        public string ArgumentsText => this.Info.ArgumentsText;
+
+        /// <summary>
+        /// The text parsed into arguments.
+        /// </summary>
+        public IReadOnlyList<ClientDirectiveArgument> Arguments => this.Info.Arguments;
+
+        /// <summary>
+        /// The parsed client directive.
+        /// </summary>
+        private ClientDirective Info
+        {
+            get
+            {
+                if (_lazyClientDirective == null)
+                {
+                    ClientDirective.TryParse(this.Token.Text, out var info);
+                    Interlocked.CompareExchange(ref _lazyClientDirective, info, null);
+                }
+                return _lazyClientDirective;
+            }
+        }
+
+        private ClientDirective _lazyClientDirective;
     }
 }

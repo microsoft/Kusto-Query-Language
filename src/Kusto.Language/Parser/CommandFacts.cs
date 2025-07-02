@@ -74,9 +74,7 @@ namespace Kusto.Language.Parsing
         public static IReadOnlyList<string> GetCommandBlockTexts(string text)
         {
             var lineStarts = TextFacts.GetLineStarts(text);
-            var commandBlockStarts = GetCommandBlockStarts(text, lineStarts);
-            var lineSeparatedBlockStarts = ScriptFacts.GetLineSeparatedBlockStarts(text, lineStarts);
-            IReadOnlyList<int> blockStarts = commandBlockStarts.Concat(lineSeparatedBlockStarts).ToList();
+            IReadOnlyList<int> blockStarts = GetCommandBlockStarts(text, lineStarts);
             blockStarts = ScriptFacts.RemoveDuplicateBlockStarts(blockStarts);
             blockStarts = ScriptFacts.RemoveInvalidKustoBlockStarts(blockStarts, text);
 

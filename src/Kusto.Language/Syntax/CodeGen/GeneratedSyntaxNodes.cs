@@ -28,7 +28,7 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.DirectiveBlock;
         
-        public SyntaxToken DirectiveToken { get; }
+        public SyntaxList<Directive> Directives { get; }
         
         public SyntaxList<SyntaxToken> SkippedTokens { get; }
         
@@ -37,9 +37,9 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="DirectiveBlock"/>.
         /// </summary>
-        internal DirectiveBlock(SyntaxToken directiveToken, SyntaxList<SyntaxToken> skippedTokens, SyntaxToken endOfText, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal DirectiveBlock(SyntaxList<Directive> directives, SyntaxList<SyntaxToken> skippedTokens, SyntaxToken endOfText, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
-            this.DirectiveToken = Attach(directiveToken);
+            this.Directives = Attach(directives);
             this.SkippedTokens = Attach(skippedTokens);
             this.EndOfText = Attach(endOfText, optional: true);
             this.Init();
@@ -51,7 +51,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return DirectiveToken;
+                case 0: return Directives;
                 case 1: return SkippedTokens;
                 case 2: return EndOfText;
                 default: throw new ArgumentOutOfRangeException();
@@ -62,7 +62,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(DirectiveToken);
+                case 0: return nameof(Directives);
                 case 1: return nameof(SkippedTokens);
                 case 2: return nameof(EndOfText);
                 default: throw new ArgumentOutOfRangeException();
@@ -102,10 +102,71 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DirectiveBlock((SyntaxToken)DirectiveToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxToken>)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfText?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new DirectiveBlock((SyntaxList<Directive>)Directives?.Clone(includeDiagnostics), (SyntaxList<SyntaxToken>)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfText?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DirectiveBlock */
+    
+    #region class Directive
+    public sealed partial class Directive : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.Directive;
+        
+        public SyntaxToken Token { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="Directive"/>.
+        /// </summary>
+        internal Directive(SyntaxToken token, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Token = Attach(token);
+            this.Init();
+        }
+        
+        public override int ChildCount => 1;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Token;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Token);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.None;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitDirective(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitDirective(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new Directive((SyntaxToken)Token?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class Directive */
     
     #region class SkippedTokens
     public sealed partial class SkippedTokens : SyntaxNode
@@ -173,6 +234,8 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.QueryBlock;
         
+        public SyntaxList<Directive> Directives { get; }
+        
         public SyntaxList<SeparatedElement<Statement>> Statements { get; }
         
         public SkippedTokens SkippedTokens { get; }
@@ -182,23 +245,25 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="QueryBlock"/>.
         /// </summary>
-        internal QueryBlock(SyntaxList<SeparatedElement<Statement>> statements, SkippedTokens skippedTokens, SyntaxToken endOfQuery, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal QueryBlock(SyntaxList<Directive> directives, SyntaxList<SeparatedElement<Statement>> statements, SkippedTokens skippedTokens, SyntaxToken endOfQuery, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
+            this.Directives = Attach(directives);
             this.Statements = Attach(statements);
             this.SkippedTokens = Attach(skippedTokens, optional: true);
             this.EndOfQuery = Attach(endOfQuery, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
-                case 0: return Statements;
-                case 1: return SkippedTokens;
-                case 2: return EndOfQuery;
+                case 0: return Directives;
+                case 1: return Statements;
+                case 2: return SkippedTokens;
+                case 3: return EndOfQuery;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -207,9 +272,10 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(Statements);
-                case 1: return nameof(SkippedTokens);
-                case 2: return nameof(EndOfQuery);
+                case 0: return nameof(Directives);
+                case 1: return nameof(Statements);
+                case 2: return nameof(SkippedTokens);
+                case 3: return nameof(EndOfQuery);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -218,8 +284,8 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 1:
                 case 2:
+                case 3:
                     return true;
                 default:
                     return false;
@@ -230,9 +296,10 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Tabular;
-                case 1: return CompletionHint.None;
+                case 0: return CompletionHint.None;
+                case 1: return CompletionHint.NonScalar;
                 case 2: return CompletionHint.None;
+                case 3: return CompletionHint.None;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -248,7 +315,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new QueryBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfQuery?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new QueryBlock((SyntaxList<Directive>)Directives?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfQuery?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class QueryBlock */
@@ -2483,7 +2550,7 @@ namespace Kusto.Language.Syntax
             {
                 case 1: return CompletionHint.Clause;
                 case 2: return CompletionHint.Syntax;
-                case 3: return CompletionHint.Tabular;
+                case 3: return CompletionHint.NonScalar;
                 case 4: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -2581,7 +2648,7 @@ namespace Kusto.Language.Syntax
             {
                 case 1: return CompletionHint.Clause;
                 case 2: return CompletionHint.Syntax;
-                case 3: return CompletionHint.Tabular;
+                case 3: return CompletionHint.Scalar;
                 case 4: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -3390,7 +3457,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Tabular;
+                case 0: return CompletionHint.NonScalar;
                 case 1: return CompletionHint.Syntax;
                 case 2: return CompletionHint.Query;
                 default: return CompletionHint.Inherit;
@@ -4643,7 +4710,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.NonScalar;
                 case 3: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -5100,7 +5167,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Tabular;
+                case 1: return CompletionHint.NonScalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -7327,7 +7394,7 @@ namespace Kusto.Language.Syntax
                 case 2: return CompletionHint.Keyword;
                 case 3: return CompletionHint.Scalar;
                 case 4: return CompletionHint.Syntax;
-                case 5: return CompletionHint.Tabular;
+                case 5: return CompletionHint.NonScalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -7411,7 +7478,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Tabular;
+                case 1: return CompletionHint.NonScalar;
                 case 2: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -7706,6 +7773,73 @@ namespace Kusto.Language.Syntax
         }
     }
     #endregion /* class ProjectAwayOperator */
+    
+    #region class ProjectByNamesOperator
+    public sealed partial class ProjectByNamesOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.ProjectByNamesOperator;
+        
+        public SyntaxToken ProjectByNamesKeyword { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> Expressions { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="ProjectByNamesOperator"/>.
+        /// </summary>
+        internal ProjectByNamesOperator(SyntaxToken projectByNamesKeyword, SyntaxList<SeparatedElement<Expression>> expressions, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.ProjectByNamesKeyword = Attach(projectByNamesKeyword);
+            this.Expressions = Attach(expressions);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return ProjectByNamesKeyword;
+                case 1: return Expressions;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(ProjectByNamesKeyword);
+                case 1: return nameof(Expressions);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Scalar;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitProjectByNamesOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitProjectByNamesOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new ProjectByNamesOperator((SyntaxToken)ProjectByNamesKeyword?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class ProjectByNamesOperator */
     
     #region class ProjectKeepOperator
     public sealed partial class ProjectKeepOperator : QueryOperator
@@ -8550,7 +8684,7 @@ namespace Kusto.Language.Syntax
                 case 2: return CompletionHint.EntityGroup;
                 case 3: return CompletionHint.None;
                 case 4: return CompletionHint.Keyword;
-                case 5: return CompletionHint.Tabular;
+                case 5: return CompletionHint.NonScalar;
                 case 6: return CompletionHint.Keyword;
                 default: return CompletionHint.Inherit;
             }
@@ -9643,7 +9777,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.None;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.NonScalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10135,7 +10269,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Tabular;
+                case 1: return CompletionHint.NonScalar;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -10346,7 +10480,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Tabular;
+                case 0: return CompletionHint.NonScalar;
                 case 1: return CompletionHint.Keyword;
                 case 2: return CompletionHint.Column;
                 default: return CompletionHint.Inherit;
@@ -10453,90 +10587,6 @@ namespace Kusto.Language.Syntax
         }
     }
     #endregion /* class MakeGraphPartitionedByClause */
-    
-    #region class GraphMergeOperator
-    public sealed partial class GraphMergeOperator : QueryOperator
-    {
-        public override SyntaxKind Kind => SyntaxKind.GraphMergeOperator;
-        
-        public SyntaxToken GraphMergeKeyword { get; }
-        
-        public Expression Graph { get; }
-        
-        public JoinConditionClause OnClause { get; }
-        
-        /// <summary>
-        /// Constructs a new instance of <see cref="GraphMergeOperator"/>.
-        /// </summary>
-        internal GraphMergeOperator(SyntaxToken graphMergeKeyword, Expression graph, JoinConditionClause onClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
-        {
-            this.GraphMergeKeyword = Attach(graphMergeKeyword);
-            this.Graph = Attach(graph);
-            this.OnClause = Attach(onClause, optional: true);
-            this.Init();
-        }
-        
-        public override int ChildCount => 3;
-        
-        public override SyntaxElement GetChild(int index)
-        {
-            switch (index)
-            {
-                case 0: return GraphMergeKeyword;
-                case 1: return Graph;
-                case 2: return OnClause;
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        public override string GetName(int index)
-        {
-            switch (index)
-            {
-                case 0: return nameof(GraphMergeKeyword);
-                case 1: return nameof(Graph);
-                case 2: return nameof(OnClause);
-                default: throw new ArgumentOutOfRangeException();
-            }
-        }
-        
-        public override bool IsOptional(int index)
-        {
-            switch (index)
-            {
-                case 2:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        
-        protected override CompletionHint GetCompletionHintCore(int index)
-        {
-            switch (index)
-            {
-                case 0: return CompletionHint.Keyword;
-                case 1: return CompletionHint.Graph;
-                case 2: return CompletionHint.Syntax;
-                default: return CompletionHint.Inherit;
-            }
-        }
-        
-        public override void Accept(SyntaxVisitor visitor)
-        {
-            visitor.VisitGraphMergeOperator(this);
-        }
-        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
-        {
-            return visitor.VisitGraphMergeOperator(this);
-        }
-        
-        protected override SyntaxElement CloneCore(bool includeDiagnostics)
-        {
-            return new GraphMergeOperator((SyntaxToken)GraphMergeKeyword?.Clone(includeDiagnostics), (Expression)Graph?.Clone(includeDiagnostics), (JoinConditionClause)OnClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
-        }
-    }
-    #endregion /* class GraphMergeOperator */
     
     #region class GraphToTableOperator
     public sealed partial class GraphToTableOperator : QueryOperator
@@ -12165,7 +12215,7 @@ namespace Kusto.Language.Syntax
             switch (index)
             {
                 case 0: return CompletionHint.Syntax;
-                case 1: return CompletionHint.Tabular;
+                case 1: return CompletionHint.NonScalar;
                 case 2: return CompletionHint.Expression;
                 case 3: return CompletionHint.Syntax;
                 case 4: return CompletionHint.Syntax;
@@ -12380,7 +12430,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.NonScalar;
                 case 3: return CompletionHint.Syntax;
                 default: return CompletionHint.Inherit;
             }
@@ -13808,6 +13858,829 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class ExternalDataWithClause */
     
+    #region class InlineExternalTableKindClause
+    public sealed partial class InlineExternalTableKindClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTableKindClause;
+        
+        public SyntaxToken KindKeyword { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public SyntaxToken Value { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTableKindClause"/>.
+        /// </summary>
+        internal InlineExternalTableKindClause(SyntaxToken kindKeyword, SyntaxToken equalToken, SyntaxToken value, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.KindKeyword = Attach(kindKeyword);
+            this.EqualToken = Attach(equalToken);
+            this.Value = Attach(value);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return KindKeyword;
+                case 1: return EqualToken;
+                case 2: return Value;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(KindKeyword);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(Value);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Keyword;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTableKindClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTableKindClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTableKindClause((SyntaxToken)KindKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTableKindClause */
+    
+    #region class InlineExternalTableDataFormatClause
+    public sealed partial class InlineExternalTableDataFormatClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTableDataFormatClause;
+        
+        public SyntaxToken DataFormatKeyword { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public SyntaxToken Value { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTableDataFormatClause"/>.
+        /// </summary>
+        internal InlineExternalTableDataFormatClause(SyntaxToken dataFormatKeyword, SyntaxToken equalToken, SyntaxToken value, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.DataFormatKeyword = Attach(dataFormatKeyword);
+            this.EqualToken = Attach(equalToken);
+            this.Value = Attach(value);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return DataFormatKeyword;
+                case 1: return EqualToken;
+                case 2: return Value;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(DataFormatKeyword);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(Value);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Keyword;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTableDataFormatClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTableDataFormatClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTableDataFormatClause((SyntaxToken)DataFormatKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)Value?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTableDataFormatClause */
+    
+    #region class DateTimePattern
+    /// <summary>
+    /// datetime pattern expression in Inline External Table path format.
+    /// </summary>
+    public sealed partial class DateTimePattern : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.DateTimePattern;
+        
+        public SyntaxToken DateTimePatternKeyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxNode StringLiteral { get; }
+        
+        public SyntaxToken Comma { get; }
+        
+        public Expression PartitionColumn { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="DateTimePattern"/>.
+        /// </summary>
+        internal DateTimePattern(SyntaxToken dateTimePatternKeyword, SyntaxToken openParen, SyntaxNode stringLiteral, SyntaxToken comma, Expression partitionColumn, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.DateTimePatternKeyword = Attach(dateTimePatternKeyword);
+            this.OpenParen = Attach(openParen);
+            this.StringLiteral = Attach(stringLiteral);
+            this.Comma = Attach(comma);
+            this.PartitionColumn = Attach(partitionColumn);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 6;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return DateTimePatternKeyword;
+                case 1: return OpenParen;
+                case 2: return StringLiteral;
+                case 3: return Comma;
+                case 4: return PartitionColumn;
+                case 5: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(DateTimePatternKeyword);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(StringLiteral);
+                case 3: return nameof(Comma);
+                case 4: return nameof(PartitionColumn);
+                case 5: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Keyword;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Column;
+                case 5: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitDateTimePattern(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitDateTimePattern(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new DateTimePattern((SyntaxToken)DateTimePatternKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxNode)StringLiteral?.Clone(includeDiagnostics), (SyntaxToken)Comma?.Clone(includeDiagnostics), (Expression)PartitionColumn?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class DateTimePattern */
+    
+    #region class InlineExternalTablePathFormatPartitionColumnReference
+    public sealed partial class InlineExternalTablePathFormatPartitionColumnReference : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTablePathFormatPartitionColumnReference;
+        
+        public Expression PartitionColumnExpression { get; }
+        
+        public SyntaxNode SeparatorLiteral { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTablePathFormatPartitionColumnReference"/>.
+        /// </summary>
+        internal InlineExternalTablePathFormatPartitionColumnReference(Expression partitionColumnExpression, SyntaxNode separatorLiteral, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PartitionColumnExpression = Attach(partitionColumnExpression);
+            this.SeparatorLiteral = Attach(separatorLiteral, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PartitionColumnExpression;
+                case 1: return SeparatorLiteral;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PartitionColumnExpression);
+                case 1: return nameof(SeparatorLiteral);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Column;
+                case 1: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTablePathFormatPartitionColumnReference(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTablePathFormatPartitionColumnReference(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTablePathFormatPartitionColumnReference((Expression)PartitionColumnExpression?.Clone(includeDiagnostics), (SyntaxNode)SeparatorLiteral?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTablePathFormatPartitionColumnReference */
+    
+    #region class InlineExternalTablePathFormatClause
+    public sealed partial class InlineExternalTablePathFormatClause : Clause
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTablePathFormatClause;
+        
+        public SyntaxToken PathFormatKeyword { get; }
+        
+        public SyntaxToken EqualToken { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxNode OptionalSeparatorLiteral { get; }
+        
+        public SyntaxList<InlineExternalTablePathFormatPartitionColumnReference> PathExpressions { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTablePathFormatClause"/>.
+        /// </summary>
+        internal InlineExternalTablePathFormatClause(SyntaxToken pathFormatKeyword, SyntaxToken equalToken, SyntaxToken openParen, SyntaxNode optionalSeparatorLiteral, SyntaxList<InlineExternalTablePathFormatPartitionColumnReference> pathExpressions, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PathFormatKeyword = Attach(pathFormatKeyword);
+            this.EqualToken = Attach(equalToken);
+            this.OpenParen = Attach(openParen);
+            this.OptionalSeparatorLiteral = Attach(optionalSeparatorLiteral, optional: true);
+            this.PathExpressions = Attach(pathExpressions);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 6;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PathFormatKeyword;
+                case 1: return EqualToken;
+                case 2: return OpenParen;
+                case 3: return OptionalSeparatorLiteral;
+                case 4: return PathExpressions;
+                case 5: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PathFormatKeyword);
+                case 1: return nameof(EqualToken);
+                case 2: return nameof(OpenParen);
+                case 3: return nameof(OptionalSeparatorLiteral);
+                case 4: return nameof(PathExpressions);
+                case 5: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Column;
+                case 5: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTablePathFormatClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTablePathFormatClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTablePathFormatClause((SyntaxToken)PathFormatKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxNode)OptionalSeparatorLiteral?.Clone(includeDiagnostics), (SyntaxList<InlineExternalTablePathFormatPartitionColumnReference>)PathExpressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTablePathFormatClause */
+    
+    #region class PartitionColumnDeclaration
+    public sealed partial class PartitionColumnDeclaration : Expression
+    {
+        public override SyntaxKind Kind => SyntaxKind.PartitionColumnDeclaration;
+        
+        public NameDeclaration Name { get; }
+        
+        public SyntaxToken Colon { get; }
+        
+        public TypeExpression Type { get; }
+        
+        public SyntaxToken Equal { get; }
+        
+        public Expression Expr { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="PartitionColumnDeclaration"/>.
+        /// </summary>
+        internal PartitionColumnDeclaration(NameDeclaration name, SyntaxToken colon, TypeExpression type, SyntaxToken equal, Expression expr, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.Name = Attach(name);
+            this.Colon = Attach(colon);
+            this.Type = Attach(type);
+            this.Equal = Attach(equal, optional: true);
+            this.Expr = Attach(expr, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 5;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return Name;
+                case 1: return Colon;
+                case 2: return Type;
+                case 3: return Equal;
+                case 4: return Expr;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(Name);
+                case 1: return nameof(Colon);
+                case 2: return nameof(Type);
+                case 3: return nameof(Equal);
+                case 4: return nameof(Expr);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                case 4:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Declaration;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Column;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitPartitionColumnDeclaration(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitPartitionColumnDeclaration(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new PartitionColumnDeclaration((NameDeclaration)Name?.Clone(includeDiagnostics), (SyntaxToken)Colon?.Clone(includeDiagnostics), (TypeExpression)Type?.Clone(includeDiagnostics), (SyntaxToken)Equal?.Clone(includeDiagnostics), (Expression)Expr?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class PartitionColumnDeclaration */
+    
+    #region class InlineExternalTablePartitionClause
+    /// <summary>
+    /// A clause that specifies the partitioning for inline external table.
+    /// </summary>
+    public sealed partial class InlineExternalTablePartitionClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTablePartitionClause;
+        
+        public SyntaxToken PartitionKeyword { get; }
+        
+        public SyntaxToken ByKeyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxToken LeadingComma { get; }
+        
+        public SyntaxList<SeparatedElement<PartitionColumnDeclaration>> PartitionColumns { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTablePartitionClause"/>.
+        /// </summary>
+        internal InlineExternalTablePartitionClause(SyntaxToken partitionKeyword, SyntaxToken byKeyword, SyntaxToken openParen, SyntaxToken leadingComma, SyntaxList<SeparatedElement<PartitionColumnDeclaration>> partitionColumns, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.PartitionKeyword = Attach(partitionKeyword);
+            this.ByKeyword = Attach(byKeyword);
+            this.OpenParen = Attach(openParen);
+            this.LeadingComma = Attach(leadingComma, optional: true);
+            this.PartitionColumns = Attach(partitionColumns);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 6;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return PartitionKeyword;
+                case 1: return ByKeyword;
+                case 2: return OpenParen;
+                case 3: return LeadingComma;
+                case 4: return PartitionColumns;
+                case 5: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(PartitionKeyword);
+                case 1: return nameof(ByKeyword);
+                case 2: return nameof(OpenParen);
+                case 3: return nameof(LeadingComma);
+                case 4: return nameof(PartitionColumns);
+                case 5: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 3:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Keyword;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Declaration;
+                case 5: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTablePartitionClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTablePartitionClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTablePartitionClause((SyntaxToken)PartitionKeyword?.Clone(includeDiagnostics), (SyntaxToken)ByKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxToken)LeadingComma?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<PartitionColumnDeclaration>>)PartitionColumns?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTablePartitionClause */
+    
+    #region class InlineExternalTableConnectionStringsClause
+    /// <summary>
+    /// A clause that specifies list of connection strings for inline external table.
+    /// </summary>
+    public sealed partial class InlineExternalTableConnectionStringsClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTableConnectionStringsClause;
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxList<SeparatedElement<Expression>> ConnectionStrings { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTableConnectionStringsClause"/>.
+        /// </summary>
+        internal InlineExternalTableConnectionStringsClause(SyntaxToken openParen, SyntaxList<SeparatedElement<Expression>> connectionStrings, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.OpenParen = Attach(openParen);
+            this.ConnectionStrings = Attach(connectionStrings);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 3;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return OpenParen;
+                case 1: return ConnectionStrings;
+                case 2: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(OpenParen);
+                case 1: return nameof(ConnectionStrings);
+                case 2: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTableConnectionStringsClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTableConnectionStringsClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTableConnectionStringsClause((SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)ConnectionStrings?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTableConnectionStringsClause */
+    
+    #region class InlineExternalTableExpression
+    /// <summary>
+    /// A node in the kusto syntax that represents an inline external table expression.
+    /// </summary>
+    public sealed partial class InlineExternalTableExpression : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.InlineExternalTableExpression;
+        
+        public SyntaxToken InlineExternalTableKeyword { get; }
+        
+        public SyntaxList<NamedParameter> Parameters { get; }
+        
+        public RowSchema Schema { get; }
+        
+        public InlineExternalTableKindClause KindParameter { get; }
+        
+        public InlineExternalTablePartitionClause PartitionClause { get; }
+        
+        public InlineExternalTablePathFormatClause PathFormat { get; }
+        
+        public InlineExternalTableDataFormatClause DataFormatParameter { get; }
+        
+        public InlineExternalTableConnectionStringsClause ConnectionStrings { get; }
+        
+        public ExternalDataWithClause WithClause { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="InlineExternalTableExpression"/>.
+        /// </summary>
+        internal InlineExternalTableExpression(SyntaxToken inlineExternalTableKeyword, SyntaxList<NamedParameter> parameters, RowSchema schema, InlineExternalTableKindClause kindParameter, InlineExternalTablePartitionClause partitionClause, InlineExternalTablePathFormatClause pathFormat, InlineExternalTableDataFormatClause dataFormatParameter, InlineExternalTableConnectionStringsClause connectionStrings, ExternalDataWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.InlineExternalTableKeyword = Attach(inlineExternalTableKeyword);
+            this.Parameters = Attach(parameters);
+            this.Schema = Attach(schema);
+            this.KindParameter = Attach(kindParameter);
+            this.PartitionClause = Attach(partitionClause, optional: true);
+            this.PathFormat = Attach(pathFormat, optional: true);
+            this.DataFormatParameter = Attach(dataFormatParameter);
+            this.ConnectionStrings = Attach(connectionStrings);
+            this.WithClause = Attach(withClause, optional: true);
+            this.Init();
+        }
+        
+        public override int ChildCount => 9;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return InlineExternalTableKeyword;
+                case 1: return Parameters;
+                case 2: return Schema;
+                case 3: return KindParameter;
+                case 4: return PartitionClause;
+                case 5: return PathFormat;
+                case 6: return DataFormatParameter;
+                case 7: return ConnectionStrings;
+                case 8: return WithClause;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(InlineExternalTableKeyword);
+                case 1: return nameof(Parameters);
+                case 2: return nameof(Schema);
+                case 3: return nameof(KindParameter);
+                case 4: return nameof(PartitionClause);
+                case 5: return nameof(PathFormat);
+                case 6: return nameof(DataFormatParameter);
+                case 7: return nameof(ConnectionStrings);
+                case 8: return nameof(WithClause);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 4:
+                case 5:
+                case 8:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.None;
+                case 2: return CompletionHint.Syntax;
+                case 3: return CompletionHint.Syntax;
+                case 4: return CompletionHint.Syntax;
+                case 5: return CompletionHint.Syntax;
+                case 6: return CompletionHint.Syntax;
+                case 7: return CompletionHint.Syntax;
+                case 8: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitInlineExternalTableExpression(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitInlineExternalTableExpression(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new InlineExternalTableExpression((SyntaxToken)InlineExternalTableKeyword?.Clone(includeDiagnostics), (SyntaxList<NamedParameter>)Parameters?.Clone(includeDiagnostics), (RowSchema)Schema?.Clone(includeDiagnostics), (InlineExternalTableKindClause)KindParameter?.Clone(includeDiagnostics), (InlineExternalTablePartitionClause)PartitionClause?.Clone(includeDiagnostics), (InlineExternalTablePathFormatClause)PathFormat?.Clone(includeDiagnostics), (InlineExternalTableDataFormatClause)DataFormatParameter?.Clone(includeDiagnostics), (InlineExternalTableConnectionStringsClause)ConnectionStrings?.Clone(includeDiagnostics), (ExternalDataWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class InlineExternalTableExpression */
+    
     #region class JoinOperator
     public sealed partial class JoinOperator : QueryOperator
     {
@@ -13876,7 +14749,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.NonScalar;
                 case 3: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
@@ -13955,7 +14828,7 @@ namespace Kusto.Language.Syntax
             {
                 case 0: return CompletionHint.Keyword;
                 case 1: return CompletionHint.Syntax;
-                case 2: return CompletionHint.Tabular;
+                case 2: return CompletionHint.NonScalar;
                 case 3: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
@@ -15417,7 +16290,7 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Tabular;
+                case 0: return CompletionHint.NonScalar;
                 case 1: return CompletionHint.None;
                 default: return CompletionHint.Inherit;
             }
@@ -15505,6 +16378,8 @@ namespace Kusto.Language.Syntax
     {
         public override SyntaxKind Kind => SyntaxKind.CommandBlock;
         
+        public SyntaxList<Directive> Directives { get; }
+        
         public SyntaxList<SeparatedElement<Statement>> Statements { get; }
         
         public SkippedTokens SkippedTokens { get; }
@@ -15514,23 +16389,25 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="CommandBlock"/>.
         /// </summary>
-        internal CommandBlock(SyntaxList<SeparatedElement<Statement>> statements, SkippedTokens skippedTokens, SyntaxToken endOfCommand, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal CommandBlock(SyntaxList<Directive> directives, SyntaxList<SeparatedElement<Statement>> statements, SkippedTokens skippedTokens, SyntaxToken endOfCommand, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
+            this.Directives = Attach(directives);
             this.Statements = Attach(statements);
             this.SkippedTokens = Attach(skippedTokens, optional: true);
             this.EndOfCommand = Attach(endOfCommand, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 3;
+        public override int ChildCount => 4;
         
         public override SyntaxElement GetChild(int index)
         {
             switch (index)
             {
-                case 0: return Statements;
-                case 1: return SkippedTokens;
-                case 2: return EndOfCommand;
+                case 0: return Directives;
+                case 1: return Statements;
+                case 2: return SkippedTokens;
+                case 3: return EndOfCommand;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -15539,9 +16416,10 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return nameof(Statements);
-                case 1: return nameof(SkippedTokens);
-                case 2: return nameof(EndOfCommand);
+                case 0: return nameof(Directives);
+                case 1: return nameof(Statements);
+                case 2: return nameof(SkippedTokens);
+                case 3: return nameof(EndOfCommand);
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -15550,8 +16428,8 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 1:
                 case 2:
+                case 3:
                     return true;
                 default:
                     return false;
@@ -15562,9 +16440,10 @@ namespace Kusto.Language.Syntax
         {
             switch (index)
             {
-                case 0: return CompletionHint.Tabular;
-                case 1: return CompletionHint.None;
+                case 0: return CompletionHint.None;
+                case 1: return CompletionHint.NonScalar;
                 case 2: return CompletionHint.None;
+                case 3: return CompletionHint.None;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -15580,7 +16459,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new CommandBlock((SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfCommand?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new CommandBlock((SyntaxList<Directive>)Directives?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Statement>>)Statements?.Clone(includeDiagnostics), (SkippedTokens)SkippedTokens?.Clone(includeDiagnostics), (SyntaxToken)EndOfCommand?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class CommandBlock */
@@ -15591,6 +16470,7 @@ namespace Kusto.Language.Syntax
     public partial class SyntaxVisitor
     {
         public abstract void VisitDirectiveBlock(DirectiveBlock node);
+        public abstract void VisitDirective(Directive node);
         public abstract void VisitSkippedTokens(SkippedTokens node);
         public abstract void VisitQueryBlock(QueryBlock node);
         public abstract void VisitTypeOfLiteralExpression(TypeOfLiteralExpression node);
@@ -15687,6 +16567,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitPartitionSubquery(PartitionSubquery node);
         public abstract void VisitProjectOperator(ProjectOperator node);
         public abstract void VisitProjectAwayOperator(ProjectAwayOperator node);
+        public abstract void VisitProjectByNamesOperator(ProjectByNamesOperator node);
         public abstract void VisitProjectKeepOperator(ProjectKeepOperator node);
         public abstract void VisitProjectRenameOperator(ProjectRenameOperator node);
         public abstract void VisitProjectReorderOperator(ProjectReorderOperator node);
@@ -15722,7 +16603,6 @@ namespace Kusto.Language.Syntax
         public abstract void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
-        public abstract void VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract void VisitGraphToTableOperator(GraphToTableOperator node);
         public abstract void VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract void VisitGraphToTableAsClause(GraphToTableAsClause node);
@@ -15763,6 +16643,15 @@ namespace Kusto.Language.Syntax
         public abstract void VisitExternalDataExpression(ExternalDataExpression node);
         public abstract void VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract void VisitExternalDataWithClause(ExternalDataWithClause node);
+        public abstract void VisitInlineExternalTableKindClause(InlineExternalTableKindClause node);
+        public abstract void VisitInlineExternalTableDataFormatClause(InlineExternalTableDataFormatClause node);
+        public abstract void VisitDateTimePattern(DateTimePattern node);
+        public abstract void VisitInlineExternalTablePathFormatPartitionColumnReference(InlineExternalTablePathFormatPartitionColumnReference node);
+        public abstract void VisitInlineExternalTablePathFormatClause(InlineExternalTablePathFormatClause node);
+        public abstract void VisitPartitionColumnDeclaration(PartitionColumnDeclaration node);
+        public abstract void VisitInlineExternalTablePartitionClause(InlineExternalTablePartitionClause node);
+        public abstract void VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node);
+        public abstract void VisitInlineExternalTableExpression(InlineExternalTableExpression node);
         public abstract void VisitJoinOperator(JoinOperator node);
         public abstract void VisitLookupOperator(LookupOperator node);
         public abstract void VisitJoinOnClause(JoinOnClause node);
@@ -15791,6 +16680,10 @@ namespace Kusto.Language.Syntax
         protected abstract void DefaultVisit(SyntaxNode node);
         
         public override void VisitDirectiveBlock(DirectiveBlock node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitDirective(Directive node)
         {
             this.DefaultVisit(node);
         }
@@ -16178,6 +17071,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitProjectByNamesOperator(ProjectByNamesOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitProjectKeepOperator(ProjectKeepOperator node)
         {
             this.DefaultVisit(node);
@@ -16315,10 +17212,6 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node)
-        {
-            this.DefaultVisit(node);
-        }
-        public override void VisitGraphMergeOperator(GraphMergeOperator node)
         {
             this.DefaultVisit(node);
         }
@@ -16482,6 +17375,42 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitInlineExternalTableKindClause(InlineExternalTableKindClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTableDataFormatClause(InlineExternalTableDataFormatClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitDateTimePattern(DateTimePattern node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTablePathFormatPartitionColumnReference(InlineExternalTablePathFormatPartitionColumnReference node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTablePathFormatClause(InlineExternalTablePathFormatClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitPartitionColumnDeclaration(PartitionColumnDeclaration node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTablePartitionClause(InlineExternalTablePartitionClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitInlineExternalTableExpression(InlineExternalTableExpression node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitJoinOperator(JoinOperator node)
         {
             this.DefaultVisit(node);
@@ -16577,6 +17506,7 @@ namespace Kusto.Language.Syntax
     public partial class SyntaxVisitor<TResult>
     {
         public abstract TResult VisitDirectiveBlock(DirectiveBlock node);
+        public abstract TResult VisitDirective(Directive node);
         public abstract TResult VisitSkippedTokens(SkippedTokens node);
         public abstract TResult VisitQueryBlock(QueryBlock node);
         public abstract TResult VisitTypeOfLiteralExpression(TypeOfLiteralExpression node);
@@ -16673,6 +17603,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitPartitionSubquery(PartitionSubquery node);
         public abstract TResult VisitProjectOperator(ProjectOperator node);
         public abstract TResult VisitProjectAwayOperator(ProjectAwayOperator node);
+        public abstract TResult VisitProjectByNamesOperator(ProjectByNamesOperator node);
         public abstract TResult VisitProjectKeepOperator(ProjectKeepOperator node);
         public abstract TResult VisitProjectRenameOperator(ProjectRenameOperator node);
         public abstract TResult VisitProjectReorderOperator(ProjectReorderOperator node);
@@ -16708,7 +17639,6 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
-        public abstract TResult VisitGraphMergeOperator(GraphMergeOperator node);
         public abstract TResult VisitGraphToTableOperator(GraphToTableOperator node);
         public abstract TResult VisitGraphToTableOutputClause(GraphToTableOutputClause node);
         public abstract TResult VisitGraphToTableAsClause(GraphToTableAsClause node);
@@ -16749,6 +17679,15 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitExternalDataExpression(ExternalDataExpression node);
         public abstract TResult VisitContextualDataTableExpression(ContextualDataTableExpression node);
         public abstract TResult VisitExternalDataWithClause(ExternalDataWithClause node);
+        public abstract TResult VisitInlineExternalTableKindClause(InlineExternalTableKindClause node);
+        public abstract TResult VisitInlineExternalTableDataFormatClause(InlineExternalTableDataFormatClause node);
+        public abstract TResult VisitDateTimePattern(DateTimePattern node);
+        public abstract TResult VisitInlineExternalTablePathFormatPartitionColumnReference(InlineExternalTablePathFormatPartitionColumnReference node);
+        public abstract TResult VisitInlineExternalTablePathFormatClause(InlineExternalTablePathFormatClause node);
+        public abstract TResult VisitPartitionColumnDeclaration(PartitionColumnDeclaration node);
+        public abstract TResult VisitInlineExternalTablePartitionClause(InlineExternalTablePartitionClause node);
+        public abstract TResult VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node);
+        public abstract TResult VisitInlineExternalTableExpression(InlineExternalTableExpression node);
         public abstract TResult VisitJoinOperator(JoinOperator node);
         public abstract TResult VisitLookupOperator(LookupOperator node);
         public abstract TResult VisitJoinOnClause(JoinOnClause node);
@@ -16777,6 +17716,10 @@ namespace Kusto.Language.Syntax
         protected abstract TResult DefaultVisit(SyntaxNode node);
         
         public override TResult VisitDirectiveBlock(DirectiveBlock node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitDirective(Directive node)
         {
             return this.DefaultVisit(node);
         }
@@ -17164,6 +18107,10 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
+        public override TResult VisitProjectByNamesOperator(ProjectByNamesOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
         public override TResult VisitProjectKeepOperator(ProjectKeepOperator node)
         {
             return this.DefaultVisit(node);
@@ -17301,10 +18248,6 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node)
-        {
-            return this.DefaultVisit(node);
-        }
-        public override TResult VisitGraphMergeOperator(GraphMergeOperator node)
         {
             return this.DefaultVisit(node);
         }
@@ -17465,6 +18408,42 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitExternalDataWithClause(ExternalDataWithClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTableKindClause(InlineExternalTableKindClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTableDataFormatClause(InlineExternalTableDataFormatClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitDateTimePattern(DateTimePattern node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTablePathFormatPartitionColumnReference(InlineExternalTablePathFormatPartitionColumnReference node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTablePathFormatClause(InlineExternalTablePathFormatClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitPartitionColumnDeclaration(PartitionColumnDeclaration node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTablePartitionClause(InlineExternalTablePartitionClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitInlineExternalTableExpression(InlineExternalTableExpression node)
         {
             return this.DefaultVisit(node);
         }

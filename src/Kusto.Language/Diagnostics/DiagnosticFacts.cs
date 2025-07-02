@@ -992,12 +992,67 @@ namespace Kusto.Language
             return new Diagnostic("KS249", $"The tabular value does not have the required columns.");
         }
 
+        public static Diagnostic GetUnknownDirective(string name)
+        {
+            return new Diagnostic("KS250", $"Unknown directive '{name}'.");
+        }
+
         /// <summary>
         /// This is for expecting exactly a table reference, and not any other tabular expression.
         /// </summary>
         public static Diagnostic GetTableExpected()
         {
-            return new Diagnostic("KS250", "Table expected.");
+            return new Diagnostic("KS251", "Table expected.");
+        }
+
+        public static Diagnostic GetMissingPartitionColumnDeclaration()
+        {
+            return new Diagnostic("KS252", "Partition column definition is expected.");
+        }
+
+        public static Diagnostic GetMissingDataFormat()
+        {
+            return new Diagnostic("KS253", "DataFormat definition is expected.");
+        }
+
+        public static Diagnostic GetMissingExternalTableKind()
+        {
+            return new Diagnostic("KS254", "External Table Kind definition is expected.");
+        }
+
+        public static Diagnostic GetMissingPathFormatTokens()
+        {
+            return new Diagnostic("KS255", "External Table Path Format is empty.");
+        }
+
+        public static Diagnostic GetMissingConnectionStrings()
+        {
+            return new Diagnostic("KS256", "Connection strings definition is expected.");
+        }
+
+        public static Diagnostic GetUnknownTokenInPathFormatDefinition()
+        {
+            return new Diagnostic("KS257", "External Table Path Format syntax has unsupported expresion.");
+        }
+
+        public static Diagnostic GetWrongPartitionColumnType()
+        {
+            return new Diagnostic("KS258", "External Table Partition Column type is not supported.");
+        }
+
+        public static Diagnostic GetWrongPartitionColumnFunction()
+        {
+            return new Diagnostic("KS259", "External Table Partition Column does not support this function.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownGraphModel(string name)
+        {
+            return new Diagnostic("KS260", $"The name '{name}' does not refer to any known graph model.");
+        }
+
+        public static Diagnostic GetNameDoesNotReferToAnyKnownGraphSnapshot(string name, string graphModelName)
+        {
+            return new Diagnostic("KS261", $"The name '{name}' does not refer to any known graph snapshot of graph model '{graphModelName}'.");
         }
 
         #region command diagnostics

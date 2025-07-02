@@ -12,6 +12,9 @@ namespace Kusto.Language
 
     public static partial class KustoFacts
     {
+        /// <summary>
+        /// Types allowed for function parameters and columns.
+        /// </summary>
         public static readonly IReadOnlyList<string> ParamTypes = new string[]
         {
             "bool",
@@ -33,6 +36,9 @@ namespace Kusto.Language
             "uniqueid"
         };
 
+        /// <summary>
+        /// Extended type allowed in some schema declarations.
+        /// </summary>
         public static readonly IReadOnlyList<string> ExtendedParamTypes = new string[]
         {
             "bool",
@@ -196,6 +202,21 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<string> MvExpandKinds = new string[]
         {
             "bag", "array"
+        };
+
+        public static readonly IReadOnlyList<string> InlineExternalTableKinds = new string[]
+        {
+            "storage"
+        };
+
+        public static readonly IReadOnlyList<string> InlineExternalTableDataFormats = new string[]
+        {
+            "parquet"
+        };
+
+        public static readonly IReadOnlyList<string> InlineExternalTablePartitionColumnFunctions = new string[]
+        {
+            "hash", "bin", "startofday", "startofweek", "startofmonth", "startofyear"
         };
 
         public static readonly IReadOnlyList<string> PartitionHintConcurrencies = HintConcurrencies;
@@ -377,6 +398,27 @@ namespace Kusto.Language
         };
 
         /// <summary>
+        /// Directive names possibly supported by the client.
+        /// </summary>
+        public static readonly IReadOnlyList<string> Directives = new[]
+        {
+            "automate",
+            "browse",       // open browser to link
+            "connect",      // set connection for script or query
+            "crp",          // set client request properties for script or query
+            "database",     // set default database (and cluster) for query
+            "download",
+            "qp",           // set query parameters for script or query
+            "query",
+            "run",          // execute expression (via print operator)
+            "save",         // run query & save results to local file
+            "sqr",          // run query & save results to server
+            "truesight",
+            "upload",
+            "welcome"       // show welcome message
+        };
+
+        /// <summary>
         /// Keywords that can be used as identifiers everywhere.
         /// </summary>
         public static readonly IReadOnlyList<SyntaxKind> KeywordsAsIdentifiers =
@@ -400,6 +442,9 @@ namespace Kusto.Language
                     SyntaxKind.EarliestKeyword,
                     SyntaxKind.ExtendKeyword,
                     SyntaxKind.ExternalDataKeyword,
+                    SyntaxKind.InlineExternalTableKeyword,
+                    SyntaxKind.DataFormatKeyword,
+                    SyntaxKind.DateTimePatternKeyword,
                     // FALSE?? How can this be a keyword it is already a literal 
                     SyntaxKind.FindKeyword,
                     SyntaxKind.FilterKeyword,
@@ -462,6 +507,7 @@ namespace Kusto.Language
             SyntaxKind.ParseKvOperator,
             SyntaxKind.ProjectOperator,
             SyntaxKind.ProjectAwayOperator,
+            SyntaxKind.ProjectByNamesOperator,
             SyntaxKind.ProjectKeepOperator,
             SyntaxKind.ProjectRenameOperator,
             SyntaxKind.ProjectReorderOperator,
@@ -494,7 +540,6 @@ namespace Kusto.Language
             SyntaxKind.ForkOperator,
             SyntaxKind.GetSchemaOperator,
             SyntaxKind.GraphMatchOperator,
-            SyntaxKind.GraphMergeOperator,
             SyntaxKind.GraphToTableOperator,
             SyntaxKind.InvokeOperator,
             SyntaxKind.JoinOperator,
@@ -509,6 +554,7 @@ namespace Kusto.Language
             SyntaxKind.PartitionOperator,
             SyntaxKind.PartitionByOperator,
             SyntaxKind.ProjectAwayOperator,
+            SyntaxKind.ProjectByNamesOperator,
             SyntaxKind.ProjectKeepOperator,
             SyntaxKind.ProjectOperator,
             SyntaxKind.ProjectRenameOperator,
@@ -1002,29 +1048,104 @@ namespace Kusto.Language
         /// </summary>
         public static string GetHostName(string clusterUriOrName)
         {
-            int start = 0;
+            GetUriParts(
+                clusterUriOrName, 
+                out _,  // scheme
+                out var hostname, 
+                out _, // port
+                out _, // path
+                out _  // query
+                );
+            return hostname;
+        }
 
-            int hostNamePrefixStart = clusterUriOrName.IndexOf(HostNamePrefix);
+        /// <summary>
+        /// Gets the host and path names
+        /// </summary>
+        public static void GetHostAndPath(string clusterUriOrName, out string host, out string path)
+        {
+            GetUriParts(
+                clusterUriOrName,
+                out _, // scheme
+                out host,
+                out _, // port
+                out path,
+                out _  // query
+                );
+        }
+
+        private static void GetUriParts(
+            string uri, 
+            out string scheme, 
+            out string hostname, 
+            out string port,
+            out string path,
+            out string query)
+        {
+            scheme = null;
+            port = null;
+            path = null;
+            query = null;
+
+            int hostnameStart = 0;
+
+            int hostNamePrefixStart = uri.IndexOf(HostNamePrefix);
             if (hostNamePrefixStart > 0)
             {
-                start = hostNamePrefixStart + HostNamePrefix.Length;
+                scheme = uri.Substring(0, hostNamePrefixStart);
+                hostnameStart = hostNamePrefixStart + HostNamePrefix.Length;
             }
 
             // extract only permitted host name or IP value characters
-            var end = start;
-            while (end < clusterUriOrName.Length &&
-                IsHostNameChar(clusterUriOrName[end]))
+            var pos = hostnameStart;
+            while (pos < uri.Length &&
+                IsHostNameChar(uri[pos]))
             {
-                end++;
+                pos++;
             }
 
-            if (start == 0 && end == clusterUriOrName.Length)
+            if (hostnameStart == 0 && pos == uri.Length)
             {
-                return clusterUriOrName;
+                hostname = uri;
             }
             else
             {
-                return clusterUriOrName.Substring(start, end - start);
+                hostname = uri.Substring(hostnameStart, pos - hostnameStart);
+            }
+
+            if (pos < uri.Length && uri[pos] == ':')
+            {
+                pos++;
+                var portStart = pos;
+                while (pos < uri.Length && char.IsDigit(uri[pos]))
+                {
+                    pos++;
+                }
+
+                if (pos > portStart)
+                {
+                    port = uri.Substring(portStart, pos - portStart);
+                }
+            }
+
+            if (pos < uri.Length && uri[pos] == '/')
+            {
+                pos++;
+                var pathStart = pos;
+                while (pos < uri.Length && uri[pos] != '?')
+                {
+                    pos++;
+                }
+
+                if (pos > pathStart)
+                {
+                    path = uri.Substring(pathStart, pos - pathStart);
+                }
+            }
+
+            if (pos < uri.Length && uri[pos] == '?')
+            {
+                query = uri.Substring(pos);
             }
         }
 

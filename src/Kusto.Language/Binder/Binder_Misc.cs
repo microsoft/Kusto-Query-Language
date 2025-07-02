@@ -6,7 +6,6 @@ namespace Kusto.Language.Binding
 {
     using Symbols;
     using Syntax;
-    using System.Reflection;
     using Utils;
 
     internal sealed partial class Binder
@@ -405,6 +404,9 @@ namespace Kusto.Language.Binding
         private static readonly ObjectPool<List<TypeSymbol>> s_typeListPool =
             new ObjectPool<List<TypeSymbol>>(() => new List<TypeSymbol>(), list => list.Clear());
 
+        private static readonly ObjectPool<List<string>> s_stringListPool =
+            new ObjectPool<List<string>>(() => new List<string>(), list => list.Clear());
+
         private static readonly ObjectPool<HashSet<string>> s_stringSetPool =
             new ObjectPool<HashSet<string>>(() => new HashSet<string>(), s => s.Clear());
 
@@ -532,19 +534,28 @@ namespace Kusto.Language.Binding
             for (int i = 0; i < parameters.Count; i++)
             {
                 var p = parameters[i].Element;
+                BindColumnDeclaration(p.NameAndType);
+            }
+        }
+
+        private void BindColumnDeclarations(SyntaxList<SeparatedElement<NameAndTypeDeclaration>> parameters)
+        {
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var p = parameters[i].Element;
                 BindColumnDeclaration(p);
             }
         }
 
-        private void BindColumnDeclaration(FunctionParameter node)
+        private void BindColumnDeclaration(NameAndTypeDeclaration node)
         {
-            var name = node.NameAndType.Name.SimpleName;
-            var type = GetTypeFromTypeExpression(node.NameAndType.Type);
+            var name = node.Name.SimpleName;
+            var type = GetTypeFromTypeExpression(node.Type);
 
             if (!string.IsNullOrEmpty(name))
             {
                 var symbol = new ColumnSymbol(name, type);
-                SetSemanticInfo(node.NameAndType.Name, new SemanticInfo(symbol, type));
+                SetSemanticInfo(node.Name, new SemanticInfo(symbol, type));
             }
         }
 
@@ -636,6 +647,112 @@ namespace Kusto.Language.Binding
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Directives
+
+        public void ApplyDirective(Directive directive, List<Diagnostic> diagnostics = null)
+        {
+            switch (directive.Name)
+            {
+                case "connect":
+                    ApplyConnectDirective(directive, directive.Token, diagnostics);
+                    break;
+                case "database":
+                    ApplyDatabaseDirective(directive, directive.Token, diagnostics);
+                    break;
+
+                default:
+                    if (!KustoFacts.Directives.Contains(directive.Name)
+                        && diagnostics != null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetUnknownDirective(directive.Name).WithLocation(directive.Token.TextStart + 1, directive.Name.Length));
+                    }
+                    break;
+            }
+        }
+
+        private static char[] databaseSplitChars = new[] { '/' };
+
+        private void ApplyDatabaseDirective(Directive directive, SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            if (TryGetDirectiveClusterAndDatabase(directive, out var clusterName, out var databaseName))
+            {
+                if (clusterName != null)
+                {
+                    _currentCluster = _globals.GetCluster(clusterName) ?? ClusterSymbol.Unknown;
+
+                    if (_currentCluster == ClusterSymbol.Unknown && diagnostics != null && location != null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownCluster(clusterName).WithSeverity(DiagnosticSeverity.Error).WithLocation(location));
+                    }
+                }
+
+                _currentDatabase = _currentCluster.GetDatabase(databaseName) ?? DatabaseSymbol.Unknown;
+
+                if (_currentDatabase == DatabaseSymbol.Unknown && diagnostics != null && location != null)
+                {
+                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(databaseName).WithLocation(location));
+                }
+            }
+        }
+
+        internal static bool TryGetDirectiveClusterAndDatabase(
+            Directive directive, out string clusterName, out string databaseName)
+        {
+            clusterName = null;
+            databaseName = null;
+
+            if (directive.Name == "database")
+            {
+                if (directive.Arguments.Count > 1)
+                {
+                    clusterName = GetDirectiveArgumentStringValue(directive.Arguments[0]);
+                    databaseName = GetDirectiveArgumentStringValue(directive.Arguments[1]);
+                    return true;
+                }
+                else if (directive.Arguments.Count == 1)
+                {
+                    var arg = GetDirectiveArgumentStringValue(directive.Arguments[0]);
+                    KustoFacts.GetHostAndPath(arg, out var hostname, out var path);
+                    if (hostname != null && path != null)
+                    {
+                        clusterName = hostname;
+                        databaseName = path;
+                        return true;
+                    }
+                    else if (hostname != null)
+                    {
+                        clusterName = null;
+                        databaseName = hostname;
+                        return true;
+                    }
+                }
+            }
+            else if (directive.Name == "connect" && directive.Arguments.Count > 0)
+            {
+                var connection = GetDirectiveArgumentStringValue(directive.Arguments[0]);
+                var info = ConnectionInfo.Parse(connection);
+                var dataSource = info.DataSource;
+                KustoFacts.GetHostAndPath(info.DataSource, out var host, out var path);
+                clusterName = host;
+                databaseName = path;
+                return true;
+            }
+
+            return false;
+        }
+
+        internal static string GetDirectiveArgumentStringValue(Editor.ClientDirectiveArgument argument)
+        {
+            return argument.Value as string ?? "";
+        }
+
+        private void ApplyConnectDirective(Directive directive, SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            ApplyDatabaseDirective(directive, location, diagnostics);
         }
 
         #endregion
@@ -1077,6 +1194,8 @@ namespace Kusto.Language.Binding
                 case SymbolKind.Group:
                 case SymbolKind.MaterializedView:
                 case SymbolKind.Graph:
+                case SymbolKind.GraphModel:
+                case SymbolKind.GraphSnapshot:
                 case SymbolKind.EntityGroup:
                 case SymbolKind.EntityGroupElement:
                 case SymbolKind.StoredQueryResult:

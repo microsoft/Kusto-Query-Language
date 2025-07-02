@@ -371,6 +371,28 @@ namespace Kusto.Language.Symbols
             return this.ColumnMap.TryGetValue(name, out column);
         }
 
+        /// <summary>
+        /// Gets the <see cref="ColumnSymbol"/>s with names that match the pattern.
+        /// </summary>
+        public void GetMatchingColumns(string pattern, List<ColumnSymbol> columns)
+        {
+            if (!pattern.Contains("*"))
+            {
+                if (TryGetColumn(pattern, out var column))
+                {
+                    columns.Add(column);
+                }
+            }
+            else
+            {
+                foreach (var col in this.Columns)
+                {
+                    if (KustoFacts.Matches(pattern, col.Name))
+                        columns.Add(col);
+                }
+            }
+        }
+
         public override void GetMembers(string name, SymbolMatch match, List<Symbol> symbols, bool ignoreCase = false)
         {
             if (this.Columns.Count > 0)

@@ -254,8 +254,32 @@ namespace Kusto.Language
         /// <summary>
         /// Returns a new <see cref="FunctionBodyFacts"/> with <see cref="HasMaterializedViewCall"/> assigned.
         /// </summary>
-        public FunctionBodyFacts  WithHasMaterializedViewCall(bool value) =>
+        public FunctionBodyFacts WithHasMaterializedViewCall(bool value) =>
             With(flags: value ? _flags | Flags.MaterializedView : _flags & ~Flags.MaterializedView);
+
+        /// <summary>
+        /// True if the function body has a call to the stored_query_result() method, or a function invoked within it does.
+        /// </summary>
+        public bool HasStoredQueryResultCall =>
+            (_flags & Flags.StoredQueryResult) != 0;
+
+        /// <summary>
+        /// Returns a new <see cref="FunctionBodyFacts"/> with <see cref="HasStoredQueryResultCall"/> assigned.
+        /// </summary>
+        public FunctionBodyFacts WithHasStoredQueryResultCall(bool value) =>
+            With(flags: value ? _flags | Flags.StoredQueryResult : _flags & ~Flags.StoredQueryResult);
+
+        /// <summary>
+        /// True if the function body has a call to the graph() method, or a function invoked within it does.
+        /// </summary>
+        public bool HasGraphCall =>
+            (_flags & Flags.Graph) != 0;
+
+        /// <summary>
+        /// Returns a new <see cref="FunctionBodyFacts"/> with <see cref="HasGraphCall"/> assigned.
+        /// </summary>
+        public FunctionBodyFacts WithHasGraphCall(bool value) =>
+            With(flags: value ? _flags | Flags.Graph : _flags & ~Flags.Graph);
 
         /// <summary>
         /// True if the function body has any interesting aspects.
@@ -324,6 +348,16 @@ namespace Kusto.Language
             /// The function body or any of its dependencies includes a call to the materialized_view() function.
             /// </summary>
             MaterializedView = 0b_0100_0000,
+
+            /// <summary>
+            /// The function body or any of its dependencies includes a call to the stored_query_result() function
+            /// </summary>
+            StoredQueryResult = 0b_1000_0000,
+
+            /// <summary>
+            /// The function body or any of its dependencies includes a call to the graph() function
+            /// </summary>
+            Graph = 0b_0001_0000_0000
         }
     }
 }

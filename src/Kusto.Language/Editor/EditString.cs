@@ -47,6 +47,11 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
+        /// An empty <see cref="EditString"/>
+        /// </summary>
+        public static readonly EditString Empty = new EditString("");
+
+        /// <summary>
         /// The length of the current text.
         /// </summary>
         public int Length => this.CurrentText.Length;
@@ -188,6 +193,42 @@ namespace Kusto.Language.Editor
             }
 
             return ApplyEdits(newText, newEdits);
+        }
+
+        /// <summary>
+        /// Returns a new <see cref="EditString"/> containing only the characters from the start position until the end.
+        /// </summary>
+        public EditString Substring(int start) =>
+            Substring(start, this.CurrentText.Length - start);
+
+        /// <summary>
+        /// Trims the whitespace from the start of the string.
+        /// </summary>
+        public EditString TrimLeft()
+        {
+            var len = TextFacts.GetWhitespaceCount(this.CurrentText, 0);
+            if (len > 0)
+                return this.Remove(0, len);
+            return this;
+        }
+
+        /// <summary>
+        /// Trims the whitespace from the end of the string.
+        /// </summary>
+        public EditString TrimRight()
+        {
+            var len = TextFacts.GetWhitespaceCountBefore(this.CurrentText, this.CurrentText.Length);
+            if (len > 0)
+                return this.Remove(this.CurrentText.Length - len, len);
+            return this;
+        }
+
+        /// <summary>
+        /// Trims the whitespace from the start and end of the string.
+        /// </summary>
+        public EditString Trim()
+        {
+            return this.TrimLeft().TrimRight();
         }
 
         /// <summary>

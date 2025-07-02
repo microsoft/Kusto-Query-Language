@@ -124,7 +124,6 @@ GRANNYASC: 'granny-asc';
 GRANNYDESC: 'granny-desc';
 GRAPHMARKCOMPONENTS: 'graph-mark-components';
 GRAPHMATCH: 'graph-match';
-GRAPHMERGE: 'graph-merge';
 GRAPHSHORTESTPATHS: 'graph-shortest-paths';
 GRAPHTOTABLE: 'graph-to-table';
 HAS: 'has';

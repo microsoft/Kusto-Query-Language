@@ -27,6 +27,7 @@ namespace Kusto.Language.Symbols
         private IReadOnlyList<FunctionSymbol> _functions;
         private IReadOnlyList<EntityGroupSymbol> _entityGroups;
         private IReadOnlyList<StoredQueryResultSymbol> _storedQueryResults;
+        private IReadOnlyList<GraphModelSymbol> _graphModels;
         private HashSet<Symbol> _symbolSet;
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace Kusto.Language.Symbols
 
         public override SymbolKind Kind => SymbolKind.Database;
 
-        public override Tabularity Tabularity => Tabularity.Tabular;
+        public override Tabularity Tabularity => Tabularity.Other;
 
         /// <summary>
         /// All the symbols contained by this symbol.
@@ -172,6 +173,21 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// The graph models contained by the database.
+        /// </summary>
+        public IReadOnlyList<GraphModelSymbol> GraphModels
+        {
+            get
+            {
+                if (_graphModels == null)
+                {
+                    _graphModels = this.Members.OfType<GraphModelSymbol>().ToReadOnly();
+                }
+                return _graphModels;
+            }
+        }
+
+        /// <summary>
         /// Gets the member with the specified name or returns null.
         /// </summary>
         public Symbol GetMember(string name)
@@ -235,6 +251,14 @@ namespace Kusto.Language.Symbols
         public StoredQueryResultSymbol GetStoredQueryResult(string name)
         {
             return this.StoredQueryResults.FirstOrDefault(sqr => sqr.Name == name);
+        }
+
+        /// <summary>
+        /// Gets the graph model with the specified name or returns null.
+        /// </summary>
+        public GraphModelSymbol GetGraphModel(string name)
+        {
+            return this.GraphModels.FirstOrDefault(gm => gm.Name == name);
         }
 
         /// <summary>

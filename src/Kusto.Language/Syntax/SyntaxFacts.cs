@@ -109,6 +109,13 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ExternalDataKeyword, "externaldata"),
                 new SyntaxData(SyntaxKind.External_DataKeyword, "external_data"),
 
+                // Inline External Table keywords
+                new SyntaxData(SyntaxKind.DataFormatKeyword, "dataformat", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.InlineExternalTableKeyword, "inline_external_table", canBeIdentifier: true),
+                new SyntaxData(SyntaxKind.DateTimePatternKeyword, "datetime_pattern", canBeIdentifier: true),
+
+                // End Inline External Table keywords
+
                 new SyntaxData(SyntaxKind.FacetKeyword, "facet", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.FilterKeyword, "filter", canBeIdentifier: true),
                 new SyntaxData(SyntaxKind.FindKeyword, "find"),
@@ -122,7 +129,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GrannyDescKeyword, "granny-desc"),
                 new SyntaxData(SyntaxKind.GraphMatchKeyword, "graph-match"),
                 new SyntaxData(SyntaxKind.GraphShortestPathsKeyword, "graph-shortest-paths"),
-                new SyntaxData(SyntaxKind.GraphMergeKeyword, "graph-merge"),
                 new SyntaxData(SyntaxKind.GraphToTableKeyword, "graph-to-table"),
 
                 new SyntaxData(SyntaxKind.HardDeleteKeyword, "harddelete"),
@@ -233,6 +239,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ProjectKeyword, "project"),
                 new SyntaxData(SyntaxKind.ProjectAwayKeyword, "project-away"),
                 new SyntaxData(SyntaxKind._ProjectAwayKeyword, "__projectAway"),
+                new SyntaxData(SyntaxKind.ProjectByNamesKeyword, "project-by-names"),
                 new SyntaxData(SyntaxKind.ProjectKeepKeyword, "project-keep"),
                 new SyntaxData(SyntaxKind.ProjectRenameKeyword, "project-rename"),
                 new SyntaxData(SyntaxKind.ProjectReorderKeyword, "project-reorder"),
@@ -447,6 +454,21 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MaterializedViewCombineExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MaterializedViewCombineClause, "", SyntaxCategory.Node),
 
+                // Inline External Table nodes
+                new SyntaxData(SyntaxKind.InlineExternalTableKindClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTableDataFormatClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTablePathFormatClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTablePartitionClause, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTableExpression, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.PartitionColumnDeclaration, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.DateTimePattern, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTablePathFormatPartitionColumnReference, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.InlineExternalTableConnectionStringsClause, "", SyntaxCategory.Node),
+
+                
+
+                // End Inline External Table nodes
+
                 new SyntaxData(SyntaxKind.IntLiteralExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.BooleanLiteralExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.LongLiteralExpression, "", SyntaxCategory.Node),
@@ -586,8 +608,6 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdge, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMatchPatternEdgeRange, "", SyntaxCategory.Node),
 
-                new SyntaxData(SyntaxKind.GraphMergeOperator, "", SyntaxCategory.Node),
-
                 new SyntaxData(SyntaxKind.GraphToTableOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphToTableOutputClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphToTableAsClause, "", SyntaxCategory.Node),
@@ -611,7 +631,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesExpression, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesOnClause, "", SyntaxCategory.Node),
-                new SyntaxData(SyntaxKind.MakeSeriesInRangeClause, "", SyntaxCategory.Node),                
+                new SyntaxData(SyntaxKind.MakeSeriesInRangeClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesToClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesFromClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeSeriesStepClause, "", SyntaxCategory.Node),
@@ -647,6 +667,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.ProjectClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectAwayOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.ProjectByNamesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectKeepOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectRenameOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.ProjectReorderOperator, "", SyntaxCategory.Node),
@@ -739,6 +760,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.DirectiveBlock, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.SkippedTokens, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.InputTextToken, "", SyntaxCategory.Other),
+                new SyntaxData(SyntaxKind.Directive, "", SyntaxCategory.Other)
             };
 
             // put in sorted order  TODO: fix list to be in order 

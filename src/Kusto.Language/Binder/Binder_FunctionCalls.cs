@@ -546,6 +546,30 @@ namespace Kusto.Language.Binding
                     {
                         return StoredQueryResultSymbol.Empty;
                     }
+                case ReturnTypeKind.Parameter0Graph:
+                    iArg = argumentParameters.IndexOf(signature.Parameters[0]);
+                    if (iArg >= 0 && iArg < arguments.Count
+                        && TryGetLiteralStringValue(arguments[iArg], out var graphModelName))
+                    {
+                        iArg = argumentParameters.IndexOf(signature.Parameters[1]);
+                        if (iArg >= 0 && iArg < arguments.Count)
+                        {
+                            if (TryGetLiteralStringValue(arguments[iArg], out var snapshotName))
+                            {
+                                return GetGraphFunctionResult(graphModelName, snapshotName, null, location, diagnostics);
+                            }
+                            else if (TryGetLiteralValue<bool>(arguments[iArg], out var isVolatile))
+                            {
+                                return GetGraphFunctionResult(graphModelName, null, isVolatile, location, diagnostics);
+                            }
+                        }
+                        else
+                        {
+                            return GetGraphFunctionResult(graphModelName, null, null, location, diagnostics);
+                        }
+                    }
+                    return GraphSymbol.Empty;
+
                 case ReturnTypeKind.Custom:
                     var context = new BinderCallContext(this, location as SyntaxNode, arguments, argumentTypes, argumentParameters, signature);
                     return signature.CustomReturnType(context) ?? ErrorSymbol.Instance;
@@ -586,6 +610,10 @@ namespace Kusto.Language.Binding
             public override IReadOnlyList<Parameter> ArgumentParameters => _argumentParameters;
             public override Signature Signature => _signature;
             public override TableSymbol RowScope => _binder.RowScopeOrEmpty;
+            public override GlobalState Globals => _binder._globals;
+            public override ClusterSymbol CurrentCluster => _binder._currentCluster;
+            public override DatabaseSymbol CurrentDatabase => _binder._currentDatabase;
+            public override FunctionSymbol CurrentFunction => _binder._currentFunction;
 
             private static readonly SyntaxNode Nowhere =
                 new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken));
@@ -618,6 +646,21 @@ namespace Kusto.Language.Binding
             else
             {
                 value = null;
+                return false;
+            }
+        }
+
+        internal static bool TryGetLiteralValue<T>(Expression expression, out T value)
+        {
+            if (TryGetLiteralValueInfo(expression, out var valueInfo)
+                && valueInfo?.Value is T tvalue)
+            {
+                value = tvalue;
+                return true;
+            }
+            else
+            {
+                value = default(T);
                 return false;
             }
         }
@@ -1104,6 +1147,71 @@ namespace Kusto.Language.Binding
             }
 
             return sqr;
+        }
+
+        private GraphSymbol GetGraphFunctionResult(
+            string modelName, string snapshotName, bool? isVolatile, 
+            SyntaxElement location, List<Diagnostic> diagnostics)
+        {
+            var db = _pathScope as DatabaseSymbol ?? _currentDatabase;
+            var model = db.GetGraphModel(modelName);
+            if (model != null)
+            {
+                if (snapshotName != null)
+                {
+                    if (!model.TryGetSnapshot(snapshotName, out _))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownGraphSnapshot(snapshotName, modelName).WithLocation(location));
+                    }
+                }
+
+                if (model.ComputedGraphSymbol == null)
+                {
+                    var prevCluster = _currentCluster;
+                    var prevDatabase = _currentDatabase;
+
+                    _currentCluster = _globals.GetCluster(db);
+                    _currentDatabase = db;
+
+                    var edgeShape = model.Edges.Count > 0 ? GetCombinedGraphResults(model.Edges) : null;
+                    var nodeShape = model.Nodes.Count > 0 ? GetCombinedGraphResults(model.Nodes) : null;
+                    var symbol = new GraphSymbol(edgeShape, nodeShape);
+
+                    model.ComputedGraphSymbol = symbol;
+
+                    _currentCluster = prevCluster;
+                    _currentDatabase = prevDatabase;
+                }
+
+                return model.ComputedGraphSymbol;
+            }
+            else
+            {
+                diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownGraphModel(modelName).WithLocation(location));
+            }
+
+            return GraphSymbol.Empty;
+        }
+
+        private TableSymbol GetCombinedGraphResults(IReadOnlyList<Signature> signatures)
+        {
+            var tables = s_tableListPool.AllocateFromPool();
+            try
+            {
+                foreach (var signature in signatures)
+                {
+                    FunctionCallResult fcResult = this.GetComputedFunctionCallResult(signature);
+                    if (fcResult.Type is TableSymbol table)
+                        tables.Add(table);
+                }
+
+                var resultTable = TableSymbol.Combine(CombineKind.UnifySameName, tables);
+                return resultTable;
+            }
+            finally
+            {
+                s_tableListPool.ReturnToPool(tables);
+            }
         }
 
         /// <summary>
@@ -2317,6 +2425,8 @@ namespace Kusto.Language.Binding
                 result = result.AddDependentParameters(signature.Parameters.Where(p => p.IsTabular));
             }
 
+            var argParams = s_parameterListPool.AllocateFromPool();
+
             // identify dependent parameters and other function body facts
             SyntaxElement.WalkNodes(
                 body,
@@ -2365,29 +2475,39 @@ namespace Kusto.Language.Binding
                             // get facts from analysis of the entity-group definition
                             result = result.CombineCalledFunction(egCallFacts);
                         }
-
-                        // if the first argument is not a literal, then it might be being supplied by a parameter to the containing function
-                        // which means this function could be being called multiple times with different arguments.
-                        if (fc.ArgumentList.Expressions.Count > 0)
+                        else if (fc.ReferencedSymbol == Functions.StoredQueryResult)
                         {
-                            var arg = fc.ArgumentList.Expressions[0].Element;
-
-                            var isLiteral = arg.IsLiteral;
-                            if (!isLiteral && isTabular)
-                            {
-                                if (GetReferencedParameter(signature, arg) is Parameter p)
-                                {
-                                    result = result.AddDependentParameter(p);
-                                }
-                            }
-
-                            if (isUnqualifiedTableCall
-                                && isTabular
-                                && arg.ConstantValueInfo?.Value is string tableName)
-                            {
-                                result = result.AddUnqualifiedTableName(tableName);
-                            }
+                            result = result.WithHasStoredQueryResultCall(true);
                         }
+                        else if (fc.ReferencedSymbol == Functions.Graph)
+                        {
+                            result = result.WithHasGraphCall(true);
+                        }
+
+                        // Any reference to an enclosing function's parameter in arguments is a dependent parameter.
+                        // Some arguments may not affect the result type, but err on the side of caution.
+                        for (int i = 0; i < fc.ArgumentList.Expressions.Count; i++)
+                        {
+                            var arg = fc.ArgumentList.Expressions[i].Element;
+                            result = AddReferencedParametersAsDependentParameters(result, signature, arg);
+                        }
+
+                        // Unqualified table calls are additionally problematic, since they may refer to local table variables too
+                        // and we are not doing analysis of all local variable source expressions and how they enter the enclosing function.
+                        if (isUnqualifiedTableCall
+                            && isTabular
+                            && fc.ArgumentList.Expressions.Count > 0
+                            && fc.ArgumentList.Expressions[0].Element.ConstantValueInfo?.Value is string tableName)
+                        {
+                            result = result.AddUnqualifiedTableName(tableName);
+                        }
+                    }
+                    else if (node is ProjectByNamesOperator proj)
+                    {
+                        // expressions of project-by-names operator alter the result schema,
+                        // so any dependency of one of these on a function parameter means the result schema
+                        // might be dependent on that parameter too.
+                        result = AddReferencedParametersAsDependentParameters(result, signature, proj);
                     }
                     else if (
                         node is Expression ex
@@ -2402,24 +2522,20 @@ namespace Kusto.Language.Binding
                             && ex is FunctionCallExpression fcall
                             && isTabular)
                         {
-                            var fcallParameters = s_parameterListPool.AllocateFromPool();
-                            GetArgumentParameters(fcall, fcallParameters);
+                            argParams.Clear();
+                            GetArgumentParameters(fcall, argParams);
 
                             for (int i = 0; i < fcall.ArgumentList.Expressions.Count; i++)
                             {
+                                // if this argument corresponds to a dependent parameter of the called function
+                                // then any parameter referenced in the argument must also be dependent
                                 var arg = fcall.ArgumentList.Expressions[i].Element;
-                                if (facts.DependentParameters.Contains(fcallParameters[i]))
+                                if (facts.DependentParameters.Contains(argParams[i]))
                                 {
-                                    // this argument is dependent therefore any parameter that feeds it is also dependent
                                     // note: these arguments should be constrained to only constant expressions due to requirements of symbol lookup functions.
-                                    if (GetReferencedParameter(signature, arg) is Parameter p)
-                                    {
-                                        result = result.AddDependentParameter(p);
-                                    }
+                                    result = AddReferencedParametersAsDependentParameters(result, signature, arg);
                                 }
                             }
-
-                            s_parameterListPool.ReturnToPool(fcallParameters);
                         }
                     }
                 },
@@ -2439,6 +2555,8 @@ namespace Kusto.Language.Binding
                     || (!(node is FunctionDeclaration) && !(node is FunctionBody))
                 );
 
+            s_parameterListPool.ReturnToPool(argParams);
+
             var nonVariableReturnType = !result.HasVariableReturnType
                 ? GetBodyResultType(body) ?? ErrorSymbol.Instance
                 : null;
@@ -2451,6 +2569,76 @@ namespace Kusto.Language.Binding
             return result;
         }
 
+        /// <summary>
+        /// Adds all referenced parameters of the specified signature found in the node sub-tree to 
+        /// the <see cref="FunctionBodyFacts"/> dependent parameters list.
+        /// </summary>
+        private static FunctionBodyFacts AddReferencedParametersAsDependentParameters(FunctionBodyFacts facts, Signature signature, SyntaxNode root)
+        {
+            var referencedParams = s_parameterListPool.AllocateFromPool();
+            try
+            {
+                GetReferencedParameters(signature, root, referencedParams);
+                facts = facts.AddDependentParameters(referencedParams);
+            }
+            finally
+            {
+                s_parameterListPool.ReturnToPool(referencedParams);
+            }
+
+            return facts;
+        }
+
+
+        /// <summary>
+        /// Gets all referenced parameters in the expression sub-tree
+        /// </summary>
+        private static void GetReferencedParameters(Signature signature, SyntaxNode root, List<Parameter> parameters)
+        {
+            // look for all expressions that refer to a parameter or variable
+            SyntaxElement.WalkNodes(
+                root,
+                node =>
+                {
+                    if (node is SimpleNamedExpression sne)
+                        node = sne.Expression;
+
+                    if (node is Expression expression)
+                    {
+                        switch (expression.ReferencedSymbol)
+                        {
+                            case ParameterSymbol p:
+                                if (signature.GetParameter(p.Name) is Parameter sparam)
+                                {
+                                    parameters.Add(sparam);
+                                }
+                                break;
+                            case VariableSymbol v:
+                                if (v.Source != null)
+                                {
+                                    if (v.Source.Tree != expression.Tree)
+                                    {
+                                        // variable is declared in different tree than its source expression,
+                                        // this indicates this is a fake variable being used in place of a parameter symbol
+                                        // for expansion binding to carry constant values.
+                                        if (signature.GetParameter(v.Name) is Parameter vparam)
+                                        {
+                                            parameters.Add(vparam);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // follow reference w/in same tree 
+                                        GetReferencedParameters(signature, v.Source, parameters);
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                });
+        }
+
+#if false
         /// <summary>
         /// Gets the parameter referenced by the expression.
         /// Sees through simple let-variable reassignments.
@@ -2479,6 +2667,7 @@ namespace Kusto.Language.Binding
 
             return null;
         }
+#endif
 
         private static bool IsSymbolLookupFunction(Symbol symbol) =>
             symbol == Functions.Table
@@ -2487,7 +2676,8 @@ namespace Kusto.Language.Binding
             || symbol == Functions.EntityGroup
             || symbol == Functions.StoredQueryResult
             || symbol == Functions.Database
-            || symbol == Functions.Cluster;
+            || symbol == Functions.Cluster
+            || symbol == Functions.Graph;
 
         /// <summary>
         /// Gets the <see cref="FunctionBodyFacts"/> for the function invocation

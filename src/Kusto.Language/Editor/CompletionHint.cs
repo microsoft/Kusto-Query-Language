@@ -37,9 +37,14 @@ namespace Kusto.Language.Editor
         Tabular = Scalar << 1,
 
         /// <summary>
+        /// Any non-scalar expression
+        /// </summary>
+        NonScalar = Tabular << 1,
+
+        /// <summary>
         /// A boolean expression
         /// </summary>
-        Boolean = Tabular << 1,
+        Boolean = NonScalar << 1,
 
         /// <summary>
         /// A numeric expression
@@ -106,7 +111,6 @@ namespace Kusto.Language.Editor
         /// </summary>
         EntityGroup = Cluster << 1,
 
-
         /// <summary>
         /// A graph
         /// </summary>
@@ -156,5 +160,15 @@ namespace Kusto.Language.Editor
         /// A stored query result
         /// </summary>
         StoredQueryResult = ExternalTable << 1,
+
+        /// <summary>
+        /// A stored database graph model
+        /// </summary>
+        GraphModel = StoredQueryResult << 1,
+
+        /// <summary>
+        /// A stored database graph snapshot.
+        /// </summary>
+        GraphSnapshot = GraphModel << 1,
     }
 }

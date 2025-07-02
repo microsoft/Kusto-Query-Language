@@ -185,6 +185,11 @@ namespace Kusto.Language
             // no known parameters
         }.ToReadOnly();
 
+        public static readonly IReadOnlyList<QueryOperatorParameter> InlineExternalTableProperties = new QueryOperatorParameter[]
+        {
+            // no known parameters
+        }.ToReadOnly();
+
         public static readonly IReadOnlyList<QueryOperatorParameter> FilterParameters = new QueryOperatorParameter[]
         {
             // no known parameters

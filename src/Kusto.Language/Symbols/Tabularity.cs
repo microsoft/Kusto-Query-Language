@@ -8,7 +8,7 @@ namespace Kusto.Language.Symbols
     public enum Tabularity
     {
         /// <summary>
-        /// The symbol is not scalar or tabular; void and error.
+        /// The symbol is not scalar or tabular; void, error
         /// </summary>
         None,
 
@@ -18,14 +18,14 @@ namespace Kusto.Language.Symbols
         Scalar,
 
         /// <summary>
-        /// The symbol is tabular or related; tables, databases, clusters, patterns and some functions.
+        /// The symbol is tabular or related; tables, some functions and patterns.
         /// </summary>
         Tabular,
 
         /// <summary>
-        /// This symbol is a graph
+        /// Not scalar or tabular entity; cluster, database, entity_group, graph, etc.
         /// </summary>
-        Graph,
+        Other,
 
         /// <summary>
         /// The tabularity is not known.

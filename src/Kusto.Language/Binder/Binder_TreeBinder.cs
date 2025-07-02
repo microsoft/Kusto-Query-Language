@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Kusto.Language.Symbols;
 using Kusto.Language.Syntax;
@@ -775,6 +774,50 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitInlineExternalTableExpression(InlineExternalTableExpression node)
+            {
+                node.Parameters.Accept(this);
+
+                var oldLocalScope = _binder._localScope;
+
+                try
+                {
+                    _binder._localScope = new LocalScope(oldLocalScope);
+                    if (node.Schema != null)
+                    {
+                        _binder.BindColumnDeclarations(node.Schema.Columns);
+                        _binder.AddDeclarationsToLocalScope(node.Schema.Columns);
+                    }
+                    node.PartitionClause?.Accept(this);
+
+                    _binder._localScope = new LocalScope(oldLocalScope);
+                    if (node.PartitionClause != null)
+                    {
+                        for (int i = 0; i < node.PartitionClause.PartitionColumns.Count; i++)
+                        {
+                            var p = node.PartitionClause.PartitionColumns[i].Element;
+                            var name = p.Name.SimpleName;
+                            var type = _binder.GetTypeFromTypeExpression(p.Type);
+
+                            if (!string.IsNullOrEmpty(name))
+                            {
+                                var symbol = new ColumnSymbol(name, type);
+                                _binder.SetSemanticInfo(p.Name, new SemanticInfo(symbol, type));
+
+                                _binder.AddDeclarationToLocalScope(p.Name);
+                            }
+                        }
+                    }
+                    node.PathFormat?.Accept(this);
+                }
+                finally
+                {
+                    _binder._localScope = oldLocalScope;
+                }
+
+                BindNode(node);
+            }
+
             public override void VisitPatternStatement(PatternStatement node)
             {
                 base.VisitPatternStatement(node);
@@ -978,6 +1021,8 @@ namespace Kusto.Language.Binding
 
             public override void VisitCommandBlock(CommandBlock node)
             {
+                this.VisitList(node.Directives);
+
                 if (node.Statements.Count > 0)
                 {
                     var commandStatement = node.Statements[0].Element;
@@ -1068,32 +1113,6 @@ namespace Kusto.Language.Binding
                 try
                 {
                     node.Column?.Accept(this);
-                }
-                finally
-                {
-                    _binder._rowScope = oldScope;
-                }
-
-                BindNode(node);
-            }
-
-            public override void VisitGraphMergeOperator(GraphMergeOperator node)
-            {
-                var oldScope = _binder._rowScope;
-                _binder._rowScope = null;
-                try
-                {
-                    node.Graph.Accept(this);
-
-                    if (node.OnClause != null)
-                    {
-                        var leftGraph = GetGraphSymbol(node);
-                        var rightGraph = node.Graph.ResultType as GraphSymbol;
-
-                        _binder._rowScope = leftGraph?.EdgeShape;
-                        _binder._rightRowScope = rightGraph?.EdgeShape;
-                        node.OnClause?.Accept(this);
-                    }
                 }
                 finally
                 {

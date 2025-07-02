@@ -5,6 +5,7 @@ namespace Kusto.Language
 {
     using Symbols;
     using Syntax;
+    using System;
     using static FunctionHelpers;
 
     /// <summary>
@@ -379,7 +380,7 @@ namespace Kusto.Language
                  new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
                  new Parameter("Content", ScalarTypes.String, ArgumentKind.Constant, minOccurring: 0));
 
-        public static readonly FunctionSymbol AIEmbedText =
+        public static readonly FunctionSymbol AIEmbedText_Deprecated =
              new FunctionSymbol("ai_embed_text",
                  context =>
                  {
@@ -407,7 +408,39 @@ namespace Kusto.Language
                  new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Column | ArgumentKind.Literal),
                  new Parameter("ConnectionString", ScalarTypes.String),
                  new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
-                 new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
+                 new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0))
+            .Obsolete("ai_embeddings");
+
+        public static readonly FunctionSymbol AIEmbeddings =
+            new FunctionSymbol("ai_embeddings",
+                context =>
+                {
+                    var sourceColumns = context.RowScope.Columns;
+                    var columnPrefix = context.GetResultName(context.GetArgument("Text"));
+
+                    var embeddingColumnName = MakeColumnName(columnPrefix, "embeddings");
+                    var addedColumns = new List<ColumnSymbol> { new ColumnSymbol(embeddingColumnName, ScalarTypes.Dynamic) };
+
+                    if (context.GetArgument("IncludeErrorMessages") != null &&
+                       bool.TryParse(GetConstantValue(context.GetArgument("IncludeErrorMessages")), out var includeErrorMessages))
+                    {
+                        if (includeErrorMessages)
+                        {
+                            var errorColumnName = MakeColumnName(columnPrefix, "embeddings", "error");
+                            addedColumns.Add(new ColumnSymbol(errorColumnName, ScalarTypes.String));
+                        }
+                    }
+
+                    var resultColumns = sourceColumns.Concat(addedColumns);
+
+                    return new TableSymbol(resultColumns);
+                },
+                Tabularity.Tabular,
+                new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Column | ArgumentKind.Literal),
+                new Parameter("ConnectionString", ScalarTypes.String),
+                new Parameter("Options", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                new Parameter("IncludeErrorMessages", ScalarTypes.Bool, minOccurring: 0));
+
 
         public static readonly FunctionSymbol AIChatCompletion =
              new FunctionSymbol("ai_chat_completion",
@@ -493,6 +526,207 @@ namespace Kusto.Language
                 new TableSymbol(new ColumnSymbol("SuggestedTableSchema", ScalarTypes.String)),
                 new Parameter("Options", ParameterTypeKind.DynamicBag));
 
+        private static readonly Parameter Geo_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
+
+        private static readonly Parameter Geo_lookup_LookupPolygonKey = new Parameter("LookupPolygonKey", ParameterTypeKind.DynamicBag, ArgumentKind.Column_Parameter0);
+        private static readonly Parameter Geo_lookup_LookupLineKey = new Parameter("LookupLineKey", ParameterTypeKind.DynamicBag, ArgumentKind.Column_Parameter0);
+
+        private static readonly Parameter Geo_lookup_SourceLongitudeKey = new Parameter("SourceLongitude", ParameterTypeKind.Scalar, ArgumentKind.Column);
+        private static readonly Parameter Geo_lookup_SourceLatitudeKey = new Parameter("SourceLatitude", ParameterTypeKind.Scalar, ArgumentKind.Column);
+        private static readonly Parameter Geo_lookup_PolygonRadius = new Parameter("radius", ScalarTypes.Real, ArgumentKind.Literal, minOccurring: 0); // Can be either Literal or Column_Parameter0
+        private static readonly Parameter Geo_lookup_LineRadius = new Parameter("radius", ScalarTypes.Real, ArgumentKind.Literal); // Can be either Literal or Column_Parameter0
+
+        private static readonly Parameter Geo_lookup_return_unmatched = new Parameter("return_unmatched", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0);
+        private static readonly Parameter Geo_lookup_area_radius = new Parameter("lookup_area_radius", ScalarTypes.Real, ArgumentKind.Literal, minOccurring: 0);
+        private static readonly Parameter Geo_lookup_return_key = new Parameter("return_lookup_key", ScalarTypes.Bool, ArgumentKind.Literal, minOccurring: 0);
+
+        public static readonly FunctionSymbol Geo_Polygon_Lookup = new FunctionSymbol(
+            "geo_polygon_lookup",
+            new Signature(
+                context =>
+                {
+                    var lookupTable = context.GetArgument(Geo_lookup_LookupTable.Name)?.ResultType as TableSymbol;
+                    if (lookupTable != null)
+                    {
+                        var cols = new List<ColumnSymbol>();
+                        cols.AddRange(context.RowScope.Columns);
+
+                        if (IsGeoLookupShouldReturnLookupKey(context, Geo_lookup_LookupPolygonKey.Name))
+                        {
+                            cols.AddRange(lookupTable.Columns);
+                        }
+                        else
+                        {
+                            // Remove return_lookup_key
+                            var lookupkeyName = context.GetArgument(Geo_lookup_LookupPolygonKey.Name).ReferencedSymbol.Name;
+                            cols.AddRange(lookupTable.Columns.Where(c => !StringComparer.OrdinalIgnoreCase.Equals(c.Name, lookupkeyName)));
+                        }
+
+                        var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
+                        return new TableSymbol(combinedColumns);
+                    }
+                    else
+                    {
+                        // lookup table unknown, so default to input table
+                        return context.RowScope;
+                    }
+                },
+                Tabularity.Tabular,
+                Geo_lookup_LookupTable,
+                Geo_lookup_LookupPolygonKey,
+                Geo_lookup_SourceLongitudeKey,
+                Geo_lookup_SourceLatitudeKey,
+                Geo_lookup_PolygonRadius,
+                Geo_lookup_return_unmatched,
+                Geo_lookup_area_radius,
+                Geo_lookup_return_key)
+                    .WithLayout((signature, args, parameters) =>
+                    {
+                        parameters.Add(Geo_lookup_LookupTable);
+                        parameters.Add(Geo_lookup_LookupPolygonKey);
+                        parameters.Add(Geo_lookup_SourceLongitudeKey);
+                        parameters.Add(Geo_lookup_SourceLatitudeKey);
+
+                        for (int i = 4; i < args.Count; i++)
+                        {
+                            if (args[i] is SimpleNamedExpression sne)
+                            {
+                                switch (sne.Name.SimpleName.ToLower())
+                                {
+                                    case "radius":
+                                        parameters.Add(Geo_lookup_PolygonRadius);
+                                        continue;
+                                    case "return_unmatched":
+                                        parameters.Add(Geo_lookup_return_unmatched);
+                                        continue;
+                                    case "lookup_area_radius":
+                                        parameters.Add(Geo_lookup_area_radius);
+                                        continue;
+                                    case "return_lookup_key":
+                                        parameters.Add(Geo_lookup_return_key);
+                                        continue;
+                                }
+                            }
+                            else
+                            {
+                                switch (i)
+                                {
+                                    case 4:
+                                        parameters.Add(Geo_lookup_PolygonRadius);
+                                        continue;
+                                    case 5:
+                                        parameters.Add(Geo_lookup_return_unmatched);
+                                        continue;
+                                    case 6:
+                                        parameters.Add(Geo_lookup_area_radius);
+                                        continue;
+                                    case 7:
+                                        parameters.Add(Geo_lookup_return_key);
+                                        continue;
+                                }
+                            }
+                        }
+                    }));
+
+        public static readonly FunctionSymbol Geo_Line_Lookup = new FunctionSymbol(
+            "geo_line_lookup",
+            new Signature(
+                context =>
+                {
+                    var lookupTable = context.GetArgument(Geo_lookup_LookupTable.Name)?.ResultType as TableSymbol;
+                    if (lookupTable != null)
+                    {
+                        var cols = new List<ColumnSymbol>();
+                        cols.AddRange(context.RowScope.Columns);
+
+                        if (IsGeoLookupShouldReturnLookupKey(context, Geo_lookup_LookupLineKey.Name))
+                        {
+                            cols.AddRange(lookupTable.Columns);
+                        }
+                        else
+                        {
+                            // Remove return_lookup_key
+                            var lookupkeyName = context.GetArgument(Geo_lookup_LookupLineKey.Name).ReferencedSymbol.Name;
+                            cols.AddRange(lookupTable.Columns.Where(c => !StringComparer.OrdinalIgnoreCase.Equals(c.Name, lookupkeyName)));
+                        }
+
+                        var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
+                        return new TableSymbol(combinedColumns);
+                    }
+                    else
+                    {
+                        // lookup table unknown, so default to input table
+                        return context.RowScope;
+                    }
+                },
+                Tabularity.Tabular,
+                Geo_lookup_LookupTable,
+                Geo_lookup_LookupLineKey,
+                Geo_lookup_SourceLongitudeKey,
+                Geo_lookup_SourceLatitudeKey,
+                Geo_lookup_LineRadius,
+                Geo_lookup_return_unmatched,
+                Geo_lookup_area_radius,
+                Geo_lookup_return_key)
+                    .WithLayout((signature, args, parameters) =>
+                    {
+                        parameters.Add(Geo_lookup_LookupTable);
+                        parameters.Add(Geo_lookup_LookupLineKey);
+                        parameters.Add(Geo_lookup_SourceLongitudeKey);
+                        parameters.Add(Geo_lookup_SourceLatitudeKey);
+                        parameters.Add(Geo_lookup_LineRadius);
+
+                        for (int i = 5; i < args.Count; i++)
+                        {
+                            if (args[i] is SimpleNamedExpression sne)
+                            {
+                                switch (sne.Name.SimpleName.ToLower())
+                                {
+                                    case "return_unmatched":
+                                        parameters.Add(Geo_lookup_return_unmatched);
+                                        continue;
+                                    case "lookup_area_radius":
+                                        parameters.Add(Geo_lookup_area_radius);
+                                        continue;
+                                    case "return_lookup_key":
+                                        parameters.Add(Geo_lookup_return_key);
+                                        continue;
+                                }
+                            }
+                            else
+                            {
+                                switch (i)
+                                {
+                                    case 5:
+                                        parameters.Add(Geo_lookup_return_unmatched);
+                                        continue;
+                                    case 6:
+                                        parameters.Add(Geo_lookup_area_radius);
+                                        continue;
+                                    case 7:
+                                        parameters.Add(Geo_lookup_return_key);
+                                        continue;
+                                }
+                            }
+                        }
+                    }));
+
+        private static bool IsGeoLookupShouldReturnLookupKey(CustomReturnTypeContext context, string lookupKeyName)
+        {
+            return
+                // Lookup key isn't known yet
+                context.GetArgument(lookupKeyName)?.ReferencedSymbol == null
+                || (context.Arguments != null &&
+                    // Boolean value of 'return_lookup_key' is set to true
+                    ((context.Arguments.Count == 8 && context.Arguments[7].Kind == SyntaxKind.BooleanLiteralExpression && context.Arguments[7].ConstantValue != null && (bool)context.Arguments[7].ConstantValue)
+                    // Named expression value of 'return_lookup_key' is set to true
+                    || context.Arguments.Any(arg => arg is SimpleNamedExpression sne
+                        && StringComparer.OrdinalIgnoreCase.Equals(sne.Name.SimpleName, Geo_lookup_return_key.Name)
+                        && sne.Expression.Kind == SyntaxKind.BooleanLiteralExpression
+                        && sne.Expression.ConstantValue != null
+                        && (bool)sne.Expression.ConstantValue)));
+        }
+
         private static readonly Parameter Ipv4_lookup_LookupTable = new Parameter("LookupTable", ParameterTypeKind.Tabular);
         private static readonly Parameter Ipv4_lookup_SourceIPv4Key = new Parameter("SourceIPv4Key", ParameterTypeKind.Scalar, ArgumentKind.Column);
         private static readonly Parameter Ipv4_lookup_IPv4LookupKey = new Parameter("IPv4LookupKey", ParameterTypeKind.Scalar, ArgumentKind.Column_Parameter0);
@@ -564,6 +798,7 @@ namespace Kusto.Language
                         {
                             var cols = new List<ColumnSymbol>();
                             cols.AddRange(context.RowScope.Columns);
+                            cols.AddRange(lookupTable.Columns);
                             var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
                             return new TableSymbol(combinedColumns);
                         }
@@ -880,6 +1115,8 @@ namespace Kusto.Language
             IdentityV3,
             InferStorageSchema,
             InferStorageSchemaWithSuggestions,
+            Geo_Polygon_Lookup,
+            Geo_Line_Lookup,
             Ipv4_Lookup,
             Ipv6_Lookup,
             Narrow,
@@ -896,9 +1133,10 @@ namespace Kusto.Language
             SqlRequest,
             MySqlRequest,
             PostgreSqlRequest,
-            AIEmbedText,
+            AIEmbedText_Deprecated,
             AIChatCompletion,
             AIChatCompletionPrompt,
+            AIEmbeddings,
         };
 
         private static Dictionary<string, FunctionSymbol> s_nameToPlugInMap;

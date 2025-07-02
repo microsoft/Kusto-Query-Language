@@ -212,10 +212,6 @@ namespace Kusto.Language
                     grammar = commandBlock;
                     syntax = commandBlock.ParseFirst(tokens);
                     break;
-                case CodeKinds.Directive:
-                    grammar = DirectiveGrammar.DirectiveBlock;
-                    syntax = DirectiveGrammar.DirectiveBlock.ParseFirst(tokens);
-                    break;
                 case CodeKinds.Query:
                 default:
                     var queryBlock = QueryGrammar.From(globals).QueryBlock;
@@ -334,20 +330,31 @@ namespace Kusto.Language
         /// </summary>
         public static string GetKind(string text)
         {
-            var token = TokenParser.ParseToken(text, 0);
+            var position = 0;
 
-            if (token != null)
+            while (position < text.Length)
             {
-                if (token.Kind == SyntaxKind.DotToken)
+                var token = TokenParser.ParseToken(text, position);
+                if (token != null)
                 {
-                    return CodeKinds.Command;
+                    if (token.Kind == SyntaxKind.DotToken)
+                        return CodeKinds.Command;
+
+                    if (token.Kind == SyntaxKind.DirectiveToken)
+                    {
+                        // skip directive line and continue looking
+                        var nextStart = TextFacts.GetNextLineStart(text, position + token.Length);
+                        if (nextStart > position)
+                        {
+                            position = nextStart;
+                            continue;
+                        }
+                    }
                 }
-                else if (token.Kind == SyntaxKind.DirectiveToken)
-                {
-                    return CodeKinds.Directive;
-                }
+                break;
             }
 
+            // not a command, so it must be a query.
             return CodeKinds.Query;
         }
  

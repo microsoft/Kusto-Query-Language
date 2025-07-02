@@ -57,19 +57,29 @@ namespace Kusto.Language.Symbols
         EntityGroup = Cluster << 1,
 
         /// <summary>
-        /// Any scalar item
+        /// Any entity group element
         /// </summary>
-        Scalar = EntityGroup << 1,
+        EntityGroupElement = EntityGroup << 1,
 
         /// <summary>
-        /// Any tabular item
+        /// Include scalar items (applies to variables and functions)
+        /// </summary>
+        Scalar = EntityGroupElement << 1,
+
+        /// <summary>
+        /// Include tabular items (applies to variables and functions)
         /// </summary>
         Tabular = Scalar << 1,
 
         /// <summary>
+        /// Include non-scalar items (applies to variable and functions)
+        /// </summary>
+        NonScalar = Tabular << 1,
+
+        /// <summary>
         /// Any materialized view
         /// </summary>
-        MaterializedView = Tabular << 1,
+        MaterializedView = NonScalar << 1,
 
         /// <summary>
         /// Any query option
@@ -87,14 +97,24 @@ namespace Kusto.Language.Symbols
         StoredQueryResult = Graph << 1,
 
         /// <summary>
+        /// Any graph model
+        /// </summary>
+        GraphModel = StoredQueryResult << 1,
+
+        /// <summary>
+        /// Any graph snapshot
+        /// </summary>
+        GraphSnapshot = GraphModel << 1,
+
+        /// <summary>
         /// Any column, table, function or local, scalar or tabular, database or cluster
         /// </summary>
-        Any = Column | Table | Function | View | Local | Scalar | Tabular | Database | Cluster | MaterializedView | EntityGroup | Graph,
+        Any = Column | Table | Function | View | Local | Database | Cluster | MaterializedView | EntityGroup | EntityGroupElement | Graph | GraphModel | GraphSnapshot,
 
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | View | Local | Scalar | Tabular | MaterializedView | EntityGroup | Graph,
+        Default = Column | Table | Function | View | Local | MaterializedView | EntityGroup | EntityGroupElement | Graph,
     }
 
     public static class SymbolMatchExtensions
@@ -138,21 +158,47 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Cluster) != 0 && symbol is ClusterSymbol)
                 return true;
 
-            if ((match & SymbolMatch.EntityGroup) != 0 && symbol is EntityGroupSymbol)
+            if ((match & SymbolMatch.EntityGroup) != 0 && IsTypeOrVariable<EntityGroupSymbol>(symbol))
                 return true;
 
-            if ((match & SymbolMatch.Graph) != 0 && symbol.Tabularity == Tabularity.Graph)
+            if ((match & SymbolMatch.EntityGroupElement) != 0 && IsTypeOrVariable<EntityGroupElementSymbol>(symbol))
                 return true;
 
-            if ((match & SymbolMatch.StoredQueryResult) != 0 && symbol is StoredQueryResultSymbol)
+            if ((match & SymbolMatch.Graph) != 0 && IsTypeOrVariable<GraphSymbol>(symbol))
                 return true;
 
-            if ((match & SymbolMatch.Scalar) != 0 && (match & SymbolMatch.Tabular) == 0 && !symbol.IsScalar)
+            if ((match & SymbolMatch.GraphModel) != 0 && symbol is GraphModelSymbol)
+                return true;
+
+            if ((match & SymbolMatch.GraphSnapshot) != 0 && symbol is GraphSnapshotSymbol)
+                return true;
+
+            if ((match & SymbolMatch.StoredQueryResult) != 0 && IsTypeOrVariable<StoredQueryResultSymbol>(symbol))
+                return true;
+
+            // Tabularity Filters
+
+            // if symbol is only allowed to be scalar but it is not 
+            if ((match & SymbolMatch.Scalar) != 0 
+                && (match & SymbolMatch.NonScalar) == 0  // not claimed to allow non-scalar
+                && (match & SymbolMatch.Tabular) == 0    // tabular not allowed
+                && !symbol.IsScalar)
                 return false;
 
-            if ((match & SymbolMatch.Tabular) != 0 && (match & SymbolMatch.Scalar) == 0 && !symbol.IsTabular)
+            // if symbol is not allowed to be scalar but it is
+            if ((match & SymbolMatch.NonScalar) != 0 
+                && (match & SymbolMatch.Scalar) == 0 // did not also claim it could be scalar
+                && symbol.IsScalar)
                 return false;
 
+            // if symbol is only allowed to be tabular but it is not
+            if ((match & SymbolMatch.Tabular) != 0 
+                && (match & SymbolMatch.Scalar) == 0 
+                && (match & SymbolMatch.NonScalar) == 0
+                && !symbol.IsTabular)
+                return false;
+
+            // The remaining symbols are affected by tabularity filters above
             if ((match & SymbolMatch.Function) != 0 && (symbol is FunctionSymbol || symbol is PatternSymbol))
                 return true;
 
@@ -162,22 +208,21 @@ namespace Kusto.Language.Symbols
             if ((match & SymbolMatch.Local) != 0 && (symbol is VariableSymbol || symbol is ParameterSymbol))
                 return true;
 
-            if (symbol is EntityGroupElementSymbol ege)
-            {
-                if (Matches(ege.UnderlyingSymbol, match))
-                    return true;
-
-                // allows for entity group elements for clusters & database in contexts looking for tabular expressions
-                if ((match & SymbolMatch.Tabular) != 0 && ege.UnderlyingSymbol.IsTabular)
-                    return true;
-            }
-
             return false;
         }
 
         public static bool Matches(this Symbol symbol, SymbolMatch match)
         {
             return Matches(symbol, null, match);
+        }
+
+        /// <summary>
+        /// True if the symbol matches the type or is a variable with a value that matches the type.
+        /// </summary>
+        private static bool IsTypeOrVariable<T>(Symbol symbol)
+        {
+            return symbol is T
+                || (symbol is VariableSymbol vs && vs.Type is T);
         }
     }
 }

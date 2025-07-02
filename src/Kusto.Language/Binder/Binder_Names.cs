@@ -459,6 +459,10 @@ namespace Kusto.Language.Binding
                     {
                         list.Add(Functions.StoredQueryResult);
                     }
+                    else if (name ==  Functions.Graph.Name)
+                    {
+                        list.Add(Functions.Graph);
+                    }
                     else
                     {
                         _pathScope.GetMembers(name, SymbolMatch.Function | SymbolMatch.View, list);
@@ -842,6 +846,7 @@ namespace Kusto.Language.Binding
 
                 if (hint == Editor.CompletionHint.Table
                     || hint == Editor.CompletionHint.Tabular
+                    || hint == Editor.CompletionHint.NonScalar
                     || hint == Editor.CompletionHint.MaterializedView
                     || hint == Editor.CompletionHint.ExternalTable)
                 {

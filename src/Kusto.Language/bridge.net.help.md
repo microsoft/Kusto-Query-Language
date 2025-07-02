@@ -29,4 +29,5 @@ To debug bridge.net when you get an build exception (without any useful informat
    **You should stop at actual thrown exception and be able to deduce 
      what part of Kusto.Language source code causes the problem by 
      actual exception message or other data on call stack.**
+   - The Line info may be off due to bridge.net shenanigans, but location is probably nearby.
 7) If a new problem is discovered, add it to the list above.

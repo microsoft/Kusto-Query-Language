@@ -27,7 +27,8 @@ namespace Kusto.Language.Binding
             Replace,
             Reorder,
             Summarize,
-            GraphMatch
+            GraphMatch,
+            ByNames,
         }
 
         /// <summary>
@@ -99,6 +100,27 @@ namespace Kusto.Language.Binding
                     default:
                         diagnostics.Add(DiagnosticFacts.GetRenameAssignmentExpected().WithLocation(expression));
                         break;
+                }
+            }
+            else if (style == ProjectionStyle.ByNames
+                && _rowScope != null)
+            {
+                var namesOrPatterns = s_stringListPool.AllocateFromPool();
+                var matchingColumns = s_columnListPool.AllocateFromPool();
+                try
+                {
+                    GetProjectByNamesNames(expression, namesOrPatterns);
+                    foreach (var nameOrPattern in namesOrPatterns)
+                    {
+                        matchingColumns.Clear();
+                        _rowScope.GetMatchingColumns(nameOrPattern, matchingColumns);
+                        builder.AddRange(matchingColumns, doNotRepeat: true);
+                    }
+                }
+                finally
+                {
+                    s_stringListPool.ReturnToPool(namesOrPatterns);
+                    s_columnListPool.ReturnToPool(matchingColumns);
                 }
             }
             else
@@ -352,6 +374,54 @@ namespace Kusto.Language.Binding
                         }
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets all the column names specified as literals, dynamic arrays or from column_names_of 
+        /// </summary>
+        private static void GetProjectByNamesNames(Expression expression, List<string> names)
+        {
+            while (expression.ReferencedSymbol is VariableSymbol vs
+                && vs.Source != null)
+            {
+                // see through variable to initializer expression..
+                // this will work with parameters too when functions are rebound
+                expression = vs.Source;
+            }
+
+            if (expression is DynamicExpression dex)
+            {
+                if (dex.Expression.ConstantValue is string dstring)
+                {
+                    names.Add(dstring);
+                }
+                else if (dex.Expression is JsonArrayExpression jex)
+                {
+                    for (int i = 0; i < jex.Values.Count; i++)
+                    {
+                        if (jex.Values[i].Element.ConstantValue is string astring)
+                        {
+                            names.Add(astring);
+                        }
+                    }
+                }
+            }
+            else if (expression is FunctionCallExpression fc
+                && expression.ReferencedSymbol == Functions.ColumnNamesOf
+                && fc.ArgumentList.Expressions.Count > 0
+                && fc.ArgumentList.Expressions[0].Element.ResultType is TableSymbol rt)
+            {
+                // get names of columns in the argument to column_names_of() function
+                foreach (var rtcol in rt.Columns)
+                {
+                    names.Add(rtcol.Name);
+                }
+            }
+            else if (expression.ConstantValue is string name)
+            {
+                // a string literal or constant
+                names.Add(name);
             }
         }
 

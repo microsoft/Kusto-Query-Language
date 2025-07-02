@@ -76,6 +76,12 @@
         ExternalDataKeyword,
         External_DataKeyword,
 
+        //Inline External Table Keywords
+        DataFormatKeyword,
+        InlineExternalTableKeyword,
+        DateTimePatternKeyword,
+        // End Inline External Table Keywords
+
         FacetKeyword,
         FilterKeyword,
         FindKeyword,
@@ -89,7 +95,6 @@
         GrannyDescKeyword,
         GraphMatchKeyword,
         GraphShortestPathsKeyword,
-        GraphMergeKeyword,
         GraphToTableKeyword,
         GraphEdgesKeyword,
 
@@ -201,6 +206,7 @@
         PrintKeyword,
         ProjectKeyword,
         ProjectAwayKeyword,
+        ProjectByNamesKeyword,
         _ProjectAwayKeyword,
         ProjectKeepKeyword,
         ProjectRenameKeyword,
@@ -438,6 +444,18 @@
         MaterializedViewCombineClause,
         ParseKvWithClause,
 
+        // inline external table
+        InlineExternalTableKindClause,
+        InlineExternalTableDataFormatClause,
+        InlineExternalTablePathFormatClause,
+        InlineExternalTablePartitionClause,
+        InlineExternalTableExpression,
+        InlineExternalTableConnectionStringsClause,
+        DateTimePattern,
+        PartitionColumnDeclaration,
+        InlineExternalTablePathFormatPartitionColumnReference,
+        // end inline external table
+
         // nullary?
         StarExpression,
         AtExpression,
@@ -553,7 +571,6 @@
         GraphMatchPatternEdge,
         GraphMatchPatternEdgeRange,
         GraphShortestPathsOperator,
-        GraphMergeOperator,
         GraphToTableOperator,
         GraphToTableOutputClause,
         GraphToTableAsClause,
@@ -615,6 +632,7 @@
         ProjectClause,
         ProjectOperator,
         ProjectAwayOperator,
+        ProjectByNamesOperator,
         ProjectKeepOperator,
         ProjectRenameOperator,
         ProjectReorderOperator,
@@ -705,5 +723,6 @@
         DirectiveBlock,
         SkippedTokens,
         InputTextToken,
+        Directive
     }
 }

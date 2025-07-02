@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+
 
 namespace Kusto.Language.Binding
 {
     using Symbols;
     using Syntax;
-    using Utils;
 
     internal partial class Binder
     {
@@ -253,12 +249,15 @@ namespace Kusto.Language.Binding
             {
                 base.VisitQueryBlock(node);
 
+                ApplyDirectives(node.Directives);
                 AddStatementDeclarationsToScope(node.Statements);
             }
 
             public override void VisitCommandBlock(CommandBlock node)
             {
                 base.VisitCommandBlock(node);
+
+                ApplyDirectives(node.Directives);
 
                 if (node.Statements.Count > 0
                     && node.Statements[0].Separator != null
@@ -274,6 +273,17 @@ namespace Kusto.Language.Binding
                 else
                 {
                     AddStatementDeclarationsToScope(node.Statements);
+                }
+            }
+
+            private void ApplyDirectives(SyntaxList<Directive> directives)
+            {
+                foreach (var directive in directives)
+                {
+                    if (_position >= directive.End)
+                    {
+                        _binder.ApplyDirective(directive);
+                    }
                 }
             }
 
@@ -439,8 +449,32 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitInlineExternalTableExpression(InlineExternalTableExpression node)
+            {
+                base.VisitInlineExternalTableExpression(node);
+
+                if (node.PathFormat != null && _position > node.PathFormat.TextStart)
+                {
+                    // Handle PathFormat that needs to get list of declared partition columns in scope.
+                    if (node.PartitionClause != null)
+                    {
+                        foreach (var partitionColumn in node.PartitionClause.PartitionColumns)
+                        {
+                            _binder.AddDeclarationToLocalScope(partitionColumn.Element.Name);
+                        }
+                    }
+                }
+                else
+                {
+                    //Handle Partition By that should get declared attributes in scope
+                    _binder.AddDeclarationsToLocalScope(node.Schema?.Columns);
+                }
+            }
+
             public override void VisitCustomCommand(CustomCommand node)
             {
+                base.VisitCustomCommand(node);
+
                 var nearestTableRef = node.GetDescendants<NameReference>(nr => nr.ReferencedSymbol is TableSymbol)
                     .Where(nr => nr.End <= _position)
                     .LastOrDefault();
@@ -514,24 +548,6 @@ namespace Kusto.Language.Binding
                 {
                     _binder._localScope = new LocalScope(_binder._localScope);
                     _binder.AddGraphMatchPatternDeclarationsToLocalScope(node.Patterns);
-                }
-            }
-
-            public override void VisitGraphMergeOperator(GraphMergeOperator node)
-            {
-                base.VisitGraphMergeOperator(node);
-
-                if (node.OnClause == null || _position < node.OnClause.TextStart)
-                {
-                    // no row scope
-                    _binder._rowScope = null;
-                }
-                else if (node.OnClause != null && _position >= node.OnClause.TextStart)
-                {
-                    var leftShape = GetGraphSymbol(node) is GraphSymbol lgs ? lgs.EdgeShape : null;
-                    var rightShape = node.Graph.ResultType is GraphSymbol rgs ? rgs.EdgeShape : null;
-                    _binder._rowScope = leftShape ?? rightShape;
-                    _binder._rightRowScope = rightShape ?? leftShape;
                 }
             }
         }

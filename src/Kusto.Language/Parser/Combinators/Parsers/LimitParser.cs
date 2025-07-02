@@ -48,7 +48,7 @@ namespace Kusto.Language.Parsing
         public override ParseResult<TOutput> Parse(Source<TInput> input, int inputStart)
         {
             var len = this.Limiter.Scan(input, inputStart);
-            if (len > 0)
+            if (len >= 0)
             {
                 var limitSource = new LimitSource<TInput>(input, inputStart + len);
                 return this.Limited.Parse(limitSource, inputStart);
@@ -59,7 +59,7 @@ namespace Kusto.Language.Parsing
         public override int Parse(Source<TInput> input, int inputStart, List<object> output, int outputStart)
         {
             var len = this.Limiter.Scan(input, inputStart);
-            if (len > 0)
+            if (len >= 0)
             {
                 var limitSource = new LimitSource<TInput>(input, inputStart + len);
                 return this.Limited.Parse(limitSource, inputStart, output, outputStart);
@@ -70,7 +70,7 @@ namespace Kusto.Language.Parsing
         public override int Scan(Source<TInput> input, int inputStart)
         {
             var len = this.Limiter.Scan(input, inputStart);
-            if (len > 0)
+            if (len >= 0)
             {
                 var limitSource = new LimitSource<TInput>(input, inputStart + len);
                 return this.Limited.Scan(limitSource, inputStart);

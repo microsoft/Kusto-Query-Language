@@ -29,7 +29,7 @@ namespace Kusto.Language.Editor
 
         public bool AutoAppendWhitespace => (flags & OptionFlags.AutoAppendWhitespace) != 0;
 
-        public bool IncludeExtendedSytnax => (flags & OptionFlags.IncludeExtendedSyntax) != 0;
+        public bool IncludeExtendedSyntax => (flags & OptionFlags.IncludeExtendedSyntax) != 0;
 
         public IncludeFunctionKind IncludeFunctions { get; }
 

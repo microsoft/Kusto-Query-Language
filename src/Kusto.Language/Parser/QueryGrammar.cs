@@ -76,6 +76,7 @@ namespace Kusto.Language.Parsing
 
         public Parser<LexicalToken, QueryBlock> QueryBlock { get; private set; }
         public Parser<LexicalToken, Statement> Statement { get; private set; }
+        public Parser<LexicalToken, Directive> Directive { get; private set; }
         public Parser<LexicalToken, SyntaxList<SeparatedElement<Statement>>> StatementList { get; private set; }
         public Parser<LexicalToken, FunctionBody> FunctionBody { get; private set; }
         public Parser<LexicalToken, FunctionParameters> FunctionParameters { get; private set; }
@@ -220,8 +221,11 @@ namespace Kusto.Language.Parsing
                 Match(t => IsKeywordAsIdentifier(t), t => SyntaxToken.From(t))
                 .WithTag("<keywordAsIdentifier>");
 
+            var IdentifierOrKeyword =
+                First(Token(SyntaxKind.IdentifierToken), KeywordAsIdentifier);
+
             this.IdentifierName =
-                Rule(First(Token(SyntaxKind.IdentifierToken), KeywordAsIdentifier),
+                Rule(IdentifierOrKeyword,
                     token => (Name)new TokenName(token));
 
             this.BracketedName =
@@ -298,7 +302,7 @@ namespace Kusto.Language.Parsing
                         return (Name)new BracedName(open, nameToken, close);
                     });
 
-        var IdentifierNameDeclaration =
+            var IdentifierNameDeclaration =
                 Rule(
                     Token(SyntaxKind.IdentifierToken),
                     id => (NameDeclaration)new NameDeclaration(id))
@@ -1513,13 +1517,13 @@ namespace Kusto.Language.Parsing
                     Token(SyntaxKind.OpenParenToken),
                     Best(
                         // this is a special path meant to influence completion for first argument only when an extra parenthesis is typed 
-                        If(And(Token(SyntaxKind.OpenParenToken), AnyToken.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar)),
+                        If(And(Token(SyntaxKind.OpenParenToken), AnyToken.WithCompletionHint(CompletionHint.NonScalar | CompletionHint.Scalar)),
                             CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true)),
                         // normal list of expressions
                         CommaList(UnnamedExpression, CreateMissingExpression, oneOrMore: true),
                         // allows full query expression as only item in list
                         Rule(
-                            this.Expression.WithCompletionHint(CompletionHint.Tabular | CompletionHint.Scalar),
+                            this.Expression.WithCompletionHint(CompletionHint.NonScalar | CompletionHint.Scalar),
                             expr => new SyntaxList<SeparatedElement<Expression>>(new SeparatedElement<Expression>(expr)))
                         ),
                     RequiredToken(SyntaxKind.CloseParenToken),
@@ -1677,6 +1681,105 @@ namespace Kusto.Language.Parsing
                     Optional(ExternalDataWithClause),
                     (keyword, parameters, schema, openBracket, name, closeBracket, withClause) =>
                         (Expression)new ExternalDataExpression(keyword, parameters, schema, openBracket, name, closeBracket, withClause));
+
+            // Inline External Table Expression
+
+            var InlineExternalTableKindClause = Rule(
+                Token(SyntaxKind.KindKeyword),
+                RequiredToken(SyntaxKind.EqualToken),
+                RequiredToken(KustoFacts.InlineExternalTableKinds),
+                (keyword, equals, kind) =>
+                    new InlineExternalTableKindClause(keyword, equals, kind));
+
+            var InlineExternalTableDataFormatClause = Rule(
+                Token(SyntaxKind.DataFormatKeyword),
+                RequiredToken(SyntaxKind.EqualToken),
+                RequiredToken(KustoFacts.InlineExternalTableDataFormats),
+                (keyword, equals, kind) =>
+                    new InlineExternalTableDataFormatClause(keyword, equals, kind));
+
+            var ParseInlineExternalTablePathFormat =
+                Rule(
+                    First(
+                        IdentifierNameReference,
+                        Rule(
+                            Token(SyntaxKind.DateTimePatternKeyword),
+                            RequiredToken(SyntaxKind.OpenParenToken),
+                            Required(StringLiteral, CreateMissingStringLiteral),
+                            RequiredToken(SyntaxKind.CommaToken),
+                            Required(IdentifierNameReference, CreateMissingNameReference),
+                            RequiredToken(SyntaxKind.CloseParenToken),
+                            (keyword, openParen, pattern, comma, partitionColumn, closeBracket) =>
+                                (Expression)new DateTimePattern(keyword, openParen, pattern, comma, partitionColumn, closeBracket))),
+                    Optional(StringLiteral),
+                    (partitionColumnReference, optionalSeparator) =>
+                        new InlineExternalTablePathFormatPartitionColumnReference(partitionColumnReference, optionalSeparator)
+                );
+            
+            var InlineExternalTablePathFormatClause =
+                Rule(
+                    Token(SyntaxKind.PathFormatKeyword),
+                    RequiredToken(SyntaxKind.EqualToken),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Optional(StringLiteral),
+                    List(ParseInlineExternalTablePathFormat, fnMissingElement: CreateMissingPathFormatTokens, oneOrMore: true),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, equals, openBracket, optionalSeparator, pathFormat, closeBracket ) =>
+                        new InlineExternalTablePathFormatClause(keyword, equals, openBracket, optionalSeparator, pathFormat, closeBracket));
+
+            var PartitionColumnType =
+                AsPrimitiveTypeExpression(
+                    First(
+                        Token(SyntaxKind.DateTimeKeyword, CompletionKind.ScalarType),
+                        Token(SyntaxKind.LongKeyword, CompletionKind.ScalarType),
+                        Token(SyntaxKind.StringKeyword, CompletionKind.ScalarType)));
+
+            var PartitionColumnDeclaration =
+                Rule(
+                    ExtendedNameDeclaration,
+                    RequiredToken(SyntaxKind.ColonToken),
+                    Required(First(PartitionColumnType, InvalidParamType), CreateMissingType),
+                    Optional(Token(SyntaxKind.EqualToken)),
+                    Optional(UnnamedExpression),
+                    (name, colon, type, equal, expr) => new PartitionColumnDeclaration(name, colon, type, equal, expr));
+
+
+            var InlineExternalTablePartitionClause =
+                Rule(
+                    Token(SyntaxKind.PartitionKeyword),
+                    RequiredToken(SyntaxKind.ByKeyword),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    Optional(Token(SyntaxKind.CommaToken)),
+                    CommaList<PartitionColumnDeclaration>(PartitionColumnDeclaration, CreateMissingPartitionColumnDeclaration, allowTrailingComma: true),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (keyword, byKeyword, openBracket, optionalComma, partitions, closeBracket) =>
+                        new InlineExternalTablePartitionClause(keyword, byKeyword, openBracket, optionalComma, partitions, closeBracket));
+
+            var InlineExternalTableConnectionStringsClause =
+                Rule(
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    CommaList(UnnamedExpression, fnMissingElement: CreateMissingExpression, allowTrailingComma: true, oneOrMore: true),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (openBracket, connectionStrings, closeBracket) =>
+                        new InlineExternalTableConnectionStringsClause(openBracket, connectionStrings, closeBracket));
+            
+            var InlineExternalTableExpression =
+                // Support usage of inline_external_table as identifier
+                If(And(Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix), Token(SyntaxKind.OpenParenToken)),
+                    Rule(
+                        Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix),
+                        QueryParameterList(QueryOperatorParameters.InlineExternalTableProperties),
+                        Required(RowSchema, CreateMissingRowSchema),
+                        Required(InlineExternalTableKindClause, CreateMissingInlineExternalTableKindClause),
+                        Optional(InlineExternalTablePartitionClause),
+                        Optional(InlineExternalTablePathFormatClause),
+                        Required(InlineExternalTableDataFormatClause, CreateMissingInlineExternalTableDataFormatClause),
+                        Required(InlineExternalTableConnectionStringsClause, CreateMissingInlineExternalTableConnectionStringsClause),
+                        Optional(ExternalDataWithClause),
+                        (keyword, parameters, schema, kindClause, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause) =>
+                            (Expression)new InlineExternalTableExpression(keyword, parameters, schema, kindClause, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause)));
+
+            // End of Inline External Table Expression
 
 
             var ConsumeOperator =
@@ -2289,6 +2392,14 @@ namespace Kusto.Language.Parsing
                     (keyword, list) => (QueryOperator)new ProjectAwayOperator(keyword, list))
                 .WithTag("<project-away>");
 
+            var ProjectByNamesOperator =
+                Rule(
+                    Token(SyntaxKind.ProjectByNamesKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
+                    CommaList(UnnamedExpression, CreateMissingExpression),
+                    (keyword, list) => (QueryOperator)new ProjectByNamesOperator(keyword, list))
+                .WithTag("<project-by-names>")
+                .Hide();
+
             var ProjectKeepOperator =
                Rule(
                    Token(SyntaxKind.ProjectKeepKeyword, CompletionKind.QueryPrefix, CompletionPriority.High),
@@ -2791,15 +2902,6 @@ namespace Kusto.Language.Parsing
                     )
                 .WithTag("<graph-mark-components>");
 
-            var GraphMergeOperaor =
-                Rule(
-                    Token(SyntaxKind.GraphMergeKeyword, CompletionKind.QueryPrefix).Hide(),
-                    Required(InvocationExpression, CreateMissingExpression),
-                    Optional(JoinOnClause),
-                    (keyword, graph, onClause) =>
-                        (QueryOperator)new GraphMergeOperator(keyword, graph, onClause))
-                .WithTag("<graph-merge>");
-
             var GraphToTableAsClause =
                 Rule(
                     Token(SyntaxKind.AsKeyword, CompletionKind.Keyword, CompletionPriority.Low),
@@ -2961,7 +3063,6 @@ namespace Kusto.Language.Parsing
                     GetSchemaOperator,
                     GraphMatchOperator,
                     GraphShortestPathsOperator,
-                    GraphMergeOperaor,
                     GraphMarkComponentsOperator,
                     GraphToTableOperator,
                     InvokeOperator,
@@ -2978,6 +3079,7 @@ namespace Kusto.Language.Parsing
                     PartitionOperator,
                     ProjectOperator,
                     ProjectAwayOperator,
+                    ProjectByNamesOperator,
                     ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
@@ -3012,6 +3114,7 @@ namespace Kusto.Language.Parsing
                     TopNestedOperator,
                     ProjectOperator,
                     ProjectAwayOperator,
+                    ProjectByNamesOperator,
                     ProjectKeepOperator,
                     ProjectRenameOperator,
                     ProjectReorderOperator,
@@ -3234,7 +3337,7 @@ namespace Kusto.Language.Parsing
                 First(
                     If(ScanWildcardedEntityReferenceOrFunctionCall, WildcardedEntityReference),
                     SimpleNameReference)
-                    .WithCompletionHint(CompletionHint.Table | CompletionHint.MaterializedView | CompletionHint.ExternalTable | CompletionHint.Graph);
+                    .WithCompletionHint(CompletionHint.Table | CompletionHint.MaterializedView | CompletionHint.ExternalTable | CompletionHint.GraphModel);
 
             var RestrictStatement =
                 Rule(
@@ -3369,7 +3472,7 @@ namespace Kusto.Language.Parsing
                     Token("delta")
                         .WithCompletion(new CompletionItem(CompletionKind.Syntax, "delta", "delta (", ")")),
                     RequiredToken(SyntaxKind.OpenParenToken),
-                    Required(Expression, CreateMissingExpression).WithCompletionHint(CompletionHint.Tabular),
+                    Required(Expression, CreateMissingExpression).WithCompletionHint(CompletionHint.NonScalar),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, open, expression, close) =>
                         new MaterializedViewCombineClause(keyword, open, expression, close));
@@ -3405,6 +3508,7 @@ namespace Kusto.Language.Parsing
                     DataTableExpression,
                     ContextualDataTableExpression,
                     ExternalDataExpression,
+                    InlineExternalTableExpression,
                     MaterializedViewCombineExpression,
                     PrimaryPathSelector,
                     InvalidKeywordAsNameReference);
@@ -3440,14 +3544,20 @@ namespace Kusto.Language.Parsing
                                     : SyntaxToken.From(tok)))))
                 .WithTag("<skipped-tokens>");
 
+            this.Directive =
+                Rule(
+                    Token(SyntaxKind.DirectiveToken),
+                    token => new Directive(token));
+
             this.QueryBlock =
                 Rule(
+                    List(Directive),
                     StatementList,
                     Optional(SkippedTokens),
                     Optional(Token(SyntaxKind.EndOfTextToken)),
 
-                    (statements, skipped, end) =>
-                        new QueryBlock(statements, skipped, end));
+                    (directives, statements, skipped, end) =>
+                        new QueryBlock(directives, statements, skipped, end));
 #endregion
         }
 
@@ -3460,6 +3570,9 @@ namespace Kusto.Language.Parsing
 
         public static Expression CreateMissingNameReference(Source<LexicalToken> source, int start) =>
             new NameReference(SyntaxToken.Missing(SyntaxKind.IdentifierToken), new[] { DiagnosticFacts.GetMissingName() });
+
+        public static SyntaxToken CreateMissingNameToken(Source<LexicalToken> source, int start) =>
+            SyntaxToken.Missing(SyntaxKind.IdentifierToken);
 
         public static Expression CreateMissingExpression(Source<LexicalToken> source = null, int start = 0)
         {
@@ -3567,6 +3680,43 @@ namespace Kusto.Language.Parsing
                 SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
+
+        public static InlineExternalTableKindClause CreateMissingInlineExternalTableKindClause(Source<LexicalToken> source, int start) =>
+            new InlineExternalTableKindClause(
+                SyntaxToken.Missing(SyntaxKind.KindKeyword),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
+                new[] { DiagnosticFacts.GetMissingExternalTableKind() });
+
+        public static InlineExternalTableDataFormatClause CreateMissingInlineExternalTableDataFormatClause(Source<LexicalToken> source, int start) =>
+            new InlineExternalTableDataFormatClause(
+                SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
+                new[] { DiagnosticFacts.GetMissingDataFormat() });
+
+        public static InlineExternalTableConnectionStringsClause CreateMissingInlineExternalTableConnectionStringsClause(Source<LexicalToken> source, int start) =>
+            new InlineExternalTableConnectionStringsClause(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                SyntaxList<SeparatedElement<Expression>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken),
+                new[] { DiagnosticFacts.GetMissingConnectionStrings() });
+
+        public static InlineExternalTablePathFormatPartitionColumnReference CreateMissingPathFormatTokens(Source<LexicalToken> source, int start) =>
+            new InlineExternalTablePathFormatPartitionColumnReference(
+                CreateMissingExpression(),
+                new LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxToken.Missing(SyntaxKind.StringLiteralToken)),
+                new[] { DiagnosticFacts.GetMissingPathFormatTokens() });
+
+
+        public static PartitionColumnDeclaration CreateMissingPartitionColumnDeclaration(Source<LexicalToken> source, int start) =>
+            new PartitionColumnDeclaration(
+                new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken)),
+                SyntaxToken.Missing(SyntaxKind.ColonToken),
+                new PrimitiveTypeExpression(SyntaxToken.Missing(SyntaxKind.StringKeyword)),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                CreateMissingExpression(source, start),
+                new[] { DiagnosticFacts.GetMissingPartitionColumnDeclaration() });
 
         public static EvaluateRowSchema CreateMissingEvaluateRowSchema(Source<LexicalToken> source, int start) =>
             new EvaluateRowSchema(
