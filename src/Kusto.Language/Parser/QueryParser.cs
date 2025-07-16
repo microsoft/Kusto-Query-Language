@@ -1890,13 +1890,13 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Parses a tabular row schema
         /// </summary>
-        private RowSchema ParseRowSchema()
+        private RowSchema ParseRowSchema(bool oneOrMore = false)
         {
             if (PeekToken().Kind == SyntaxKind.OpenParenToken)
             {
                 var open = ParseToken();
                 var leadingComma = ParseToken(SyntaxKind.CommaToken);
-                var list = ParseCommaList(FnParseNameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, FnScanCommonListEnd, allowTrailingComma: true);
+                var list = ParseCommaList(FnParseNameAndTypeDeclaration, CreateMissingNameAndTypeDeclaration, FnScanCommonListEnd, oneOrMore: oneOrMore, allowTrailingComma: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
                 return new RowSchema(open, leadingComma, list, close);
             }
@@ -2097,7 +2097,7 @@ namespace Kusto.Language.Parsing
             {
                 var keyword = ParseToken();
                 var parameters = ParseQueryOperatorParameterList(s_dataTableParameters);
-                var schema = ParseRowSchema() ?? CreateMissingRowSchema();
+                var schema = ParseRowSchema(true) ?? CreateMissingRowSchema();
                 var kind = ParseInlineExternalTableKindClause();
                 var partitionClause = ParseInlineExternalTablePartitionClause();
                 var pathFormatClause = ParseInlineExternalTablePathFormatClause();
@@ -2179,7 +2179,7 @@ namespace Kusto.Language.Parsing
         private static readonly Func<InlineExternalTablePathFormatPartitionColumnReference> FnCreateMissingExternalTablePathFormatToken =
             () => new InlineExternalTablePathFormatPartitionColumnReference(
                 CreateMissingValue(),
-                CreateMissingStringLiteral(),
+                (LiteralExpression)CreateMissingStringLiteral(),
                 new[] { DiagnosticFacts.GetMissingPathFormatTokens() });
 
         private static readonly Func<QueryParser, InlineExternalTablePathFormatPartitionColumnReference> FnParseExternalTablePathFormatToken =
@@ -2205,7 +2205,7 @@ namespace Kusto.Language.Parsing
             return partitionColumnReference == null
                 ? new InlineExternalTablePathFormatPartitionColumnReference(
                     CreateMissingValue(),
-                    CreateMissingStringLiteral(),
+                    (LiteralExpression)CreateMissingStringLiteral(),
                     new[] { DiagnosticFacts.GetUnknownTokenInPathFormatDefinition() })
                 : new InlineExternalTablePathFormatPartitionColumnReference(
                     partitionColumnReference,
@@ -2252,7 +2252,7 @@ namespace Kusto.Language.Parsing
             {
                 var keyword = ParseToken();
                 var equal = ParseRequiredToken(SyntaxKind.EqualToken);
-                var value = ParseRequiredToken(KustoFacts.InlineExternalTableDataFormats);
+                var value = ParseRequiredToken(SyntaxKind.IdentifierToken);
                 return new InlineExternalTableDataFormatClause(keyword, equal, value);
             }
 

@@ -1878,20 +1878,20 @@ namespace Kusto.Language.Binding
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
                 var columns = s_columnListPool.AllocateFromPool();
                 var partitionColumnNames = s_stringSetPool.AllocateFromPool();
+                var partitionColumnsDirectlyUsed = s_stringSetPool.AllocateFromPool();
+                var partitionColumnsFunctionUsed = s_expressionListPool.AllocateFromPool();
                 try
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SortParameters, diagnostics);
 
                     CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
 
-                    //TODO: Validate correct expression binding to Partition columns: 1. Type Match, 2. Functions subset for each type
                     if (node.PartitionClause != null)
                     {
                         foreach (var partitionColumn in node.PartitionClause.PartitionColumns)
                         {
                             // Check Partition column names uniqueness
-                            if (!DeclareColumnName(partitionColumnNames, partitionColumn.Element.Name.SimpleName, diagnostics, partitionColumn.Element.Name.Name)
-                                || columns.Any(item => item.Name == partitionColumn.Element.Name.SimpleName))
+                            if (!DeclareColumnName(partitionColumnNames, partitionColumn.Element.Name.SimpleName, diagnostics, partitionColumn.Element.Name.Name))
                             {
                                 diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
                                 break;
@@ -1914,6 +1914,17 @@ namespace Kusto.Language.Binding
                             }
                             if (partitionColumn.Element.Expr == null)
                             {
+                                if (columns.Any(item => item.Name == partitionColumn.Element.Name.SimpleName))
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
+                                    break;
+                                }
+
+                                if (SymbolsAssignable(type, ScalarTypes.Long, Conversion.None))
+                                {
+                                    diagnostics?.Add(DiagnosticFacts.GetWrongVirtualPartitionColumnType().WithLocation(partitionColumn.Element));
+                                    break;
+                                }
                                 // Virtual Column need to be added to the list of columns
                                 columns.Add(new ColumnSymbol(partitionColumn.Element.Name.SimpleName, type, source: partitionColumn.Element.Name));
                             }
@@ -1931,8 +1942,57 @@ namespace Kusto.Language.Binding
                             }
                         }
                     }
+                    if (node.PathFormat != null)
+                    {
+                        foreach (var pathFormatElement in node.PathFormat.PathExpressions)
+                        {
+                            if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.NameReference)
+                            {
+                                partitionColumnsDirectlyUsed.Add(((NameReference)pathFormatElement.PartitionColumnExpression).SimpleName);
+                            }
+                            else if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.DateTimePattern)
+                            {
+                                var dateTimePattern = (DateTimePattern)pathFormatElement.PartitionColumnExpression;
+                                if (!CheckDateTimePatternAllowed(partitionColumnsFunctionUsed, dateTimePattern))
+                                {
+                                    diagnostics.Add(DiagnosticFacts.GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((NameReference)dateTimePattern.PartitionColumn).SimpleName).WithLocation(node.PathFormat));
+                                    break;
+                                }
+                                partitionColumnsFunctionUsed.Add(dateTimePattern);
+                            }
+                        }
+
+                        // Find all partition column names not present in either set
+                        var unusedPartitionColumns = partitionColumnNames
+                            .Where(name => !partitionColumnsDirectlyUsed.Contains(name) && !partitionColumnsFunctionUsed.Any(item => ((DateTimePattern)item).PartitionColumn.SimpleName == name))
+                            .ToList();
+
+                        // Add diagnostics for each unused column
+                        foreach (var name in unusedPartitionColumns)
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetPartitionColumnNotUsedInPathFormat(name).WithLocation(node.PathFormat));
+                        }
+
+                        // Find partitions that have both direct and function usage
+                        var conflictingPartitionColumns = partitionColumnsFunctionUsed
+                            .Where(expr => partitionColumnsDirectlyUsed.Contains(((DateTimePattern)expr).PartitionColumn.SimpleName))
+                            .ToList();
+
+                        // Add diagnostics for each conflicting partition
+                        foreach (var expr in conflictingPartitionColumns)
+                        {
+                            diagnostics.Add(DiagnosticFacts
+                                .GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((DateTimePattern)expr).PartitionColumn.SimpleName)
+                                .WithLocation(node.PathFormat));
+                        }
+                    }
 
                     node.ConnectionStrings.ConnectionStrings.Select(item => _binder.CheckIsExactType(item.Element, ScalarTypes.String, diagnostics));
+
+                    if (!KustoFacts.InlineExternalTableDataFormats.Contains(node.DataFormatParameter.Value.ValueText))
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetWrongDataStreamType(node.DataFormatParameter.Value.ValueText).WithLocation(node.DataFormatParameter));
+                    }
 
                     return new SemanticInfo(new TableSymbol(columns), diagnostics);
                 }
@@ -1941,6 +2001,36 @@ namespace Kusto.Language.Binding
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                     s_columnListPool.ReturnToPool(columns);
                     s_stringSetPool.ReturnToPool(partitionColumnNames);
+                    s_stringSetPool.ReturnToPool(partitionColumnsDirectlyUsed);
+                    s_expressionListPool.ReturnToPool(partitionColumnsFunctionUsed);
+                }
+            }
+
+            private bool CheckDateTimePatternAllowed(List<Expression> existingExpressions, DateTimePattern current)
+            {
+                foreach (var existingExpression in existingExpressions)
+                {
+                    var existingDateTimePattern = existingExpression as DateTimePattern;
+                    if (existingDateTimePattern.PartitionColumn.SimpleName == current.PartitionColumn.SimpleName
+                        && existingDateTimePattern.StringLiteral.Token.ValueText != current.StringLiteral.Token.ValueText)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public override SemanticInfo VisitDateTimePattern(DateTimePattern node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    _binder.CheckIsExactType(node.PartitionColumn, ScalarTypes.DateTime, diagnostics);
+                    return new SemanticInfo(ScalarTypes.DateTime, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
                 }
             }
 
@@ -4157,11 +4247,6 @@ namespace Kusto.Language.Binding
             }
 
             public override SemanticInfo VisitInlineExternalTableConnectionStringsClause(InlineExternalTableConnectionStringsClause node)
-            {
-                return null;
-            }
-
-            public override SemanticInfo VisitDateTimePattern(DateTimePattern node)
             {
                 return null;
             }

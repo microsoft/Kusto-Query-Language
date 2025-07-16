@@ -67,6 +67,7 @@ namespace Kusto.Language
             "extentsize",
             "external_data",
             "externaldata",
+            "filesystem",
             "filter",
             "find",
             "first",

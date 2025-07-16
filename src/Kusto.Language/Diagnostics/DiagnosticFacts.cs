@@ -1055,6 +1055,37 @@ namespace Kusto.Language
             return new Diagnostic("KS261", $"The name '{name}' does not refer to any known graph snapshot of graph model '{graphModelName}'.");
         }
 
+        public static Diagnostic GetLatestSnapshotUnknown(string graphModelName)
+        {
+            return new Diagnostic("KS262", $"The lastest snapshot of graph model '{graphModelName}' is unknown.");
+        }
+
+        public static Diagnostic GetVolatileGraphUnknown(string graphModelName)
+        {
+            return new Diagnostic("KS263", $"The volatile graph of model '{graphModelName}' is unknown.");
+        }
+
+        public static Diagnostic GetPartitionColumnNotUsedInPathFormat(string partitionName)
+        {
+            return new Diagnostic("KS264", $"External Table Partition {partitionName} is not used in pathformat.");
+        }
+
+        public static Diagnostic GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(string partitionName)
+        {
+            return new Diagnostic("KS265", $"External Table Partition {partitionName} can be used with single pattern.");
+        }
+
+        public static Diagnostic GetWrongVirtualPartitionColumnType()
+        {
+            return new Diagnostic("KS266", "Virtual column could be either string or datetime.");
+        }
+
+        public static Diagnostic GetWrongDataStreamType(string type)
+        {
+            return new Diagnostic("KS267", $"Data stream type {type} is not supported by external table ");
+        }
+
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

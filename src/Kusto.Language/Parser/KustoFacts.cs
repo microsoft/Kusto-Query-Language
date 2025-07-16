@@ -211,7 +211,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> InlineExternalTableDataFormats = new string[]
         {
-            "parquet"
+            "parquet", "avro", "csv", "tsv", "json", "orc", "txt"
         };
 
         public static readonly IReadOnlyList<string> InlineExternalTablePartitionColumnFunctions = new string[]

@@ -1846,6 +1846,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowCallStacks =
             new CommandSymbol("ShowCallStacks", _schema19);
 
+        public static readonly CommandSymbol ShowFileSystem =
+            new CommandSymbol("ShowFileSystem", _schema19);
+
         public static readonly CommandSymbol ShowRunningCallouts =
             new CommandSymbol("ShowRunningCallouts", _schema19);
 
@@ -2533,6 +2536,7 @@ namespace Kusto.Language
             ShowRowStoreSeals,
             ShowSchema,
             ShowCallStacks,
+            ShowFileSystem,
             ShowRunningCallouts,
             ShowStreamingIngestionFailures,
             ShowStreamingIngestionStatistics,

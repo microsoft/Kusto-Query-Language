@@ -14016,18 +14016,18 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OpenParen { get; }
         
-        public SyntaxNode StringLiteral { get; }
+        public LiteralExpression StringLiteral { get; }
         
         public SyntaxToken Comma { get; }
         
-        public Expression PartitionColumn { get; }
+        public NameReference PartitionColumn { get; }
         
         public SyntaxToken CloseParen { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="DateTimePattern"/>.
         /// </summary>
-        internal DateTimePattern(SyntaxToken dateTimePatternKeyword, SyntaxToken openParen, SyntaxNode stringLiteral, SyntaxToken comma, Expression partitionColumn, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal DateTimePattern(SyntaxToken dateTimePatternKeyword, SyntaxToken openParen, LiteralExpression stringLiteral, SyntaxToken comma, NameReference partitionColumn, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DateTimePatternKeyword = Attach(dateTimePatternKeyword);
             this.OpenParen = Attach(openParen);
@@ -14093,7 +14093,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new DateTimePattern((SyntaxToken)DateTimePatternKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxNode)StringLiteral?.Clone(includeDiagnostics), (SyntaxToken)Comma?.Clone(includeDiagnostics), (Expression)PartitionColumn?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new DateTimePattern((SyntaxToken)DateTimePatternKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (LiteralExpression)StringLiteral?.Clone(includeDiagnostics), (SyntaxToken)Comma?.Clone(includeDiagnostics), (NameReference)PartitionColumn?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class DateTimePattern */
@@ -14105,12 +14105,12 @@ namespace Kusto.Language.Syntax
         
         public Expression PartitionColumnExpression { get; }
         
-        public SyntaxNode SeparatorLiteral { get; }
+        public LiteralExpression SeparatorLiteral { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="InlineExternalTablePathFormatPartitionColumnReference"/>.
         /// </summary>
-        internal InlineExternalTablePathFormatPartitionColumnReference(Expression partitionColumnExpression, SyntaxNode separatorLiteral, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal InlineExternalTablePathFormatPartitionColumnReference(Expression partitionColumnExpression, LiteralExpression separatorLiteral, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.PartitionColumnExpression = Attach(partitionColumnExpression);
             this.SeparatorLiteral = Attach(separatorLiteral, optional: true);
@@ -14171,7 +14171,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new InlineExternalTablePathFormatPartitionColumnReference((Expression)PartitionColumnExpression?.Clone(includeDiagnostics), (SyntaxNode)SeparatorLiteral?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new InlineExternalTablePathFormatPartitionColumnReference((Expression)PartitionColumnExpression?.Clone(includeDiagnostics), (LiteralExpression)SeparatorLiteral?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class InlineExternalTablePathFormatPartitionColumnReference */
@@ -14187,7 +14187,7 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken OpenParen { get; }
         
-        public SyntaxNode OptionalSeparatorLiteral { get; }
+        public LiteralExpression OptionalSeparatorLiteral { get; }
         
         public SyntaxList<InlineExternalTablePathFormatPartitionColumnReference> PathExpressions { get; }
         
@@ -14196,7 +14196,7 @@ namespace Kusto.Language.Syntax
         /// <summary>
         /// Constructs a new instance of <see cref="InlineExternalTablePathFormatClause"/>.
         /// </summary>
-        internal InlineExternalTablePathFormatClause(SyntaxToken pathFormatKeyword, SyntaxToken equalToken, SyntaxToken openParen, SyntaxNode optionalSeparatorLiteral, SyntaxList<InlineExternalTablePathFormatPartitionColumnReference> pathExpressions, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal InlineExternalTablePathFormatClause(SyntaxToken pathFormatKeyword, SyntaxToken equalToken, SyntaxToken openParen, LiteralExpression optionalSeparatorLiteral, SyntaxList<InlineExternalTablePathFormatPartitionColumnReference> pathExpressions, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.PathFormatKeyword = Attach(pathFormatKeyword);
             this.EqualToken = Attach(equalToken);
@@ -14273,7 +14273,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new InlineExternalTablePathFormatClause((SyntaxToken)PathFormatKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxNode)OptionalSeparatorLiteral?.Clone(includeDiagnostics), (SyntaxList<InlineExternalTablePathFormatPartitionColumnReference>)PathExpressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new InlineExternalTablePathFormatClause((SyntaxToken)PathFormatKeyword?.Clone(includeDiagnostics), (SyntaxToken)EqualToken?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (LiteralExpression)OptionalSeparatorLiteral?.Clone(includeDiagnostics), (SyntaxList<InlineExternalTablePathFormatPartitionColumnReference>)PathExpressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class InlineExternalTablePathFormatClause */

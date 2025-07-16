@@ -1607,6 +1607,19 @@ namespace Kusto.Language.Parsing
                         (openParen, leadingComma, columns, closeParen) =>
                             new RowSchema(openParen, leadingComma, columns, closeParen));
 
+            var MandatoryRowSchema =
+                Rule(
+                    Token(SyntaxKind.OpenParenToken),
+                    Optional(Token(SyntaxKind.CommaToken)),
+                    CommaList<NameAndTypeDeclaration>(
+                        NameAndTypeDeclaration,
+                        CreateMissingNameAndTypeDeclaration,
+                        oneOrMore: true,
+                        allowTrailingComma: true),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (openParen, leadingComma, columns, closeParen) =>
+                        new RowSchema(openParen, leadingComma, columns, closeParen));
+
             var EvaluateRowSchema =
                     Rule(
                         Token(SyntaxKind.OpenParenToken),
@@ -1694,9 +1707,9 @@ namespace Kusto.Language.Parsing
             var InlineExternalTableDataFormatClause = Rule(
                 Token(SyntaxKind.DataFormatKeyword),
                 RequiredToken(SyntaxKind.EqualToken),
-                RequiredToken(KustoFacts.InlineExternalTableDataFormats),
-                (keyword, equals, kind) =>
-                    new InlineExternalTableDataFormatClause(keyword, equals, kind));
+                RequiredToken(SyntaxKind.IdentifierToken),
+                (keyword, equals, type) =>
+                    new InlineExternalTableDataFormatClause(keyword, equals, type));
 
             var ParseInlineExternalTablePathFormat =
                 Rule(
@@ -1710,10 +1723,10 @@ namespace Kusto.Language.Parsing
                             Required(IdentifierNameReference, CreateMissingNameReference),
                             RequiredToken(SyntaxKind.CloseParenToken),
                             (keyword, openParen, pattern, comma, partitionColumn, closeBracket) =>
-                                (Expression)new DateTimePattern(keyword, openParen, pattern, comma, partitionColumn, closeBracket))),
+                                (Expression)new DateTimePattern(keyword, openParen, (LiteralExpression)pattern, comma, (NameReference)partitionColumn, closeBracket))),
                     Optional(StringLiteral),
                     (partitionColumnReference, optionalSeparator) =>
-                        new InlineExternalTablePathFormatPartitionColumnReference(partitionColumnReference, optionalSeparator)
+                        new InlineExternalTablePathFormatPartitionColumnReference(partitionColumnReference, (LiteralExpression)optionalSeparator)
                 );
             
             var InlineExternalTablePathFormatClause =
@@ -1725,7 +1738,7 @@ namespace Kusto.Language.Parsing
                     List(ParseInlineExternalTablePathFormat, fnMissingElement: CreateMissingPathFormatTokens, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (keyword, equals, openBracket, optionalSeparator, pathFormat, closeBracket ) =>
-                        new InlineExternalTablePathFormatClause(keyword, equals, openBracket, optionalSeparator, pathFormat, closeBracket));
+                        new InlineExternalTablePathFormatClause(keyword, equals, openBracket, (LiteralExpression)optionalSeparator, pathFormat, closeBracket));
 
             var PartitionColumnType =
                 AsPrimitiveTypeExpression(
@@ -1769,7 +1782,7 @@ namespace Kusto.Language.Parsing
                     Rule(
                         Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix),
                         QueryParameterList(QueryOperatorParameters.InlineExternalTableProperties),
-                        Required(RowSchema, CreateMissingRowSchema),
+                        Required(MandatoryRowSchema, CreateMissingRowSchema),
                         Required(InlineExternalTableKindClause, CreateMissingInlineExternalTableKindClause),
                         Optional(InlineExternalTablePartitionClause),
                         Optional(InlineExternalTablePathFormatClause),
