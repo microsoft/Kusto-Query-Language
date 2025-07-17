@@ -3701,8 +3701,7 @@ namespace Kusto.Language
             new FunctionSymbol("column_names_of", ScalarTypes.DynamicArrayOfString,
                 new Parameter("table", ParameterTypeKind.Tabular))
             .ConstantFoldable()
-            .WithResultNameKind(ResultNameKind.None)
-            .Hide();
+            .WithResultNameKind(ResultNameKind.None);
         #endregion
 
         #region All
