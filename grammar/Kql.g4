@@ -936,7 +936,7 @@ stringOperatorExpression:
     ;
 
 stringBinaryOperatorExpression:
-    Left=invocationExpression (Operations+=stringBinaryOperation)*;
+    Left=invocationExpression (Operation=stringBinaryOperation)?;
 
 stringBinaryOperation:
     (Operator=stringBinaryOperator | HasOperator=':') Right=invocationExpression;
