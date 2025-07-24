@@ -176,7 +176,9 @@ namespace Kusto.Language
             "views",
             "violations",
             "where",
-            "writeaheadlog"
+            "writeaheadlog",
+            "graph_snapshots_drop_by_retention",
+            "graph_snapshots_optimize",
         };
     }
 }
