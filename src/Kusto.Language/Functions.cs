@@ -3475,6 +3475,13 @@ namespace Kusto.Language
                 new Parameter("node", ParameterTypeKind.Scalar, minOccurring: 0))
                 .WithCustomAvailability(InGraphWhereOrProjectClause);
 
+        public static readonly FunctionSymbol NodeId =
+            new FunctionSymbol("node_id",
+                    ScalarTypes.String,
+                    new Parameter("node", ParameterTypeKind.Scalar, minOccurring: 0))
+                .WithCustomAvailability(InGraphWhereOrProjectClause)
+                .Hide();
+
         public static readonly FunctionSymbol Labels =
             new FunctionSymbol("labels",
                     ScalarTypes.DynamicArrayOfString,
@@ -4121,6 +4128,7 @@ namespace Kusto.Language
             Any,
             Map,
             InnerNodes,
+            NodeId,
             NodeDegreeIn,
             NodeDegreeOut,
             Labels,
