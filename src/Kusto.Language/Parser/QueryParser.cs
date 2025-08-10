@@ -6021,6 +6021,32 @@ namespace Kusto.Language.Parsing
         }
         #endregion
 
+        #region GraphWhereNodesOperator
+        private GraphWhereNodesOperator ParseGraphWhereNodesOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphWhereNodesKeyword) is SyntaxToken keyword)
+            {
+                var expression = ParseUnnamedExpression() ?? CreateMissingExpression();
+                return new GraphWhereNodesOperator(keyword, expression);
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region GraphWhereEdgesOperator
+        private GraphWhereEdgesOperator ParseGraphWhereEdgesOperator()
+        {
+            if (ParseToken(SyntaxKind.GraphWhereEdgesKeyword) is SyntaxToken keyword)
+            {
+                var expression = ParseUnnamedExpression() ?? CreateMissingExpression();
+                return new GraphWhereEdgesOperator(keyword, expression);
+            }
+
+            return null;
+        }
+        #endregion
+
         #endregion
 
         #region Query Expressions
@@ -6162,6 +6188,10 @@ namespace Kusto.Language.Parsing
                     return ParseGraphToTableOperator();
                 case SyntaxKind.GraphMarkComponentsKeyword:
                     return ParseGraphMarkComponentsOperator();
+                case SyntaxKind.GraphWhereNodesKeyword:
+                    return ParseGraphWhereNodesOperator();
+                case SyntaxKind.GraphWhereEdgesKeyword:
+                    return ParseGraphWhereEdgesOperator();
                 case SyntaxKind.AssertSchemaKeyword:
                     return ParseAssertSchemaOperator();
                 default:
@@ -6650,7 +6680,6 @@ namespace Kusto.Language.Parsing
         #endregion
 
         #region restrict
-
         private static readonly IReadOnlyList<Func<QueryParser, Expression>> ParseRestrictExpressionParsers =
             new[]
             {
@@ -6676,12 +6705,39 @@ namespace Kusto.Language.Parsing
                 var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
                 var expressions = ParseCommaList(FnParseRestrictExpression, CreateMissingExpression, FnScanCommonListEnd, oneOrMore: true);
                 var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
-                return new RestrictStatement(keyword, accessKeyword, toKeyword, open, expressions, close);
+                var withClause = ParseRestrictStatementWithClause();
+                return new RestrictStatement(keyword, accessKeyword, toKeyword, open, expressions, close, withClause);
+            }
+
+            return null;
+        }
+         
+        private RestrictStatementWithClause ParseRestrictStatementWithClause()
+        {
+            var keyword = ParseToken(SyntaxKind.WithKeyword);
+            if (keyword != null)
+            {
+                var open = ParseRequiredToken(SyntaxKind.OpenParenToken);
+                var props = ParseCommaList(parser => parser.ParseRestrictProperty(), CreateMissingNamedParameter, FnScanCommonListEnd);
+                var close = ParseRequiredToken(SyntaxKind.CloseParenToken);
+                return new RestrictStatementWithClause(keyword, open, props, close);
             }
 
             return null;
         }
 
+        private NamedParameter ParseRestrictProperty()
+        {
+            var name = ParseRenameNameDeclaration();
+            if (name != null)
+            {
+                var equal = ParseRequiredToken(SyntaxKind.EqualToken);
+                var value = ParseExternalDataPropertyValue() ?? CreateMissingValue();
+                return new NamedParameter(name, equal, value);
+            }
+
+            return null;
+        }
         #endregion
 
         #region declare pattern

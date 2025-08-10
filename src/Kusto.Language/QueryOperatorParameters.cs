@@ -112,6 +112,9 @@ namespace Kusto.Language
         public static readonly QueryOperatorParameter ShortestPathsOutputs =
             new QueryOperatorParameter("output", QueryOperatorParameterValueKind.Word, values: KustoFacts.ShortestPathsOutputs);
 
+        public static readonly QueryOperatorParameter ManagedIdentityAuthEnabled =
+            new QueryOperatorParameter("AllowManagedIdentityAuthentication", QueryOperatorParameterValueKind.BoolLiteral, isRepeatable: false);
+
         /// <summary>
         /// All query operator parameters.
         /// Does not include parameters used for other syntax clauses (like render with properties)
@@ -208,6 +211,11 @@ namespace Kusto.Language
         public static readonly IReadOnlyList<QueryOperatorParameter> GraphShortestPathsParameters = new QueryOperatorParameter[]
         {
             Output.WithValues(KustoFacts.ShortestPathsOutputs),
+        }.ToReadOnly();
+
+        public static readonly IReadOnlyList<QueryOperatorParameter> RestrictStatementParameters = new QueryOperatorParameter[]
+        {
+            ManagedIdentityAuthEnabled
         }.ToReadOnly();
 
 

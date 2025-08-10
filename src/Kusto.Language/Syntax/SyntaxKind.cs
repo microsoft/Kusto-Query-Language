@@ -146,6 +146,8 @@
         MacroExpandScopeReferenceName,
         MakeGraphKeyword,
         GraphMarkComponentsKeyword,
+        GraphWhereNodesKeyword,
+        GraphWhereEdgesKeyword,
         MakeSeriesKeyword,
         MatchesRegexKeyword,
         MaterializeKeyword,
@@ -595,6 +597,9 @@
         MakeGraphPartitionedByClause,
 
         GraphMarkComponentsOperator,
+        GraphWhereNodesOperator,
+        GraphWhereEdgesOperator,
+
 
         MakeSeriesOperator,
         MakeSeriesExpression,
@@ -697,6 +702,7 @@
         MaterializeExpression,
 
         RestrictStatement,
+        RestrictStatementWithClause,
 
         SetOptionStatement,
         OptionValueClause,

@@ -178,6 +178,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MacroExpandKeyword, "macro-expand"),
                 new SyntaxData(SyntaxKind.MakeGraphKeyword, "make-graph"),
                 new SyntaxData(SyntaxKind.GraphMarkComponentsKeyword, "graph-mark-components"),
+                new SyntaxData(SyntaxKind.GraphWhereNodesKeyword, "graph-where-nodes"),
+                new SyntaxData(SyntaxKind.GraphWhereEdgesKeyword, "graph-where-edges"),
                 new SyntaxData(SyntaxKind.MakeSeriesKeyword, "make-series"),
                 new SyntaxData(SyntaxKind.MatchesRegexKeyword, "matches regex", opKind: OperatorKind.MatchRegex),
                 new SyntaxData(SyntaxKind.MaterializeKeyword, "materialize"),
@@ -626,6 +628,8 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.MakeGraphWithImplicitIdClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphTableAndKeyClause, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.GraphMarkComponentsOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphWhereNodesOperator, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.GraphWhereEdgesOperator, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.MakeGraphPartitionedByClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.MakeSeriesOperator, "", SyntaxCategory.Node),
@@ -740,6 +744,7 @@ namespace Kusto.Language.Syntax
                 new SyntaxData(SyntaxKind.PatternPathValue, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.RestrictStatement, "", SyntaxCategory.Node),
+                new SyntaxData(SyntaxKind.RestrictStatementWithClause, "", SyntaxCategory.Node),
 
                 new SyntaxData(SyntaxKind.SetOptionStatement, "", SyntaxCategory.Node),
                 new SyntaxData(SyntaxKind.OptionValueClause, "", SyntaxCategory.Node),

@@ -2915,6 +2915,24 @@ namespace Kusto.Language.Parsing
                     )
                 .WithTag("<graph-mark-components>");
 
+            var GraphWhereNodesOperator =
+                Rule(
+                    Token(SyntaxKind.GraphWhereNodesKeyword, CompletionKind.QueryPrefix),
+                    Required(Expression, CreateMissingExpression),
+                    (graphWhereNodesKeyword, expression) =>
+                        (QueryOperator)new GraphWhereNodesOperator(graphWhereNodesKeyword, expression)
+                    )
+                .WithTag("<graph-where-nodes>");
+
+            var GraphWhereEdgesOperator =
+                Rule(
+                    Token(SyntaxKind.GraphWhereEdgesKeyword, CompletionKind.QueryPrefix),
+                    Required(Expression, CreateMissingExpression),
+                    (graphWhereEdgesKeyword, expression) =>
+                        (QueryOperator)new GraphWhereEdgesOperator(graphWhereEdgesKeyword, expression)
+                    )
+                .WithTag("<graph-where-edges>");
+
             var GraphToTableAsClause =
                 Rule(
                     Token(SyntaxKind.AsKeyword, CompletionKind.Keyword, CompletionPriority.Low),
@@ -3077,6 +3095,9 @@ namespace Kusto.Language.Parsing
                     GraphMatchOperator,
                     GraphShortestPathsOperator,
                     GraphMarkComponentsOperator,
+                    // currently hidden until we document this feature.
+                    GraphWhereNodesOperator.Hide(),
+                    GraphWhereEdgesOperator.Hide(),
                     GraphToTableOperator,
                     InvokeOperator,
                     JoinOperator,
@@ -3352,6 +3373,15 @@ namespace Kusto.Language.Parsing
                     SimpleNameReference)
                     .WithCompletionHint(CompletionHint.Table | CompletionHint.MaterializedView | CompletionHint.ExternalTable | CompletionHint.GraphModel);
 
+            var RestrictStatementWithClause = 
+                Rule(
+                    Token(SyntaxKind.WithKeyword),
+                    RequiredToken(SyntaxKind.OpenParenToken),
+                    QueryParameterCommaList(QueryOperatorParameters.RestrictStatementParameters),
+                    RequiredToken(SyntaxKind.CloseParenToken),
+                    (withKeyword, openParen, properties, closeParen) =>
+                        new RestrictStatementWithClause(withKeyword, openParen, properties, closeParen));
+
             var RestrictStatement =
                 Rule(
                     Token(SyntaxKind.RestrictKeyword, CompletionKind.QueryPrefix).Hide(),
@@ -3360,8 +3390,9 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.OpenParenToken),
                     CommaList<Expression>(Restriction, CreateMissingExpression, oneOrMore: true),
                     RequiredToken(SyntaxKind.CloseParenToken),
-                    (restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen) =>
-                        (Statement)new RestrictStatement(restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen))
+                    Optional(RestrictStatementWithClause),
+                    (restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen, withProperties) =>
+                        (Statement)new RestrictStatement(restrictKeyword, accessKeyword, toKeyword, openParen, list, closeParen, withProperties))
                 .WithTag("<restrict>");
 
             var PatternPathValue =

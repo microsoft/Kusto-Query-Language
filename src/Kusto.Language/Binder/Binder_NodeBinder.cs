@@ -4093,6 +4093,48 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override SemanticInfo VisitGraphWhereNodesOperator(GraphWhereNodesOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
+
+                    // get existing graph symbol from left-side of parent pipe operator
+                    var graphSymbol = (node.Parent as PipeExpression)?.Expression?.ResultType is GraphSymbol g
+                        ? new GraphSymbol(g.EdgeShape, g.NodeShape)
+                        : new GraphSymbol(this.RowScopeOrEmpty);
+
+                    return new SemanticInfo(graphSymbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
+            public override SemanticInfo VisitGraphWhereEdgesOperator(GraphWhereEdgesOperator node)
+            {
+                var diagnostics = s_diagnosticListPool.AllocateFromPool();
+                try
+                {
+                    CheckNotFirstInPipe(node, diagnostics);
+                    _binder.CheckIsExactType(node.Condition, ScalarTypes.Bool, diagnostics);
+
+                    // get existing graph symbol from left-side of parent pipe operator
+                    var graphSymbol = (node.Parent as PipeExpression)?.Expression?.ResultType is GraphSymbol g
+                        ? new GraphSymbol(g.EdgeShape, g.NodeShape)
+                        : new GraphSymbol(this.RowScopeOrEmpty);
+
+                    return new SemanticInfo(graphSymbol, diagnostics);
+                }
+                finally
+                {
+                    s_diagnosticListPool.ReturnToPool(diagnostics);
+                }
+            }
+
             public override SemanticInfo VisitGraphToTableOperator(GraphToTableOperator node)
             {
                 var diagnostics = s_diagnosticListPool.AllocateFromPool();
@@ -4556,6 +4598,11 @@ namespace Kusto.Language.Binding
                 {
                     s_diagnosticListPool.ReturnToPool(diagnostics);
                 }
+            }
+
+            public override SemanticInfo VisitRestrictStatementWithClause(RestrictStatementWithClause node)
+            {
+                return null;
             }
             #endregion
         }

@@ -10430,6 +10430,140 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class GraphMarkComponentsOperator */
     
+    #region class GraphWhereNodesOperator
+    public sealed partial class GraphWhereNodesOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphWhereNodesOperator;
+        
+        public SyntaxToken GraphWhereNodesKeyword { get; }
+        
+        public Expression Condition { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphWhereNodesOperator"/>.
+        /// </summary>
+        internal GraphWhereNodesOperator(SyntaxToken graphWhereNodesKeyword, Expression condition, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphWhereNodesKeyword = Attach(graphWhereNodesKeyword);
+            this.Condition = Attach(condition);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphWhereNodesKeyword;
+                case 1: return Condition;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphWhereNodesKeyword);
+                case 1: return nameof(Condition);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Boolean;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphWhereNodesOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphWhereNodesOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphWhereNodesOperator((SyntaxToken)GraphWhereNodesKeyword?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphWhereNodesOperator */
+    
+    #region class GraphWhereEdgesOperator
+    public sealed partial class GraphWhereEdgesOperator : QueryOperator
+    {
+        public override SyntaxKind Kind => SyntaxKind.GraphWhereEdgesOperator;
+        
+        public SyntaxToken GraphWhereEdgesKeyword { get; }
+        
+        public Expression Condition { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="GraphWhereEdgesOperator"/>.
+        /// </summary>
+        internal GraphWhereEdgesOperator(SyntaxToken graphWhereEdgesKeyword, Expression condition, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.GraphWhereEdgesKeyword = Attach(graphWhereEdgesKeyword);
+            this.Condition = Attach(condition);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return GraphWhereEdgesKeyword;
+                case 1: return Condition;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(GraphWhereEdgesKeyword);
+                case 1: return nameof(Condition);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Boolean;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitGraphWhereEdgesOperator(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitGraphWhereEdgesOperator(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new GraphWhereEdgesOperator((SyntaxToken)GraphWhereEdgesKeyword?.Clone(includeDiagnostics), (Expression)Condition?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class GraphWhereEdgesOperator */
+    
     #region class MakeGraphTableAndKeyClause
     public sealed partial class MakeGraphTableAndKeyClause : SyntaxNode
     {
@@ -12688,6 +12822,85 @@ namespace Kusto.Language.Syntax
     }
     #endregion /* class QueryParametersStatement */
     
+    #region class RestrictStatementWithClause
+    public sealed partial class RestrictStatementWithClause : SyntaxNode
+    {
+        public override SyntaxKind Kind => SyntaxKind.RestrictStatementWithClause;
+        
+        public SyntaxToken WithKeyword { get; }
+        
+        public SyntaxToken OpenParen { get; }
+        
+        public SyntaxList<SeparatedElement<NamedParameter>> Properties { get; }
+        
+        public SyntaxToken CloseParen { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="RestrictStatementWithClause"/>.
+        /// </summary>
+        internal RestrictStatementWithClause(SyntaxToken withKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<NamedParameter>> properties, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.WithKeyword = Attach(withKeyword);
+            this.OpenParen = Attach(openParen);
+            this.Properties = Attach(properties);
+            this.CloseParen = Attach(closeParen);
+            this.Init();
+        }
+        
+        public override int ChildCount => 4;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return WithKeyword;
+                case 1: return OpenParen;
+                case 2: return Properties;
+                case 3: return CloseParen;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(WithKeyword);
+                case 1: return nameof(OpenParen);
+                case 2: return nameof(Properties);
+                case 3: return nameof(CloseParen);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Keyword;
+                case 1: return CompletionHint.Syntax;
+                case 2: return CompletionHint.None;
+                case 3: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitRestrictStatementWithClause(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitRestrictStatementWithClause(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new RestrictStatementWithClause((SyntaxToken)WithKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<NamedParameter>>)Properties?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class RestrictStatementWithClause */
+    
     #region class RestrictStatement
     public sealed partial class RestrictStatement : Statement
     {
@@ -12705,10 +12918,12 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken CloseParen { get; }
         
+        public RestrictStatementWithClause WithClause { get; }
+        
         /// <summary>
         /// Constructs a new instance of <see cref="RestrictStatement"/>.
         /// </summary>
-        internal RestrictStatement(SyntaxToken restrictKeyword, SyntaxToken accessKeyword, SyntaxToken toKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<Expression>> expressions, SyntaxToken closeParen, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal RestrictStatement(SyntaxToken restrictKeyword, SyntaxToken accessKeyword, SyntaxToken toKeyword, SyntaxToken openParen, SyntaxList<SeparatedElement<Expression>> expressions, SyntaxToken closeParen, RestrictStatementWithClause withClause, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.RestrictKeyword = Attach(restrictKeyword);
             this.AccessKeyword = Attach(accessKeyword);
@@ -12716,10 +12931,11 @@ namespace Kusto.Language.Syntax
             this.OpenParen = Attach(openParen);
             this.Expressions = Attach(expressions);
             this.CloseParen = Attach(closeParen);
+            this.WithClause = Attach(withClause, optional: true);
             this.Init();
         }
         
-        public override int ChildCount => 6;
+        public override int ChildCount => 7;
         
         public override SyntaxElement GetChild(int index)
         {
@@ -12731,6 +12947,7 @@ namespace Kusto.Language.Syntax
                 case 3: return OpenParen;
                 case 4: return Expressions;
                 case 5: return CloseParen;
+                case 6: return WithClause;
                 default: throw new ArgumentOutOfRangeException();
             }
         }
@@ -12745,7 +12962,19 @@ namespace Kusto.Language.Syntax
                 case 3: return nameof(OpenParen);
                 case 4: return nameof(Expressions);
                 case 5: return nameof(CloseParen);
+                case 6: return nameof(WithClause);
                 default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override bool IsOptional(int index)
+        {
+            switch (index)
+            {
+                case 6:
+                    return true;
+                default:
+                    return false;
             }
         }
         
@@ -12759,6 +12988,7 @@ namespace Kusto.Language.Syntax
                 case 3: return CompletionHint.Syntax;
                 case 4: return CompletionHint.Scalar;
                 case 5: return CompletionHint.Syntax;
+                case 6: return CompletionHint.Clause;
                 default: return CompletionHint.Inherit;
             }
         }
@@ -12774,7 +13004,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new RestrictStatement((SyntaxToken)RestrictKeyword?.Clone(includeDiagnostics), (SyntaxToken)AccessKeyword?.Clone(includeDiagnostics), (SyntaxToken)ToKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new RestrictStatement((SyntaxToken)RestrictKeyword?.Clone(includeDiagnostics), (SyntaxToken)AccessKeyword?.Clone(includeDiagnostics), (SyntaxToken)ToKeyword?.Clone(includeDiagnostics), (SyntaxToken)OpenParen?.Clone(includeDiagnostics), (SyntaxList<SeparatedElement<Expression>>)Expressions?.Clone(includeDiagnostics), (SyntaxToken)CloseParen?.Clone(includeDiagnostics), (RestrictStatementWithClause)WithClause?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class RestrictStatement */
@@ -16601,6 +16831,8 @@ namespace Kusto.Language.Syntax
         public abstract void VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node);
         public abstract void VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node);
         public abstract void VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
+        public abstract void VisitGraphWhereNodesOperator(GraphWhereNodesOperator node);
+        public abstract void VisitGraphWhereEdgesOperator(GraphWhereEdgesOperator node);
         public abstract void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract void VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
         public abstract void VisitGraphToTableOperator(GraphToTableOperator node);
@@ -16630,6 +16862,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitSetOptionStatement(SetOptionStatement node);
         public abstract void VisitOptionValueClause(OptionValueClause node);
         public abstract void VisitQueryParametersStatement(QueryParametersStatement node);
+        public abstract void VisitRestrictStatementWithClause(RestrictStatementWithClause node);
         public abstract void VisitRestrictStatement(RestrictStatement node);
         public abstract void VisitPatternStatement(PatternStatement node);
         public abstract void VisitPatternDeclaration(PatternDeclaration node);
@@ -17207,6 +17440,14 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitGraphWhereNodesOperator(GraphWhereNodesOperator node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitGraphWhereEdgesOperator(GraphWhereEdgesOperator node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
         {
             this.DefaultVisit(node);
@@ -17320,6 +17561,10 @@ namespace Kusto.Language.Syntax
             this.DefaultVisit(node);
         }
         public override void VisitQueryParametersStatement(QueryParametersStatement node)
+        {
+            this.DefaultVisit(node);
+        }
+        public override void VisitRestrictStatementWithClause(RestrictStatementWithClause node)
         {
             this.DefaultVisit(node);
         }
@@ -17637,6 +17882,8 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitMakeGraphWithTablesAndKeysClause(MakeGraphWithTablesAndKeysClause node);
         public abstract TResult VisitMakeGraphWithImplicitIdClause(MakeGraphWithImplicitIdClause node);
         public abstract TResult VisitGraphMarkComponentsOperator(GraphMarkComponentsOperator node);
+        public abstract TResult VisitGraphWhereNodesOperator(GraphWhereNodesOperator node);
+        public abstract TResult VisitGraphWhereEdgesOperator(GraphWhereEdgesOperator node);
         public abstract TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node);
         public abstract TResult VisitMakeGraphPartitionedByClause(MakeGraphPartitionedByClause node);
         public abstract TResult VisitGraphToTableOperator(GraphToTableOperator node);
@@ -17666,6 +17913,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitSetOptionStatement(SetOptionStatement node);
         public abstract TResult VisitOptionValueClause(OptionValueClause node);
         public abstract TResult VisitQueryParametersStatement(QueryParametersStatement node);
+        public abstract TResult VisitRestrictStatementWithClause(RestrictStatementWithClause node);
         public abstract TResult VisitRestrictStatement(RestrictStatement node);
         public abstract TResult VisitPatternStatement(PatternStatement node);
         public abstract TResult VisitPatternDeclaration(PatternDeclaration node);
@@ -18243,6 +18491,14 @@ namespace Kusto.Language.Syntax
         {
             return this.DefaultVisit(node);
         }
+        public override TResult VisitGraphWhereNodesOperator(GraphWhereNodesOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitGraphWhereEdgesOperator(GraphWhereEdgesOperator node)
+        {
+            return this.DefaultVisit(node);
+        }
         public override TResult VisitMakeGraphTableAndKeyClause(MakeGraphTableAndKeyClause node)
         {
             return this.DefaultVisit(node);
@@ -18356,6 +18612,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitQueryParametersStatement(QueryParametersStatement node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitRestrictStatementWithClause(RestrictStatementWithClause node)
         {
             return this.DefaultVisit(node);
         }
