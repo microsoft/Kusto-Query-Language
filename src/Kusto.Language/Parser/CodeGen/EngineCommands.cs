@@ -790,6 +790,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol AlterExternalTablePolicyQueryAcceleration =
             new CommandSymbol("AlterExternalTablePolicyQueryAcceleration", _schema21);
 
+        public static readonly CommandSymbol AlterMergeExternalTablePolicyQueryAcceleration =
+            new CommandSymbol("AlterMergeExternalTablePolicyQueryAcceleration", _schema21);
+
         public static readonly CommandSymbol DeleteExternalTablePolicyQueryAcceleration =
             new CommandSymbol("DeleteExternalTablePolicyQueryAcceleration", _schema21);
 
@@ -2184,6 +2187,7 @@ namespace Kusto.Language
             ShowExternalTablePolicyQueryAcceleration,
             ShowExternalTablesPolicyQueryAcceleration,
             AlterExternalTablePolicyQueryAcceleration,
+            AlterMergeExternalTablePolicyQueryAcceleration,
             DeleteExternalTablePolicyQueryAcceleration,
             ShowExternalTableQueryAccelerationStatatistics,
             ShowExternalTablesQueryAccelerationStatatistics,
