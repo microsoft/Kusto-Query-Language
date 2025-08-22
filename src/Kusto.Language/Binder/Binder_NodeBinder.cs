@@ -4573,6 +4573,11 @@ namespace Kusto.Language.Binding
                 return null;
             }
 
+            public override SemanticInfo VisitPartialCommand(PartialCommand node)
+            {
+                return null;
+            }
+
             public override SemanticInfo VisitUnknownCommand(UnknownCommand node)
             {
                 return null;

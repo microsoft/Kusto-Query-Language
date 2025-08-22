@@ -38,16 +38,16 @@ namespace Kusto.Language.Parsing
         {
         }
 
-        internal override Parser<LexicalToken, Command>[] CreateCommandParsers(PredefinedRuleParsers rules)
+        internal override CommandParserInfo[] CreateCommandParsers(PredefinedRuleParsers rules)
         {
             var ShowVersion = Command("ShowVersion", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
-                    RequiredToken("version")));
+                    Token("version")));
 
-            var commandParsers = new Parser<LexicalToken, Command>[]
+            var commandParsers = new CommandParserInfo[]
             {
-                ShowVersion
+                new CommandParserInfo("ShowVersion", ShowVersion)
             };
 
             return commandParsers;

@@ -154,6 +154,13 @@ namespace Kusto.Language.Parsing
             new ForwardParser<TInput, TOutput>(deferredParser);
 
         /// <summary>
+        /// A parser that forwards to a deferred parser.
+        /// This parser is typically used to resolve cycles in grammar.
+        /// </summary>
+        public static Parser<TInput, TOutput> Forward<TOutput>(Parser<TInput, TOutput> parser) =>
+            new ForwardParser<TInput, TOutput>(() => parser);
+
+        /// <summary>
         /// A parser that produces the result of the specified parser only if a scan of the test parser succeeds.
         /// </summary>
         public static Parser<TInput, TOutput> If<TOutput>(Parser<TInput> test, Parser<TInput, TOutput> parser) =>

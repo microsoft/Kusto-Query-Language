@@ -471,10 +471,20 @@ namespace Kusto.Language.Binding
                 }
             }
 
+            public override void VisitPartialCommand(PartialCommand node)
+            {
+                base.VisitPartialCommand(node);
+                SetCommandContext(node);
+            }
+
             public override void VisitCustomCommand(CustomCommand node)
             {
                 base.VisitCustomCommand(node);
+                SetCommandContext(node);
+            }
 
+            private void SetCommandContext(SyntaxNode node)
+            {
                 var nearestTableRef = node.GetDescendants<NameReference>(nr => nr.ReferencedSymbol is TableSymbol)
                     .Where(nr => nr.End <= _position)
                     .LastOrDefault();

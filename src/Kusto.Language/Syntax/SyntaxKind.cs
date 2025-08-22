@@ -721,6 +721,7 @@
         BadCommand,
         UnknownCommand,
         CustomCommand,
+        PartialCommand,
         CommandAndSkippedTokens,
 
         // other

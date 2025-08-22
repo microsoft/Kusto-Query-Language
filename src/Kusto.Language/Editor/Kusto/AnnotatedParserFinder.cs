@@ -16,12 +16,13 @@ namespace Kusto.Language.Editor
     {
         private Source<TInput> _source;
         private readonly int _findOffset;
-        private readonly List<Parser<TInput>> _path;
+        private readonly List<ParserAndIndex<TInput>> _path;
         private readonly List<Parser<TInput>> _results;
         private readonly List<ParserPath<TInput>> _pathResults;
         private bool _prevWasMissing;
         private int _missingCount;
         private int _listMissingCount;
+
 
         private AnnotatedParserFinder(
             Source<TInput> source,
@@ -31,7 +32,7 @@ namespace Kusto.Language.Editor
             _source = source;
             _findOffset = findOffset;
             _prevWasMissing = false;
-            _path = new List<Parser<TInput>>();
+            _path = new List<ParserAndIndex<TInput>>();
             _results = new List<Parser<TInput>>();
             _pathResults = paths;
         }
@@ -42,7 +43,7 @@ namespace Kusto.Language.Editor
         public static IReadOnlyList<Parser<TInput>> FindParsers(Source<TInput> source, int findOffset, Parser<TInput> root, int start)
         {
             var finder = new AnnotatedParserFinder<TInput>(source, findOffset, null);
-            finder.Find(root, start);
+            finder.Find(root, 0, start);
             return finder._results;
         }
 
@@ -53,14 +54,14 @@ namespace Kusto.Language.Editor
         {
             var paths = new List<ParserPath<TInput>>();
             var finder = new AnnotatedParserFinder<TInput>(source, findOffset, paths);
-            finder.Find(root, start);
+            finder.Find(root, 0, start);
             return paths;
         }
 
         private const int MaxDepth = 400;
         private int _depth;
 
-        private int Find(Parser<TInput> parser, int start)
+        private int Find(Parser<TInput> parser, int indexInParent, int start)
         {
             if (_depth >= MaxDepth)
             {
@@ -74,7 +75,7 @@ namespace Kusto.Language.Editor
             int len;
 
             // add parser to path
-            _path.Add(parser);
+            _path.Add(new ParserAndIndex<TInput>(parser, indexInParent));
 
             if (parser.IsHidden)
             {
@@ -117,7 +118,7 @@ namespace Kusto.Language.Editor
 
         public override int VisitApply<TLeft, TOutput>(ApplyParser<TInput, TLeft, TOutput> parser, int start)
         {
-            var leftLen = Find(parser.LeftParser, start);
+            var leftLen = Find(parser.LeftParser, 0, start);
             if (leftLen < 0)
             {
                 return leftLen;
@@ -125,7 +126,7 @@ namespace Kusto.Language.Editor
 
             while (true)
             {
-                var rightLen = Find(parser.RightParser, start + leftLen);
+                var rightLen = Find(parser.RightParser, 1, start + leftLen);
                 if (rightLen < 0)
                 {
                     if (parser.ApplyKind == ApplyKind.One)
@@ -177,7 +178,7 @@ namespace Kusto.Language.Editor
                 _prevWasMissing = oldPrevWasMissing;
                 _missingCount = oldMissingCount;
 
-                n = Find(p, start);
+                n = Find(p, i, start);
 
                 if (i == 0)
                 {
@@ -207,7 +208,7 @@ namespace Kusto.Language.Editor
 
         public override int VisitConvert<TOutput>(ConvertParser<TInput, TOutput> parser, int start)
         {
-            return Find(parser.Pattern, start);
+            return Find(parser.Pattern, 0, start);
         }
 
         public override int VisitFails(FailsParser<TInput> parser, int start)
@@ -229,7 +230,7 @@ namespace Kusto.Language.Editor
 
         public override int VisitForward<TOutput>(ForwardParser<TInput, TOutput> parser, int start)
         {
-            return Find(parser.DeferredParser(), start);
+            return Find(parser.DeferredParser(), 0, start);
         }
 
         public override int VisitIf<TOutput>(IfParser<TInput, TOutput> parser, int start)
@@ -240,12 +241,12 @@ namespace Kusto.Language.Editor
             var length = parser.Test.Scan(_source, start);
             if (length >= 0)
             {
-                Find(parser.Test, start); // find annotations inside test too
-                length = Find(parser.Parser, start);
+                Find(parser.Test, 0, start); // find annotations inside test too
+                length = Find(parser.Parser, 1, start);
             }
             else
             {
-                length = Find(parser.Test, start);
+                length = Find(parser.Test, 0, start);
             }
 
             if (length < 0)
@@ -265,11 +266,12 @@ namespace Kusto.Language.Editor
             var length = parser.Test.Scan(_source, start);
             if (length >= 0)
             {
-                length = Find(parser.Parser, start);
+                Find(parser.Test, 0, start); // find annotations inside test too
+                length = Find(parser.Parser, 1,start);
             }
             else
             {
-                length = Find(parser.Test, start);
+                length = Find(parser.Test, 0, start);
             }
 
             if (length < 0)
@@ -288,7 +290,7 @@ namespace Kusto.Language.Editor
             {
                 var oldSource = _source;
                 _source = new LimitSource<TInput>(_source, start + len);
-                var result = Find(parser.Limited, start);
+                var result = Find(parser.Limited, 0,start);
                 _source = oldSource;
                 return result;
             }
@@ -347,7 +349,7 @@ namespace Kusto.Language.Editor
 
         public override int VisitOneOrMore(OneOrMoreParser<TInput> parser, int start)
         {
-            int len = Find(parser.Parser, start);
+            int len = Find(parser.Parser, 0, start);
             if (len < 0)
                 return len;
 
@@ -355,7 +357,7 @@ namespace Kusto.Language.Editor
             while (len > 0)
             {
                 totalLen += len;
-                len = Find(parser.Parser, start + totalLen);
+                len = Find(parser.Parser, 0, start + totalLen);
             }
 
             return totalLen;
@@ -365,7 +367,7 @@ namespace Kusto.Language.Editor
         {
             var oldPrevWasMissing = _prevWasMissing;
 
-            var len = Find(parser.Parser, start);
+            var len = Find(parser.Parser, 0,start);
             if (len < 0)
             {
                 _prevWasMissing = oldPrevWasMissing;
@@ -377,12 +379,12 @@ namespace Kusto.Language.Editor
 
         public override int VisitProduce<TOutput>(ProduceParser<TInput, TOutput> parser, int start)
         {
-            return Find(parser.Parser, start);
+            return Find(parser.Parser, 0, start);
         }
 
         public override int VisitRequired<TOutput>(RequiredParser<TInput, TOutput> parser, int start)
         {
-            var len = Find(parser.Parser, start);
+            var len = Find(parser.Parser, 0,start);
             if (len < 0)
             {
                 _prevWasMissing = true;
@@ -409,7 +411,7 @@ namespace Kusto.Language.Editor
 
             for (int i = 0; i < parsers.Count; i++)
             {
-                var len = Find(parsers[i], start + totalLen);
+                var len = Find(parsers[i], i, start + totalLen);
                 if (len < 0)
                 {
                     return len - totalLen;
@@ -427,22 +429,22 @@ namespace Kusto.Language.Editor
 
             if (parser.ZeroOrOne)
             {
-                var len = Find(parser.Parser, start);
+                var len = Find(parser.Parser, 0, start);
                 if (len > 0)
                 {
                     totalLen += len;
-                    len = Find(parser.Parser, start + len);
+                    len = Find(parser.Parser, 0, start + len);
                     if (len > 0)
                         totalLen += len;
                 }
             }
             else
             {
-                var len = Find(parser.Parser, start);
+                var len = Find(parser.Parser, 0, start);
                 while (len > 0)
                 {
                     totalLen += len;
-                    len = Find(parser.Parser, start + totalLen);
+                    len = Find(parser.Parser, 0, start + totalLen);
                 }
             }
 

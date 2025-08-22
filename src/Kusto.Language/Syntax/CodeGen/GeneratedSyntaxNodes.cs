@@ -16334,12 +16334,12 @@ namespace Kusto.Language.Syntax
         
         public SyntaxToken DotToken { get; }
         
-        public SyntaxList<SyntaxToken> Parts { get; }
+        public SyntaxList<SyntaxElement> Parts { get; }
         
         /// <summary>
         /// Constructs a new instance of <see cref="UnknownCommand"/>.
         /// </summary>
-        internal UnknownCommand(SyntaxToken dotToken, SyntaxList<SyntaxToken> parts, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        internal UnknownCommand(SyntaxToken dotToken, SyntaxList<SyntaxElement> parts, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
         {
             this.DotToken = Attach(dotToken);
             this.Parts = Attach(parts);
@@ -16389,7 +16389,7 @@ namespace Kusto.Language.Syntax
         
         protected override SyntaxElement CloneCore(bool includeDiagnostics)
         {
-            return new UnknownCommand((SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxToken>)Parts?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+            return new UnknownCommand((SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxElement>)Parts?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
         }
     }
     #endregion /* class UnknownCommand */
@@ -16463,6 +16463,76 @@ namespace Kusto.Language.Syntax
         }
     }
     #endregion /* class CustomCommand */
+    
+    #region class PartialCommand
+    public sealed partial class PartialCommand : Command
+    {
+        public override SyntaxKind Kind => SyntaxKind.PartialCommand;
+        
+        public IReadOnlyList<string> CommandKinds { get; }
+        
+        public SyntaxToken DotToken { get; }
+        
+        public SyntaxList<SyntaxElement> Parts { get; }
+        
+        /// <summary>
+        /// Constructs a new instance of <see cref="PartialCommand"/>.
+        /// </summary>
+        internal PartialCommand(IReadOnlyList<string> commandKinds, SyntaxToken dotToken, SyntaxList<SyntaxElement> parts, IReadOnlyList<Diagnostic> diagnostics = null) : base(diagnostics)
+        {
+            this.CommandKinds = commandKinds;
+            this.DotToken = Attach(dotToken);
+            this.Parts = Attach(parts);
+            this.Init();
+        }
+        
+        public override int ChildCount => 2;
+        
+        public override SyntaxElement GetChild(int index)
+        {
+            switch (index)
+            {
+                case 0: return DotToken;
+                case 1: return Parts;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        public override string GetName(int index)
+        {
+            switch (index)
+            {
+                case 0: return nameof(DotToken);
+                case 1: return nameof(Parts);
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        protected override CompletionHint GetCompletionHintCore(int index)
+        {
+            switch (index)
+            {
+                case 0: return CompletionHint.Syntax;
+                case 1: return CompletionHint.Syntax;
+                default: return CompletionHint.Inherit;
+            }
+        }
+        
+        public override void Accept(SyntaxVisitor visitor)
+        {
+            visitor.VisitPartialCommand(this);
+        }
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor)
+        {
+            return visitor.VisitPartialCommand(this);
+        }
+        
+        protected override SyntaxElement CloneCore(bool includeDiagnostics)
+        {
+            return new PartialCommand(CommandKinds, (SyntaxToken)DotToken?.Clone(includeDiagnostics), (SyntaxList<SyntaxElement>)Parts?.Clone(includeDiagnostics), (includeDiagnostics ? this.SyntaxDiagnostics : null));
+        }
+    }
+    #endregion /* class PartialCommand */
     
     #region class CommandAndSkippedTokens
     public sealed partial class CommandAndSkippedTokens : Command
@@ -16904,6 +16974,7 @@ namespace Kusto.Language.Syntax
         public abstract void VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract void VisitUnknownCommand(UnknownCommand node);
         public abstract void VisitCustomCommand(CustomCommand node);
+        public abstract void VisitPartialCommand(PartialCommand node);
         public abstract void VisitCommandAndSkippedTokens(CommandAndSkippedTokens node);
         public abstract void VisitBadCommand(BadCommand node);
         public abstract void VisitCommandBlock(CommandBlock node);
@@ -17732,6 +17803,10 @@ namespace Kusto.Language.Syntax
         {
             this.DefaultVisit(node);
         }
+        public override void VisitPartialCommand(PartialCommand node)
+        {
+            this.DefaultVisit(node);
+        }
         public override void VisitCommandAndSkippedTokens(CommandAndSkippedTokens node)
         {
             this.DefaultVisit(node);
@@ -17955,6 +18030,7 @@ namespace Kusto.Language.Syntax
         public abstract TResult VisitCommandWithPropertyListClause(CommandWithPropertyListClause node);
         public abstract TResult VisitUnknownCommand(UnknownCommand node);
         public abstract TResult VisitCustomCommand(CustomCommand node);
+        public abstract TResult VisitPartialCommand(PartialCommand node);
         public abstract TResult VisitCommandAndSkippedTokens(CommandAndSkippedTokens node);
         public abstract TResult VisitBadCommand(BadCommand node);
         public abstract TResult VisitCommandBlock(CommandBlock node);
@@ -18780,6 +18856,10 @@ namespace Kusto.Language.Syntax
             return this.DefaultVisit(node);
         }
         public override TResult VisitCustomCommand(CustomCommand node)
+        {
+            return this.DefaultVisit(node);
+        }
+        public override TResult VisitPartialCommand(PartialCommand node)
         {
             return this.DefaultVisit(node);
         }

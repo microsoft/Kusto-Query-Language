@@ -358,8 +358,7 @@ namespace Kusto.Language.Binding
 
         private static bool IsInsideControlCommand(SyntaxNode location)
         {
-            // so far, only control commands use CustomNode
-            return location.GetFirstAncestor<CustomNode>() != null;
+            return location.GetFirstAncestor<Command>() != null;
         }
 
         private static bool IsInsideControlCommandProper(SyntaxNode location)

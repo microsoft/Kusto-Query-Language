@@ -1010,9 +1010,12 @@ namespace Kusto.Language.Binding
             private static bool IsCommandButNotQueryPart(SyntaxNode node)
             {
                 // if the name/path is a part of a command expression
-                while (node.Parent is PathExpression p)
+                while (node.Parent is PathExpression
+                    || node.Parent is SeparatedElement
+                    || node.Parent is SyntaxList
+                    )
                 {
-                    node = p.Parent;
+                    node = node.Parent;
                 }
 
                 return node.Parent is Command

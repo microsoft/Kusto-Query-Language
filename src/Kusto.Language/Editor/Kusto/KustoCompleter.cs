@@ -2940,7 +2940,6 @@ namespace Kusto.Language.Editor
             return false;
         }
 
-
         private static OperatorKind GetOperatorKind(string opText)
         {
             return SyntaxFacts.TryGetKind(opText, out var kind) ? kind.GetOperatorKind() : OperatorKind.None;
@@ -3022,7 +3021,6 @@ namespace Kusto.Language.Editor
         }
         #endregion
 
-
         #region Extended Syntax Completions
         /// <summary>
         /// Adds multi-term completion items generated from syntax look ahead.
@@ -3048,7 +3046,7 @@ namespace Kusto.Language.Editor
                     items.Clear();
 
                     // all paths here should be the immediate child of a sequence
-                    // use that parent sequence as a limiter for the extension
+                    // that uses the parent sequence as a limiter for the extension
                     var ceiling = path.Parent;
 
                     var tmpBuilder = new CompletionBuilder();
@@ -3082,7 +3080,6 @@ namespace Kusto.Language.Editor
         private ParserPath<LexicalToken> GetLocalRoot(ParserPath<LexicalToken> path)
         {
             var current = path;
-
 
             while (true)
             {
@@ -3148,7 +3145,8 @@ namespace Kusto.Language.Editor
                 }
                 else if (TryGetSpecialTexts(path.Parser, parts))
                 {
-                    path = GetNextParserInSequence(path, ceiling);
+                    var next = GetNextParserInSequence(path, ceiling);
+                    path = next;
                     continue;
                 }
                 else if (path.Parser.IsMatch
@@ -3326,7 +3324,9 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// Gets <see cref="CompletionText"/> for special parser rules.
         /// </summary>
-        private bool TryGetSpecialTexts(Parser<LexicalToken> parser, List<CompletionItem> items)
+        private bool TryGetSpecialTexts(
+            Parser<LexicalToken> parser, 
+            List<CompletionItem> items)
         {
             var queryGrammar = CurrentQueryGrammar;
             var commandGrammar = CurrentCommandGrammar;
@@ -3555,6 +3555,9 @@ namespace Kusto.Language.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the next parser path in lexical sequence.
+        /// </summary>
         private static ParserPath<LexicalToken> GetNextParserInSequence(
             ParserPath<LexicalToken> path, 
             ParserPath<LexicalToken> ceiling)
@@ -3562,43 +3565,58 @@ namespace Kusto.Language.Editor
             var current = path;
 
             // find the sequence the parser is in
-            while (TryGetFirstAncestorSequence(current, ceiling, out var parent, out var index))
+            while (TryGetFirstAncestorSequence(current, ceiling, out var ancestor, out var indexInAncestor))
             {
-                if (index + 1 < parent.ChildCount)
+                if (indexInAncestor + 1 < ancestor.ChildCount)
                 {
-                    return parent.GetChild(index + 1);
+                    return ancestor.GetChild(indexInAncestor + 1);
                 }
 
-                current = parent;
+                current = ancestor;
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Finds the first ancestor path that has a sequence parser.
+        /// </summary>
         private static bool TryGetFirstAncestorSequence(
             ParserPath<LexicalToken> path, 
             ParserPath<LexicalToken> ceiling,
-            out ParserPath<LexicalToken> sequence, 
-            out int index)
+            out ParserPath<LexicalToken> ancestor,
+            out int indexInAncestor)
         {
-            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsSequence, out sequence, out index);
+            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsSequence, out ancestor, out indexInAncestor);
         }
 
+        /// <summary>
+        /// Finds the first ancestor path that has a conditional parser.
+        /// </summary>
         private static bool TryGetFirstAncestorConditional(
             ParserPath<LexicalToken> path,
             ParserPath<LexicalToken> ceiling,
-            out ParserPath<LexicalToken> conditional,
-            out int index)
+            out ParserPath<LexicalToken> ancestor,
+            out int indexInAncestor)
         {
-            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsConditional, out conditional, out index);
+            return TryGetFirstAncestor(path, ceiling, p => p.Parser.IsConditional, out ancestor, out indexInAncestor);
         }
 
+        /// <summary>
+        /// Finds the first ancestor path that matches.
+        /// </summary>
+        /// <param name="path">The path to find the ancestor path for.</param>
+        /// <param name="ceiling">The top-most path that we don't search beyond.</param>
+        /// <param name="fnMatch">A function to match the path.</param>
+        /// <param name="ancestor">The first matching ancestor path</param>
+        /// <param name="indexInAncestor">The index in the ancestor that corresponds to the starting path.</param>
+        /// <returns></returns>
         private static bool TryGetFirstAncestor(
             ParserPath<LexicalToken> path,
             ParserPath<LexicalToken> ceiling,
             Func<ParserPath<LexicalToken>, bool> fnMatch,
             out ParserPath<LexicalToken> ancestor,
-            out int index)
+            out int indexInAncestor)
         {
             var child = path;
 
@@ -3615,7 +3633,7 @@ namespace Kusto.Language.Editor
 
                 if (fnMatch(ancestor))
                 {
-                    index = ancestor.Parser.GetChildParserIndex(child.Parser);
+                    indexInAncestor = child.IndexInParent;
                     return true;
                 }
 
@@ -3627,7 +3645,7 @@ namespace Kusto.Language.Editor
                     break;
             }
 
-            index = -1;
+            indexInAncestor = -1;
             ancestor = null;
             return false;
         }

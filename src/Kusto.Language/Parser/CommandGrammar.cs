@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using Kusto.Language.Symbols;
+﻿using Kusto.Language.Symbols;
 using Kusto.Language.Syntax;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kusto.Language.Parsing
 {
+    using Utils;
     using static Parsers<LexicalToken>;
     using static SyntaxParsers;
     using CompletionHint = Editor.CompletionHint;
     using CompletionKind = Editor.CompletionKind;
     using SP = SyntaxParsers;
-    using Utils;
 
     /// <summary>
     /// Parsers for the Kusto command grammar.
@@ -41,9 +41,47 @@ namespace Kusto.Language.Parsing
             // include parsers for all command symbols
             var queryParser = QueryGrammar.From(globals);
 
+            // all known commands
             var rules = this.PredefinedRules = new PredefinedRuleParsers(queryParser, queryInput, scriptInput);
-            var commandParsers = this.CreateCommandParsers(rules).ToArray();
-            var bestCommand = Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
+            var commandParserInfos = this.CreateCommandParsers(rules).ToArray();
+            var commandParsers = commandParserInfos.Select(cpi => cpi.Parser.WithTag(cpi.Kind)).ToArray();
+
+            var bestCommand = 
+                Best(commandParsers, (command1, command2) => IsBetterSyntax(command1, command2));
+
+            // partial parsing of known commands
+            var partialCommand =
+                    Match(
+                        (input, start) =>
+                        {
+                            var len = PartialParser.ScanPartialBest(commandParsers, input, start);
+                            // fail if only dot (first token). It will become UnknownCommand
+                            return (len < 2) ? -1 : len;
+                        },
+                        (input, start, length) =>
+                        {
+                            var output = new List<object>();
+                            var bestParsers = new List<Parser<LexicalToken>>();
+                            var _ = PartialParser.ParsePartialBest(commandParsers, input, start, output, 0, bestParsers, OnFailure);
+                            if (output.Count == 1 && output[0] is Command successful)
+                            {
+                                return successful;
+                            }
+                            else
+                            {
+                                var elements = output.OfType<SyntaxElement>();
+                                var dotToken = elements.FirstOrDefault() as SyntaxToken;
+                                var parts = elements.Skip(1).ToReadOnly();
+                                var kinds = bestParsers.Select(p => p.Tag).ToArray();
+                                return (Command) new PartialCommand(kinds, dotToken, new SyntaxList<SyntaxElement>(parts));
+                            }
+                        });
+
+            var bestCommandOrPartial =
+                Best(
+                    bestCommand,
+                    partialCommand
+                    );
 
             var commandSkippedTokens =
                 If(UnknownCommandToken,
@@ -53,7 +91,7 @@ namespace Kusto.Language.Parsing
 
             var commandAndSkippedTokens =
                 ApplyOptional(
-                    bestCommand,
+                    bestCommandOrPartial,
                     _left =>
                         Rule(_left, commandSkippedTokens,
                             (cmd, skippedTokens) =>
@@ -121,6 +159,211 @@ namespace Kusto.Language.Parsing
                     Limit(CommandLimiter, scriptElement),  // limit parsing up until next command starts
                     fnMissingElement: CreateMissingCommandStatement);
         }
+
+        /// <summary>
+        /// Add diagnostics for missing syntax.
+        /// </summary>
+        private static void OnFailure(Parser<LexicalToken> parser, List<object> output)
+        {
+            var tags = new List<string>();
+            parser.Accept(TagFinder.Instance, tags);
+
+            if (tags.Count == 0)
+                tags.Add("<token>");
+
+            var distinctTags = tags.Distinct().OrderBy(x => x).ToArray();
+            var missingToken = SyntaxToken.Missing("", SyntaxKind.IdentifierToken, new[] { DiagnosticFacts.GetTermsExpected(distinctTags) });
+            output.Add(missingToken);
+        }
+
+        private class TagFinder : ParserVisitor<LexicalToken, List<string>, bool>
+        {
+            public static readonly TagFinder Instance = new TagFinder();
+
+            /// <summary>
+            /// Gets the non-empty tag or null.
+            /// </summary>
+            private static bool GetTag(Parser<LexicalToken> parser, List<string> tags)
+            {
+                if (parser.Annotations.Count > 0)
+                {
+                    var text = parser.Annotations.OfType<Editor.CompletionItem>().Select(ci => ci.DisplayText).FirstOrDefault();
+                    if (text != null)
+                    {
+                        AddTag(text, tags);
+                        return true;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(parser.Tag))
+                {
+                    AddTag(parser.Tag, tags);
+                    return true;
+                }
+
+                return false;
+            }
+
+            private static void AddTag(string tag, List<string> tags)
+            {
+                if (tag.Contains("|"))
+                {
+                    // split the tag by | and add each part separately
+                    var parts = tag.Split('|');
+                    foreach (var part in parts)
+                    {
+                        if (!string.IsNullOrWhiteSpace(part))
+                        {
+                            tags.Add(part.Trim());
+                        }
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(tag))
+                {
+                    tags.Add(tag.Trim());
+                }
+            }
+
+            private bool All(IReadOnlyList<Parser<LexicalToken>> parsers, List<string> tags)
+            {
+                var any = false;
+
+                foreach (var parser in parsers)
+                {
+                    any |= parser.Accept(this, tags);
+                }
+
+                return any;
+            }
+
+            public override bool VisitApply<TLeft, TOutput>(ApplyParser<LexicalToken, TLeft, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.LeftParser.Accept(this, tags);
+            }
+
+            public override bool VisitBest<TOutput>(BestParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || All(parser.Parsers, tags);
+            }
+
+            public override bool VisitBest(BestParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || All(parser.Parsers, tags);
+            }
+
+            public override bool VisitConvert<TOutput>(ConvertParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags);
+            }
+
+            public override bool VisitFails(FailsParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Pattern.Accept(this, tags);
+            }
+
+            public override bool VisitFirst<TOutput>(FirstParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || All(parser.Parsers, tags);
+            }
+
+            public override bool VisitFirst(FirstParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || All(parser.Parsers, tags);
+            }
+
+            public override bool VisitForward<TOutput>(ForwardParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.DeferredParser().Accept(this, tags);
+            }
+
+            public override bool VisitIf<TOutput>(IfParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+
+            public override bool VisitIf(IfParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Test.Accept(this, tags);
+            }
+
+            public override bool VisitLimit<TOutput>(LimitParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Limited.Accept(this, tags);
+            }
+
+            public override bool VisitMap<TOutput>(MapParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags);
+            }
+
+            public override bool VisitMatch(MatchParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags);
+            }
+
+            public override bool VisitMatch<TOutput>(MatchParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags);
+            }
+
+            public override bool VisitNot(NotParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags);
+            }
+
+            public override bool VisitOneOrMore(OneOrMoreParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+
+            public override bool VisitOptional<TOutput>(OptionalParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+
+            public override bool VisitProduce<TOutput>(ProduceParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+
+            public override bool VisitRequired<TOutput>(RequiredParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+
+            public override bool VisitRule<TOutput>(RuleParser<LexicalToken, TOutput> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parsers[0].Accept(this, tags);
+            }
+
+            public override bool VisitSequence(SequenceParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parsers[0].Accept(this, tags);
+            }
+
+            public override bool VisitZeroOrMore(ZeroOrMoreParser<LexicalToken> parser, List<string> tags)
+            {
+                return GetTag(parser, tags)
+                    || parser.Parser.Accept(this, tags);
+            }
+        }
+
 
         /// <summary>
         /// Gets or creates the <see cref="CommandGrammar"/> corresponding to the <see cref="GlobalState"/>
@@ -253,10 +496,22 @@ namespace Kusto.Language.Parsing
         /// <summary>
         /// Derived command parser's override this method to create the set of individual command parsers.
         /// </summary>
-        internal virtual Parser<LexicalToken, Command>[] CreateCommandParsers(PredefinedRuleParsers rules)
+        internal virtual CommandParserInfo[] CreateCommandParsers(PredefinedRuleParsers rules)
         {
             // no commands
-            return new Parser<LexicalToken, Command>[0];
+            return new CommandParserInfo[0];
+        }
+
+        internal class CommandParserInfo
+        {
+            public readonly string Kind;
+            public readonly Parser<LexicalToken, Command> Parser;
+
+            public CommandParserInfo(string kind, Parser<LexicalToken, Command> parser)
+            {
+                this.Kind = kind;
+                this.Parser = parser;
+            }
         }
 
         internal static readonly Parser<LexicalToken, SyntaxToken> UnknownCommandToken =
@@ -271,8 +526,7 @@ namespace Kusto.Language.Parsing
         internal static readonly Parser<LexicalToken, Command> UnknownCommand =
             Rule(
                 SP.Token(SyntaxKind.DotToken),
-                OneOrMore(UnknownCommandToken,
-                    (tokens) => new SyntaxList<SyntaxToken>(tokens)),
+                OneOrMore(UnknownCommandToken, tokens => new SyntaxList<SyntaxElement>(tokens)),
                 (dot, parts) => (Command)new UnknownCommand(dot, parts))
                 .WithTag("<unknown-command>");
 

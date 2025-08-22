@@ -344,14 +344,15 @@ namespace Kusto.Language.Parsing
                             (qual, dot, name) => (SyntaxElement)new PathExpression((Expression)qual, dot, (Expression)name))),
                     WildcardedOrNameDeclaration.Cast<SyntaxElement>());
 
+            // make a forward parser to stop partial parsing
+            var fb = Forward(queryParser.FunctionBody);
+            this.FunctionBody = fb.Cast<SyntaxElement>();
+
             this.FunctionDeclaration =
                 Rule(
                     queryParser.FunctionParameters,
-                    queryParser.FunctionBody,
+                    fb,
                     (p, b) => (SyntaxElement)new FunctionDeclaration(null, p, b));
-
-            this.FunctionBody =
-                queryParser.FunctionBody.Cast<SyntaxElement>();
 
             this.QueryInput = queryInput;
             this.ScriptInput = scriptInput;
