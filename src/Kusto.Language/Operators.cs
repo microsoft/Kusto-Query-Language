@@ -44,13 +44,23 @@ namespace Kusto.Language
 
         public static readonly OperatorSymbol UnaryMinus =
             new OperatorSymbol(OperatorKind.UnaryMinus,
-                    new Signature(ReturnTypeKind.Parameter0, new Parameter("operand", ParameterTypeKind.Summable)),
+                    new Signature(UnaryReturnType, Tabularity.Scalar, new Parameter("operand", ParameterTypeKind.Summable)),
                     new Signature(ScalarTypes.Dynamic, new Parameter("operand", ScalarTypes.Dynamic)));
 
         public static readonly OperatorSymbol UnaryPlus =
             new OperatorSymbol(OperatorKind.UnaryPlus,
-                new Signature(ReturnTypeKind.Parameter0, new Parameter("operand", ParameterTypeKind.Summable)),
+                new Signature(UnaryReturnType, Tabularity.Scalar, new Parameter("operand", ParameterTypeKind.Summable)),
                 new Signature(ScalarTypes.Dynamic, new Parameter("operand", ScalarTypes.Dynamic)));
+
+        private static TypeSymbol UnaryReturnType(CustomReturnTypeContext context)
+        {
+            // unary operator folds into constants w/o promotion
+            return context.Arguments.Count == 1
+                && context.ArgumentTypes[0] == ScalarTypes.Int
+                && !context.Arguments[0].IsConstant
+                ? ScalarTypes.Long
+                : context.ArgumentTypes[0];
+        }
 
         public static readonly OperatorSymbol And =
             new OperatorSymbol(OperatorKind.And,
