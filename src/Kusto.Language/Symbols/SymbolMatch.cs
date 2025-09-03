@@ -188,7 +188,7 @@ namespace Kusto.Language.Symbols
             // if symbol is not allowed to be scalar but it is
             if ((match & SymbolMatch.NonScalar) != 0 
                 && (match & SymbolMatch.Scalar) == 0 // did not also claim it could be scalar
-                && symbol.IsScalar)
+                && symbol.Tabularity == Tabularity.Scalar)
                 return false;
 
             // if symbol is only allowed to be tabular but it is not

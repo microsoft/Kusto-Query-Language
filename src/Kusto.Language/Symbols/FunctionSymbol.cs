@@ -189,6 +189,11 @@ namespace Kusto.Language.Symbols
         {
         }
 
+        public FunctionSymbol(string name, string parameterList, string body, Tabularity tabularity, string description = null)
+                    : this(name, new[] { new Signature(body, tabularity, Parameter.ParseList(parameterList)) }, description)
+        {
+        }
+
         public FunctionSymbol(string name, FunctionBody declaration, IReadOnlyList<Parameter> parameters)
             : this(name, new[] { new Signature(declaration, parameters) })
         {
