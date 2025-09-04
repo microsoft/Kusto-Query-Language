@@ -81,10 +81,11 @@ namespace Kusto.Language.Parsing
                 {
                     this.Parsers = parsers;
                     this.InputStart = inputStart;
+                    _hc = 0;
                     ComputeHashCode();
                 }
 
-                private int _hc = 0;
+                private int _hc;
                 private void ComputeHashCode()
                 {
                     int hc = this.InputStart;
@@ -1000,12 +1001,14 @@ namespace Kusto.Language.Parsing
                 {
                     this.Input = input;
                     _path = path;
+                    _paths = null;
                 }
 
                 public ScanOutput(ScanInput input, IEnumerable<Path> paths)
                 {
                     this.Input = input;
                     _paths = paths.ToReadOnly();
+                    _path = null;
                 }
 
                 /// <summary>
