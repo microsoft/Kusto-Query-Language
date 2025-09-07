@@ -3433,12 +3433,21 @@ namespace Kusto.Language
                     context =>
                     {
                         if (context.Arguments.Count > 0
-                            && context.Arguments[0] is Expression arg
-                            && arg.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator graphMatch
-                            && graphMatch.Parent is PipeExpression p
-                            && p.Expression.ResultType is GraphSymbol gs)
+                            && context.Arguments[0] is Expression arg)
                         {
-                            return new TupleSymbol(gs.NodeShape?.Columns ?? new ColumnSymbol[0]);
+                            if (arg.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator graphMatch
+                                    && graphMatch.Parent is PipeExpression pGM
+                                    && pGM.Expression.ResultType is GraphSymbol gsGM)
+                            {
+                                return new TupleSymbol(gsGM.NodeShape?.Columns ?? new ColumnSymbol[0]);
+                            }
+
+                            if (arg.GetFirstAncestor<GraphShortestPathsOperator>() is GraphShortestPathsOperator graphShortestPaths
+                                    && graphShortestPaths.Parent is PipeExpression pSP
+                                    && pSP.Expression.ResultType is GraphSymbol gsSP)
+                            {
+                                return new TupleSymbol(gsSP.NodeShape?.Columns ?? new ColumnSymbol[0]);
+                            }
                         }
 
                         // could not find node schema
@@ -3449,6 +3458,7 @@ namespace Kusto.Language
                 .WithCustomAvailability(context =>
                 {
                     var inGM = context.Location.GetFirstAncestor<GraphMatchOperator>() != null;
+                    var inSP = context.Location.GetFirstAncestor<GraphShortestPathsOperator>() != null;
 
                     // can only occur in first argument of all/any/map functions
                     var inGraphLambda =
@@ -3460,7 +3470,7 @@ namespace Kusto.Language
                         && (context.Location == fc.ArgumentList
                             || (fc.ArgumentList.Expressions.Count > 0
                                 && fc.ArgumentList.Expressions[0].Element.IsAncestorOf(context.Location)));
-                    return inGM && inGraphLambda;
+                    return (inSP || inGM) && inGraphLambda;
                 });
 
         public static readonly FunctionSymbol NodeDegreeIn =
@@ -3490,8 +3500,13 @@ namespace Kusto.Language
 
         private static bool InGraphWhereOrProjectClause(CustomAvailabilityContext context)
         {
-            return context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm &&
-                   (InClause(gm.WhereClause) || InClause(gm.ProjectClause));
+            var gmMatch = (context.Location.GetFirstAncestor<GraphMatchOperator>() is GraphMatchOperator gm &&
+                   (InClause(gm.WhereClause) || InClause(gm.ProjectClause)));
+            
+            var spMatch = (context.Location.GetFirstAncestor<GraphShortestPathsOperator>() is GraphShortestPathsOperator sp &&
+                   (InClause(sp.WhereClause) || InClause(sp.ProjectClause)));
+
+            return gmMatch || spMatch;
 
             bool InClause(SyntaxNode clause) =>
                 clause != null &&
