@@ -114,7 +114,7 @@ namespace Kusto.Language.Symbols
         /// <summary>
         /// Any column, table, function or local, scalar or tabular
         /// </summary>
-        Default = Column | Table | Function | View | Local | MaterializedView | EntityGroup | EntityGroupElement | Graph,
+        Default = Column | Table | Function | View | Local | MaterializedView | EntityGroup | EntityGroupElement | Graph | ExternalTable,
     }
 
     public static class SymbolMatchExtensions

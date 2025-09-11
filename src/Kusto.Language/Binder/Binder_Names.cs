@@ -588,7 +588,14 @@ namespace Kusto.Language.Binding
                     // other items in database (tables, etc)
                     if (list.Count == 0 && _currentDatabase != null)
                     {
-                        _currentDatabase.GetMembers(name, match, list);
+                        // try matching without external tables first
+                        _currentDatabase.GetMembers(name, match & ~SymbolMatch.ExternalTable, list);
+
+                        // if nothing was found, try matching external tables (if requested)
+                        if (list.Count == 0 && (match & SymbolMatch.ExternalTable) != 0)
+                        {
+                            _currentDatabase.GetMembers(name, SymbolMatch.ExternalTable, list);
+                        }
                     }
 
                     // databases can be directly referenced in commands
