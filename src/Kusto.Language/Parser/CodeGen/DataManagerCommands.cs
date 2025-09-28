@@ -2,17 +2,6 @@
 // 
 // 
 // 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
 // WARNING: Do not modify this file
 //          This file is auto generated from the template file 'DataManagerCommands.tt'
 //          Instead modify the corresponding input info file in the Kusto.Language.Generator project.
