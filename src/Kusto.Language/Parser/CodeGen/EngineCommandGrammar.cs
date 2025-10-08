@@ -36,7 +36,7 @@ namespace Kusto.Language.Parsing
             var shape4 = new [] {CD(), CD(), CD(), CD(isOptional: true)};
             var shape5 = CD("DatabaseName", CompletionHint.None);
             var shape6 = new [] {CD(), CD(CompletionHint.None), CD()};
-            var shape7 = new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true), CD()};
+            var shape7 = new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true), CD(), CD(isOptional: true)};
             var shape8 = CD("Path", CompletionHint.Literal);
             var shape9 = CD("DatabaseName", CompletionHint.Database);
             var shape10 = CD("Version", CompletionHint.Literal);
@@ -309,17 +309,16 @@ namespace Kusto.Language.Parsing
             var shape277 = CD("obj", CompletionHint.Literal);
             var shape278 = CD("name", CompletionHint.Literal);
             var shape279 = CD("rowStoreName", CompletionHint.None);
-            var shape280 = new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true)};
-            var shape281 = CD("rowStoreKey", CompletionHint.Literal);
-            var shape282 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreKey", CompletionHint.Literal), CD(isOptional: true)};
-            var shape283 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreName", CompletionHint.None), CD(isOptional: true)};
-            var shape284 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)};
-            var shape285 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
-            var shape286 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)};
-            var shape287 = CD("containerId", CompletionHint.Literal);
-            var shape288 = CD("queryText");
-            var shape289 = new [] {CD(), CD(isOptional: true), CD(), CD()};
-            var shape290 = new [] {CD(), CD(CompletionHint.Table)};
+            var shape280 = CD("rowStoreKey", CompletionHint.Literal);
+            var shape281 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreKey", CompletionHint.Literal), CD(isOptional: true)};
+            var shape282 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD("rowStoreName", CompletionHint.None), CD(isOptional: true)};
+            var shape283 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(), CD(), CD(isOptional: true)};
+            var shape284 = new [] {CD(), CD(), CD("tableName", CompletionHint.Table), CD()};
+            var shape285 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(), CD(isOptional: true)};
+            var shape286 = CD("containerId", CompletionHint.Literal);
+            var shape287 = CD("queryText");
+            var shape288 = new [] {CD(), CD(isOptional: true), CD(), CD()};
+            var shape289 = new [] {CD(), CD(CompletionHint.Table)};
 
             var fragment0 = Custom(
                     Token("with"),
@@ -993,7 +992,7 @@ namespace Kusto.Language.Parsing
             var fragment67 = Custom(
                     Token("table"),
                     rules.TableNameReference,
-                    shape290);
+                    shape289);
 
             var ShowDatabase = Command("ShowDatabase", 
                 Custom(
@@ -1055,7 +1054,9 @@ namespace Kusto.Language.Parsing
                     Token("databases"),
                     Optional(
                         fragment1),
-                    shape280));
+                    Optional(
+                        fragment0),
+                    new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true), CD(isOptional: true)}));
 
             var ShowClusterDatabasesDetails = Command("ShowClusterDatabasesDetails", 
                 Custom(
@@ -1065,6 +1066,8 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment1),
                     Token("details", "verbose"),
+                    Optional(
+                        fragment0),
                     shape7));
 
             var ShowClusterDatabasesIdentity = Command("ShowClusterDatabasesIdentity", 
@@ -1075,6 +1078,8 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment1),
                     Token("identity"),
+                    Optional(
+                        fragment0),
                     shape7));
 
             var ShowClusterDatabasesPolicies = Command("ShowClusterDatabasesPolicies", 
@@ -1085,6 +1090,8 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment1),
                     Token("policies"),
+                    Optional(
+                        fragment0),
                     shape7));
 
             var ShowClusterDatabasesDataStats = Command("ShowClusterDatabasesDataStats", 
@@ -1095,6 +1102,8 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment1),
                     Token("datastats"),
+                    Optional(
+                        fragment0),
                     shape7));
 
             var ShowClusterDatabasesMetadata = Command("ShowClusterDatabasesMetadata", 
@@ -1105,6 +1114,8 @@ namespace Kusto.Language.Parsing
                     Optional(
                         fragment1),
                     Token("metadata"),
+                    Optional(
+                        fragment0),
                     shape7));
 
             var CreateDatabase = Command("CreateDatabase", 
@@ -1415,7 +1426,7 @@ namespace Kusto.Language.Parsing
                     Token("mappings"),
                     Optional(
                         fragment0),
-                    new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true), CD(), CD(isOptional: true)}));
+                    shape7));
 
             var DropDatabaseIngestionMapping = Command("DropDatabaseIngestionMapping", 
                 Custom(
@@ -4488,7 +4499,7 @@ namespace Kusto.Language.Parsing
                         fragment29),
                     Optional(
                         fragment0),
-                    shape286));
+                    shape285));
 
             var ShowGraphModelPrincipalRoles = Command("ShowGraphModelPrincipalRoles", 
                 Custom(
@@ -5813,7 +5824,7 @@ namespace Kusto.Language.Parsing
                                 Token(")")}
                             ,
                             new [] {CD(), CD(), CD("SourceTableName", CompletionHint.Table), CD(), CD(), CD("DestinationTableName", CompletionHint.Table), CD(isOptional: true), CD(), CD(CompletionHint.Literal), CD()})),
-                    shape289));
+                    shape288));
 
             var MoveExtentsQuery = Command("MoveExtentsQuery", 
                 Custom(
@@ -7369,7 +7380,7 @@ namespace Kusto.Language.Parsing
                             Custom(
                                 Token("as"),
                                 Token("json")))),
-                    shape280));
+                    new [] {CD(), CD(isOptional: true), CD(), CD(isOptional: true)}));
 
             var ShowCallStacks = Command("ShowCallStacks", 
                 Custom(
@@ -7416,7 +7427,7 @@ namespace Kusto.Language.Parsing
                     rules.StringLiteral,
                     Optional(
                         fragment0),
-                    shape282));
+                    shape281));
 
             var AlterTableRowStoreReferencesDropRowStore = Command("AlterTableRowStoreReferencesDropRowStore", 
                 Custom(
@@ -7429,7 +7440,7 @@ namespace Kusto.Language.Parsing
                     rules.NameDeclaration,
                     Optional(
                         fragment0),
-                    shape283));
+                    shape282));
 
             var AlterTableRowStoreReferencesDropBlockedKeys = Command("AlterTableRowStoreReferencesDropBlockedKeys", 
                 Custom(
@@ -7442,7 +7453,7 @@ namespace Kusto.Language.Parsing
                     Token("keys"),
                     Optional(
                         fragment0),
-                    shape284));
+                    shape283));
 
             var AlterTableRowStoreReferencesDisableKey = Command("AlterTableRowStoreReferencesDisableKey", 
                 Custom(
@@ -7455,7 +7466,7 @@ namespace Kusto.Language.Parsing
                     rules.StringLiteral,
                     Optional(
                         fragment0),
-                    shape282));
+                    shape281));
 
             var AlterTableRowStoreReferencesDisableRowStore = Command("AlterTableRowStoreReferencesDisableRowStore", 
                 Custom(
@@ -7468,7 +7479,7 @@ namespace Kusto.Language.Parsing
                     rules.NameDeclaration,
                     Optional(
                         fragment0),
-                    shape283));
+                    shape282));
 
             var AlterTableRowStoreReferencesDisableBlockedKeys = Command("AlterTableRowStoreReferencesDisableBlockedKeys", 
                 Custom(
@@ -7481,7 +7492,7 @@ namespace Kusto.Language.Parsing
                     Token("keys"),
                     Optional(
                         fragment0),
-                    shape284));
+                    shape283));
 
             var SetTableRowStoreReferences = Command("SetTableRowStoreReferences", 
                 Custom(
@@ -7599,7 +7610,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(Token("*")), rules.DatabaseTableNameReference),
                     Token("rowstores"),
-                    shape285));
+                    shape284));
 
             var ShowTableRowStoreSealInfo = Command("ShowTableRowStoreSealInfo", 
                 Custom(
@@ -7607,7 +7618,7 @@ namespace Kusto.Language.Parsing
                     Token("table"),
                     If(Not(Token("*")), rules.DatabaseTableNameReference),
                     Token("rowstore_sealinfo"),
-                    shape285));
+                    shape284));
 
             var ShowTablesColumnStatistics = Command("ShowTablesColumnStatistics", 
                 Custom(
@@ -7642,7 +7653,7 @@ namespace Kusto.Language.Parsing
                                     rules.Value,
                                     shape31)),
                             Token(")"))),
-                    shape286));
+                    shape285));
 
             var CreateTempStorage = Command("CreateTempStorage", 
                 Custom(
@@ -7665,7 +7676,7 @@ namespace Kusto.Language.Parsing
                     OneOrMoreList(
                         Custom(
                             rules.AnyGuidLiteralOrString,
-                            shape287)),
+                            shape286)),
                     new [] {CD(), CD(), CD("DatabaseName", CompletionHint.Database), CD(CompletionHint.Literal)}));
 
             var DropUnusedStoredQueryResultContainers = Command("DropUnusedStoredQueryResultContainers", 
@@ -7721,7 +7732,7 @@ namespace Kusto.Language.Parsing
                     Custom(
                         Token("corrupted"),
                         Token("datetime")).Hide(),
-                    shape289));
+                    shape288));
 
             var PatchExtentCorruptedDatetime = Command("PatchExtentCorruptedDatetime", 
                 Custom(
