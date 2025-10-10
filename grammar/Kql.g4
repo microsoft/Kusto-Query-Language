@@ -49,8 +49,8 @@ letEntityGroupDeclaration:
 
 
 letFunctionParameterList:
-    TabularParameters+=tabularParameter (',' TabularParameters+=tabularParameter) (',' ScalarParameters+=scalarParameter)
-    | ScalarParameters+= scalarParameter (',' ScalarParameters+=scalarParameter)
+    TabularParameters+=tabularParameter (',' TabularParameters+=tabularParameter)* (',' ScalarParameters+=scalarParameter)*
+    | ScalarParameters+= scalarParameter (',' ScalarParameters+=scalarParameter)*
     ;
 
 scalarParameter:
@@ -372,7 +372,7 @@ graphMarkComponentsOperator:
 graphMatchOperator:
     GRAPHMATCH
     (Parameters+=relaxedQueryOperatorParameter)*
-    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)*
     (WhereClause=graphMatchWhereClause)?
     (ProjectClause=graphMatchProjectClause)?
     ;
@@ -405,7 +405,7 @@ graphMatchProjectClause:
     PROJECT Expressions+=namedExpression (',' Expressions+=namedExpression)*;
 
 graphToTableOperator:
-    GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput);
+    GRAPHTOTABLE Outputs+=graphToTableOutput (',' Outputs+=graphToTableOutput)*;
 
 graphToTableOutput:
     Keyword=(NODES | EDGES) (AsClause=graphToTableAsClause)? (Parameters+=relaxedQueryOperatorParameter)*;
@@ -416,7 +416,7 @@ graphToTableAsClause:
 graphShortestPathsOperator:
     GRAPHSHORTESTPATHS
     (Parameters+=relaxedQueryOperatorParameter)*
-    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)
+    Patterns+=graphMatchPattern (',' Patterns+=graphMatchPattern)*
     (WhereClause=graphMatchWhereClause)?
     (ProjectClause=graphMatchProjectClause)?
     ;
@@ -685,7 +685,7 @@ scanOperator:
     ;
 
 scanOperatorOrderByClause:
-    ORDER BY Expressions+=orderedExpression (',' Expressions+=orderedExpression);
+    ORDER BY Expressions+=orderedExpression (',' Expressions+=orderedExpression)*;
 
 scanOperatorPartitionByClause:
     PARTITION BY Expressions+=unnamedExpression (',' Expressions+=unnamedExpression)*;
