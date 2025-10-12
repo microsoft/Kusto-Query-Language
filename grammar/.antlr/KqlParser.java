@@ -162,7 +162,7 @@ public class KqlParser extends Parser {
 		RULE_stringBinaryOperation = 206, RULE_stringBinaryOperator = 207, RULE_stringStarOperatorExpression = 208, 
 		RULE_invocationExpression = 209, RULE_functionCallOrPathExpression = 210, 
 		RULE_functionCallOrPathRoot = 211, RULE_functionCallOrPathPathExpression = 212, 
-		RULE_functionCallOrPathOperation = 213, RULE_functionalCallOrPathPathOperation = 214, 
+		RULE_functionCallOrPathOperation = 213, RULE_functionCallOrPathPathOperation = 214, 
 		RULE_functionCallOrPathElementOperation = 215, RULE_legacyFunctionCallOrPathElementOperation = 216, 
 		RULE_toScalarExpression = 217, RULE_toTableExpression = 218, RULE_noOptimizationParameter = 219, 
 		RULE_dotCompositeFunctionCallExpression = 220, RULE_dotCompositeFunctionCallOperation = 221, 
@@ -267,7 +267,7 @@ public class KqlParser extends Parser {
 			"multiplicativeOperation", "stringOperatorExpression", "stringBinaryOperatorExpression", 
 			"stringBinaryOperation", "stringBinaryOperator", "stringStarOperatorExpression", 
 			"invocationExpression", "functionCallOrPathExpression", "functionCallOrPathRoot", 
-			"functionCallOrPathPathExpression", "functionCallOrPathOperation", "functionalCallOrPathPathOperation", 
+			"functionCallOrPathPathExpression", "functionCallOrPathOperation", "functionCallOrPathPathOperation", 
 			"functionCallOrPathElementOperation", "legacyFunctionCallOrPathElementOperation", 
 			"toScalarExpression", "toTableExpression", "noOptimizationParameter", 
 			"dotCompositeFunctionCallExpression", "dotCompositeFunctionCallOperation", 
@@ -15265,8 +15265,8 @@ public class KqlParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class FunctionCallOrPathOperationContext extends ParserRuleContext {
-		public FunctionalCallOrPathPathOperationContext functionalCallOrPathPathOperation() {
-			return getRuleContext(FunctionalCallOrPathPathOperationContext.class,0);
+		public FunctionCallOrPathPathOperationContext functionCallOrPathPathOperation() {
+			return getRuleContext(FunctionCallOrPathPathOperationContext.class,0);
 		}
 		public FunctionCallOrPathElementOperationContext functionCallOrPathElementOperation() {
 			return getRuleContext(FunctionCallOrPathElementOperationContext.class,0);
@@ -15291,7 +15291,7 @@ public class KqlParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(2357);
-				functionalCallOrPathPathOperation();
+				functionCallOrPathPathOperation();
 				}
 				break;
 			case 2:
@@ -15322,28 +15322,28 @@ public class KqlParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class FunctionalCallOrPathPathOperationContext extends ParserRuleContext {
+	public static class FunctionCallOrPathPathOperationContext extends ParserRuleContext {
 		public IdentifierOrKeywordOrEscapedNameContext Name;
 		public TerminalNode DOT() { return getToken(KqlParser.DOT, 0); }
 		public IdentifierOrKeywordOrEscapedNameContext identifierOrKeywordOrEscapedName() {
 			return getRuleContext(IdentifierOrKeywordOrEscapedNameContext.class,0);
 		}
-		public FunctionalCallOrPathPathOperationContext(ParserRuleContext parent, int invokingState) {
+		public FunctionCallOrPathPathOperationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_functionalCallOrPathPathOperation; }
+		@Override public int getRuleIndex() { return RULE_functionCallOrPathPathOperation; }
 	}
 
-	public final FunctionalCallOrPathPathOperationContext functionalCallOrPathPathOperation() throws RecognitionException {
-		FunctionalCallOrPathPathOperationContext _localctx = new FunctionalCallOrPathPathOperationContext(_ctx, getState());
-		enterRule(_localctx, 428, RULE_functionalCallOrPathPathOperation);
+	public final FunctionCallOrPathPathOperationContext functionCallOrPathPathOperation() throws RecognitionException {
+		FunctionCallOrPathPathOperationContext _localctx = new FunctionCallOrPathPathOperationContext(_ctx, getState());
+		enterRule(_localctx, 428, RULE_functionCallOrPathPathOperation);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2362);
 			match(DOT);
 			setState(2363);
-			((FunctionalCallOrPathPathOperationContext)_localctx).Name = identifierOrKeywordOrEscapedName();
+			((FunctionCallOrPathPathOperationContext)_localctx).Name = identifierOrKeywordOrEscapedName();
 			}
 		}
 		catch (RecognitionException re) {

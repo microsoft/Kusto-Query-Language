@@ -1002,12 +1002,12 @@ functionCallOrPathPathExpression:
     Expression=functionCallOrPathRoot (Operations+=functionCallOrPathOperation)+;
 
 functionCallOrPathOperation:
-    functionalCallOrPathPathOperation 
+    functionCallOrPathPathOperation 
     | functionCallOrPathElementOperation 
     | legacyFunctionCallOrPathElementOperation
     ;
 
-functionalCallOrPathPathOperation:
+functionCallOrPathPathOperation:
     '.' Name=identifierOrKeywordOrEscapedName;
 
 functionCallOrPathElementOperation:
