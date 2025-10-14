@@ -67,7 +67,7 @@ namespace Kusto.Language.Parsing
             var shape35 = new [] {CD(), CD(), CD("TableName", CompletionHint.None), CD(), CD(isOptional: true)};
             var shape36 = new [] {CD("TableName", CompletionHint.None), CD()};
             var shape37 = new [] {CD(), CD(), CD(CompletionHint.None), CD(isOptional: true)};
-            var shape38 = new [] {CD(), CD(), CD(CompletionHint.Table), CD(), CD(isOptional: true)};
+            var shape38 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD(isOptional: true)};
             var shape39 = CD("NewTableName", CompletionHint.None);
             var shape40 = new [] {CD(), CD(), CD("TableName", CompletionHint.Table), CD(), CD("MappingKind"), CD(), CD("MappingName", CompletionHint.Literal), CD("MappingFormat", CompletionHint.Literal), CD(isOptional: true)};
             var shape41 = CD("NewColumnName", CompletionHint.None);
@@ -1909,7 +1909,7 @@ namespace Kusto.Language.Parsing
                     If(Not(Token("with")), rules.FunctionNameReference),
                     Token("docstring"),
                     rules.StringLiteral,
-                    new [] {CD(), CD(), CD(CompletionHint.Function), CD(), CD("Documentation", CompletionHint.Literal)}));
+                    new [] {CD(), CD(), CD("FunctionName", CompletionHint.Function), CD(), CD("Documentation", CompletionHint.Literal)}));
 
             var AlterFunctionFolder = Command("AlterFunctionFolder", 
                 Custom(

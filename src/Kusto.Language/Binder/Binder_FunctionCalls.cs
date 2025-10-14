@@ -46,12 +46,6 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private static bool IsInvokeOperatorFunctionCall(FunctionCallExpression functionCall)
-        {
-            return functionCall.Parent is InvokeOperator
-                || (functionCall.Parent is PathExpression p && p.Selector == functionCall && p.Parent is InvokeOperator);
-        }
-
         /// <summary>
         /// Binds a function call
         /// </summary>
@@ -329,9 +323,58 @@ namespace Kusto.Language.Binding
 
             if (IsInvokeOperatorFunctionCall(functionCall))
             {
-                // add fake argument to represent the implicit value
-                arguments.Insert(0, functionCall.Name);
+                // add argument to represent the implicit value
+                if (TryGetInvokeOperatorExpression(functionCall, out var invokeArgument))
+                {
+                    arguments.Insert(0, invokeArgument);
+                }
+                else
+                {
+                    // no preceding expression was found... use the name node instead.
+                    arguments.Insert(0, functionCall.Name);
+                }
+
                 argumentTypes.Insert(0, _implicitArgumentType ?? TableSymbol.Empty);
+            }
+        }
+
+        private static bool IsInvokeOperatorFunctionCall(FunctionCallExpression functionCall)
+        {
+            // ignore dotted path that is part of function call
+            Expression x = functionCall;
+            while (x.Parent is PathExpression p
+                && p.Selector == x)
+            {
+                x = p.Expression;
+            }
+
+            return x.Parent is InvokeOperator io
+                && io.Function == x;
+        }
+
+        private static bool TryGetInvokeOperatorExpression(FunctionCallExpression functionCall, out Expression invokeArgument)
+        {
+            // ignore dotted path that is part of function call
+            Expression x = functionCall;
+            while (x.Parent is PathExpression p
+                && p.Selector == x)
+            {
+                x = p.Expression;
+            }
+
+            // check for parent pipe expression to find implicit argument
+            if (x.Parent is InvokeOperator invokeOp
+                && invokeOp.Function == x
+                && invokeOp.Parent is PipeExpression invokeOpPipe
+                && invokeOpPipe.Operator == invokeOp)
+            {
+                invokeArgument = invokeOpPipe.Expression;
+                return true;
+            }
+            else
+            {
+                invokeArgument = null;
+                return false;
             }
         }
 
