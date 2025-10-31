@@ -621,8 +621,10 @@ namespace Kusto.Language.Binding
 
                 try
                 {
-                    var match = IsInTabularContext(node)
-                        ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Tabular
+                    var match = IsInTabularContext(node) 
+                            ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Tabular
+                        : IsInWildcardColumnOnlyContext(node) 
+                            ? SymbolMatch.Column
                         : SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Scalar;
 
                     _binder.GetSymbolsInContext(node, match, IncludeFunctionKind.LocalViews | IncludeFunctionKind.DatabaseFunctions, list);

@@ -862,5 +862,12 @@ namespace Kusto.Language.Binding
 
             return false;
         }
+
+        private static bool IsInWildcardColumnOnlyContext(SyntaxElement element)
+        {
+            // project-away and project-keep operator only allows columns to bind in wildcards
+            return element.GetFirstAncestor<QueryOperator>() is QueryOperator op
+                && (op is ProjectAwayOperator || op is ProjectKeepOperator);
+        }
     }
 }
