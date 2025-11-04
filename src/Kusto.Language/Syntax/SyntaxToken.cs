@@ -35,7 +35,7 @@ namespace Kusto.Language.Syntax
         public virtual object Value => this.Text;
 
         /// <summary>
-        /// The text of the literal value (does not include type prefixes/quotes)
+        /// The text of the literal without prefix, parentheses or encoding.
         /// </summary>
         public virtual string ValueText => this.Text;
 
@@ -151,7 +151,7 @@ namespace Kusto.Language.Syntax
             return GetPreviousToken(null, this, includeZeroWidthTokens);
         }
 
-        public static SyntaxToken From(Parsing.LexicalToken token, Diagnostic diagnostic = null)
+        public static SyntaxToken From(LexicalToken token, Diagnostic diagnostic = null)
         {
             var dx = token.Diagnostics;
             if (diagnostic != null)
@@ -385,32 +385,6 @@ namespace Kusto.Language.Syntax
                 }
             }
 
-            private string valueText;
-
-            public override string ValueText
-            {
-                get
-                {
-                    if (this.valueText == null)
-                    {
-                        if (GetPrefixLength(this.Text) > 0)
-                        {
-                            this.valueText = GetValueText(this.Text);
-                        }
-                        else if (this.Kind == SyntaxKind.StringLiteralToken)
-                        {
-                            this.valueText = (string)this.Value;
-                        }
-                        else
-                        {
-                            this.valueText = this.Text;
-                        }
-                    }
-
-                    return valueText;
-                }
-            }
-
             private object GetValue()
             {
                 if (this.Kind != SyntaxKind.StringLiteralToken
@@ -440,6 +414,43 @@ namespace Kusto.Language.Syntax
                         return GetGuidValue(this.Text);
                     case SyntaxKind.StringLiteralToken:
                         return KustoFacts.GetStringLiteralValue(this.Text);
+                    default:
+                        throw new InvalidOperationException($"Unhandled literal syntax kind: {this.Kind}");
+                }
+            }
+
+            private string valueText;
+
+            public override string ValueText
+            {
+                get
+                {
+                    if (this.valueText == null)
+                    {
+                        this.valueText = GetValueText();
+                    }
+
+                    return valueText;
+                }
+            }
+
+            private string GetValueText()
+            {
+                switch (this.Kind)
+                {
+                    case SyntaxKind.BooleanLiteralToken:
+                    case SyntaxKind.IntLiteralToken:
+                    case SyntaxKind.LongLiteralToken:
+                    case SyntaxKind.RealLiteralToken:
+                    case SyntaxKind.DecimalLiteralToken:
+                        return GetInteriorText(text);
+                    case SyntaxKind.TimespanLiteralToken:
+                    case SyntaxKind.DateTimeLiteralToken:
+                    case SyntaxKind.GuidLiteralToken:
+                    case SyntaxKind.RawGuidLiteralToken:
+                        return Destringify(GetInteriorText(text));
+                    case SyntaxKind.StringLiteralToken:
+                        return (string)this.Value;
                     default:
                         throw new InvalidOperationException($"Unhandled literal syntax kind: {this.Kind}");
                 }
@@ -495,7 +506,7 @@ namespace Kusto.Language.Syntax
                     start = prefixLen + 1; // include (
 
                     // trim leading whitespace
-                    while (start < text.Length && Parsing.TextFacts.IsWhitespace(text[start]))
+                    while (start < text.Length && TextFacts.IsWhitespace(text[start]))
                         start++;
 
                     if (text.EndsWith(")"))
@@ -504,14 +515,14 @@ namespace Kusto.Language.Syntax
                     }
 
                     // trim trailing whitespace
-                    while (end > start + 1 && Parsing.TextFacts.IsWhitespace(text[end - 1]))
+                    while (end > start + 1 && TextFacts.IsWhitespace(text[end - 1]))
                         end--;
                 }
 
                 length = end - start;
             }
 
-            private static string GetValueText(string text)
+            private static string GetInteriorText(string text)
             {
                 int start;
                 int length;
@@ -519,7 +530,20 @@ namespace Kusto.Language.Syntax
 
                 return (start == 0 && length == text.Length)
                     ? text
-                    : text.Substring(start, length);
+                    : Destringify(text.Substring(start, length));
+            }
+
+            /// <summary>
+            /// Returns the string literal value if the text is a string literal, otherwise just the text itself.
+            /// </summary>
+            private static string Destringify(string text)
+            {
+                var trimmed = text.Trim();
+
+                // if the interior text is a string literal, then decode it.
+                return (trimmed.Length >= 2 && TokenParser.ScanStringLiteral(trimmed) == trimmed.Length)
+                    ? KustoFacts.GetStringLiteralValue(trimmed)
+                    : text;
             }
 
             private static bool IsNull(string text)
@@ -542,13 +566,13 @@ namespace Kusto.Language.Syntax
                 }
                 else
                 {
-                    return null;
+                    return false;
                 }
             }
 
-            private static int GetIntValue(string text)
+            private static int? GetIntValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = GetInteriorText(text);
                 switch (valueText)
                 {
                     case "min":
@@ -564,7 +588,7 @@ namespace Kusto.Language.Syntax
 
             private static long GetLongValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = GetInteriorText(text);
                 switch (valueText)
                 {
                     case "min":
@@ -580,7 +604,7 @@ namespace Kusto.Language.Syntax
 
             private static double GetRealValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = GetInteriorText(text);
                 switch (valueText)
                 {
                     case "min":
@@ -596,7 +620,7 @@ namespace Kusto.Language.Syntax
 
             private static decimal GetDecimalValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = GetInteriorText(text);
                 switch (valueText)
                 {
                     case "min":
@@ -612,7 +636,7 @@ namespace Kusto.Language.Syntax
 
             private static TimeSpan GetTimeSpanValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = Destringify(GetInteriorText(text));
 
 #if !BRIDGE
                 TimeSpan result;
@@ -695,7 +719,7 @@ namespace Kusto.Language.Syntax
 
             private static DateTime GetDateTimeValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = Destringify(GetInteriorText(text));
                 switch (valueText)
                 {
                     case "min":
@@ -711,7 +735,7 @@ namespace Kusto.Language.Syntax
 
             private static Guid GetGuidValue(string text)
             {
-                var valueText = GetValueText(text);
+                var valueText = Destringify(GetInteriorText(text));
                 Guid result;
                 Guid.TryParse(valueText, out result);
                 return result;
