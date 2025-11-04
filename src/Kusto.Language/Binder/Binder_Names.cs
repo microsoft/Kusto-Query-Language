@@ -865,9 +865,9 @@ namespace Kusto.Language.Binding
 
         private static bool IsInWildcardColumnOnlyContext(SyntaxElement element)
         {
-            // project-away and project-keep operator only allows columns to bind in wildcards
+            // project-away, project-keep and project-reorder operators only allows columns to bind in wildcards
             return element.GetFirstAncestor<QueryOperator>() is QueryOperator op
-                && (op is ProjectAwayOperator || op is ProjectKeepOperator);
+                && (op is ProjectAwayOperator || op is ProjectKeepOperator || op is ProjectReorderOperator);
         }
     }
 }
