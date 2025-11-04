@@ -658,10 +658,8 @@ namespace Kusto.Language.Binding
             switch (directive.Name)
             {
                 case "connect":
-                    ApplyConnectDirective(directive, directive.Token, diagnostics);
-                    break;
                 case "database":
-                    ApplyDatabaseDirective(directive, directive.Token, diagnostics);
+                    ApplyConnectOrDatabaseDirective(directive, directive.Token, diagnostics);
                     break;
 
                 default:
@@ -674,9 +672,7 @@ namespace Kusto.Language.Binding
             }
         }
 
-        private static char[] databaseSplitChars = new[] { '/' };
-
-        private void ApplyDatabaseDirective(Directive directive, SyntaxElement location, List<Diagnostic> diagnostics)
+        private void ApplyConnectOrDatabaseDirective(Directive directive, SyntaxElement location, List<Diagnostic> diagnostics)
         {
             if (TryGetDirectiveClusterAndDatabase(directive, out var clusterName, out var databaseName))
             {
@@ -690,11 +686,14 @@ namespace Kusto.Language.Binding
                     }
                 }
 
-                _currentDatabase = _currentCluster.GetDatabase(databaseName) ?? DatabaseSymbol.Unknown;
-
-                if (_currentDatabase == DatabaseSymbol.Unknown && diagnostics != null && location != null)
+                if (databaseName != null)
                 {
-                    diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(databaseName).WithLocation(location));
+                    _currentDatabase = _currentCluster.GetDatabase(databaseName) ?? DatabaseSymbol.Unknown;
+
+                    if (_currentDatabase == DatabaseSymbol.Unknown && diagnostics != null && location != null)
+                    {
+                        diagnostics.Add(DiagnosticFacts.GetNameDoesNotReferToAnyKnownDatabase(databaseName).WithLocation(location));
+                    }
                 }
             }
         }
@@ -733,16 +732,50 @@ namespace Kusto.Language.Binding
             }
             else if (directive.Name == "connect" && directive.Arguments.Count > 0)
             {
-                var connection = GetDirectiveArgumentStringValue(directive.Arguments[0]);
-                var info = ConnectionInfo.Parse(connection);
-                var dataSource = info.DataSource;
-                KustoFacts.GetHostAndPath(info.DataSource, out var host, out var path);
-                clusterName = host;
-                databaseName = path;
-                return true;
+                var arg = directive.Arguments[0];
+                if (arg.Text.StartsWith("cluster"))
+                {
+                    var cluster = GetStringValueAfterPrefix(arg.Text, "cluster(", 0, out var end);
+                    if (cluster != null)
+                    {
+                        KustoFacts.GetHostAndPath(cluster, out clusterName, out var path);
+                        databaseName = GetStringValueAfterPrefix(arg.Text, "database(", end, out _)
+                            ?? path;
+                        return clusterName != null;
+                    }
+                }
+                else if (!arg.Text.StartsWith("@"))
+                {
+                    var connection = GetDirectiveArgumentStringValue(arg);
+                    var info = ConnectionInfo.Parse(connection);
+                    var dataSource = info.DataSource;
+                    KustoFacts.GetHostAndPath(info.DataSource, out var host, out var path);
+                    clusterName = host;
+                    databaseName = path;
+                    return true;
+                }
             }
 
             return false;
+        }
+
+        internal static string GetStringValueAfterPrefix(string text, string prefix, int start, out int end)
+        {
+            var index = text.IndexOf(prefix, start);
+            if (index >= 0)
+            {
+                var wsLen = Parsing.TokenParser.ScanWhitespace(text, index + prefix.Length);
+                var stringStart = index + prefix.Length + wsLen;
+                if (Parsing.TokenParser.ScanStringLiteral(text, stringStart) is int len
+                    && len > 0)
+                {
+                    var stringLiteral = text.Substring(stringStart, len);
+                    end = index + len;
+                    return KustoFacts.GetStringLiteralValue(stringLiteral);
+                }
+            }
+            end = start;
+            return null;
         }
 
         internal static string GetDirectiveArgumentStringValue(Editor.ClientDirectiveArgument argument)
@@ -752,7 +785,8 @@ namespace Kusto.Language.Binding
 
         private void ApplyConnectDirective(Directive directive, SyntaxElement location, List<Diagnostic> diagnostics)
         {
-            ApplyDatabaseDirective(directive, location, diagnostics);
+            // uses same logic as #database directive
+            ApplyConnectOrDatabaseDirective(directive, location, diagnostics);
         }
 
         #endregion
