@@ -33,14 +33,22 @@ namespace Kusto.Language
             ScalarTypes.DateTime
         };
 
-        private static OperatorSymbol StringBinary(OperatorKind kind)
-            => new OperatorSymbol(kind, 
-                new Signature(ScalarTypes.Bool, 
-                    new Parameter("left", ParameterTypeKind.StringOrDynamic), 
-                    new Parameter("right", ScalarTypes.String)),
-                new Signature(ScalarTypes.Bool,
-                    new Parameter("left", ParameterTypeKind.StringOrDynamic, ArgumentKind.StarOnly),
-                    new Parameter("right", ScalarTypes.String)));
+        private static OperatorSymbol StringBinary(OperatorKind kind, bool dynamicRHS = true)
+            => (dynamicRHS)
+                ? new OperatorSymbol(kind,
+                    new Signature(ScalarTypes.Bool,
+                        new Parameter("left", ParameterTypeKind.StringOrDynamic),
+                        new Parameter("right", ParameterTypeKind.StringOrDynamic)),
+                    new Signature(ScalarTypes.Bool,
+                        new Parameter("left", ParameterTypeKind.StringOrDynamic, ArgumentKind.StarOnly),
+                        new Parameter("right", ParameterTypeKind.StringOrDynamic)))
+                : new OperatorSymbol(kind,
+                    new Signature(ScalarTypes.Bool,
+                        new Parameter("left", ParameterTypeKind.StringOrDynamic),
+                        new Parameter("right", ScalarTypes.String)),
+                    new Signature(ScalarTypes.Bool,
+                        new Parameter("left", ParameterTypeKind.StringOrDynamic, ArgumentKind.StarOnly),
+                        new Parameter("right", ScalarTypes.String)));
 
         public static readonly OperatorSymbol UnaryMinus =
             new OperatorSymbol(OperatorKind.UnaryMinus,
@@ -202,40 +210,40 @@ namespace Kusto.Language
             StringBinary(OperatorKind.BangTilde);
 
         public static readonly OperatorSymbol Has =
-            StringBinary(OperatorKind.Has);
+            StringBinary(OperatorKind.Has, dynamicRHS: false);
 
         public static readonly OperatorSymbol HasCs =
-            StringBinary(OperatorKind.HasCs);
+            StringBinary(OperatorKind.HasCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHas =
-            StringBinary(OperatorKind.NotHas);
+            StringBinary(OperatorKind.NotHas, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHasCs =
-            StringBinary(OperatorKind.NotHasCs);
+            StringBinary(OperatorKind.NotHasCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol HasPrefix =
-            StringBinary(OperatorKind.HasPrefix);
+            StringBinary(OperatorKind.HasPrefix, dynamicRHS: false);
 
         public static readonly OperatorSymbol HasPrefixCs =
-            StringBinary(OperatorKind.HasPrefixCs);
+            StringBinary(OperatorKind.HasPrefixCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHasPrefix =
-            StringBinary(OperatorKind.NotHasPrefix);
+            StringBinary(OperatorKind.NotHasPrefix, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHasPrefixCs =
-            StringBinary(OperatorKind.NotHasPrefixCs);
+            StringBinary(OperatorKind.NotHasPrefixCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol HasSuffix =
-            StringBinary(OperatorKind.HasSuffix);
+            StringBinary(OperatorKind.HasSuffix, dynamicRHS: false);
 
         public static readonly OperatorSymbol HasSuffixCs =
-            StringBinary(OperatorKind.HasSuffixCs);
+            StringBinary(OperatorKind.HasSuffixCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHasSuffix =
-            StringBinary(OperatorKind.NotHasSuffix);
+            StringBinary(OperatorKind.NotHasSuffix, dynamicRHS: false);
 
         public static readonly OperatorSymbol NotHasSuffixCs =
-            StringBinary(OperatorKind.NotHasSuffixCs);
+            StringBinary(OperatorKind.NotHasSuffixCs, dynamicRHS: false);
 
         public static readonly OperatorSymbol Like =
             StringBinary(OperatorKind.Like);

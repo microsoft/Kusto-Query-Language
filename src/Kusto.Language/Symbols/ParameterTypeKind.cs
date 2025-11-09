@@ -50,7 +50,7 @@ namespace Kusto.Language.Symbols
         RealOrDecimal,
 
         /// <summary>
-        /// Either a string or a dynamic (string) value
+        /// Either a string or a dynamic value
         /// </summary>
         StringOrDynamic,
 
