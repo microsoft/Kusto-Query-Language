@@ -6314,6 +6314,11 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("threadpools")));
 
+            var ShowWhatsGoingOn = Command("ShowWhatsGoingOn", 
+                Custom(
+                    Token("show", CompletionKind.CommandPrefix),
+                    Token("whatsgoingon")));
+
             var ExecuteDatabaseScript = Command("ExecuteDatabaseScript", 
                 Custom(
                     Token("execute", CompletionKind.CommandPrefix),
@@ -6725,7 +6730,7 @@ namespace Kusto.Language.Parsing
             var ShowExtentDetails = Command("ShowExtentDetails", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
-                    If(Not(And(Token("database", "cluster", "databases", "ingestion", "tables", "table", "functions", "function", "external", "fabric", "workload_groups", "workload_group", "column", "materialized-view", "graph_model", "mirroring-template", "mirroring-templates", "principal", "continuous-export", "continuous-exports", "materialized-views", "diagnostics", "capacity", "operations", "operation", "journal", "queries", "running", "queryplan", "cache", "commands", "commands-and-queries", "data", "version", "stored_query_results", "stored_query_result", "graph_models", "graph_snapshot", "graph_snapshots", "certificates", "cloudsettings", "commconcurrency", "commpools", "fabriccache", "fabriclocks", "fabricclocks", "featureflags", "mempools", "servicepoints", "tcpconnections", "tcpports", "threadpools", "request_support", "entity_group", "entity_groups", "extentcontainers", "entity", "follower", "freshness", "memory", "plugins", "queryexecution", "rowstore", "rowstores", "schema", "callstacks", "filesystem", "streamingingestion", "query", "extents"))), rules.NameDeclaration),
+                    If(Not(And(Token("database", "cluster", "databases", "ingestion", "tables", "table", "functions", "function", "external", "fabric", "workload_groups", "workload_group", "column", "materialized-view", "graph_model", "mirroring-template", "mirroring-templates", "principal", "continuous-export", "continuous-exports", "materialized-views", "diagnostics", "capacity", "operations", "operation", "journal", "queries", "running", "queryplan", "cache", "commands", "commands-and-queries", "data", "version", "stored_query_results", "stored_query_result", "graph_models", "graph_snapshot", "graph_snapshots", "certificates", "cloudsettings", "commconcurrency", "commpools", "fabriccache", "fabriclocks", "fabricclocks", "featureflags", "mempools", "servicepoints", "tcpconnections", "tcpports", "threadpools", "whatsgoingon", "request_support", "entity_group", "entity_groups", "extentcontainers", "entity", "follower", "freshness", "memory", "plugins", "queryexecution", "rowstore", "rowstores", "schema", "callstacks", "filesystem", "streamingingestion", "query", "extents"))), rules.NameDeclaration),
                     Token("extent"),
                     Optional(Token("details")),
                     Optional(
@@ -6739,7 +6744,7 @@ namespace Kusto.Language.Parsing
             var ShowExtentColumnStorageStats = Command("ShowExtentColumnStorageStats", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
-                    If(Not(And(Token("database", "cluster", "databases", "ingestion", "tables", "table", "functions", "function", "external", "fabric", "workload_groups", "workload_group", "column", "materialized-view", "graph_model", "mirroring-template", "mirroring-templates", "principal", "continuous-export", "continuous-exports", "materialized-views", "diagnostics", "capacity", "operations", "operation", "journal", "queries", "running", "queryplan", "cache", "commands", "commands-and-queries", "data", "version", "stored_query_results", "stored_query_result", "graph_models", "graph_snapshot", "graph_snapshots", "certificates", "cloudsettings", "commconcurrency", "commpools", "fabriccache", "fabriclocks", "fabricclocks", "featureflags", "mempools", "servicepoints", "tcpconnections", "tcpports", "threadpools", "request_support", "entity_group", "entity_groups", "extentcontainers", "entity", "follower", "freshness", "memory", "plugins", "queryexecution", "rowstore", "rowstores", "schema", "callstacks", "filesystem", "streamingingestion", "query", "extents"))), rules.NameDeclaration),
+                    If(Not(And(Token("database", "cluster", "databases", "ingestion", "tables", "table", "functions", "function", "external", "fabric", "workload_groups", "workload_group", "column", "materialized-view", "graph_model", "mirroring-template", "mirroring-templates", "principal", "continuous-export", "continuous-exports", "materialized-views", "diagnostics", "capacity", "operations", "operation", "journal", "queries", "running", "queryplan", "cache", "commands", "commands-and-queries", "data", "version", "stored_query_results", "stored_query_result", "graph_models", "graph_snapshot", "graph_snapshots", "certificates", "cloudsettings", "commconcurrency", "commpools", "fabriccache", "fabriclocks", "fabricclocks", "featureflags", "mempools", "servicepoints", "tcpconnections", "tcpports", "threadpools", "whatsgoingon", "request_support", "entity_group", "entity_groups", "extentcontainers", "entity", "follower", "freshness", "memory", "plugins", "queryexecution", "rowstore", "rowstores", "schema", "callstacks", "filesystem", "streamingingestion", "query", "extents"))), rules.NameDeclaration),
                     Token("extent"),
                     rules.AnyGuidLiteralOrString,
                     Token("column"),
@@ -8289,6 +8294,7 @@ namespace Kusto.Language.Parsing
                 new CommandParserInfo("ShowTcpConnections", ShowTcpConnections),
                 new CommandParserInfo("ShowTcpPorts", ShowTcpPorts),
                 new CommandParserInfo("ShowThreadPools", ShowThreadPools),
+                new CommandParserInfo("ShowWhatsGoingOn", ShowWhatsGoingOn),
                 new CommandParserInfo("ExecuteDatabaseScript", ExecuteDatabaseScript),
                 new CommandParserInfo("ExecuteClusterScript", ExecuteClusterScript),
                 new CommandParserInfo("CreateRequestSupport", CreateRequestSupport),

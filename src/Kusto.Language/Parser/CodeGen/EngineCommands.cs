@@ -1593,6 +1593,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ShowThreadPools =
             new CommandSymbol("ShowThreadPools", _schema19);
 
+        public static readonly CommandSymbol ShowWhatsGoingOn =
+            new CommandSymbol("ShowWhatsGoingOn", _schema19);
+
         public static readonly CommandSymbol ExecuteDatabaseScript =
             new CommandSymbol("ExecuteDatabaseScript", _schema19);
 
@@ -2457,6 +2460,7 @@ namespace Kusto.Language
             ShowTcpConnections,
             ShowTcpPorts,
             ShowThreadPools,
+            ShowWhatsGoingOn,
             ExecuteDatabaseScript,
             ExecuteClusterScript,
             CreateRequestSupport,
