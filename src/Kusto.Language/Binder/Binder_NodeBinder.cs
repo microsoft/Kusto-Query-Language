@@ -615,101 +615,89 @@ namespace Kusto.Language.Binding
 
             private SemanticInfo VisitWildcardedNameReference(NameReference node, string pattern)
             {
-                var list = s_symbolListPool.AllocateFromPool();
-                var filteredList = s_symbolListPool.AllocateFromPool();
+                var candidateList = s_symbolListPool.AllocateFromPool();
                 var matchingList = s_symbolListPool.AllocateFromPool();
 
                 try
                 {
-                    var match = IsInTabularContext(node) 
-                            ? SymbolMatch.Table | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Tabular
-                        : IsInWildcardColumnOnlyContext(node) 
-                            ? SymbolMatch.Column
-                        : SymbolMatch.Column | SymbolMatch.Function | SymbolMatch.View | SymbolMatch.Local | SymbolMatch.Scalar;
-
-                    _binder.GetSymbolsInContext(node, match, IncludeFunctionKind.LocalViews | IncludeFunctionKind.DatabaseFunctions, list);
-
-                    FilterVisibleSymbols(node, list, filteredList);
-
-                    GetWildcardSymbols(pattern, filteredList, matchingList);
-
-                    if (matchingList.Count == 1)
+                    if (IsInWildcardedColumnContext(node))
                     {
-                        return CreateSemanticInfo(matchingList[0]);
+                        _binder.GetSymbolsInContext(node, SymbolMatch.Column, IncludeFunctionKind.None, candidateList);
+                        GetWildcardSymbols(pattern, candidateList, matchingList);
+
+                        if (matchingList.Count == 1)
+                        {
+                            return CreateSemanticInfo(matchingList[0]);
+                        }
+                        else if (matchingList.Count > 1)
+                        {
+                            return CreateSemanticInfo(new GroupSymbol(matchingList));
+                        }
+                        else if (_binder._rowScope != null && _binder._rowScope.IsOpen)
+                        {
+                            // this might match zero or more columns from the row scope if it is open
+                            return CreateSemanticInfo(new GroupSymbol());
+                        }
+                        else
+                        {
+                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern, "column").WithLocation(node));
+                        }
                     }
-                    else if (matchingList.Count > 1)
+                    else if (IsInWildcardedTableContext(node))
                     {
-                        return CreateSemanticInfo(new GroupSymbol(matchingList));
-                    }
-                    else if (_binder._rowScope != null && _binder._rowScope.IsOpen)
-                    {
-                        // this might match zero or more columns from the row scope if it is open
-                        return CreateSemanticInfo(new GroupSymbol());
+                        if (_binder._pathScope is DatabaseSymbol || 
+                            _binder._pathScope is GroupSymbol g && g.Members.All(m => m is DatabaseSymbol))
+                        {
+                            // match all tables in specified database
+                            _binder.GetSymbolsInContext(node, SymbolMatch.Table, IncludeFunctionKind.None, candidateList);                            
+                        }
+                        else if (_binder._currentDatabase != null)
+                        {
+                            // match all tables in database only
+                            _binder._currentDatabase.GetMembers(SymbolMatch.Table, candidateList);
+                            // match local views
+                            _binder.GetSymbolsInContext(node, SymbolMatch.View, IncludeFunctionKind.LocalViews, candidateList);
+                        }
+
+                        GetWildcardSymbols(pattern, candidateList, matchingList);
+
+                        if (matchingList.Count == 1)
+                        {
+                            return CreateSemanticInfo(matchingList[0]);
+                        }
+                        else if (matchingList.Count > 1)
+                        {
+                            return CreateSemanticInfo(new GroupSymbol(matchingList));
+                        }
+                        else
+                        {
+                            return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern, "table").WithLocation(node));
+                        }
                     }
                     else
                     {
-                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetNameDoesNotReferToAnyKnownItem(pattern).WithLocation(node));
+                        return new SemanticInfo(ErrorSymbol.Instance, DiagnosticFacts.GetWildcardedNamesNotAllowedInThisContext().WithLocation(node));
                     }
                 }
                 finally
                 {
-                    s_symbolListPool.ReturnToPool(list);
-                    s_symbolListPool.ReturnToPool(filteredList);
+                    s_symbolListPool.ReturnToPool(candidateList);
                     s_symbolListPool.ReturnToPool(matchingList);
                 }
             }
 
-            private static readonly ObjectPool<Dictionary<string, Symbol>> s_symbolMapPool =
-                new ObjectPool<Dictionary<string, Symbol>>(() => new Dictionary<string, Symbol>(), d => d.Clear());
-
-            private void FilterVisibleSymbols(SyntaxNode location, IReadOnlyList<Symbol> symbols, List<Symbol> filteredSymbols)
+            private static bool IsInWildcardedColumnContext(SyntaxElement element)
             {
-                bool IsInsideCurrentDatabaseFunction = _binder.IsInsideCurrentDatabaseFunctionBody(location);
+                // project-away, project-keep and project-reorder operators only allows columns to bind in wildcards
+                return element.GetFirstAncestor<QueryOperator>() is QueryOperator op
+                    && (op is ProjectAwayOperator || op is ProjectKeepOperator || op is ProjectReorderOperator);
+            }
 
-                var map = s_symbolMapPool.AllocateFromPool();
-                try
-                {
-                    foreach (var symbol in symbols)
-                    {
-                        // pick between for tables and functions with same name
-                        if (map.TryGetValue(symbol.Name, out var existingSymbol))
-                        {
-                            if (symbol is TableSymbol tab
-                                && existingSymbol is FunctionSymbol fs
-                                && fs.MinArgumentCount == 0
-                                && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
-                                && IsInsideCurrentDatabaseFunction)
-                            {
-                                // if inside database function declaration choose the table over the function
-                                map[symbol.Name] = tab;
-                            }
-                            else if (symbol is FunctionSymbol fs2
-                                && fs2.MinArgumentCount == 0
-                                && existingSymbol is TableSymbol tab2
-                                && _binder._currentDatabase.GetAnyTable(symbol.Name) != null
-                                && !IsInsideCurrentDatabaseFunction)
-                            {
-                                // otherwise choose the function over the table
-                                map[symbol.Name] = fs2;
-                            }
-                        }
-                        else if (symbol is FunctionSymbol fs3
-                            && fs3.MinArgumentCount > 0)
-                        {
-                            // do not add functions that require arguments
-                        }
-                        else
-                        {
-                            map.Add(symbol.Name, symbol);
-                        }
-                    }
-
-                    filteredSymbols.AddRange(map.Values);
-                }
-                finally
-                {
-                    s_symbolMapPool.ReturnToPool(map);
-                }
+            private static bool IsInWildcardedTableContext(SyntaxElement element)
+            {
+                return (element.GetFirstAncestor<QueryOperator>() is QueryOperator op
+                        && (op is UnionOperator || op is FindOperator || op is SearchOperator))
+                    || (element.GetFirstAncestor<Statement>() is RestrictStatement);
             }
 
             public override SemanticInfo VisitBracketedExpression(BracketedExpression node)

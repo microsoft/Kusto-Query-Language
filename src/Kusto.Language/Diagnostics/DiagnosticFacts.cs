@@ -497,9 +497,11 @@ namespace Kusto.Language
             return GetExpressionMustHaveType((IReadOnlyList<S>)types);
         }
 
-        public static Diagnostic GetNameDoesNotReferToAnyKnownItem(string name)
+        public static Diagnostic GetNameDoesNotReferToAnyKnownItem(string name, string entity = null)
         {
-            return new Diagnostic("KS142", $"The name '{name}' does not refer to any known column, table, variable or function.");
+            if (entity == null)
+                entity = "column, table, variable or function";
+            return new Diagnostic("KS142", $"The name '{name}' does not refer to any known {entity}.");
         }
 
         public static Diagnostic GetFunctionNotDefined(string name)
@@ -1085,6 +1087,10 @@ namespace Kusto.Language
             return new Diagnostic("KS267", $"Data stream type {type} is not supported by external table ");
         }
 
+        public static Diagnostic GetWildcardedNamesNotAllowedInThisContext()
+        {
+            return new Diagnostic("KS268", $"Wildcarded names not allowed in this context.");
+        }
 
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
