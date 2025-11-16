@@ -611,14 +611,14 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ParseCsv =
             new FunctionSymbol("parse_csv",
                     ScalarTypes.DynamicArray,
-                    new Parameter("csv_text", ScalarTypes.String))
+                    new Parameter("csv_text", ParameterTypeKind.StringOrDynamic))
                 .WithResultNameKind(ResultNameKind.FirstArgument)
                 .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseJson_Deprecated =
             new FunctionSymbol("parsejson",
                     ScalarTypes.Dynamic,
-                    new Parameter("json_text", ScalarTypes.String))
+                    new Parameter("json_text", ParameterTypeKind.StringOrDynamic))
                 .WithResultNameKind(ResultNameKind.FirstArgument)
                 .ConstantFoldable()
                 .Obsolete("parse_json");
@@ -626,14 +626,14 @@ namespace Kusto.Language
         public static readonly FunctionSymbol ParseJson =
             new FunctionSymbol("parse_json",
                     ScalarTypes.Dynamic,
-                    new Parameter("json_text", ScalarTypes.String))
+                    new Parameter("json_text", ParameterTypeKind.StringOrDynamic))
                 .WithResultNameKind(ResultNameKind.FirstArgument)
                 .ConstantFoldable();
 
         public static readonly FunctionSymbol ParseXml =
             new FunctionSymbol("parse_xml",
                     ScalarTypes.DynamicBag,
-                    new Parameter("xml_text", ScalarTypes.String))
+                    new Parameter("xml_text", ParameterTypeKind.StringOrDynamic))
                 .WithResultNameKind(ResultNameKind.FirstArgument)
                 .ConstantFoldable();
 
