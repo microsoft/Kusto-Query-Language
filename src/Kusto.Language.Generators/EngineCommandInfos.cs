@@ -268,12 +268,12 @@ namespace Kusto.Language.Generators
 
         public static readonly CommandInfo ShowDatabaseIngestionMappings =
             new CommandInfo(nameof(ShowDatabaseIngestionMappings),
-                $"show database [databaseName=<database>] ingestion [MappingKind=(csv | avro | apacheavro | json | parquet | sstream | orc | w3clogfile | azmonstream)] mappings [name=<string>] [{PropertyList()}]",
+                $"show database [databaseName=<database>] ingestion [MappingKind=(csv | avro | apacheavro | json | parquet | orc | w3clogfile | azmonstream)] mappings [name=<string>] [{PropertyList()}]",
                 DatabaseIngestionMappingResult);
 
         public static readonly CommandInfo ShowIngestionMappings =
             new CommandInfo(nameof(ShowIngestionMappings),
-                $"show [cluster] ingestion [MappingKind=(csv | avro | apacheavro | json | parquet | sstream | orc | w3clogfile | azmonstream)] mappings [{PropertyList()}]",
+                $"show [cluster] ingestion [MappingKind=(csv | avro | apacheavro | json | parquet | orc | w3clogfile | azmonstream)] mappings [{PropertyList()}]",
                 UnknownResult);
 
         public static readonly CommandInfo DropDatabaseIngestionMapping =
@@ -623,7 +623,7 @@ namespace Kusto.Language.Generators
                  [PathSeparator=<string>] }+ ')']
               ]
               [catalog '=' CatalogExpression=<string>]
-              dataformat '=' DataFormatKind=(avro | apacheavro | csv | json | multijson | orc | parquet | psv | raw | scsv | sohsv | sstream | tsv | tsve | txt | w3clogfile | azmonstream)
+              dataformat '=' DataFormatKind=(avro | apacheavro | csv | json | multijson | orc | parquet | psv | raw | scsv | sohsv | tsv | tsve | txt | w3clogfile | azmonstream)
               '(' { StorageConnectionString=<string>, ',' }+ ')'
               [with '(' { PropertyName=<name> '=' Value=<value>, ',' }+ ')'])
               |

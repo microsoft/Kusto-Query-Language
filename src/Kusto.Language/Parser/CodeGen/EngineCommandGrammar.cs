@@ -520,7 +520,7 @@ namespace Kusto.Language.Parsing
                                 shape79)),
                         Token("dataformat"),
                         Token("="),
-                        Token("avro", "apacheavro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "sstream", "tsv", "tsve", "txt", "w3clogfile", "azmonstream"),
+                        Token("avro", "apacheavro", "csv", "json", "multijson", "orc", "parquet", "psv", "raw", "scsv", "sohsv", "tsv", "tsve", "txt", "w3clogfile", "azmonstream"),
                         Token("("),
                         OneOrMoreCommaList(
                             Custom(
@@ -1402,7 +1402,7 @@ namespace Kusto.Language.Parsing
                     Token("ingestion"),
                     Optional(
                         Custom(
-                            Token("csv", "avro", "apacheavro", "json", "parquet", "sstream", "orc", "w3clogfile", "azmonstream"),
+                            Token("csv", "avro", "apacheavro", "json", "parquet", "orc", "w3clogfile", "azmonstream"),
                             shape19)),
                     Token("mappings"),
                     Optional(
@@ -1420,7 +1420,7 @@ namespace Kusto.Language.Parsing
                     Token("ingestion"),
                     Optional(
                         Custom(
-                            Token("csv", "avro", "apacheavro", "json", "parquet", "sstream", "orc", "w3clogfile", "azmonstream"),
+                            Token("csv", "avro", "apacheavro", "json", "parquet", "orc", "w3clogfile", "azmonstream"),
                             shape19)),
                     Token("mappings"),
                     Optional(
