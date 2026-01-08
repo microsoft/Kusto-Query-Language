@@ -102,6 +102,8 @@ namespace Kusto.Language
                 new Signature(ReturnTypeKind.Widest, new Parameter("left", ParameterTypeKind.Number), new Parameter("right", ParameterTypeKind.Number)),
                 new Signature(ScalarTypes.TimeSpan, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.TimeSpan, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.DateTime)),
+                new Signature(ScalarTypes.TimeSpan, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.Dynamic)),
+                new Signature(ScalarTypes.TimeSpan, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.DateTime, new Parameter("left", ScalarTypes.DateTime), new Parameter("right", ScalarTypes.TimeSpan)),
                 new Signature(ScalarTypes.DateTime, new Parameter("left", ScalarTypes.TimeSpan), new Parameter("right", ScalarTypes.DateTime)),
                 new Signature(ScalarTypes.Dynamic, new Parameter("left", ScalarTypes.Dynamic), new Parameter("right", ScalarTypes.Dynamic)),
