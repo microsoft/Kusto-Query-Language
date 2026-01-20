@@ -3489,8 +3489,7 @@ namespace Kusto.Language
             new FunctionSymbol("node_id",
                     ScalarTypes.String,
                     new Parameter("node", ParameterTypeKind.Scalar, minOccurring: 0))
-                .WithCustomAvailability(InGraphWhereOrProjectClause)
-                .Hide();
+                .WithCustomAvailability(InGraphWhereOrProjectClause);
 
         public static readonly FunctionSymbol Labels =
             new FunctionSymbol("labels",
