@@ -6230,7 +6230,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshot"),
                     rules.QualifiedWildcardedNameDeclaration,
-                    Token("statistics").Hide(),
+                    Token("statistics"),
                     shape3));
 
             var GraphSnapshotsShowStatistics = Command("GraphSnapshotsShowStatistics", 
@@ -6238,7 +6238,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
                     rules.QualifiedWildcardedNameDeclaration,
-                    Token("statistics").Hide(),
+                    Token("statistics"),
                     shape3));
 
             var GraphSnapshotShowFailures = Command("GraphSnapshotShowFailures", 
@@ -6246,7 +6246,7 @@ namespace Kusto.Language.Parsing
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
                     rules.QualifiedWildcardedNameDeclaration,
-                    Token("failures").Hide(),
+                    Token("failures"),
                     shape3));
 
             var ShowCertificates = Command("ShowCertificates", 

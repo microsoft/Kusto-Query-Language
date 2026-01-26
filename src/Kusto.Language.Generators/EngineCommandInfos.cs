@@ -2922,17 +2922,17 @@ namespace Kusto.Language.Generators
 
         public static readonly CommandInfo GraphSnapshotShowStatistics =
             new CommandInfo(nameof(GraphSnapshotShowStatistics),
-            "show graph_snapshot <qualified_wildcarded_name> #statistics",
+            "show graph_snapshot <qualified_wildcarded_name> statistics",
             GraphSnapshotsShowStatisticsResult);
 
         public static readonly CommandInfo GraphSnapshotsShowStatistics =
             new CommandInfo(nameof(GraphSnapshotsShowStatistics),
-            "show graph_snapshots <qualified_wildcarded_name> #statistics",
+            "show graph_snapshots <qualified_wildcarded_name> statistics",
             GraphSnapshotsShowStatisticsResult);
 
         public static readonly CommandInfo GraphSnapshotShowFailures =
             new CommandInfo(nameof(GraphSnapshotShowFailures),
-            "show graph_snapshots <qualified_wildcarded_name> #failures",
+            "show graph_snapshots <qualified_wildcarded_name> failures",
             GraphSnapshotsShowFailuresResult);
         #endregion
 
