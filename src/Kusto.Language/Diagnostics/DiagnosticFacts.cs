@@ -1092,6 +1092,26 @@ namespace Kusto.Language
             return new Diagnostic("KS268", $"Wildcarded names not allowed in this context.");
         }
 
+        public static Diagnostic GetInlineExternalTableDeltaDataFormatNotSupported()
+        {
+            return new Diagnostic("KS269", "Inline external table kind=delta does not support dataformat.");
+        }
+
+        public static Diagnostic GetInlineExternalTableDeltaPartitionByNotSupported()
+        {
+            return new Diagnostic("KS270", "Inline external table kind=delta does not support partition by.");
+        }
+
+        public static Diagnostic GetInlineExternalTableDeltaPathFormatNotSupported()
+        {
+            return new Diagnostic("KS271", "Inline external table kind=delta does not support pathformat.");
+        }
+
+        public static Diagnostic GetInlineExternalTableDeltaRequiresSingleRootUri()
+        {
+            return new Diagnostic("KS272", "Inline external table kind=delta requires exactly one root URI.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

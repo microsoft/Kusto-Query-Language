@@ -206,7 +206,7 @@ namespace Kusto.Language
 
         public static readonly IReadOnlyList<string> InlineExternalTableKinds = new string[]
         {
-            "storage"
+            "storage", "delta"
         };
 
         public static readonly IReadOnlyList<string> InlineExternalTableDataFormats = new string[]

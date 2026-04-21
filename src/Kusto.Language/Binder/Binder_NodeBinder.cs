@@ -1872,119 +1872,162 @@ namespace Kusto.Language.Binding
                 var partitionColumnsFunctionUsed = s_expressionListPool.AllocateFromPool();
                 try
                 {
-                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.SortParameters, diagnostics);
+                    _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.InlineExternalTableProperties, diagnostics);
 
-                    CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
+                    var isDeltaInlineExternalTable = string.Equals(node.KindParameter?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+                    var hasOmittedSchema =
+                        node.Schema != null
+                        && node.Schema.OpenParen.IsMissing
+                        && node.Schema.CloseParen.IsMissing
+                        && node.Schema.Columns.Count == 0
+                        && !node.Schema.ContainsSyntaxDiagnostics;
 
-                    if (node.PartitionClause != null)
+                    if (!hasOmittedSchema)
                     {
-                        foreach (var partitionColumn in node.PartitionClause.PartitionColumns)
+                        CreateColumnsFromRowSchema(node.Schema.Columns, columns, diagnostics);
+                    }
+
+                    if (isDeltaInlineExternalTable)
+                    {
+                        if (node.PartitionClause != null)
                         {
-                            // Check Partition column names uniqueness
-                            if (!DeclareColumnName(partitionColumnNames, partitionColumn.Element.Name.SimpleName, diagnostics, partitionColumn.Element.Name.Name))
-                            {
-                                diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
-                                break;
-                            }
+                            diagnostics.Add(DiagnosticFacts.GetInlineExternalTableDeltaPartitionByNotSupported().WithLocation(node.PartitionClause));
+                        }
 
-                            TypeSymbol type = null;
-                            switch (partitionColumn.Element.Type)
-                            {
-                                case PrimitiveTypeExpression p:
-                                    type = Binder.GetType(p);
-                                    break;
-                                default:
-                                    diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnType().WithLocation(partitionColumn.Element));
-                                    break;
-                            }
+                        if (node.PathFormat != null)
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetInlineExternalTableDeltaPathFormatNotSupported().WithLocation(node.PathFormat));
+                        }
 
-                            if (type == null)
+                        if (node.DataFormatParameter != null && !node.DataFormatParameter.DataFormatKeyword.IsMissing)
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetInlineExternalTableDeltaDataFormatNotSupported().WithLocation(node.DataFormatParameter));
+                        }
+
+                        if (node.ConnectionStrings.ConnectionStrings.Count > 1)
+                        {
+                            diagnostics.Add(DiagnosticFacts.GetInlineExternalTableDeltaRequiresSingleRootUri().WithLocation(node.ConnectionStrings));
+                        }
+                    }
+                    else
+                    {
+                        if (node.PartitionClause != null)
+                        {
+                            foreach (var partitionColumn in node.PartitionClause.PartitionColumns)
                             {
-                                break;
-                            }
-                            if (partitionColumn.Element.Expr == null)
-                            {
-                                if (columns.Any(item => item.Name == partitionColumn.Element.Name.SimpleName))
+                                // Check Partition column names uniqueness
+                                if (!DeclareColumnName(partitionColumnNames, partitionColumn.Element.Name.SimpleName, diagnostics, partitionColumn.Element.Name.Name))
                                 {
                                     diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
                                     break;
                                 }
 
-                                if (SymbolsAssignable(type, ScalarTypes.Long, Conversion.None))
+                                TypeSymbol type = null;
+                                switch (partitionColumn.Element.Type)
                                 {
-                                    diagnostics?.Add(DiagnosticFacts.GetWrongVirtualPartitionColumnType().WithLocation(partitionColumn.Element));
+                                    case PrimitiveTypeExpression p:
+                                        type = Binder.GetType(p);
+                                        break;
+                                    default:
+                                        diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnType().WithLocation(partitionColumn.Element));
+                                        break;
+                                }
+
+                                if (type == null)
+                                {
                                     break;
                                 }
-                                // Virtual Column need to be added to the list of columns
-                                columns.Add(new ColumnSymbol(partitionColumn.Element.Name.SimpleName, type, source: partitionColumn.Element.Name));
-                            }
-                            else
-                            {
-                                _binder.CheckIsExactType(partitionColumn.Element.Expr, type, diagnostics);
-                                // Validate that only closed list of functions is allowed for partition column
-                                if (partitionColumn.Element.Expr.Kind == SyntaxKind.FunctionCallExpression)
+                                if (partitionColumn.Element.Expr == null)
                                 {
-                                    if (!KustoFacts.InlineExternalTablePartitionColumnFunctions.Contains(((FunctionCallExpression)partitionColumn.Element.Expr).Name.SimpleName))
+                                    if (columns.Any(item => item.Name == partitionColumn.Element.Name.SimpleName))
                                     {
-                                        diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnFunction().WithLocation(partitionColumn.Element));
+                                        diagnostics.Add(DiagnosticFacts.GetDuplicateColumnDeclaration(partitionColumn.Element.Name.SimpleName).WithLocation(partitionColumn.Element));
+                                        break;
+                                    }
+
+                                    if (SymbolsAssignable(type, ScalarTypes.Long, Conversion.None))
+                                    {
+                                        diagnostics?.Add(DiagnosticFacts.GetWrongVirtualPartitionColumnType().WithLocation(partitionColumn.Element));
+                                        break;
+                                    }
+                                    // Virtual Column need to be added to the list of columns
+                                    columns.Add(new ColumnSymbol(partitionColumn.Element.Name.SimpleName, type, source: partitionColumn.Element.Name));
+                                }
+                                else
+                                {
+                                    _binder.CheckIsExactType(partitionColumn.Element.Expr, type, diagnostics);
+                                    // Validate that only closed list of functions is allowed for partition column
+                                    if (partitionColumn.Element.Expr.Kind == SyntaxKind.FunctionCallExpression)
+                                    {
+                                        if (!KustoFacts.InlineExternalTablePartitionColumnFunctions.Contains(((FunctionCallExpression)partitionColumn.Element.Expr).Name.SimpleName))
+                                        {
+                                            diagnostics?.Add(DiagnosticFacts.GetWrongPartitionColumnFunction().WithLocation(partitionColumn.Element));
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (node.PathFormat != null)
-                    {
-                        foreach (var pathFormatElement in node.PathFormat.PathExpressions)
+                        if (node.PathFormat != null)
                         {
-                            if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.NameReference)
+                            foreach (var pathFormatElement in node.PathFormat.PathExpressions)
                             {
-                                partitionColumnsDirectlyUsed.Add(((NameReference)pathFormatElement.PartitionColumnExpression).SimpleName);
-                            }
-                            else if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.DateTimePattern)
-                            {
-                                var dateTimePattern = (DateTimePattern)pathFormatElement.PartitionColumnExpression;
-                                if (!CheckDateTimePatternAllowed(partitionColumnsFunctionUsed, dateTimePattern))
+                                if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.NameReference)
                                 {
-                                    diagnostics.Add(DiagnosticFacts.GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((NameReference)dateTimePattern.PartitionColumn).SimpleName).WithLocation(node.PathFormat));
-                                    break;
+                                    partitionColumnsDirectlyUsed.Add(((NameReference)pathFormatElement.PartitionColumnExpression).SimpleName);
                                 }
-                                partitionColumnsFunctionUsed.Add(dateTimePattern);
+                                else if (pathFormatElement.PartitionColumnExpression.Kind == SyntaxKind.DateTimePattern)
+                                {
+                                    var dateTimePattern = (DateTimePattern)pathFormatElement.PartitionColumnExpression;
+                                    if (!CheckDateTimePatternAllowed(partitionColumnsFunctionUsed, dateTimePattern))
+                                    {
+                                        diagnostics.Add(DiagnosticFacts.GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((NameReference)dateTimePattern.PartitionColumn).SimpleName).WithLocation(node.PathFormat));
+                                        break;
+                                    }
+                                    partitionColumnsFunctionUsed.Add(dateTimePattern);
+                                }
                             }
-                        }
 
-                        // Find all partition column names not present in either set
-                        var unusedPartitionColumns = partitionColumnNames
-                            .Where(name => !partitionColumnsDirectlyUsed.Contains(name) && !partitionColumnsFunctionUsed.Any(item => ((DateTimePattern)item).PartitionColumn.SimpleName == name))
-                            .ToList();
+                            // Find all partition column names not present in either set
+                            var unusedPartitionColumns = partitionColumnNames
+                                .Where(name => !partitionColumnsDirectlyUsed.Contains(name) && !partitionColumnsFunctionUsed.Any(item => ((DateTimePattern)item).PartitionColumn.SimpleName == name))
+                                .ToList();
 
-                        // Add diagnostics for each unused column
-                        foreach (var name in unusedPartitionColumns)
-                        {
-                            diagnostics.Add(DiagnosticFacts.GetPartitionColumnNotUsedInPathFormat(name).WithLocation(node.PathFormat));
-                        }
+                            // Add diagnostics for each unused column
+                            foreach (var name in unusedPartitionColumns)
+                            {
+                                diagnostics.Add(DiagnosticFacts.GetPartitionColumnNotUsedInPathFormat(name).WithLocation(node.PathFormat));
+                            }
 
-                        // Find partitions that have both direct and function usage
-                        var conflictingPartitionColumns = partitionColumnsFunctionUsed
-                            .Where(expr => partitionColumnsDirectlyUsed.Contains(((DateTimePattern)expr).PartitionColumn.SimpleName))
-                            .ToList();
+                            // Find partitions that have both direct and function usage
+                            var conflictingPartitionColumns = partitionColumnsFunctionUsed
+                                .Where(expr => partitionColumnsDirectlyUsed.Contains(((DateTimePattern)expr).PartitionColumn.SimpleName))
+                                .ToList();
 
-                        // Add diagnostics for each conflicting partition
-                        foreach (var expr in conflictingPartitionColumns)
-                        {
-                            diagnostics.Add(DiagnosticFacts
-                                .GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((DateTimePattern)expr).PartitionColumn.SimpleName)
-                                .WithLocation(node.PathFormat));
+                            // Add diagnostics for each conflicting partition
+                            foreach (var expr in conflictingPartitionColumns)
+                            {
+                                diagnostics.Add(DiagnosticFacts
+                                    .GetPartitionColumnCanNotBeUsedBothDirectlyAndPattern(((DateTimePattern)expr).PartitionColumn.SimpleName)
+                                    .WithLocation(node.PathFormat));
+                            }
                         }
                     }
 
                     node.ConnectionStrings.ConnectionStrings.Select(item => _binder.CheckIsExactType(item.Element, ScalarTypes.String, diagnostics));
 
-                    if (!KustoFacts.InlineExternalTableDataFormats.Contains(node.DataFormatParameter.Value.ValueText))
+                    if (!isDeltaInlineExternalTable
+                        && !KustoFacts.InlineExternalTableDataFormats.Contains(node.DataFormatParameter.Value.ValueText))
                     {
                         diagnostics.Add(DiagnosticFacts.GetWrongDataStreamType(node.DataFormatParameter.Value.ValueText).WithLocation(node.DataFormatParameter));
                     }
 
-                    return new SemanticInfo(new TableSymbol(columns), diagnostics);
+                    var resultTable = new TableSymbol(columns);
+                    if (hasOmittedSchema)
+                    {
+                        resultTable = resultTable.WithIsOpen(true);
+                    }
+
+                    return new SemanticInfo(resultTable, diagnostics);
                 }
                 finally
                 {
@@ -3571,6 +3614,33 @@ namespace Kusto.Language.Binding
 
                     if (node.Schema != null)
                     {
+                        // if starts with asterisk (*) add any existing columns that is not re-declared by the output schema expression
+                        if (node.Schema.Schema.AsteriskToken != null
+                            && node.Schema.Schema.AsteriskToken.Width > 0)
+                        {
+                            if (GetResultTypeOrError(node.FunctionCall) is TableSymbol pluginResult)
+                            {
+                                var explicitNames = s_stringSetPool.AllocateFromPool();
+                                try
+                                {                                   
+                                    for (int i = 0; i < node.Schema.Schema.Columns.Count; i++)
+                                    {                                       
+                                        explicitNames.Add(node.Schema.Schema.Columns[i].Element.Name.SimpleName);
+                                    }
+
+                                    foreach (var col in pluginResult.Columns)
+                                    {
+                                        if (!explicitNames.Contains(col.Name))
+                                            columns.Add(col);
+                                    }
+                                }
+                                finally
+                                {                                   
+                                    s_stringSetPool.ReturnToPool(explicitNames);
+                                }
+                            }                            
+                        }
+
                         CreateColumnsFromRowSchema(node.Schema.Schema.Columns, columns);
                         return new SemanticInfo(new TableSymbol(columns), diagnostics);
                     }

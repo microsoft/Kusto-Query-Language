@@ -622,6 +622,13 @@ namespace Kusto.Language.Parsing
                 SyntaxToken.Missing(SyntaxKind.CloseParenToken),
                 new[] { DiagnosticFacts.GetMissingSchemaDeclaration() });
 
+        private static readonly Func<RowSchema> CreateOmittedRowSchema = () =>
+            new RowSchema(
+                SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                null,
+                SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
+                SyntaxToken.Missing(SyntaxKind.CloseParenToken));
+
         private static readonly Func<EvaluateRowSchema> CreateMissingEvaluateRowSchema = () =>
             new EvaluateRowSchema(
                 SyntaxToken.Missing(SyntaxKind.OpenParenToken),
@@ -1967,6 +1974,9 @@ namespace Kusto.Language.Parsing
         private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_dataTableParameters =
             CreateQueryOperatorParameterMap(QueryOperatorParameters.DataTableParameters);
 
+        private static readonly IReadOnlyDictionary<string, QueryOperatorParameter> s_inlineExternalTableParameters =
+            CreateQueryOperatorParameterMap(QueryOperatorParameters.InlineExternalTableProperties);
+
         private DataTableExpression ParseDataTableExpression()
         {
             var keyword = ParseToken(SyntaxKind.DataTableKeyword);
@@ -2090,18 +2100,35 @@ namespace Kusto.Language.Parsing
             return false;
         }
 
+        private bool ScanInlineExternalTableKindClause(int offset = 0)
+        {
+            return PeekToken(offset).Kind == SyntaxKind.KindKeyword;
+        }
+
         private InlineExternalTableExpression ParseInlineExternalTableExpression()
         {
             // Support usage of inline_external_table as identifier
-            if (PeekToken().Kind == SyntaxKind.InlineExternalTableKeyword && ScanExternalTableSchema(1))
+            if (PeekToken().Kind == SyntaxKind.InlineExternalTableKeyword
+                && (ScanExternalTableSchema(1) || ScanInlineExternalTableKindClause(1)))
             {
                 var keyword = ParseToken();
-                var parameters = ParseQueryOperatorParameterList(s_dataTableParameters);
-                var schema = ParseRowSchema(true) ?? CreateMissingRowSchema();
+                var parameters = ParseQueryOperatorParameterList(s_inlineExternalTableParameters, namesAllowed: AllowedNameKind.DeclaredOnly);
+                RowSchema schema = null;
+                if (ScanExternalTableSchema())
+                {
+                    schema = ParseRowSchema(true);
+                }
+
                 var kind = ParseInlineExternalTableKindClause();
+                if (schema == null)
+                {
+                    schema = IsInlineExternalTableDeltaKind(kind)
+                        ? CreateOmittedRowSchema()
+                        : CreateMissingRowSchema();
+                }
                 var partitionClause = ParseInlineExternalTablePartitionClause();
                 var pathFormatClause = ParseInlineExternalTablePathFormatClause();
-                var dataFormat = ParseInlineExternalDataFormatClause();
+                var dataFormat = ParseInlineExternalDataFormatClause(kind);
                 var connectionStrings = ParseInlineExternalTableConnectionStringsClause();
                 var withClause = ParseExternalDataWithClause();
                 return new InlineExternalTableExpression(keyword, parameters, schema, kind, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause);
@@ -2246,7 +2273,29 @@ namespace Kusto.Language.Parsing
                 new[] { DiagnosticFacts.GetMissingExternalTableKind() });
         }
 
-        private InlineExternalTableDataFormatClause ParseInlineExternalDataFormatClause()
+        private static bool IsInlineExternalTableDeltaKind(InlineExternalTableKindClause kindClause)
+        {
+            return string.Equals(kindClause?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static InlineExternalTableDataFormatClause CreateMissingInlineExternalTableDataFormatClause()
+        {
+            return new InlineExternalTableDataFormatClause(
+                SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
+                new[] { DiagnosticFacts.GetMissingDataFormat() });
+        }
+
+        private static InlineExternalTableDataFormatClause CreateOmittedInlineExternalTableDataFormatClause()
+        {
+            return new InlineExternalTableDataFormatClause(
+                SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
+                SyntaxToken.Missing(SyntaxKind.EqualToken),
+                SyntaxToken.Missing(SyntaxKind.StringLiteralToken));
+        }
+
+        private InlineExternalTableDataFormatClause ParseInlineExternalDataFormatClause(InlineExternalTableKindClause kindClause)
         {
             if (PeekToken().Kind == SyntaxKind.DataFormatKeyword)
             {
@@ -2256,11 +2305,9 @@ namespace Kusto.Language.Parsing
                 return new InlineExternalTableDataFormatClause(keyword, equal, value);
             }
 
-            return new InlineExternalTableDataFormatClause(
-                SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
-                SyntaxToken.Missing(SyntaxKind.EqualToken),
-                SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
-                new[] { DiagnosticFacts.GetMissingDataFormat() });
+            return IsInlineExternalTableDeltaKind(kindClause)
+                ? CreateOmittedInlineExternalTableDataFormatClause()
+                : CreateMissingInlineExternalTableDataFormatClause();
         }
 
 
@@ -6230,8 +6277,9 @@ namespace Kusto.Language.Parsing
                         && PeekToken(1 + nameLen).Kind == SyntaxKind.FromKeyword;
 
                 case SyntaxKind.InlineExternalTableKeyword:
-                    // inline_external_table ( ...
-                    return PeekToken(1).Kind == SyntaxKind.OpenParenToken;
+                    // inline_external_table ( ...  or inline_external_table kind=...
+                    return PeekToken(1).Kind == SyntaxKind.OpenParenToken
+                        || PeekToken(1).Kind == SyntaxKind.KindKeyword;
 
                 case SyntaxKind.ReduceKeyword:
                     // reduce by  or  reduce xxx

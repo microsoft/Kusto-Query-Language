@@ -1711,6 +1711,42 @@ namespace Kusto.Language.Parsing
                 (keyword, equals, type) =>
                     new InlineExternalTableDataFormatClause(keyword, equals, type));
 
+            InlineExternalTableDataFormatClause CreateMissingInlineExternalTableDataFormatClause() =>
+                new InlineExternalTableDataFormatClause(
+                    SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
+                    SyntaxToken.Missing(SyntaxKind.EqualToken),
+                    SyntaxToken.Missing(SyntaxKind.StringLiteralToken),
+                    new[] { DiagnosticFacts.GetMissingDataFormat() });
+
+            InlineExternalTableDataFormatClause CreateOmittedInlineExternalTableDataFormatClause() =>
+                new InlineExternalTableDataFormatClause(
+                    SyntaxToken.Missing(SyntaxKind.DataFormatKeyword),
+                    SyntaxToken.Missing(SyntaxKind.EqualToken),
+                    SyntaxToken.Missing(SyntaxKind.StringLiteralToken));
+
+            RowSchema CreateOmittedInlineExternalTableRowSchema() =>
+                new RowSchema(
+                    SyntaxToken.Missing(SyntaxKind.OpenParenToken),
+                    null,
+                    SyntaxList<SeparatedElement<NameAndTypeDeclaration>>.Empty(),
+                    SyntaxToken.Missing(SyntaxKind.CloseParenToken));
+
+            bool IsInlineExternalTableDeltaKind(InlineExternalTableKindClause kindClause) =>
+                string.Equals(kindClause?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+
+            RowSchema GetInlineExternalTableRowSchema(InlineExternalTableKindClause kindClause) =>
+                IsInlineExternalTableDeltaKind(kindClause)
+                    ? CreateOmittedInlineExternalTableRowSchema()
+                    : CreateMissingRowSchema(null, 0);
+
+            InlineExternalTableDataFormatClause GetInlineExternalTableDataFormatClause(
+                InlineExternalTableKindClause kindClause,
+                InlineExternalTableDataFormatClause dataFormatClause) =>
+                dataFormatClause
+                ?? (IsInlineExternalTableDeltaKind(kindClause)
+                    ? CreateOmittedInlineExternalTableDataFormatClause()
+                    : CreateMissingInlineExternalTableDataFormatClause());
+
             var ParseInlineExternalTablePathFormat =
                 Rule(
                     First(
@@ -1775,22 +1811,60 @@ namespace Kusto.Language.Parsing
                     RequiredToken(SyntaxKind.CloseParenToken),
                     (openBracket, connectionStrings, closeBracket) =>
                         new InlineExternalTableConnectionStringsClause(openBracket, connectionStrings, closeBracket));
-            
-            var InlineExternalTableExpression =
-                // Support usage of inline_external_table as identifier
+
+            var InlineExternalTableExpressionWithSchema =
                 If(And(Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix), Token(SyntaxKind.OpenParenToken)),
                     Rule(
                         Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix),
-                        QueryParameterList(QueryOperatorParameters.InlineExternalTableProperties),
+                        QueryParameterList(QueryOperatorParameters.InlineExternalTableProperties, allowedNames: AllowedNameKind.DeclaredOnly),
                         Required(MandatoryRowSchema, CreateMissingRowSchema),
                         Required(InlineExternalTableKindClause, CreateMissingInlineExternalTableKindClause),
                         Optional(InlineExternalTablePartitionClause),
                         Optional(InlineExternalTablePathFormatClause),
-                        Required(InlineExternalTableDataFormatClause, CreateMissingInlineExternalTableDataFormatClause),
+                        Optional(InlineExternalTableDataFormatClause),
                         Required(InlineExternalTableConnectionStringsClause, CreateMissingInlineExternalTableConnectionStringsClause),
                         Optional(ExternalDataWithClause),
                         (keyword, parameters, schema, kindClause, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause) =>
-                            (Expression)new InlineExternalTableExpression(keyword, parameters, schema, kindClause, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause)));
+                            (Expression)new InlineExternalTableExpression(
+                                keyword,
+                                parameters,
+                                schema,
+                                kindClause,
+                                partitionClause,
+                                pathFormatClause,
+                                GetInlineExternalTableDataFormatClause(kindClause, dataFormat),
+                                connectionStrings,
+                                withClause)));
+
+            var InlineExternalTableExpressionWithoutSchema =
+                If(And(
+                        Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix),
+                        Token(SyntaxKind.KindKeyword)),
+                    Rule(
+                        Token(SyntaxKind.InlineExternalTableKeyword, CompletionKind.QueryPrefix),
+                        QueryParameterList(QueryOperatorParameters.InlineExternalTableProperties, allowedNames: AllowedNameKind.DeclaredOnly),
+                        Required(InlineExternalTableKindClause, CreateMissingInlineExternalTableKindClause),
+                        Optional(InlineExternalTablePartitionClause),
+                        Optional(InlineExternalTablePathFormatClause),
+                        Optional(InlineExternalTableDataFormatClause),
+                        Required(InlineExternalTableConnectionStringsClause, CreateMissingInlineExternalTableConnectionStringsClause),
+                        Optional(ExternalDataWithClause),
+                        (keyword, parameters, kindClause, partitionClause, pathFormatClause, dataFormat, connectionStrings, withClause) =>
+                            (Expression)new InlineExternalTableExpression(
+                                keyword,
+                                parameters,
+                                GetInlineExternalTableRowSchema(kindClause),
+                                kindClause,
+                                partitionClause,
+                                pathFormatClause,
+                                GetInlineExternalTableDataFormatClause(kindClause, dataFormat),
+                                connectionStrings,
+                                withClause)));
+
+            var InlineExternalTableExpression =
+                First(
+                    InlineExternalTableExpressionWithSchema,
+                    InlineExternalTableExpressionWithoutSchema);
 
             // End of Inline External Table Expression
 
