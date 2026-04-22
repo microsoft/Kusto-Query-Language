@@ -772,7 +772,11 @@ namespace Kusto.Language.Syntax
             // put in sorted order  TODO: fix list to be in order 
             data.Sort((d1, d2) => string.Compare(d1.Text, d2.Text));
 
+#if NET5_0_OR_GREATER
+            var count = Enum.GetValues<SyntaxKind>().Length;
+#else
             var count = Enum.GetValues(typeof(SyntaxKind)).Length;
+#endif
 
             kindToDataMap = new SyntaxData[count];
             textToKindMap = new TextKeyedDictionary<SyntaxKind>();
