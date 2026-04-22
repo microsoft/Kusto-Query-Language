@@ -1112,6 +1112,11 @@ namespace Kusto.Language
             return new Diagnostic("KS272", "Inline external table kind=delta requires exactly one root URI.");
         }
 
+        public static Diagnostic GetMultipleGraphOutputsRequireAliases()
+        {
+            return new Diagnostic("KS273", "Multiple graph outputs require aliases.");
+        }
+
         #region command diagnostics
         public static Diagnostic GetMissingCommand()
         {

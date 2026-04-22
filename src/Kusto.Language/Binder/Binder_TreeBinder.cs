@@ -774,9 +774,20 @@ namespace Kusto.Language.Binding
                 BindNode(node);
             }
 
+            public override void VisitRowSchema(RowSchema node)
+            {
+                _binder.BindColumnDeclarations(node.Columns);
+            }
+
+            public override void VisitEvaluateRowSchema(EvaluateRowSchema node)
+            {
+                _binder.BindColumnDeclarations(node.Columns);
+            }
+
             public override void VisitInlineExternalTableExpression(InlineExternalTableExpression node)
             {
                 node.Parameters.Accept(this);
+                node.Schema?.Accept(this);
 
                 var oldLocalScope = _binder._localScope;
 
@@ -785,7 +796,6 @@ namespace Kusto.Language.Binding
                     _binder._localScope = new LocalScope(oldLocalScope);
                     if (node.Schema != null)
                     {
-                        _binder.BindColumnDeclarations(node.Schema.Columns);
                         _binder.AddDeclarationsToLocalScope(node.Schema.Columns);
                     }
                     node.PartitionClause?.Accept(this);

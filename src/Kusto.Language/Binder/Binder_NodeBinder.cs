@@ -4223,14 +4223,20 @@ namespace Kusto.Language.Binding
                     }
                     else if (node.OutputClause.Count == 2)
                     {
-
                         var nodesTableClause = node.OutputClause.FirstOrDefault(oc => oc.Element.EntityKeyword.Kind == SyntaxKind.NodesKeyword)?.Element;
                         var edgesTableClause = node.OutputClause.FirstOrDefault(oc => oc.Element.EntityKeyword.Kind == SyntaxKind.GraphEdgesKeyword)?.Element;
+
                         if (nodesTableClause == null || edgesTableClause == null)
                         {
                             diagnostics.Add(DiagnosticFacts.GetMissingGraphEntityType().WithLocation(node.OutputClause));
                             return new SemanticInfo(diagnostics);
                         }
+                        
+                        if (nodesTableClause.AsClause == null)
+                            diagnostics.Add(DiagnosticFacts.GetMultipleGraphOutputsRequireAliases().WithLocation(nodesTableClause));
+
+                        if (edgesTableClause.AsClause == null)
+                            diagnostics.Add(DiagnosticFacts.GetMultipleGraphOutputsRequireAliases().WithLocation(edgesTableClause));
 
                         var nodesTable = VisitGraphToTableNodesClause(nodesTableClause, leftGraph);
                         var edgesTable = VisitGraphToTableEdgesClause(edgesTableClause, leftGraph);
