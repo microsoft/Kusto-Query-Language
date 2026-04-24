@@ -81,13 +81,17 @@ namespace Kusto.Language.Editor
         }
 
         #region Writing formatted text
+
         /// <summary>
-        /// Writes the node to text, applying the formatting rules
+        /// Writes the node tree as formatted text
         /// </summary>
         private void WriteFormattedText(SyntaxNode node, int indentation)
         {
             if (node == null)
                 return;
+
+            // if no spacing rule is specified for the token, use this spacing kind
+            var generalSpacingKind = GetSpacingKind(_options.GeneralSpacing);
 
             for (int i = 0, n = node.ChildCount; i < n; i++)
             {
@@ -95,7 +99,7 @@ namespace Kusto.Language.Editor
 
                 if (child != null)
                 {
-                    var spacingKind = SpacingKind.AlignOnly;
+                    var spacingKind = generalSpacingKind;
                     var childIndentation = indentation;
 
                     if (TryGetSpacingRule(child, out var spacing))
@@ -157,14 +161,14 @@ namespace Kusto.Language.Editor
         }
 
         /// <summary>
-        /// Writes the token.
-        /// Returns the line offset of the token as it was written.
+        /// Writes the token as formatted text
+        /// Returns the line offset of the start of the token text as it was written.
         /// </summary>
-        private int WriteToken(SyntaxToken token, int indentation, SpacingKind spacingKind = SpacingKind.AsIs)
+        private int WriteToken(SyntaxToken token, int indentation, SpacingKind spacingKind)
         {
             if (token.Text.Length > 0 || token.Trivia.Length > 0 || (token.IsMissing && _options.InsertMissingTokens))
             {
-                WriteTrivia(token, indentation, spacingKind, token.Kind != SyntaxKind.EndOfTextToken);
+                WriteTokenTrivia(token, indentation, spacingKind, token.Kind != SyntaxKind.EndOfTextToken);
             }
 
             if (_newCaretPosition == -1)
@@ -199,8 +203,12 @@ namespace Kusto.Language.Editor
             return tokenTextStart - _currentLineStart;
         }
 
-        private void WriteTrivia(SyntaxToken token, int indentation, SpacingKind spacingKind, bool hasFollowingToken)
+        /// <summary>
+        /// Writes the *new* trivia before the start of the token
+        /// </summary>
+        private void WriteTokenTrivia(SyntaxToken token, int indentation, SpacingKind spacingKind, bool hasFollowingToken)
         {
+            var prev = token.GetPreviousToken();
             var trivia = token.Trivia;
             var cursorInTrivia = _caretPosition >= token.TriviaStart && _caretPosition < token.TextStart;
 
@@ -211,69 +219,143 @@ namespace Kusto.Language.Editor
                     return;
 
                 case SpacingKind.SingleSpace:
-                    // all spacing is replace by a single space
-                    _builder.Append(" ");
+                    if (prev != null)
+                    {
+                        // all spacing is replaced by a single space
+                        _builder.Append(" ");
+                    }
+                    return;
+
+                case SpacingKind.MinimalSpace:
+                    if (prev != null)
+                    {
+                        // force minimal spacing
+                        var leftToken = token.GetPreviousToken();
+                        if (leftToken != null && RequiresSpacing(leftToken, token))
+                        {
+                            _builder.Append(" ");
+                        }
+                    }
                     return;
             }
 
-            if (spacingKind != SpacingKind.AsIs && TextFacts.HasLineBreaks(trivia))
+            bool isSameLineAsPrevToken = true;
+
+            // if the trivia has non-whitespace contents then preserve it (should be a comment)
+            // TODO: minimize whitespace up to start of content?
+            if (!TextFacts.IsWhitespaceOnly(trivia))
             {
-                // adjust and write all trivia lines
-                for (int lineStart = 0, lineEnd = 0; lineStart < trivia.Length; lineStart = lineEnd)
-                {
-                    int whitespaceEnd = SkipWhitespace(trivia, lineStart);
-
-                    if (lineStart == 0)
-                    {
-                        // write existing whitespace for first line, since this is whitespace that follows the last
-                        // token on the last line (may contain trailing comments)
-                        _builder.Append(trivia, lineStart, whitespaceEnd - lineStart);
-                    }
-                    else
-                    {
-                        // write standardized indentation instead of existing whitespace
-                        WriteIndentation(indentation);
-                    }
-
-                    // write remainder of line (possible comments and/or EOL)
-                    var nextLineBreakStart = TextFacts.GetNextLineBreakStart(trivia, whitespaceEnd);
-                    var nextLineStart = TextFacts.GetNextLineStart(trivia, whitespaceEnd);
-                    lineEnd = nextLineStart >= 0 ? nextLineStart : trivia.Length;
-                    _builder.Append(trivia, whitespaceEnd, lineEnd - whitespaceEnd);
-                    _currentLineStart = _builder.Length;
-
-                    // if the last thing in the trivia was a line break, add indentation for following token.
-                    if (lineEnd >= trivia.Length && nextLineBreakStart >= 0 && hasFollowingToken)
-                    {
-                        WriteIndentation(indentation);
-                    }
-                }
+                // write out trivia (comments)
+                WriteTriviaLines(trivia, indentation, hasFollowingToken);
+                isSameLineAsPrevToken = !TextFacts.HasLineBreaks(trivia);
             }
-            else
+            else if (TextFacts.HasLineBreaks(trivia) 
+                || spacingKind == SpacingKind.NewLine)
             {
+                _builder.AppendLine();
+                _currentLineStart = _builder.Length;
+                WriteIndentation(indentation);
+                return;
+            }
+            else if (spacingKind == SpacingKind.AsIs
+                || spacingKind == SpacingKind.AlignOnly)
+            {
+                // no line breaks, so just append existing whitespace
+                _builder.Append(trivia);
+                return;
+            }
+
+            if (prev != null 
+                && isSameLineAsPrevToken
+                && token.Kind != SyntaxKind.EndOfTextToken)
+             {
                 switch (spacingKind)
                 {
                     case SpacingKind.NoSpaceIfOnSameLine:
-                        // there was no line break, so make it have no spacing by writing nothing
+                        // no space, do nothing
                         break;
 
                     case SpacingKind.SingleSpaceIfOnSameLine:
-                        // there was no line break, so make it a single space by writing a single space
                         _builder.Append(" ");
                         break;
 
-                    case SpacingKind.NewLine:
-                        // there was no line break so add one
-                        _builder.AppendLine();
-                        _currentLineStart = _builder.Length;
-                        WriteIndentation(indentation);
+                    case SpacingKind.MinimalSpaceIfOnSameLine:
+                        var left = token.GetPreviousToken(includeZeroWidthTokens: false);
+                        if (left != null && RequiresSpacing(left, token))
+                        {
+                            _builder.Append(" ");
+                        }
                         break;
+                }
+            }
+        }
 
-                    case SpacingKind.AsIs:
-                    case SpacingKind.AlignOnly:
-                    default:
-                        _builder.Append(trivia);
-                        break;
+        /// <summary>
+        /// Returns true if the language grammar requires spacing between the two tokens 
+        /// in order to reparse as separate tokens.
+        /// </summary>
+        private bool RequiresSpacing(SyntaxToken left, SyntaxToken right)
+        {
+            if (IsIdentifierOrKeyword(left) && IsIdentifierOrKeyword(right))
+            {
+                return true;
+            }
+            else
+            {
+                // check for tokens that also start compound tokens
+                switch (left.Kind)
+                {
+                    case SyntaxKind.EqualToken:
+                        return right.Kind.GetText().StartsWith("=")  // ==
+                            || right.Kind.GetText().StartsWith(">")  // =>
+                            || right.Kind.GetText().StartsWith("~"); // =~
+                    case SyntaxKind.BangToken:
+                        return right.Kind.GetText().StartsWith("=")  // !=
+                            || right.Kind.GetText().StartsWith("~"); // !~
+                    case SyntaxKind.LessThanToken:
+                        return right.Kind.GetText().StartsWith(">")  // <>
+                            || right.Kind.GetText().StartsWith("=")  // <= 
+                            || right.Kind.GetText().StartsWith("|"); // <|
+                    case SyntaxKind.GreaterThanToken:
+                        return right.Kind.GetText().StartsWith("="); // >=
+                    case SyntaxKind.DotToken:
+                        return right.Kind.GetText().StartsWith("."); // ..
+                }
+
+                return false;
+            }
+        }
+
+        private void WriteTriviaLines(string trivia, int indentation, bool hasFollowingToken)
+        {
+            // adjust and write all trivia lines
+            for (int lineStart = 0, lineEnd = 0; lineStart < trivia.Length; lineStart = lineEnd)
+            {
+                int whitespaceEnd = SkipWhitespace(trivia, lineStart);
+
+                if (lineStart == 0)
+                {
+                    // write existing whitespace for first line, since this is whitespace that follows the last
+                    // token on the last line (may contain trailing comments)
+                    _builder.Append(trivia, lineStart, whitespaceEnd - lineStart);
+                }
+                else
+                {
+                    // write standardized indentation instead of existing whitespace
+                    WriteIndentation(indentation);
+                }
+
+                // write remainder of line (possible comments and/or EOL)
+                var nextLineBreakStart = TextFacts.GetNextLineBreakStart(trivia, whitespaceEnd);
+                var nextLineStart = TextFacts.GetNextLineStart(trivia, whitespaceEnd);
+                lineEnd = nextLineStart >= 0 ? nextLineStart : trivia.Length;
+                _builder.Append(trivia, whitespaceEnd, lineEnd - whitespaceEnd);
+                _currentLineStart = _builder.Length;
+
+                // if the last thing in the trivia was a line break, add indentation for following token.
+                if (lineEnd >= trivia.Length && nextLineBreakStart >= 0 && hasFollowingToken)
+                {
+                    WriteIndentation(indentation);
                 }
             }
         }
@@ -306,7 +388,7 @@ namespace Kusto.Language.Editor
         }
 #endregion
 
-#region Identifying formatting rules
+        #region Identifying formatting rules
         /// <summary>
         /// Identify formatting rules for all nodes and tokens.
         /// </summary>
@@ -338,10 +420,6 @@ namespace Kusto.Language.Editor
         /// </summary>
         private void AddTokenRules(SyntaxToken token)
         {
-            // don't adjust spacing if there are already line breaks in the trivia
-            if (TextFacts.HasLineBreaks(token.Trivia))
-                return;
-
             // if no previous token then leave as is
             var prev = token.GetPreviousToken();
             if (prev == null)
@@ -350,80 +428,384 @@ namespace Kusto.Language.Editor
             if (IsIdentifierOrKeyword(token) && IsIdentifierOrKeyword(prev))
             {
                 // always have space between two adjacent names
-                if (token.Trivia != " ")
-                {
-                    AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-                }
+                AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
             }
-            else if (token.Parent is BinaryExpression be && be.Operator == token
-                || prev.Parent is BinaryExpression pbe && pbe.Operator == prev)
+            else if (token.Parent is BinaryExpression be && be.Operator == token)
             {
-                // space before and after binary operator
-                if (token.Trivia != " ")
-                {
-                    AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-                }
+                AddRule(token, GetBeforeSpacingRule(_options.InfixOperatorSpacing));
+            }
+            else if (prev.Parent is BinaryExpression pbe && pbe.Operator == prev)
+            {
+                AddRule(token, GetAfterSpacingRule(_options.InfixOperatorSpacing));
             }
             else if (prev.Parent is PrefixUnaryExpression pue && pue.Operator == prev)
             {
-                // no space after prefix unary operator
-                if (token.Trivia != "")
-                {
-                    AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
-                }
+                AddRule(token, GetSpacingRule(_options.PrefixOperatorSpacing));
             }
             else if (token.Kind != SyntaxKind.EndOfTextToken)
             {
                 // spacing before token
                 switch (token.Kind)
                 {
-                    case SyntaxKind.CloseBraceToken:
-                    case SyntaxKind.CloseBracketToken:
-                    case SyntaxKind.CloseParenToken:
                     case SyntaxKind.CommaToken:
+                        AddRule(token, GetBeforeSpacingRule(_options.CommaSpacing));
+                        break;
+
                     case SyntaxKind.ColonToken:
-                    case SyntaxKind.SemicolonToken:
-                    case SyntaxKind.DotToken:
-                        if (token.Trivia != "")
+                        AddRule(token, GetBeforeSpacingRule(_options.ColonSpacing));
+                        break;
+
+                    case SyntaxKind.BarToken:
+                        AddRule(token, GetBeforeSpacingRule(_options.PipeOperatorSpacing));
+                        break;
+
+                    case SyntaxKind.EqualToken:
+                        AddRule(token, GetBeforeSpacingRule(_options.AssignmentSpacing));
+                        break;
+
+                    case SyntaxKind.OpenBraceToken:
+                        if (IsFunctionBody(token))
                         {
-                            AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
+                            AddRule(token, GetSpacingRule(_options.BeforeFunctionBodySpacing));
                         }
                         break;
 
-                    case SyntaxKind.DotDotToken:
-                    case SyntaxKind.BarToken:
-                        if (token.Trivia != " ")
+                    case SyntaxKind.CloseBraceToken:
+                        if (prev.Kind == SyntaxKind.OpenBraceToken)
                         {
-                            AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
+                            if (IsFunctionBody(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyFunctionBodySpacing));
+                            }
+                            else if (IsJsonObject(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyJsonObjectSpacing));
+                            }
+                            else
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.One));
+                            }
                         }
+                        else
+                        {
+                            if (IsFunctionBody(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.FunctionBodySpacing));
+                            }
+                            else if (IsJsonObject(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.JsonObjectSpacing));
+                            }
+                            else if (IsBracedName(token))
+                            {
+                                // never make configurable
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else
+                            {
+                                // any other kinds of braces
+                                AddRule(token, GetSpacingRule(SpacingStyle.One));
+                            }
+                        }
+                        break;
+
+                    case SyntaxKind.OpenBracketToken:
+                        if (IsDataValuesList(token))
+                        {
+                            AddRule(token, GetSpacingRule(_options.BeforeDataTableValueSpacing));
+                        }
+                        break;
+
+                    case SyntaxKind.CloseBracketToken:
+                        if (prev.Kind == SyntaxKind.OpenBracketToken)
+                        {
+                            if (IsJsonArray(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyJsonArraySpacing));
+                            }
+                            else if (IsDataValuesList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyDataTableValueSpacing));
+                            }
+                            else if (IsBracketedExpression(token))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else if (IsBracketedName(token))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingKind.NoSpace));
+                            }
+                            else
+                            {
+                                // any other kind of empty bracket pairs
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                        }
+                        else
+                        {
+                            if (IsJsonArray(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.JsonArraySpacing));
+                            }
+                            else if (IsDataValuesList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.DataTableValueSpacing));
+                            }
+                            else if (IsBracketedExpression(token))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else if (IsBracketedName(token))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingKind.NoSpace));
+                            }
+                            else
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                        }
+                        break;
+
+                    case SyntaxKind.OpenParenToken:
+                        if (IsArgumentList(token))
+                        {
+                            AddRule(token, GetSpacingRule(_options.BeforeArgumentListSpacing));
+                        }
+                        else if (IsParameterList(token))
+                        {
+                            AddRule(token, GetSpacingRule(_options.BeforeParameterListSpacing));
+                        }
+                        else if (IsDynamicExpression(token))
+                        {
+                            AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                        }
+                        break;
+
+                    case SyntaxKind.CloseParenToken:
+                        if (prev.Kind == SyntaxKind.OpenParenToken)
+                        {
+                            if (IsArgumentList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyArgumentListSpacing));
+                            }
+                            else if (IsParameterList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.EmptyParameterListSpacing));
+                            }
+                            else if (IsParenthesizedExpression(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ParenthesizedExpressionSpacing));
+                            }
+                            else if (IsDynamicExpression(token))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else
+                            {
+                                // any other kind of empty parentheses
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                        }
+                        else
+                        {
+                            if (IsArgumentList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ArgumentListSpacing));
+                            }
+                            else if (IsParameterList(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ParameterListSpacing));
+                            }
+                            else if (IsParenthesizedExpression(token))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ParenthesizedExpressionSpacing));
+                            }
+                            else
+                            {
+                                // any other kind of parentheses
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                        }
+                        break;
+
+                    case SyntaxKind.DotToken:
+                        AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
+                        break;
+
+                    case SyntaxKind.DotDotToken:
+                        AddRule(token, GetBeforeSpacingRule(_options.RangeOperatorSpacing));
+                        break;
+
+                    case SyntaxKind.SemicolonToken:
+                        AddRule(token, GetBeforeSpacingRule(_options.SemicolonSpacing));
                         break;
                 }
 
                 // spacing after previous token
                 switch (prev.Kind)
                 {
+                    case SyntaxKind.CommaToken:
+                        AddRule(token, GetAfterSpacingRule(_options.CommaSpacing));
+                        break;
+
+                    case SyntaxKind.ColonToken:
+                        AddRule(token, GetAfterSpacingRule(_options.ColonSpacing));
+                        break;
+
+                    case SyntaxKind.BarToken:
+                        AddRule(token, GetAfterSpacingRule(_options.PipeOperatorSpacing));
+                        break;
+
+                    case SyntaxKind.EqualToken:
+                        AddRule(token, GetAfterSpacingRule(_options.AssignmentSpacing));
+                        break;
+
                     case SyntaxKind.OpenBraceToken:
-                    case SyntaxKind.OpenBracketToken:
-                    case SyntaxKind.OpenParenToken:
-                    case SyntaxKind.DotToken:
-                        if (token.Trivia != "")
+                        if (token.Kind != SyntaxKind.CloseBraceToken)
                         {
-                            AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
+                            if (IsFunctionBody(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.FunctionBodySpacing));
+                            }
+                            else if (IsJsonObject(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.JsonObjectSpacing));
+                            }
+                            else if (IsBracedName(prev))
+                            {
+                                // always none, never make configurable 
+                                AddRule(token, GetSpacingRule(SpacingKind.NoSpace));
+                            }
+                            else
+                            {
+                                // any other kind of braces
+                                AddRule(token, GetSpacingRule(SpacingStyle.One));
+                            }
                         }
                         break;
 
-                    case SyntaxKind.CommaToken:
-                    case SyntaxKind.ColonToken:
-                    case SyntaxKind.BarToken:
-                    case SyntaxKind.SemicolonToken:
-                    case SyntaxKind.DotDotToken:
-                        if (token.Trivia != " ")
+                    case SyntaxKind.OpenBracketToken:
+                        if (token.Kind != SyntaxKind.CloseBracketToken)
                         {
-                            AddRule(token, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
+                            if (IsJsonArray(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.JsonArraySpacing));
+                            }
+                            else if (IsDataValuesList(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.DataTableValueSpacing));
+                            }
+                            else if (IsBracketedExpression(prev))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else if (IsBracketedName(prev))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingKind.NoSpace));
+                            }
+                            else
+                            {
+                                // default behavior for brackets
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
                         }
+                        break;
+
+                    case SyntaxKind.OpenParenToken:
+                        if (token.Kind != SyntaxKind.CloseParenToken) // not empty parens (already handled)
+                        {
+                            if (IsArgumentList(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ArgumentListSpacing));
+                            }
+                            else if (IsParameterList(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ParameterListSpacing));
+                            }
+                            else if (IsParenthesizedExpression(prev))
+                            {
+                                AddRule(token, GetSpacingRule(_options.ParenthesizedExpressionSpacing));
+                            }
+                            else if (IsDynamicExpression(prev))
+                            {
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                            else
+                            {
+                                // other parens?
+                                AddRule(token, GetSpacingRule(SpacingStyle.Minimal));
+                            }
+                        }
+                        break;
+
+                    case SyntaxKind.DotToken:
+                        AddRule(token, SpacingRule.From(SpacingKind.NoSpaceIfOnSameLine));
+                        break;
+
+                    case SyntaxKind.DotDotToken:
+                        AddRule(token, GetAfterSpacingRule(_options.RangeOperatorSpacing));
+                        break;
+
+                    case SyntaxKind.SemicolonToken:
+                        AddRule(token, GetAfterSpacingRule(_options.SemicolonSpacing));
                         break;
                 }
             }
+        }
+
+        private bool IsArgumentList(SyntaxToken paren)
+        {
+            return paren.Parent is ExpressionList;
+        }
+
+        private bool IsParameterList(SyntaxToken paren)
+        {
+            return paren.Parent is FunctionParameters;
+        }
+
+        private bool IsParenthesizedExpression(SyntaxToken paren)
+        {
+            return paren.Parent is ParenthesizedExpression;
+        }
+
+        private bool IsDynamicExpression(SyntaxToken paren)
+        {
+            return paren.Parent is DynamicExpression;
+        }
+
+        private bool IsJsonArray(SyntaxToken bracket)
+        {
+            return bracket.Parent is JsonArrayExpression;
+        }
+
+        private bool IsDataValuesList(SyntaxToken bracket)
+        {
+            return bracket.Parent is DataTableExpression;
+        }
+
+        private bool IsBracketedExpression(SyntaxToken bracket)
+        {
+            return bracket.Parent is BracketedExpression;
+        }
+
+        private bool IsBracketedName(SyntaxToken bracket)
+        {
+            return bracket.Parent is BracketedName;
+        }
+
+        private bool IsFunctionBody(SyntaxToken brace)
+        {
+            return brace.Parent is FunctionBody;
+        }
+
+        private bool IsJsonObject(SyntaxToken brace)
+        {
+            return brace.Parent is JsonObjectExpression;
+        }
+
+        private bool IsBracedName(SyntaxToken brace)
+        {
+            return brace.Parent is BracedName;
         }
 
         /// <summary>
@@ -486,12 +868,10 @@ namespace Kusto.Language.Editor
 
         private const int ArbitraryMaxBinaryOperatorChainWidth = 80;
 
-        /// <summary>
-        ///  Place operator that is part of an operator chain that is part of a query operator or clause (not nested in parens, etc)
-        ///  on new line if the overall chain is large.
-        /// </summary>
         private void AddBinaryOperatorChainRules(BinaryExpression be)
         {
+            //  Place operator that is part of an operator chain that is part of a query operator or clause (not nested in parens, etc)
+            //  on new line if the overall chain is large.
             if (IsChainableBinaryOperator(be.Kind)
                 && IsDirectQueryOperatorPart(be)
                 && !SpansMultipleLines(be)
@@ -527,7 +907,6 @@ namespace Kusto.Language.Editor
                 default:
                     return false;
             }
-
         }
 
         private static int GetBinaryOperatorChainDepth(BinaryExpression be)
@@ -587,12 +966,15 @@ namespace Kusto.Language.Editor
                 switch (style)
                 {
                     case PlacementStyle.Smart:
-                        // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                        // place the | on a new line if there are any new lines in the whole expression
                         AddRule(barToken, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(entireQuery, excluded: barToken)));
 
-                        // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                        var opToken = pe.Operator.GetFirstToken();
-                        AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                        var nextToken = barToken.GetNextToken();
+                        if (nextToken != null && TextFacts.IsWhitespaceOnly(nextToken.Trivia) && TextFacts.HasLineBreaks(nextToken.Trivia))
+                        {
+                            // remove the line break after bar token when bar token is adjusted to next line
+                            AddRule(nextToken, new SpacingRule(GetForcedAfterSpacingKind(_options.PipeOperatorSpacing), () => SpansOrWillSpanMultipleLines(entireQuery, excluded: barToken)));
+                        }
 
                         // adjust first token to new line if query is part of a parenthesized expression
                         if (entireQuery == pe)
@@ -610,12 +992,12 @@ namespace Kusto.Language.Editor
                         break;
 
                     case PlacementStyle.NewLine:
-                        // place this pipe expression's | on a new line if there are any new lines in the whole expression
+                        // place the | on a new line always
                         AddRule(barToken, SpacingRule.From(SpacingKind.NewLine));
+                        break;
 
-                        // Adjust the spacing of the operator's first token so it snaps to the |'s placement.
-                        opToken = pe.Operator.GetFirstToken();
-                        AddRule(opToken, SpacingRule.From(SpacingKind.SingleSpace));
+                    case PlacementStyle.None:
+                        // do not change the placement style
                         break;
                 }
             }
@@ -659,10 +1041,13 @@ namespace Kusto.Language.Editor
         private void AddFunctionDeclarationRules(FunctionDeclaration fd)
         {
             var letStatement = fd.Parent;
-            AddBrackettingStyleRules(fd.Body.OpenBrace, fd.Body.CloseBrace, letStatement, _options.FunctionBodyStyle, injectSpace: true);
-            AddListSpacingRules(fd.Body.Statements, letStatement, fd.Body, PlacementStyle.Smart);
 
-            // also apply same rules to final body expression
+            AddBrackettingStyleRules(fd.Parameters.OpenParen, fd.Parameters.CloseParen, letStatement, _options.FunctionParameterStyle, _options.BeforeParameterListSpacing);
+            AddBrackettingStyleRules(fd.Body.OpenBrace, fd.Body.CloseBrace, letStatement, _options.FunctionBodyStyle, _options.BeforeFunctionBodySpacing);
+
+            AddListSpacingRules(fd.Parameters.Parameters, letStatement, fd.Parameters, PlacementStyle.Smart);
+
+            AddListSpacingRules(fd.Body.Statements, letStatement, fd.Body, PlacementStyle.Smart);
             if (fd.Body.Expression != null)
             {
                 AddListElementSpacingRules(fd.Body.Expression, letStatement, fd.Body, PlacementStyle.Smart);
@@ -671,7 +1056,7 @@ namespace Kusto.Language.Editor
 
         private void AddFunctionCallRules(FunctionCallExpression fc)
         {
-            AddBrackettingStyleRules(fc.ArgumentList.OpenParen, fc.ArgumentList.CloseParen, fc.Name, _options.FunctionArgumentStyle, injectSpace: false);
+            AddBrackettingStyleRules(fc.ArgumentList.OpenParen, fc.ArgumentList.CloseParen, fc.Name, _options.FunctionArgumentStyle, _options.BeforeArgumentListSpacing);
             AddListSpacingRules(fc.ArgumentList.Expressions, fc.Name, fc.ArgumentList, PlacementStyle.Smart);
         }
 
@@ -730,7 +1115,7 @@ namespace Kusto.Language.Editor
             if (dt.Schema.Width > ArbitraryMaxSingleLineSchemaWidth
                 || SpansMultipleLines(dt.Schema))
             {
-                AddBrackettingStyleRules(dt.Schema.OpenParen, dt.Schema.CloseParen, indentRelativeTo, _options.SchemaStyle, injectSpace: false);
+                AddBrackettingStyleRules(dt.Schema.OpenParen, dt.Schema.CloseParen, indentRelativeTo, _options.SchemaStyle);
                 AddListSpacingRules(dt.Schema.Columns, indentRelativeTo, dt.Schema, PlacementStyle.NewLine);
             }
 
@@ -739,7 +1124,7 @@ namespace Kusto.Language.Editor
                 ? schemaColumns
                 : GetBalancedColumnCount(dt.Values);
 
-            AddBrackettingStyleRules(dt.OpenBracket, dt.CloseBracket, indentRelativeTo, _options.DataTableValueStyle, injectSpace: false);
+            AddBrackettingStyleRules(dt.OpenBracket, dt.CloseBracket, indentRelativeTo, _options.DataTableValueStyle, _options.BeforeDataTableValueSpacing);
 
             // place rows of values on separate lines
             for (int i = 0; i < dt.Values.Count; i++)
@@ -817,62 +1202,41 @@ namespace Kusto.Language.Editor
             return maxWidth;
         }
 
-        private void AddBrackettingStyleRules(SyntaxToken open, SyntaxToken close, SyntaxNode alignedTo, BrackettingStyle style, bool injectSpace)
+        private void AddBrackettingStyleRules(SyntaxToken open, SyntaxToken close, SyntaxNode alignedTo, BrackettingStyle style, SpacingStyle? beforeOpenStyle = null)
         {
             if (style == BrackettingStyle.Default)
                 style = _options.BrackettingStyle;
 
             switch (style)
             {
-                case BrackettingStyle.Default:
                 case BrackettingStyle.Vertical:
+                    // alignment for brackets when on separate lines
                     AddRule(open, new AlignmentRule(alignedTo));
                     AddRule(close, new AlignmentRule(alignedTo));
 
-                    var openSpacing = new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: open));
-                    var closeSpacing = new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close));
-
-                    if (injectSpace)
-                    {
-                        // inject space before open bracket
-                        openSpacing = openSpacing.Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-
-                        // inject space before close bracket
-                        closeSpacing = closeSpacing.Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-
-                        // inject space after open bracket
-                        var next = open.GetNextToken();
-                        if (next != null && next != close)
-                        {
-                            AddRule(next, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-                        }
-                    }
-
-                    AddRule(open, openSpacing);
-                    AddRule(close, closeSpacing);
+                    // trigger NewLine for brackets when content spans or will span multiple lines
+                    AddRule(open, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: open)));
+                    AddRule(close, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close)));
                     break;
 
                 case BrackettingStyle.Diagonal:
+                    // alignment for close bracket when on separate lines
                     AddRule(close, new AlignmentRule(alignedTo));
 
-                    closeSpacing = new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close));
+                    // trigger NewLine for close bracket when content spans or will span multiple lines
+                    AddRule(close, new SpacingRule(SpacingKind.NewLine, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close)));
 
-                    if (injectSpace)
+                    // trigger remove new-line for open if possible
+                    if (TextFacts.IsWhitespaceOnly(open.Trivia) && TextFacts.HasLineBreaks(open.Trivia))
                     {
-                        closeSpacing = closeSpacing.Otherwise(SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-
-                        // inject space before open bracket
-                        AddRule(open, SpacingRule.From(SpacingKind.SingleSpace));
-
-                        // inject space after open bracket
-                        var next = open.GetNextToken();
-                        if (next != null && next != close)
-                        {
-                            AddRule(next, SpacingRule.From(SpacingKind.SingleSpaceIfOnSameLine));
-                        }
+                        var kind = GetForcedSpacingKind(beforeOpenStyle ?? _options.GeneralSpacing);
+                        AddRule(open, new SpacingRule(kind, () => SpansOrWillSpanMultipleLines(open, close, inclusive: true, excluded: close)));
                     }
+                    break;
 
-                    AddRule(close, closeSpacing);
+                case BrackettingStyle.Default:
+                case BrackettingStyle.None:
+                    // no style to apply
                     break;
             }
         }
@@ -911,9 +1275,146 @@ namespace Kusto.Language.Editor
             return token.Kind == SyntaxKind.IdentifierToken
                 || SyntaxFacts.IsKeyword(token.Kind);
         }
+
+        private static SpacingRule GetSpacingRule(SpacingKind kind)
+        {
+            return SpacingRule.From(kind);
+        }
+
+        private static SpacingRule GetSpacingRule(SpacingStyle style)
+        {
+            return GetSpacingRule(GetSpacingKind(style));
+        }
+
+        private static SpacingRule GetBeforeSpacingRule(DualSpacingStyle style)
+        {
+            return GetSpacingRule(GetBeforeSpacingKind(style));
+        }
+
+        private static SpacingRule GetAfterSpacingRule(DualSpacingStyle style)
+        {
+            return GetSpacingRule(GetAfterSpacingKind(style));
+        }
+
+        private static SpacingKind GetBeforeSpacingKind(DualSpacingStyle style)
+        {
+            switch (style)
+            {
+                case DualSpacingStyle.AsIs:
+                    return GetSpacingKind(SpacingStyle.AsIs);
+                case DualSpacingStyle.Neither:
+                    return GetSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Before:
+                    return GetSpacingKind(SpacingStyle.One);
+                case DualSpacingStyle.After:
+                    return GetSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Both:
+                default:
+                    return GetSpacingKind(SpacingStyle.One);
+            }
+        }
+
+        private static SpacingKind GetAfterSpacingKind(DualSpacingStyle style)
+        {
+            switch (style)
+            {
+                case DualSpacingStyle.AsIs:
+                    return GetSpacingKind(SpacingStyle.AsIs);
+                case DualSpacingStyle.Neither:
+                    return GetSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Before:
+                    return GetSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.After:
+                    return GetSpacingKind(SpacingStyle.One);
+                case DualSpacingStyle.Both:
+                default:
+                    return GetSpacingKind(SpacingStyle.One);
+            }
+        }
+
+        private static SpacingKind GetSpacingKind(SpacingStyle style)
+        {
+            switch (style)
+            {
+                case SpacingStyle.One:
+                    return SpacingKind.SingleSpaceIfOnSameLine;
+                case SpacingStyle.Minimal:
+                    return SpacingKind.MinimalSpaceIfOnSameLine;
+                case SpacingStyle.AsIs:
+                default:
+                    return SpacingKind.AsIs;
+            }
+        }
+
+        /// <summary>
+        /// Get the spacing kind that will force removal of existing new line
+        /// </summary>
+        private static SpacingKind GetForcedSpacingKind(SpacingStyle style)
+        {
+            switch (style)
+            {
+                case SpacingStyle.One:
+                    return SpacingKind.SingleSpace;
+                case SpacingStyle.Minimal:
+                    return SpacingKind.MinimalSpace;
+                case SpacingStyle.AsIs:
+                default:
+                    // As Is means retain existing spacing. Yet if exiting trivia has new lines, then 
+                    // there will not be any meaningful spacing to preserve
+                    return SpacingKind.AsIs;
+            }
+        }
+
+#if false // not used yet
+        /// <summary>
+        /// Get the spacing kind for the before token part of the dual style
+        /// that will force removal of existing new line.
+        /// </summary>
+        private static SpacingKind GetForcedBeforeSpacingKind(DualSpacingStyle style)
+        {
+            switch (style)
+            {
+                case DualSpacingStyle.AsIs:
+                    return GetForcedSpacingKind(SpacingStyle.AsIs);
+                case DualSpacingStyle.Neither:
+                    return GetForcedSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Before:
+                    return GetForcedSpacingKind(SpacingStyle.One);
+                case DualSpacingStyle.After:
+                    return GetForcedSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Both:
+                default:
+                    return GetForcedSpacingKind(SpacingStyle.One);
+            }
+        }
+#endif
+
+        /// <summary>
+        /// Get the spacing kind for the after token part of the dual style
+        /// that will force removal of existing new line.
+        /// </summary>
+        private static SpacingKind GetForcedAfterSpacingKind(DualSpacingStyle style)
+        {
+            switch (style)
+            {
+                case DualSpacingStyle.AsIs:
+                    return GetForcedSpacingKind(SpacingStyle.AsIs);
+                case DualSpacingStyle.Neither:
+                    return GetForcedSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.Before:
+                    return GetForcedSpacingKind(SpacingStyle.Minimal);
+                case DualSpacingStyle.After:
+                    return GetForcedSpacingKind(SpacingStyle.One);
+                case DualSpacingStyle.Both:
+                default:
+                    return GetForcedSpacingKind(SpacingStyle.One);
+            }
+        }
+
 #endregion
 
-#region Formatting Rules
+        #region Formatting Rules
+
         [Flags]
         private enum SpacingKind
         {
@@ -953,9 +1454,19 @@ namespace Kusto.Language.Editor
             SingleSpaceIfOnSameLine = 1 << 6,
 
             /// <summary>
+            /// Minimal space between tokens
+            /// </summary>
+            MinimalSpace            = 1 << 7,
+
+            /// <summary>
+            /// Minimal space between tokens if they are on the same line.
+            /// </summary>
+            MinimalSpaceIfOnSameLine = 1 << 8,
+
+            /// <summary>
             /// A single new line between tokens if they are on the same line
             /// </summary>
-            NewLine                 = 1 << 7,
+            NewLine = 1 << 9
         }
 
         private enum ComputationState
@@ -1005,6 +1516,7 @@ namespace Kusto.Language.Editor
                 switch (_computeState)
                 {
                     case ComputationState.Computing:
+                        // report possible kinds so conditions can make better guesses
                         return GetPossibleKinds();
 
                     case ComputationState.Uncomputed:
@@ -1174,7 +1686,9 @@ namespace Kusto.Language.Editor
         }
 #endregion
 
-#region Typical spacing conditions
+        #region Typical Conditions
+
+
         /// <summary>
         /// Returns true if the tokens were originally on different lines.
         /// </summary>
@@ -1242,7 +1756,8 @@ namespace Kusto.Language.Editor
                 return true;
             }
 
-            return WillSpanMultipleLines(node, inclusive, excluded);
+            var willSpanMultipleLines = WillSpanMultipleLines(node, inclusive, excluded);
+            return willSpanMultipleLines;
         }
 
         /// <summary>
@@ -1331,6 +1846,6 @@ namespace Kusto.Language.Editor
 
             return false;
         }
-#endregion
+        #endregion
     }
 }
