@@ -7670,7 +7670,21 @@ namespace Kusto.Language.Parsing
             var CreateTempStorage = Command("CreateTempStorage", 
                 Custom(
                     Token("create", CompletionKind.CommandPrefix),
-                    Token("tempstorage")));
+                    Token("tempstorage"),
+                    Optional(
+                        Custom(
+                            Token("with"),
+                            Token("("),
+                            OneOrMoreCommaList(
+                                Custom(
+                                    Best(
+                                        Token("cors"),
+                                        If(Not(Token("cors")), rules.NameDeclaration)),
+                                    Token("="),
+                                    rules.Value,
+                                    shape31)),
+                            Token(")"))),
+                    shape25));
 
             var DropTempStorage = Command("DropTempStorage", 
                 Custom(

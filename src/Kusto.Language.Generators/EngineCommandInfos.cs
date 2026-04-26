@@ -3597,7 +3597,7 @@ namespace Kusto.Language.Generators
 
         public static readonly CommandInfo CreateTempStorage =
             new CommandInfo(nameof(CreateTempStorage),
-                "create tempstorage",
+                $"create tempstorage [{PropertyList("cors")}]",
                 UnknownResult);
 
         public static readonly CommandInfo DropTempStorage =
