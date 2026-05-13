@@ -902,6 +902,28 @@ namespace Kusto.Language.Generators
                 PolicyResult);
         #endregion
 
+        #region RowId
+        public static readonly CommandInfo ShowTablePolicyRowId =
+            new CommandInfo(nameof(ShowTablePolicyRowId),
+                "show table TableName=<database_table> policy rowid",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterTablePolicyRowId =
+            new CommandInfo(nameof(AlterTablePolicyRowId),
+                "alter table TableName=<database_table> policy rowid (true | false)",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterTablesPolicyRowId =
+            new CommandInfo(nameof(AlterTablesPolicyRowId),
+                "alter tables '(' { TableName=<table>, ',' }+ ')' policy rowid (true | false)",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteTablePolicyRowId =
+            new CommandInfo(nameof(DeleteTablePolicyRowId),
+                "delete table TableName=<database_table> policy rowid",
+                PolicyResult);
+        #endregion
+
         #region Retention
         public static readonly CommandInfo ShowTablePolicyRetention =
             new CommandInfo(nameof(ShowTablePolicyRetention),

@@ -549,6 +549,18 @@ namespace Kusto.Language
         public static readonly CommandSymbol DeleteTablePolicyIngestionTime =
             new CommandSymbol("DeleteTablePolicyIngestionTime", _schema21);
 
+        public static readonly CommandSymbol ShowTablePolicyRowId =
+            new CommandSymbol("ShowTablePolicyRowId", _schema21);
+
+        public static readonly CommandSymbol AlterTablePolicyRowId =
+            new CommandSymbol("AlterTablePolicyRowId", _schema21);
+
+        public static readonly CommandSymbol AlterTablesPolicyRowId =
+            new CommandSymbol("AlterTablesPolicyRowId", _schema21);
+
+        public static readonly CommandSymbol DeleteTablePolicyRowId =
+            new CommandSymbol("DeleteTablePolicyRowId", _schema21);
+
         public static readonly CommandSymbol ShowTablePolicyRetention =
             new CommandSymbol("ShowTablePolicyRetention", _schema21);
 
@@ -2115,6 +2127,10 @@ namespace Kusto.Language
             AlterTablePolicyIngestionTime,
             AlterTablesPolicyIngestionTime,
             DeleteTablePolicyIngestionTime,
+            ShowTablePolicyRowId,
+            AlterTablePolicyRowId,
+            AlterTablesPolicyRowId,
+            DeleteTablePolicyRowId,
             ShowTablePolicyRetention,
             ShowTableStarPolicyRetention,
             ShowGraphPolicyRetention,
