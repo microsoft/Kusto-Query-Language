@@ -7820,6 +7820,13 @@ namespace Kusto.Language.Parsing
                     Token("cache"),
                     Token("credstore")));
 
+            var ClearClusterOutboundAccessPolicyCache = Command("ClearClusterOutboundAccessPolicyCache", 
+                Custom(
+                    Token("clear", CompletionKind.CommandPrefix),
+                    Token("cluster"),
+                    Token("cache"),
+                    Token("outboundaccesspolicy")));
+
             var ClearClusterGroupMembershipCache = Command("ClearClusterGroupMembershipCache", 
                 Custom(
                     Token("clear", CompletionKind.CommandPrefix),
@@ -8486,6 +8493,7 @@ namespace Kusto.Language.Parsing
                 new CommandParserInfo("ShowExtentCorruptedDatetime", ShowExtentCorruptedDatetime),
                 new CommandParserInfo("PatchExtentCorruptedDatetime", PatchExtentCorruptedDatetime),
                 new CommandParserInfo("ClearClusterCredStoreCache", ClearClusterCredStoreCache),
+                new CommandParserInfo("ClearClusterOutboundAccessPolicyCache", ClearClusterOutboundAccessPolicyCache),
                 new CommandParserInfo("ClearClusterGroupMembershipCache", ClearClusterGroupMembershipCache),
                 new CommandParserInfo("ClearExternalArtifactsCache", ClearExternalArtifactsCache),
                 new CommandParserInfo("ShowDatabasesEntities", ShowDatabasesEntities),

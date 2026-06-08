@@ -1974,6 +1974,9 @@ namespace Kusto.Language
         public static readonly CommandSymbol ClearClusterCredStoreCache =
             new CommandSymbol("ClearClusterCredStoreCache", _schema19);
 
+        public static readonly CommandSymbol ClearClusterOutboundAccessPolicyCache =
+            new CommandSymbol("ClearClusterOutboundAccessPolicyCache", _schema19);
+
         public static readonly CommandSymbol ClearClusterGroupMembershipCache =
             new CommandSymbol("ClearClusterGroupMembershipCache", _schema19);
 
@@ -2602,6 +2605,7 @@ namespace Kusto.Language
             ShowExtentCorruptedDatetime,
             PatchExtentCorruptedDatetime,
             ClearClusterCredStoreCache,
+            ClearClusterOutboundAccessPolicyCache,
             ClearClusterGroupMembershipCache,
             ClearExternalArtifactsCache,
             ShowDatabasesEntities,

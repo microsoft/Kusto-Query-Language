@@ -3677,6 +3677,11 @@ namespace Kusto.Language.Generators
                 "clear cluster cache credstore",
                 UnknownResult);
 
+        public static readonly CommandInfo ClearClusterOutboundAccessPolicyCache =
+            new CommandInfo(nameof(ClearClusterOutboundAccessPolicyCache),
+                "clear cluster cache outboundaccesspolicy",
+                UnknownResult);
+
         public static readonly CommandInfo ClearClusterGroupMembershipCache =
             new CommandInfo(nameof(ClearClusterGroupMembershipCache),
                 "clear cluster cache groupmembership [with '(' { PropertyName=<name> '=' Value=<value>, ',' } ')']",
