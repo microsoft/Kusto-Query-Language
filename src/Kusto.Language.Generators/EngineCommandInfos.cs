@@ -2956,6 +2956,16 @@ namespace Kusto.Language.Generators
             new CommandInfo(nameof(GraphSnapshotShowFailures),
             "show graph_snapshots <qualified_wildcarded_name> failures",
             GraphSnapshotsShowFailuresResult);
+
+        public static readonly CommandInfo GraphShardMake =
+            new CommandInfo(nameof(GraphShardMake),
+            "make [async] #graph_shards <qualified_wildcarded_name>",
+            GraphSnapshotShowDetailsResult);
+
+        public static readonly CommandInfo GraphShardDrop =
+            new CommandInfo(nameof(GraphShardDrop),
+            "drop #graph_shards <qualified_wildcarded_name>",
+            GraphSnapshotShowDetailsResult);
         #endregion
 
         #endregion

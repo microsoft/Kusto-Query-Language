@@ -6292,6 +6292,21 @@ namespace Kusto.Language.Parsing
                     Token("failures"),
                     shape3));
 
+            var GraphShardMake = Command("GraphShardMake", 
+                Custom(
+                    Token("make", CompletionKind.CommandPrefix),
+                    Optional(Token("async")),
+                    Token("graph_shards").Hide(),
+                    rules.QualifiedWildcardedNameDeclaration,
+                    new [] {CD(), CD(isOptional: true), CD(), CD(CompletionHint.None)}));
+
+            var GraphShardDrop = Command("GraphShardDrop", 
+                Custom(
+                    Token("drop", CompletionKind.CommandPrefix),
+                    Token("graph_shards").Hide(),
+                    rules.QualifiedWildcardedNameDeclaration,
+                    shape43));
+
             var ShowCertificates = Command("ShowCertificates", 
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
@@ -8357,6 +8372,8 @@ namespace Kusto.Language.Parsing
                 new CommandParserInfo("GraphSnapshotShowStatistics", GraphSnapshotShowStatistics),
                 new CommandParserInfo("GraphSnapshotsShowStatistics", GraphSnapshotsShowStatistics),
                 new CommandParserInfo("GraphSnapshotShowFailures", GraphSnapshotShowFailures),
+                new CommandParserInfo("GraphShardMake", GraphShardMake),
+                new CommandParserInfo("GraphShardDrop", GraphShardDrop),
                 new CommandParserInfo("ShowCertificates", ShowCertificates),
                 new CommandParserInfo("ShowCloudSettings", ShowCloudSettings),
                 new CommandParserInfo("ShowCommConcurrency", ShowCommConcurrency),

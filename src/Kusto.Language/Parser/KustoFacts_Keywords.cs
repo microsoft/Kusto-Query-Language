@@ -179,6 +179,7 @@ namespace Kusto.Language
             "writeaheadlog",
             "graph_snapshots_drop_by_retention",
             "graph_snapshots_optimize",
+            "graph_shards",
         };
     }
 }
