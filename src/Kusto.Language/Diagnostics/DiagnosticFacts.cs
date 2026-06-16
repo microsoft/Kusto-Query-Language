@@ -894,9 +894,9 @@ namespace Kusto.Language
             return new Diagnostic("KS229", "Missing graph entity type, Expected values [nodes, edges].");
         }
 
-        public static Diagnostic GetIncorrectNumberOfOutputGraphEntities()
+        public static Diagnostic GetIncorrectNumberOfOutputGraphToTableEntities()
         {
-            return new Diagnostic("KS230", "The operator support exactly one or two entities.");
+            return new Diagnostic("KS230", "The graph-to-table operator requires 1-2 arguments (nodes, edges).");
         }
 
         public static Diagnostic GetTableOrGraphExpected()

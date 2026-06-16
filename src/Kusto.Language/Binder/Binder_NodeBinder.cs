@@ -4244,7 +4244,7 @@ namespace Kusto.Language.Binding
                     }
                     else
                     {
-                        diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities().WithLocation(node.OutputClause));
+                        diagnostics.Add(DiagnosticFacts.GetIncorrectNumberOfOutputGraphToTableEntities().WithLocation(node.OutputClause));
                     }
 
                     return new SemanticInfo(symbol, diagnostics);

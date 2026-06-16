@@ -6007,7 +6007,7 @@ namespace Kusto.Language.Parsing
                     new NameDeclaration(SyntaxToken.Missing(SyntaxKind.IdentifierToken))
                 ),
                 null,
-                new Diagnostic[] { DiagnosticFacts.GetIncorrectNumberOfOutputGraphEntities() }
+                new Diagnostic[] { DiagnosticFacts.GetIncorrectNumberOfOutputGraphToTableEntities() }
             );
 
         private static Func<QueryParser, GraphToTableOutputClause> FnParseGraphToTableOutputClause =
