@@ -6251,7 +6251,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
-                    If(Not(Token("databases")), rules.QualifiedWildcardedNameDeclaration),
+                    rules.QualifiedWildcardedNameDeclaration,
                     Optional(Token("details")),
                     shape37));
 
@@ -6282,12 +6282,10 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
-                    Optional(
-                        fragment43),
-                    If(Not(Token("databases")), rules.QualifiedWildcardedNameDeclaration),
+                    rules.QualifiedWildcardedNameDeclaration,
                     Token("data"),
                     Token("statistics"),
-                    new [] {CD(), CD(), CD(isOptional: true), CD(CompletionHint.None), CD(), CD()}));
+                    new [] {CD(), CD(), CD(CompletionHint.None), CD(), CD()}));
 
             var GraphSnapshotShowStatistics = Command("GraphSnapshotShowStatistics", 
                 Custom(
@@ -6301,7 +6299,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
-                    If(Not(Token("databases")), rules.QualifiedWildcardedNameDeclaration),
+                    rules.QualifiedWildcardedNameDeclaration,
                     Token("statistics"),
                     shape3));
 
@@ -6309,7 +6307,7 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("graph_snapshots"),
-                    If(Not(Token("databases")), rules.QualifiedWildcardedNameDeclaration),
+                    rules.QualifiedWildcardedNameDeclaration,
                     Token("failures"),
                     shape3));
 

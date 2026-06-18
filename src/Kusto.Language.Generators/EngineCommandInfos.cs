@@ -2915,7 +2915,7 @@ namespace Kusto.Language.Generators
             "(DatabaseName:string, Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, TotalCpu:timespan, MemoryPeak:long, Duration:timespan, Details:string, NodesCount:long, EdgesCount:long, NodesSize:long, EdgesSize:long)";
 
         private static string GraphSnapshotDataStatisticsShowResult =
-            "(DatabaseName:string, GraphModelName:string, SnapshotName:string, EntityKind:string, TotalExtentSize:long, OriginalSize:long, DataCompressedSize:long, IndexSize:long, CompressionRatio:real, RowCount:long, ExtentCount:long)";
+            "(DatabaseName:string, GraphModelName:string, SnapshotName:string, EntityKind:string, TotalExtentSize:long, OriginalSize:long, DataCompressedSize:long, IndexSize:long, CompressionRatio:real, TotalElementCount:long)";
 
         private static string GraphSnapshotsShowFailuresResult =
             "(OperationId:guid, DatabaseName:string, Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, TotalCpu:timespan, MemoryPeak:long, Duration:timespan, Details:string, FailureReason:string, FailureKind:string)";
@@ -2952,7 +2952,7 @@ namespace Kusto.Language.Generators
 
         public static readonly CommandInfo GraphSnapshotsShowDataStatistics =
             new CommandInfo(nameof(GraphSnapshotsShowDataStatistics),
-            "show graph_snapshots [databases '(' { DatabaseName=<database>, ',' }+ ')'] <qualified_wildcarded_name> data statistics",
+            "show graph_snapshots <qualified_wildcarded_name> data statistics",
             GraphSnapshotDataStatisticsShowResult);
 
         public static readonly CommandInfo GraphSnapshotShowStatistics =

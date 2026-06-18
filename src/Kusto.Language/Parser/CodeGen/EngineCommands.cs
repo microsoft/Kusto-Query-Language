@@ -58,7 +58,7 @@ namespace Kusto.Language
         private static readonly string _schema39 = "(ExtentId: guid, TableName: string, CreatedOn: datetime)";
         private static readonly string _schema40 = "(StoredQueryResultId:guid, Name:string, DatabaseName:string, PrincipalIdentity:string, SizeInBytes:long, RowCount:long, CreatedOn:datetime, ExpiresOn:datetime)";
         private static readonly string _schema41 = "(Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, ModelCreationTime:datetime)";
-        private static readonly string _schema42 = "(DatabaseName:string, GraphModelName:string, SnapshotName:string, EntityKind:string, TotalExtentSize:long, OriginalSize:long, DataCompressedSize:long, IndexSize:long, CompressionRatio:real, RowCount:long, ExtentCount:long)";
+        private static readonly string _schema42 = "(DatabaseName:string, GraphModelName:string, SnapshotName:string, EntityKind:string, TotalExtentSize:long, OriginalSize:long, DataCompressedSize:long, IndexSize:long, CompressionRatio:real, TotalElementCount:long)";
         private static readonly string _schema43 = "(DatabaseName:string, Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, TotalCpu:timespan, MemoryPeak:long, Duration:timespan, Details:string, NodesCount:long, EdgesCount:long, NodesSize:long, EdgesSize:long)";
         private static readonly string _schema44 = "(Name:string, SnapshotTime:datetime, ModelName:string, ModelId:guid, ModelCreationTime:datetime, NodesCount: long, EdgesCount: long, RetentionPolicy:string, CachingPolicy:string)";
         private static readonly string _schema45 = "(Name: string, Entities: string)";
