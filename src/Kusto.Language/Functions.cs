@@ -3571,6 +3571,10 @@ namespace Kusto.Language
             .WithResultNameKind(ResultNameKind.PrefixOnly)
             .WithResultNamePrefix("$IngestionTime");
 
+        public static readonly FunctionSymbol RowId =
+            new FunctionSymbol("row_id", ScalarTypes.String)
+            .WithResultNameKind(ResultNameKind.None);
+
         public static readonly FunctionSymbol CursorAfter =
             new FunctionSymbol("cursor_after", ScalarTypes.Bool,
                 new Parameter("cursor", ScalarTypes.String));
@@ -4190,6 +4194,7 @@ namespace Kusto.Language
             ExtentTags,
             CurrentNodeId,
             IngestionTime,
+            RowId,
             CursorAfter,
             CursorBeforeOrAt,
             CursorCurrent,
