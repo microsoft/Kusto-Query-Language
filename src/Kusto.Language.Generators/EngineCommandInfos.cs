@@ -1692,7 +1692,7 @@ namespace Kusto.Language.Generators
         #region StreamingIngestion
         public static readonly CommandInfo ShowDatabasePolicyStreamingIngestion =
             new CommandInfo(nameof(ShowDatabasePolicyStreamingIngestion),
-                "show database DatabaseName=<database> policy streamingingestion",
+                "show database [DatabaseName=<database>] policy streamingingestion",
                 PolicyResult);
 
         public static readonly CommandInfo ShowTablePolicyStreamingIngestion =
@@ -1754,7 +1754,7 @@ namespace Kusto.Language.Generators
         #region ManagedIdentity
         public static readonly CommandInfo ShowDatabasePolicyManagedIdentity =
             new CommandInfo(nameof(ShowDatabasePolicyManagedIdentity),
-                "show database DatabaseName=<database> policy managed_identity",
+                "show database [DatabaseName=<database>] policy managed_identity",
                 PolicyResult);
 
         public static readonly CommandInfo ShowClusterPolicyManagedIdentity =
@@ -1895,7 +1895,7 @@ namespace Kusto.Language.Generators
         #region Diagnostics
         public static readonly CommandInfo ShowDatabasePolicyDiagnostics =
             new CommandInfo(nameof(ShowDatabasePolicyDiagnostics),
-                "show database DatabaseName=<database> policy diagnostics",
+                "show database [DatabaseName=<database>] policy diagnostics",
                 PolicyResult);
 
         public static readonly CommandInfo ShowClusterPolicyDiagnostics =

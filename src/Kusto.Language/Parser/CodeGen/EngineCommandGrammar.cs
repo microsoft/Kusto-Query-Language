@@ -3999,10 +3999,13 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                    Optional(
+                        Custom(
+                            If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                            shape9)),
                     Token("policy"),
                     Token("streamingingestion"),
-                    shape113));
+                    shape94));
 
             var ShowTablePolicyStreamingIngestion = Command("ShowTablePolicyStreamingIngestion", 
                 Custom(
@@ -4125,10 +4128,13 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                    Optional(
+                        Custom(
+                            If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                            shape9)),
                     Token("policy"),
                     Token("managed_identity"),
-                    shape113));
+                    shape94));
 
             var ShowClusterPolicyManagedIdentity = Command("ShowClusterPolicyManagedIdentity", 
                 Custom(
@@ -4345,10 +4351,13 @@ namespace Kusto.Language.Parsing
                 Custom(
                     Token("show", CompletionKind.CommandPrefix),
                     Token("database"),
-                    If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                    Optional(
+                        Custom(
+                            If(Not(And(Token("with", "details", "verbose", "identity", "policies", "datastats", "metadata", "schema", "cslschema", "kqlschema", "ingestion", "*", "policy", "principals", "keyvault", "extents", "extent", "shard-groups", "data", "cache"))), rules.DatabaseNameReference),
+                            shape9)),
                     Token("policy"),
                     Token("diagnostics"),
-                    shape113));
+                    shape94));
 
             var ShowClusterPolicyDiagnostics = Command("ShowClusterPolicyDiagnostics", 
                 Custom(
