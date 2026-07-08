@@ -28,8 +28,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <!-- This project compiles Kusto.Language's source tree (below) to transpile it to JavaScript via
+       Bridge.NET, so it must also run Kusto.Language's build-time T4 (.tt -> .cs) code generation and
+       compile the result. Point the shared T4 targets (BuildProcessTemplates\TextTemplating\
+       Kusto.T4Transform.targets, imported via Directory.Build.targets) at Kusto.Language as an
+       external source root, mirroring how the Src\Client\Kusto.Packages\* projects pull in another
+       project's sources. The generated .cs are written under THIS project's own obj and added to the
+       compilation automatically; the source-tree CodeGen folders hold only templates and are excluded
+       from the glob below so the obj copies are the only ones compiled. -->
+  <PropertyGroup>
+    <KustoT4ExternalSourceRoot>..\Kusto.Language</KustoT4ExternalSourceRoot>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\obj\**\*.cs;..\Kusto.Language\Syntax\CodeGen\CodeGenerator.cs;..\Kusto.Language\Syntax\CodeGen\CslTreeGenerator.cs" />
+    <Compile Include="..\Kusto.Language\**\*.cs" Exclude="..\Kusto.Language\obj\**\*.cs;..\Kusto.Language\Parser\CodeGen\*.cs;..\Kusto.Language\Syntax\CodeGen\*.cs" />
     <None Include="bridge.json" />
   </ItemGroup>
 	<Choose>

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Condition="'$(KUSTO_BuildMultiTarget)' != 'true' and Exists('..\..\..\BuildProcessTemplates\Kusto.Build.targets')" Project="..\..\..\BuildProcessTemplates\Kusto.Build.targets" />
+  <!-- The multi-target package build skips Kusto.Build.targets (above), so import the
+       build-time T4 generation directly here so the generated *.cs are still produced. -->
+  <Import Condition="'$(KUSTO_BuildMultiTarget)' == 'true' and Exists('..\..\..\BuildProcessTemplates\TextTemplating\Kusto.T4Transform.targets')" Project="..\..\..\BuildProcessTemplates\TextTemplating\Kusto.T4Transform.targets" />
 </Project>
