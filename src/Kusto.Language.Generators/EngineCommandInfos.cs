@@ -2989,6 +2989,11 @@ namespace Kusto.Language.Generators
                 $"show certificates",
                 UnknownResult);
 
+        public static readonly CommandInfo ShowClockDiagnostics =
+            new CommandInfo(nameof(ShowClockDiagnostics),
+                $"show clockdiagnostics [{PropertyList()}]",
+                UnknownResult);
+
         public static readonly CommandInfo ShowCloudSettings =
             new CommandInfo(nameof(ShowCloudSettings),
                 $"show cloudsettings",
