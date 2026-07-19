@@ -1047,6 +1047,26 @@ namespace Kusto.Language.Generators
             new CommandInfo(nameof(DeleteMaterializedViewPolicyRowLevelSecurity),
                 "delete materialized-view MaterializedViewName=<database_materializedview> policy row_level_security",
                 PolicyResult);
+
+        public static readonly CommandInfo ShowExternalTablePolicyRowLevelSecurity =
+            new CommandInfo(nameof(ShowExternalTablePolicyRowLevelSecurity),
+                "show external table ExternalTableName=<externaltable> policy row_level_security",
+                PolicyResult);
+
+        public static readonly CommandInfo ShowExternalTableStarPolicyRowLevelSecurity =
+            new CommandInfo(nameof(ShowExternalTableStarPolicyRowLevelSecurity),
+                "show external table '*' policy row_level_security",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterExternalTablePolicyRowLevelSecurity =
+            new CommandInfo(nameof(AlterExternalTablePolicyRowLevelSecurity),
+                "alter external table ExternalTableName=<externaltable> policy row_level_security (enable | disable) [with '(' { PropertyName=<name> '=' Value=<value>, ',' } ')'] Query=<string>",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteExternalTablePolicyRowLevelSecurity =
+            new CommandInfo(nameof(DeleteExternalTablePolicyRowLevelSecurity),
+                "delete external table ExternalTableName=<externaltable> policy row_level_security",
+                PolicyResult);
         #endregion
 
         #region RowOrder
