@@ -1090,6 +1090,16 @@ namespace Kusto.Language
                  new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0))
              .Hide(); // Open once service rollout completes
 
+        public static readonly FunctionSymbol GqlRequest =
+             new FunctionSymbol("gql_request",
+                 context => new TableSymbol().WithIsOpen(true), // the schema comes from the graph model at runtime
+                 Tabularity.Tabular,
+                 new Parameter("connection_string", ScalarTypes.String),
+                 new Parameter("gql_query", ScalarTypes.String),
+                 new Parameter("gql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
+                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0))
+             .Hide(); // Open once service rollout completes
+
         public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
                      new FunctionSymbol("azure_digital_twins_query_request",
                          context => new TableSymbol().WithIsOpen(true), // depends on the SELECT command provided
@@ -1144,6 +1154,7 @@ namespace Kusto.Language
             MySqlRequest,
             PostgreSqlRequest,
             DaxRequest,
+            GqlRequest,
             AIEmbedText_Deprecated,
             AIChatCompletion,
             AIChatCompletionPrompt,
