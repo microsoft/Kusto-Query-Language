@@ -3573,7 +3573,8 @@ namespace Kusto.Language
 
         public static readonly FunctionSymbol RowId =
             new FunctionSymbol("row_id", ScalarTypes.String)
-            .WithResultNameKind(ResultNameKind.None);
+            .WithResultNameKind(ResultNameKind.PrefixOnly)
+            .WithResultNamePrefix("$RowId");
 
         public static readonly FunctionSymbol CursorAfter =
             new FunctionSymbol("cursor_after", ScalarTypes.Bool,
