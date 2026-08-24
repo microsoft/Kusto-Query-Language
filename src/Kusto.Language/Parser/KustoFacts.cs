@@ -404,7 +404,9 @@ namespace Kusto.Language
         {
             "automate",
             "browse",       // open browser to link
+            "checkconnectivity", // check connectivity to a cluster
             "connect",      // set connection for script or query
+            "connectivitycheck", // check connectivity to a cluster
             "crp",          // set client request properties for script or query
             "database",     // set default database (and cluster) for query
             "download",
