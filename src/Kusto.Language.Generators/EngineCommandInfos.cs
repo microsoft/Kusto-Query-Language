@@ -290,7 +290,7 @@ namespace Kusto.Language.Generators
             "(TableName: string, DatabaseName: string, Folder: string, DocString: string)";
 
         private static readonly string ShowTablesDetailsResult =
-            "(TableName: string, DatabaseName: string, Folder: string, DocString: string, TotalExtents: long, TotalExtentSize: real, TotalOriginalSize: real, TotalRowCount: long, HotExtents: long, HotExtentSize: real, HotOriginalSize: real, HotRowCount: long, AuthorizedPrincipals: string, RetentionPolicy: string, CachingPolicy: string, ShardingPolicy: string, MergePolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string, MinExtentsCreationTime: datetime, MaxExtentsCreationTime: datetime, RowOrderPolicy: string, TableId: guid)";
+            "(TableName: string, DatabaseName: string, Folder: string, DocString: string, TotalExtents: long, TotalExtentSize: real, TotalOriginalSize: real, TotalRowCount: long, HotExtents: long, HotExtentSize: real, HotOriginalSize: real, HotRowCount: long, AuthorizedPrincipals: string, RetentionPolicy: string, CachingPolicy: string, ShardingPolicy: string, MergePolicy: string, StreamingIngestionPolicy: string, IngestionBatchingPolicy: string, MinExtentsCreationTime: datetime, MaxExtentsCreationTime: datetime, RowOrderPolicy: string, TableId: guid, RowLevelSecurityPolicy: string, AutoDeletePolicy: string, UpdatePolicy: string, UpdatePolicyStates: string)";
 
         private static readonly string ShowTableSchemaResult =
             "(TableName: string, Schema: string, DatabaseName: string, Folder: string, DocString: string)";
@@ -2536,7 +2536,7 @@ namespace Kusto.Language.Generators
         public static readonly CommandInfo ShowCapacity =
             new CommandInfo(nameof(ShowCapacity),
                 "show capacity" +
-                " (Resource=(ingestions | extents-merge | table-purge | data-export | mirroring | query-acceleration | extents-partition | streaming-ingestion-post-processing | materialized-view | graph_snapshot | queries" +
+                " (Resource=(ingestions | extents-merge | table-purge | data-export | mirroring | query-acceleration | update-policy-over-external-table | extents-partition | streaming-ingestion-post-processing | materialized-view | graph_snapshot | queries" +
                 "| stored-query-results | purge-storage-artifacts-cleanup | periodic-storage-artifacts-cleanup))?" +
                 " [with '(' scope '=' Scope=(cluster | workloadgroup) ')']",
                 "(Resource: string, Total: long, Consumed: long, Remaining: long)");
