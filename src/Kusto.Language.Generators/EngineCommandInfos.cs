@@ -903,6 +903,21 @@ namespace Kusto.Language.Generators
         #endregion
 
         #region RowId
+        public static readonly CommandInfo ShowDatabasePolicyRowId =
+            new CommandInfo(nameof(ShowDatabasePolicyRowId),
+                "show database [DatabaseName=(<database> | '*')] policy rowid",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterDatabasePolicyRowId =
+            new CommandInfo(nameof(AlterDatabasePolicyRowId),
+                "alter database [DatabaseName=<database>] policy rowid (true | false)",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteDatabasePolicyRowId =
+            new CommandInfo(nameof(DeleteDatabasePolicyRowId),
+                "delete database [DatabaseName=<database>] policy rowid",
+                PolicyResult);
+
         public static readonly CommandInfo ShowTablePolicyRowId =
             new CommandInfo(nameof(ShowTablePolicyRowId),
                 "show table TableName=<database_table> policy rowid",
