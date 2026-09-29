@@ -8,9 +8,9 @@ using System.Text;
 
 ///////////////////////////////////////////////////////
 //
-//  After editing this file, you need to do the following in Visual Studio:
-//     1. Right click on EngineCommands.tt and select "Run Custom Tool"
-//     2. Right click on EngineCommandGrammar.tt and select "Run Custom Tool"
+//  After editing this file, building the Kusto.Language project regenerates
+//  EngineCommands.cs (from EngineCommands.tt) and
+//  EngineCommandGrammar.cs (from EngineCommandGrammar.tt).
 //
 ///////////////////////////////////////////////////////
 
