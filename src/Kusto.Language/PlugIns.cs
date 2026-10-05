@@ -1080,25 +1080,21 @@ namespace Kusto.Language
                  new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0)
                  );
 
+        // Optional dax_parameters and options are intentionally omitted until supported by the engine.
         public static readonly FunctionSymbol DaxRequest =
              new FunctionSymbol("dax_request",
                  context => new TableSymbol().WithIsOpen(true), // the schema comes from the semantic model at runtime
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
-                 new Parameter("dax_query", ScalarTypes.String),
-                 new Parameter("dax_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
-                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0))
-             .Hide(); // Open once service rollout completes
+                 new Parameter("dax_query", ScalarTypes.String));
 
+        // Optional gql_parameters and options are intentionally omitted until supported by the engine.
         public static readonly FunctionSymbol GqlRequest =
              new FunctionSymbol("gql_request",
                  context => new TableSymbol().WithIsOpen(true), // the schema comes from the graph model at runtime
                  Tabularity.Tabular,
                  new Parameter("connection_string", ScalarTypes.String),
-                 new Parameter("gql_query", ScalarTypes.String),
-                 new Parameter("gql_parameters", ParameterTypeKind.DynamicBag, minOccurring: 0),
-                 new Parameter("options", ParameterTypeKind.DynamicBag, minOccurring: 0))
-             .Hide(); // Open once service rollout completes
+                 new Parameter("gql_query", ScalarTypes.String));
 
         public static readonly FunctionSymbol AzureDigitalTwinsQueryRequest =
                      new FunctionSymbol("azure_digital_twins_query_request",
