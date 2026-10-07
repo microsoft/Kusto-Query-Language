@@ -875,6 +875,28 @@ namespace Kusto.Language.Generators
                 PolicyResult);
         #endregion
 
+        #region ChangeDataCapture
+        public static readonly CommandInfo ShowTablePolicyChangeDataCapture =
+            new CommandInfo(nameof(ShowTablePolicyChangeDataCapture),
+                "show table TableName=<database_table> policy changedatacapture",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterTablePolicyChangeDataCapture =
+            new CommandInfo(nameof(AlterTablePolicyChangeDataCapture),
+                "alter table TableName=<database_table> policy changedatacapture '(' { Capability=<name>, ',' }+ ')'",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterTablesPolicyChangeDataCapture =
+            new CommandInfo(nameof(AlterTablesPolicyChangeDataCapture),
+                "alter tables '(' { TableName=<table>, ',' }+ ')' policy changedatacapture '(' { Capability=<name>, ',' }+ ')'",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteTablePolicyChangeDataCapture =
+            new CommandInfo(nameof(DeleteTablePolicyChangeDataCapture),
+                "delete table TableName=<database_table> policy changedatacapture",
+                PolicyResult);
+        #endregion
+
         #region IngestionTime
         public static readonly CommandInfo ShowTablePolicyIngestionTime =
             new CommandInfo(nameof(ShowTablePolicyIngestionTime),
@@ -1884,6 +1906,28 @@ namespace Kusto.Language.Generators
         public static readonly CommandInfo AlterMergeClusterPolicyCapacity =
             new CommandInfo(nameof(AlterMergeClusterPolicyCapacity),
                 "alter-merge cluster policy capacity Policy=<string>",
+                PolicyResult);
+        #endregion
+
+        #region Materialized-view prioritization
+        public static readonly CommandInfo ShowClusterPolicyMaterializedViewPrioritization =
+            new CommandInfo(nameof(ShowClusterPolicyMaterializedViewPrioritization),
+                "show cluster policy materialized-view-prioritization",
+                "(PolicyName: string, EntityName: string, Policy: string, ChildEntities: string, EntityType: string, EffectivePolicy: string)");
+
+        public static readonly CommandInfo AlterClusterPolicyMaterializedViewPrioritization =
+            new CommandInfo(nameof(AlterClusterPolicyMaterializedViewPrioritization),
+                "alter cluster policy materialized-view-prioritization Policy=<string>",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterMergeClusterPolicyMaterializedViewPrioritization =
+            new CommandInfo(nameof(AlterMergeClusterPolicyMaterializedViewPrioritization),
+                "alter-merge cluster policy materialized-view-prioritization Policy=<string>",
+                PolicyResult);
+
+        public static readonly CommandInfo DropClusterPolicyMaterializedViewPrioritization =
+            new CommandInfo(nameof(DropClusterPolicyMaterializedViewPrioritization),
+                "drop cluster policy materialized-view-prioritization",
                 PolicyResult);
         #endregion
 

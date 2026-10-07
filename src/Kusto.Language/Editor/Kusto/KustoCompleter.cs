@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -1051,8 +1051,7 @@ namespace Kusto.Language.Editor
             if (contextNode is BinaryExpression be 
                 && IsEqualityExpression(contextNode.Kind)
                 && childIndex == 2
-                && be.Left.ReferencedSymbol is ColumnSymbol col
-                && col.Examples.Count > 0)
+                && be.Left.ReferencedSymbol is ColumnSymbol col)
             {
                 AddColumnExamples(builder, col);
             }
@@ -1065,8 +1064,7 @@ namespace Kusto.Language.Editor
 
                 if (contextNode is ExpressionList exprList
                     && exprList.Parent is InExpression inOp
-                    && inOp.Left.ReferencedSymbol is ColumnSymbol inCol
-                    && inCol.Examples.Count > 0)
+                    && inOp.Left.ReferencedSymbol is ColumnSymbol inCol)
                 {
                     AddColumnExamples(builder, inCol);
                 }
@@ -1083,10 +1081,114 @@ namespace Kusto.Language.Editor
 
         private static void AddColumnExamples(CompletionBuilder builder, ColumnSymbol column)
         {
-            foreach (var example in column.Examples)
+            if (column.Examples.Count > 0)
             {
-                builder.Add(CreateColumnExampleCompletion(example, column.Type));
+                foreach (var example in column.Examples)
+                {
+                    builder.Add(CreateColumnExampleCompletion(example, column.Type));
+                }
             }
+            // a column computed from a single constant would only offer its own value back
+            else if (column.Source is FunctionCallExpression call)
+            {
+                var budget = MaxComputedColumnExamples;
+                GetPossibleValueExamples(call, builder, ref budget);
+            }
+        }
+
+        /// <summary>
+        /// Bounds the work done for a computed column, since case accepts thousands of arguments.
+        /// </summary>
+        private const int MaxComputedColumnExamples = 100;
+
+        /// <summary>
+        /// Adds the literals from the value arguments of iff, case, coalesce and the like, recursively.
+        /// </summary>
+        private static void GetPossibleValueExamples(Expression expression, CompletionBuilder builder, ref int budget)
+        {
+            if (budget <= 0)
+                return;
+
+            budget--;
+
+            if (expression.IsLiteral)
+            {
+                AddValueExample(expression, builder);
+            }
+            else if (expression is FunctionCallExpression call
+                && call.ReferencedSignature is Signature signature)
+            {
+                var arguments = s_expressionListPool.AllocateFromPool();
+                var argumentParameters = s_parameterListPool.AllocateFromPool();
+                try
+                {
+                    foreach (var element in call.ArgumentList.Expressions)
+                    {
+                        arguments.Add(element.Element);
+                    }
+
+                    signature.GetArgumentParameters(arguments, argumentParameters);
+
+                    for (int i = 0; i < arguments.Count && i < argumentParameters.Count && budget > 0; i++)
+                    {
+                        var parameter = argumentParameters[i];
+
+                        if (parameter != null && TypeFacts.IsCommonArgumentTypeKind(parameter.TypeKind))
+                        {
+                            GetPossibleValueExamples(arguments[i], builder, ref budget);
+                        }
+                    }
+                }
+                finally
+                {
+                    s_expressionListPool.ReturnToPool(arguments);
+                    s_parameterListPool.ReturnToPool(argumentParameters);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The longest example worth offering. A literal can be arbitrarily large - a dynamic value is a
+        /// single literal token - and an example that cannot be read in a completion list is worse than none,
+        /// so oversized ones are skipped rather than truncated into something that would not parse.
+        /// </summary>
+        private const int MaxComputedColumnExampleLength = 100;
+
+        private static void AddValueExample(Expression expression, CompletionBuilder builder)
+        {
+            var text = expression is LiteralExpression literal
+                ? literal.Token.Text
+                : expression.ToString(IncludeTrivia.Interior);
+
+            if (text.Length > 0 && text.Length <= MaxComputedColumnExampleLength)
+            {
+                builder.Add(CreateComputedColumnExampleCompletion(expression, text));
+            }
+        }
+
+        private static CompletionItem CreateComputedColumnExampleCompletion(Expression expression, string text)
+        {
+            if (expression is CompoundStringLiteralExpression compound)
+            {
+                var value = compound.LiteralValueInfo.ValueText;
+                var editText = KustoFacts.GetStringLiteral(value);
+                // The engine treats the whole compound value as hidden if any fragment is hidden.
+                foreach (var token in compound.Tokens)
+                {
+                    if (token.Text.Length > 0 && (token.Text[0] == 'h' || token.Text[0] == 'H'))
+                    {
+                        editText = "h" + editText;
+                        break;
+                    }
+                }
+
+                return new CompletionItem(CompletionKind.Example, value, editText);
+            }
+
+            // Reuse the literal's own type for its label, but insert source syntax, not a declared payload.
+            // In particular, numeric promotion must not turn int(1) into long(int(1)).
+            return CreateColumnExampleCompletion(text, expression.ResultType)
+                .WithApplyTexts(CompletionText.Create(text));
         }
 
         private static CompletionItem CreateColumnExampleCompletion(string example, TypeSymbol type)

@@ -316,6 +316,26 @@ namespace Kusto.Language.Symbols
         }
 
         /// <summary>
+        /// True for the <see cref="ParameterTypeKind"/> values that constrain an argument to share a type
+        /// with its sibling arguments, such as the value arguments of iff, case and coalesce as opposed to
+        /// their conditions. These are the kinds <see cref="GetCommonArgumentType"/> derives a type from.
+        /// </summary>
+        public static bool IsCommonArgumentTypeKind(ParameterTypeKind kind)
+        {
+            switch (kind)
+            {
+                case ParameterTypeKind.CommonScalar:
+                case ParameterTypeKind.CommonNumber:
+                case ParameterTypeKind.CommonSummable:
+                case ParameterTypeKind.CommonOrderable:
+                case ParameterTypeKind.CommonScalarOrDynamic:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         /// Gets the common argument type for arguments corresponding to parameters constrained to specific <see cref="ParameterTypeKind"/>.CommonXXX values.
         /// </summary>
         public static TypeSymbol GetCommonArgumentType(
