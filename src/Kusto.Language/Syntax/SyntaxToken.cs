@@ -241,7 +241,7 @@ namespace Kusto.Language.Syntax
         {
             if (kind.GetCategory() != category)
             {
-                throw new ArgumentException($"The kind {kind} is not a {category.ToString().ToLower()}");
+                throw new ArgumentException($"The kind {kind} is not a {CultureUtilities.ToLowerInvariant(category.ToString())}");
             }
         }
 
@@ -509,7 +509,7 @@ namespace Kusto.Language.Syntax
                     while (start < text.Length && TextFacts.IsWhitespace(text[start]))
                         start++;
 
-                    if (text.EndsWith(")"))
+                    if (CultureUtilities.EndsWith(text, ")"))
                     {
                         end = text.Length - 1;
                     }
@@ -549,18 +549,18 @@ namespace Kusto.Language.Syntax
             private static bool IsNull(string text)
             {
                 GetValueSpan(text, out var start, out var length);
-                return string.Compare(text, start, "null", 0, length) == 0;
+                return CultureUtilities.Compare(text, start, "null", 0, length) == 0;
             }
 
             private static object GetBooleanValue(string text)
             {
                 GetValueSpan(text, out var start, out var length);
 
-                if (string.Compare(text, start, "true", 0, length, ignoreCase: true) == 0)
+                if (CultureUtilities.Compare(text, start, "true", 0, length, ignoreCase: true) == 0)
                 {
                     return true;
                 }
-                else if (string.Compare(text, start, "false", 0, length, ignoreCase: true) == 0)
+                else if (CultureUtilities.Compare(text, start, "false", 0, length, ignoreCase: true) == 0)
                 {
                     return false;
                 }
@@ -569,6 +569,7 @@ namespace Kusto.Language.Syntax
                     return false;
                 }
             }
+
 
             private static int? GetIntValue(string text)
             {
@@ -581,7 +582,7 @@ namespace Kusto.Language.Syntax
                         return Int32.MaxValue;
                     default:
                         int result;
-                        Int32.TryParse(valueText, out result);
+                        CultureUtilities.TryParseInt32Invariant(valueText, out result);
                         return result;
                 }
             }
@@ -597,7 +598,7 @@ namespace Kusto.Language.Syntax
                         return Int64.MaxValue;
                     default:
                         long result;
-                        Int64.TryParse(valueText, out result);
+                        CultureUtilities.TryParseInt64Invariant(valueText, out result);
                         return result;
                 }
             }
@@ -613,7 +614,7 @@ namespace Kusto.Language.Syntax
                         return Double.MaxValue;
                     default:
                         double result;
-                        Double.TryParse(valueText, out result);
+                        CultureUtilities.TryParseRealLiteralInvariant(valueText, out result);
                         return result;
                 }
             }
@@ -629,7 +630,7 @@ namespace Kusto.Language.Syntax
                         return Decimal.MaxValue;
                     default:
                         decimal result;
-                        Decimal.TryParse(valueText, out result);
+                        CultureUtilities.TryParseDecimalInvariant(valueText, out result);
                         return result;
                 }
             }
@@ -638,13 +639,11 @@ namespace Kusto.Language.Syntax
             {
                 var valueText = Destringify(GetInteriorText(text));
 
-#if !BRIDGE
                 TimeSpan result;
-                if (TimeSpan.TryParse(valueText, out result))
+                if (CultureUtilities.TryParseTimeSpanInvariant(valueText, out result))
                 {
                     return result;
                 }
-#endif
                 switch (valueText)
                 {
                     case "min":
@@ -664,7 +663,7 @@ namespace Kusto.Language.Syntax
                 var wordText = valueText.Substring(split);
 
                 double number;
-                if (Double.TryParse(numberText, out number))
+                if (CultureUtilities.TryParseDoubleInvariant(numberText, out number))
                 {
                     switch (wordText)
                     {
@@ -728,7 +727,7 @@ namespace Kusto.Language.Syntax
                         return DateTime.MaxValue;
                     default:
                         DateTime result;
-                        DateTime.TryParse(valueText, out result);
+                        CultureUtilities.TryParseDateTimeInvariant(valueText, out result);
                         return result;
                 }
             }

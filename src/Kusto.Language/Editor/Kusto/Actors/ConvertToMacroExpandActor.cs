@@ -121,7 +121,7 @@ namespace Kusto.Language.Editor
                         return TextEdit.Replacement(newStart, newWidth, InitialEntityGroupElementName);
                     }).ToArray());
 
-                var newCaretPosition = textWithReplacements.CurrentText.IndexOf(InitialEntityGroupElementName);
+                var newCaretPosition = CultureUtilities.IndexOf(textWithReplacements.CurrentText, InitialEntityGroupElementName);
 
                 return new CodeActionResult(
                     new ChangeTextAction(textWithReplacements),
@@ -167,7 +167,7 @@ namespace Kusto.Language.Editor
                 textWithBrackets.GetCurrentRange(unionQuery.TextStart, unionQuery.End - unionQuery.TextStart, out var newUnionQueryStart, out var newUnionQueryLength);
                 var textWithReplacements = textWithBrackets.ReplaceAt(newUnionQueryStart, newUnionQueryLength, InitialEntityGroupElementName);
 
-                var newCaretPosition = textWithReplacements.CurrentText.IndexOf(InitialEntityGroupElementName);
+                var newCaretPosition = CultureUtilities.IndexOf(textWithReplacements.CurrentText, InitialEntityGroupElementName);
 
                 return new CodeActionResult(
                     new ChangeTextAction(textWithReplacements),

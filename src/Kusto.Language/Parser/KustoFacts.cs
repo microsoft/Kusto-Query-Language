@@ -9,6 +9,7 @@ namespace Kusto.Language
     using Symbols;
     using System;
     using System.Text;
+    using Utils;
 
     public static partial class KustoFacts
     {
@@ -854,10 +855,10 @@ namespace Kusto.Language
         {
             // check for multi-line string
             if (start + quote.Length < text.Length
-                && string.Compare(text, start, quote, 0, quote.Length, StringComparison.Ordinal) == 0)
+                && CultureUtilities.Compare(text, start, quote, 0, quote.Length) == 0)
             {
                 var twiceQuoteLen = quote.Length << 1;
-                if (text.Length - start >= twiceQuoteLen && text.EndsWith(quote, StringComparison.Ordinal))
+                if (text.Length - start >= twiceQuoteLen && CultureUtilities.EndsWith(text, quote))
                 {
                     literal = text.Substring(start + quote.Length, text.Length - twiceQuoteLen - start);
                     return true;
@@ -1042,7 +1043,7 @@ namespace Kusto.Language
         /// </summary>
         public static bool IsHostName(string name, string hostName)
         {
-            return string.Compare(name, hostName, StringComparison.OrdinalIgnoreCase) == 0;
+            return CultureUtilities.Equals(name, hostName, ignoreCase: true);
         }
 
         /// <summary>
@@ -1091,7 +1092,7 @@ namespace Kusto.Language
 
             int hostnameStart = 0;
 
-            int hostNamePrefixStart = uri.IndexOf(HostNamePrefix);
+            int hostNamePrefixStart = CultureUtilities.IndexOf(uri, HostNamePrefix);
             if (hostNamePrefixStart > 0)
             {
                 scheme = uri.Substring(0, hostNamePrefixStart);
@@ -1184,7 +1185,7 @@ namespace Kusto.Language
             // the full name has a short name, if it is in the default domain and the remaining prefix qualifies as a short name.
             return !string.IsNullOrEmpty(defaultDomainSuffix)
                 && defaultDomainSuffix[0] == '.'
-                && hostname.EndsWith(defaultDomainSuffix, StringComparison.OrdinalIgnoreCase)
+                && CultureUtilities.EndsWith(hostname, defaultDomainSuffix, ignoreCase: true)
                 && hostname.Length > defaultDomainSuffix.Length
                 && IsPossibleShortHostName(hostname, 0, hostname.Length - defaultDomainSuffix.Length);
         }
@@ -1202,7 +1203,7 @@ namespace Kusto.Language
             if (name.Length + defaultDomainSuffix.Length != hostName.Length)
                 return false;
 
-            return hostName.StartsWith(name, StringComparison.OrdinalIgnoreCase);
+            return CultureUtilities.StartsWith(hostName, name, ignoreCase: true);
         }
 
         /// <summary>
@@ -1301,13 +1302,13 @@ namespace Kusto.Language
                 {
                     // this is fixed-pattern (no asterisks before or after), so must be exact match
                     return text.Length == patternSegmentLength
-                        && string.Compare(text, 0, pattern, 0, patternSegmentLength, ignoreCase) == 0;
+                        && CultureUtilities.Equals(text, 0, pattern, 0, patternSegmentLength, ignoreCase);
                 }
                 else
                 {
                     // this is the first segment (no asterisk before) so its a starts-with pattern segment
                     if (patternSegmentLength > text.Length
-                        || string.Compare(text, 0, pattern, 0, patternSegmentLength, ignoreCase) != 0)
+                        || !CultureUtilities.Equals(text, 0, pattern, 0, patternSegmentLength, ignoreCase))
                     {
                         return false;
                     }
@@ -1319,33 +1320,16 @@ namespace Kusto.Language
             {
                 // no asterisk after, so it is an ends-with pattern segment
                 return (patternSegmentLength <= text.Length - textPosition
-                        && string.Compare(text, text.Length - patternSegmentLength, pattern, patternSegmentStart, patternSegmentLength, ignoreCase) == 0);
+                        && CultureUtilities.Equals(text, text.Length - patternSegmentLength, pattern, patternSegmentStart, patternSegmentLength, ignoreCase));
             }
             else
             {
                 // between asterisks, so this is a contains segment
-                var matchesPosition = IndexOf(text, textPosition, pattern, patternSegmentStart, patternSegmentLength);
+                var matchesPosition = CultureUtilities.IndexOf(text, textPosition, pattern, patternSegmentStart, patternSegmentLength, ignoreCase);
                 if (matchesPosition == -1)
                     return false;
 
                 return Matches(pattern, nextPatternStart, text, matchesPosition + patternSegmentLength, ignoreCase);
-            }
-        }
-
-        private static int IndexOf(string text, int textStart, string value, int valueStart, int valueLength)
-        {
-            var firstChar = value[valueStart];
-
-            while (true)
-            {
-                int firstCharPosition = text.IndexOf(firstChar, textStart);
-                if (firstCharPosition < textStart || firstCharPosition + valueLength > text.Length)
-                    return -1;
-
-                if (string.Compare(text, firstCharPosition, value, valueStart, valueLength) == 0)
-                    return firstCharPosition;
-
-                textStart = firstCharPosition + 1;
             }
         }
 

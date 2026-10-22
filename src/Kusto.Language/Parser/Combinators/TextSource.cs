@@ -55,17 +55,19 @@ namespace Kusto.Language.Parsing
 
         public bool Matches(int start, string text)
         {
-            // compare first character before calling string.Compare (perf)
-            var offs = _offset + start;
-            return offs < _source.Length 
-                && text.Length > 0 
-                && _source[offs] == text[0]
-                && string.Compare(_source, offs, text, 0, text.Length) == 0;
+            // compare first character before the full comparison (perf)
+            var offset = _offset + start;
+            return text.Length > 0
+                && text.Length <= _end - offset
+                && _source[offset] == text[0]
+                && CultureUtilities.Equals(_source, offset, text, 0, text.Length);
         }
 
         public bool Matches(int start, string text, bool ignoreCase)
         {
-            return string.Compare(_source, _offset + start, text, 0, text.Length, ignoreCase) == 0;
+            var offset = _offset + start;
+            return text.Length <= _end - offset
+                && CultureUtilities.Equals(_source, offset, text, 0, text.Length, ignoreCase);
         }
 
         /// <summary>

@@ -640,11 +640,7 @@ namespace Kusto.Language.Parsing
         public static Parser<char> Match(char ch, bool ignoreCase = false)
         {
             if (ignoreCase)
-            {
-                var chUpper = char.ToUpper(ch);
-                var chLower = char.ToLower(ch);
-                return Parsers<char>.Match(c => c == ch || c == chUpper || c == chLower);
-            }
+                return Parsers<char>.Match(c => CultureUtilities.EqualsOrdinalIgnoreCase(c, ch));
             else
             {
                 return Parsers<char>.Match(c => c == ch);
@@ -663,9 +659,6 @@ namespace Kusto.Language.Parsing
 
             if (ignoreCase)
             {
-                var lower = text.ToLower();
-                var upper = text.ToUpper();
-
                 return Parsers<char>.Match((source, start) =>
                 {
                     // check for quick string comparison
@@ -673,18 +666,32 @@ namespace Kusto.Language.Parsing
                     {
                         return ts.Matches(start, text, ignoreCase: true) ? text.Length : -1;
                     }
-                    else
-                    {
-                        // otherwise do it the hard way
-                        for (int i = 0; i < text.Length; i++)
-                        {
-                            var ch = source.Peek(start + i);
-                            if (ch != lower[i] && ch != upper[i])
-                                return ~i;
-                        }
 
-                        return text.Length;
+                    // Avoid allocating for the common exact-case match. If casing differs,
+                    // compare the full text so supplementary Unicode scalars stay intact.
+                    for (int i = 0; i < text.Length; i++)
+                    {
+                        if (source.IsEnd(start + i))
+                            return ~i;
+
+                        if (source.Peek(start + i) != text[i])
+                        {
+                            var candidate = new char[text.Length];
+                            for (int j = 0; j < candidate.Length; j++)
+                            {
+                                if (source.IsEnd(start + j))
+                                    return ~j;
+
+                                candidate[j] = source.Peek(start + j);
+                            }
+
+                            return CultureUtilities.Equals(new string(candidate), text, ignoreCase: true)
+                                ? text.Length
+                                : ~i;
+                        }
                     }
+
+                    return text.Length;
                 });
             }
             else

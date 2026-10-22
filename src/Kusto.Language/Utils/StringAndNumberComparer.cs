@@ -8,18 +8,18 @@ namespace Kusto.Language.Utils
     /// </summary>
     internal class StringAndNumberComparer : IComparer<string>
     {
-        private readonly StringComparison _comparison;
+        private readonly bool _ignoreCase;
 
-        private StringAndNumberComparer(StringComparison comparison)
+        private StringAndNumberComparer(bool ignoreCase)
         {
-            _comparison = comparison;
+            _ignoreCase = ignoreCase;
         }
 
-        public static StringAndNumberComparer Ordinal = 
-            new StringAndNumberComparer(StringComparison.Ordinal);
+        public static StringAndNumberComparer Ordinal =
+            new StringAndNumberComparer(ignoreCase: false);
 
-        public static StringAndNumberComparer OrdinalIgnoreCase = 
-            new StringAndNumberComparer(StringComparison.OrdinalIgnoreCase);
+        public static StringAndNumberComparer OrdinalIgnoreCase =
+            new StringAndNumberComparer(ignoreCase: true);
 
         public int Compare(string xText, string yText)
         {
@@ -49,7 +49,7 @@ namespace Kusto.Language.Utils
                     // neither segments are numbers
                     var commonLength = GetCommonLengthWithoutDigits(xText, xStart, yText, yStart);
 
-                    var comp = string.Compare(xText, xStart, yText, yStart, commonLength, _comparison);
+                    var comp = CultureUtilities.Compare(xText, xStart, yText, yStart, commonLength, _ignoreCase);
                     if (comp != 0)
                         return comp;
 
@@ -111,7 +111,7 @@ namespace Kusto.Language.Utils
 
             // if both numbers have same length use text comparsison
             if (xLength > 0 && xLength == yLength)
-                return string.Compare(xText, xStart, yText, yStart, xLength);
+                return CultureUtilities.Compare(xText, xStart, yText, yStart, xLength);
 
             // longer wins because it has more digits
             return xLength - yLength;

@@ -6,6 +6,7 @@ namespace Kusto.Language.Editor
 {
     using Syntax;
     using Parsing;
+    using Utils;
 
     /// <summary>
     /// Rewrites whitespace to conform to formatting options.
@@ -306,20 +307,20 @@ namespace Kusto.Language.Editor
                 switch (left.Kind)
                 {
                     case SyntaxKind.EqualToken:
-                        return right.Kind.GetText().StartsWith("=")  // ==
-                            || right.Kind.GetText().StartsWith(">")  // =>
-                            || right.Kind.GetText().StartsWith("~"); // =~
+                        return CultureUtilities.StartsWith(right.Kind.GetText(), "=")  // ==
+                            || CultureUtilities.StartsWith(right.Kind.GetText(), ">")  // =>
+                            || CultureUtilities.StartsWith(right.Kind.GetText(), "~"); // =~
                     case SyntaxKind.BangToken:
-                        return right.Kind.GetText().StartsWith("=")  // !=
-                            || right.Kind.GetText().StartsWith("~"); // !~
+                        return CultureUtilities.StartsWith(right.Kind.GetText(), "=")  // !=
+                            || CultureUtilities.StartsWith(right.Kind.GetText(), "~"); // !~
                     case SyntaxKind.LessThanToken:
-                        return right.Kind.GetText().StartsWith(">")  // <>
-                            || right.Kind.GetText().StartsWith("=")  // <= 
-                            || right.Kind.GetText().StartsWith("|"); // <|
+                        return CultureUtilities.StartsWith(right.Kind.GetText(), ">")  // <>
+                            || CultureUtilities.StartsWith(right.Kind.GetText(), "=")  // <=
+                            || CultureUtilities.StartsWith(right.Kind.GetText(), "|"); // <|
                     case SyntaxKind.GreaterThanToken:
-                        return right.Kind.GetText().StartsWith("="); // >=
+                        return CultureUtilities.StartsWith(right.Kind.GetText(), "="); // >=
                     case SyntaxKind.DotToken:
-                        return right.Kind.GetText().StartsWith("."); // ..
+                        return CultureUtilities.StartsWith(right.Kind.GetText(), "."); // ..
                 }
 
                 return false;

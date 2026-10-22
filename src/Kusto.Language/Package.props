@@ -27,6 +27,42 @@
     <PackageId>Microsoft.Azure.Kusto.Language</PackageId>
     <Product>Azure Data Explorer (Kusto) language service</Product>
     <Description>Language service (parser, syntax model, and intellisense API) for Azure Data Explorer (Kusto)</Description>
+    <PackageReleaseNotes>
+13.0.0
+The language service has always assumed en-US conventions for query text, as programming languages
+generally do, but it read those conventions from the host's ambient culture. It now applies them
+directly, so behavior no longer varies with the machine's ambient culture across .NET Framework,
+.NET, and the JavaScript (Bridge) build. Review the following if your application ran under a
+non-invariant culture.
+
+- Literal parsing is invariant, and now agrees with the engine. Numeric and date/time literals
+  (real, decimal, long, int, datetime, timespan) are parsed with the invariant culture instead of
+  CultureInfo.CurrentCulture. Under cultures that use a comma as the decimal separator, real(1,5)
+  is no longer 1.5: like the engine, the comma is read as a group separator, so the value is 15.
+  Datetime literals are read in the invariant format rather than the host's date order. A group
+  separator is only accepted in the integral part of a real literal, so real(1.5,3) and real(1e3,5)
+  are invalid on every target.
+- Case-insensitive matching is ordinal. Name, wildcard, and host name matching no longer use
+  culture-sensitive casing. Most visibly, under Turkish-like cultures 'I' and 'i' now match each
+  other, and characters such as U+0131 and U+017F no longer match their ASCII look-alikes.
+- Wildcard patterns match case-insensitively in every segment. Previously a middle segment, such as
+  SAMPLE in *SAMPLE*, was matched case-sensitively even when matching ignored case; it now matches
+  Samples the same way a leading or trailing segment does.
+- Completion items are ordered ordinally. Items with the same rank and priority were previously
+  sorted by the host's culture, so orderings differed under cultures such as cs-CZ and da-DK.
+  Punctuation now sorts by character code; culture sorting previously all but ignored hyphens.
+- Supplementary-plane characters fold consistently. Case-insensitive matching of characters outside
+  the Basic Multilingual Plane now agrees across targets, including on hosts whose
+  OrdinalIgnoreCase folds per UTF-16 code unit and therefore did not previously fold them.
+
+Unchanged: a literal that cannot be parsed still yields the type's default value rather than a
+diagnostic. Literal values are computed on demand rather than during parsing and analysis, so there
+is no general point at which such a failure could be reported.
+
+Known limitation: a small set of Basic Multilingual Plane characters (for example U+00B5 MICRO SIGN
+and U+03C2 GREEK SMALL LETTER FINAL SIGMA) still fold differently between hosts that use NLS casing
+and hosts that use ICU casing.
+    </PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>EULA-agreement.txt</PackageLicenseFile>
     <PackageProjectUrl>https://aka.ms/kdocs</PackageProjectUrl>

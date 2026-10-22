@@ -459,9 +459,9 @@ namespace Kusto.Language.Binding
             switch (GetColumnOrdering(ordering))
             {
                 case ColumnOrdering.Ascending:
-                    return columns.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase);
+                    return columns.OrderBy(c => c.Name, CultureStringComparer.OrdinalIgnoreCase);
                 case ColumnOrdering.Descending:
-                    return columns.OrderByDescending(c => c.Name, StringComparer.OrdinalIgnoreCase);
+                    return columns.OrderByDescending(c => c.Name, CultureStringComparer.OrdinalIgnoreCase);
                 case ColumnOrdering.GrannyAscending:
                     return columns.OrderBy(c => c.Name, StringAndNumberComparer.OrdinalIgnoreCase);
                 case ColumnOrdering.GrannyDescending:

@@ -6,6 +6,7 @@ namespace Kusto.Language
     using Symbols;
     using Syntax;
     using System;
+    using Utils;
     using static FunctionHelpers;
 
     /// <summary>
@@ -559,7 +560,7 @@ namespace Kusto.Language
                         {
                             // Remove return_lookup_key
                             var lookupkeyName = context.GetArgument(Geo_lookup_LookupPolygonKey.Name).ReferencedSymbol.Name;
-                            cols.AddRange(lookupTable.Columns.Where(c => !StringComparer.OrdinalIgnoreCase.Equals(c.Name, lookupkeyName)));
+                            cols.AddRange(lookupTable.Columns.Where(c => !CultureUtilities.Equals(c.Name, lookupkeyName, ignoreCase: true)));
                         }
 
                         var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
@@ -591,7 +592,7 @@ namespace Kusto.Language
                         {
                             if (args[i] is SimpleNamedExpression sne)
                             {
-                                switch (sne.Name.SimpleName.ToLower())
+                                switch (CultureUtilities.ToLowerInvariant(sne.Name.SimpleName))
                                 {
                                     case "radius":
                                         parameters.Add(Geo_lookup_PolygonRadius);
@@ -647,7 +648,7 @@ namespace Kusto.Language
                         {
                             // Remove return_lookup_key
                             var lookupkeyName = context.GetArgument(Geo_lookup_LookupLineKey.Name).ReferencedSymbol.Name;
-                            cols.AddRange(lookupTable.Columns.Where(c => !StringComparer.OrdinalIgnoreCase.Equals(c.Name, lookupkeyName)));
+                            cols.AddRange(lookupTable.Columns.Where(c => !CultureUtilities.Equals(c.Name, lookupkeyName, ignoreCase: true)));
                         }
 
                         var combinedColumns = ColumnSymbol.Combine(CombineKind.UniqueNames, cols);
@@ -680,7 +681,7 @@ namespace Kusto.Language
                         {
                             if (args[i] is SimpleNamedExpression sne)
                             {
-                                switch (sne.Name.SimpleName.ToLower())
+                                switch (CultureUtilities.ToLowerInvariant(sne.Name.SimpleName))
                                 {
                                     case "return_unmatched":
                                         parameters.Add(Geo_lookup_return_unmatched);
@@ -721,7 +722,7 @@ namespace Kusto.Language
                     ((context.Arguments.Count == 8 && context.Arguments[7].Kind == SyntaxKind.BooleanLiteralExpression && context.Arguments[7].ConstantValue != null && (bool)context.Arguments[7].ConstantValue)
                     // Named expression value of 'return_lookup_key' is set to true
                     || context.Arguments.Any(arg => arg is SimpleNamedExpression sne
-                        && StringComparer.OrdinalIgnoreCase.Equals(sne.Name.SimpleName, Geo_lookup_return_key.Name)
+                        && CultureUtilities.Equals(sne.Name.SimpleName, Geo_lookup_return_key.Name, ignoreCase: true)
                         && sne.Expression.Kind == SyntaxKind.BooleanLiteralExpression
                         && sne.Expression.ConstantValue != null
                         && (bool)sne.Expression.ConstantValue)));

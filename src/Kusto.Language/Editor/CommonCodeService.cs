@@ -348,7 +348,7 @@ namespace Kusto.Language.Editor
             var start = 0;
             while (start < blockText.Length)
             {
-                var openBrace = blockText.IndexOf("{", start);
+                var openBrace = CultureUtilities.IndexOf(blockText, "{", start);
                 if (openBrace >= 0)
                 {
                     var len = Parsing.TokenParser.ScanClientParameter(

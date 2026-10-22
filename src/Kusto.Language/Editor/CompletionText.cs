@@ -60,7 +60,7 @@ namespace Kusto.Language.Editor
         {
             var list = new List<CompletionText>();
 
-            var cursorPos = textWithMarkers.IndexOf(cursorMarker);
+            var cursorPos = CultureUtilities.IndexOf(textWithMarkers, cursorMarker);
             if (cursorPos >= 0)
             {
                 var beforeCursorText = cursorPos > 0 ? textWithMarkers.Substring(0, cursorPos) : "";
@@ -73,10 +73,10 @@ namespace Kusto.Language.Editor
                 var pos = 0;
                 while (pos < textWithMarkers.Length)
                 {
-                    var startPos = textWithMarkers.IndexOf(startMarker, pos);
+                    var startPos = CultureUtilities.IndexOf(textWithMarkers, startMarker, pos);
                     if (startPos >= 0)
                     {
-                        var endPos = textWithMarkers.IndexOf(endMarker, startPos + startMarker.Length);
+                        var endPos = CultureUtilities.IndexOf(textWithMarkers, endMarker, startPos + startMarker.Length);
                         if (endPos >= 0)
                         {
                             if (startPos > pos)

@@ -821,8 +821,8 @@ namespace Kusto.Language.Binding
             if ((clusterOrGroup == null 
                 || clusterOrGroup == _currentCluster)
                 && (string.IsNullOrEmpty(nameOrPattern)
-                    || string.Compare(_currentDatabase.Name, nameOrPattern, ignoreCase: true) == 0
-                    || string.Compare(_currentDatabase.AlternateName, nameOrPattern, ignoreCase: true) == 0))
+                    || CultureUtilities.Equals(_currentDatabase.Name, nameOrPattern, ignoreCase: true)
+                    || CultureUtilities.Equals(_currentDatabase.AlternateName, nameOrPattern, ignoreCase: true)))
             {
                 return _currentDatabase;
             }
@@ -2364,10 +2364,10 @@ namespace Kusto.Language.Binding
         {
             var body = signature.Body.Trim();
 
-            if (!body.StartsWith("{", StringComparison.Ordinal))
+            if (!CultureUtilities.StartsWith(body, "{"))
                 body = "{" + body;
 
-            if (!body.EndsWith("}", StringComparison.Ordinal))
+            if (!CultureUtilities.EndsWith(body, "}"))
                 body += "\n}";
 
             return body;

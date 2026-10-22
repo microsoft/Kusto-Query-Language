@@ -123,21 +123,10 @@ namespace Kusto.Language.Symbols
         {
             if (name != null)
             {
-                if (ignoreCase)
-                {
-                    if (string.Compare(symbol.Name, name, ignoreCase) != 0)
-                        return false;
-                }
-                else 
-                {
-                    // compare first character before calling string.Compare (perf)
-                    var sn = symbol.Name;
-                    if (name.Length == 0 
-                        || sn.Length == 0 
-                        || name[0] != sn[0]
-                        || string.Compare(sn, name) != 0)
-                        return false;
-                }
+                // Case-sensitive matching has always rejected an empty name; ignore-case matching has not.
+                if ((!ignoreCase && name.Length == 0)
+                    || !CultureUtilities.Equals(symbol.Name, name, ignoreCase))
+                    return false;
             }
 
             if ((match & SymbolMatch.Column) != 0 && symbol is ColumnSymbol)

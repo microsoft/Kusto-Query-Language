@@ -1732,7 +1732,7 @@ namespace Kusto.Language.Parsing
                     SyntaxToken.Missing(SyntaxKind.CloseParenToken));
 
             bool IsInlineExternalTableDeltaKind(InlineExternalTableKindClause kindClause) =>
-                string.Equals(kindClause?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+                CultureUtilities.Equals(kindClause?.Value?.ValueText, "delta", ignoreCase: true);
 
             RowSchema GetInlineExternalTableRowSchema(InlineExternalTableKindClause kindClause) =>
                 IsInlineExternalTableDeltaKind(kindClause)

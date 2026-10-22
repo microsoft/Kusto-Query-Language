@@ -96,7 +96,7 @@ namespace Kusto.Language.Parsing
         {
             return kind.GetCategory() == SyntaxCategory.Punctuation
                     ? $"'{kind.GetText()}'"
-                    : kind.GetText() ?? kind.ToString().ToLower();
+                    : kind.GetText() ?? CultureUtilities.ToLowerInvariant(kind.ToString());
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Kusto.Language.Parsing
                     break;
 
                 // text parts must match exactly
-                if (string.Compare(token.Text, 0, text, textOffset, token.Text.Length) != 0)
+                if (CultureUtilities.Compare(token.Text, 0, text, textOffset, token.Text.Length) != 0)
                     break;
 
                 textOffset += token.Text.Length;
@@ -403,7 +403,7 @@ namespace Kusto.Language.Parsing
                 return null;
 
             // hide any syntax that starts with _ from completion
-            if (text.StartsWith("_", StringComparison.Ordinal))
+            if (CultureUtilities.StartsWith(text, "_"))
                 return null;
 
             var item = new CompletionItem(ckind, text, matchText: matchText, priority: priority);

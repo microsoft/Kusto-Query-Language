@@ -64,7 +64,7 @@ namespace Kusto.Language.Editor
         /// <summary>
         /// The starting index of the value within the current text.
         /// </summary>
-        public int IndexOf(string value) => this.CurrentText.IndexOf(value);
+        public int IndexOf(string value) => CultureUtilities.IndexOf(this.CurrentText, value);
 
         /// <summary>
         /// Converts the <see cref="EditString"/> to just its current text.
@@ -253,7 +253,7 @@ namespace Kusto.Language.Editor
 
             while (true)
             {
-                int oldValueStart = this.CurrentText.IndexOf(oldText, startIndex);
+                int oldValueStart = CultureUtilities.IndexOf(this.CurrentText, oldText, startIndex);
                 if (oldValueStart < startIndex)
                     break;
 
@@ -290,7 +290,7 @@ namespace Kusto.Language.Editor
 
             // only apply edit if it actually makes a change.
             if (edit.InsertText.Length != edit.DeleteLength
-                || string.Compare(this.CurrentText, edit.Start, edit.InsertText, 0, edit.InsertText.Length) != 0)
+                || CultureUtilities.Compare(this.CurrentText, edit.Start, edit.InsertText, 0, edit.InsertText.Length) != 0)
             {
                 return ApplyEdits(newText, new[] { new Edit(edit.Start, edit.DeleteLength, edit.InsertText.Length) });
             }
@@ -808,7 +808,7 @@ namespace Kusto.Language.Editor
                     var len = TextFacts.GetLineBreakLength(text, i);
 
                     // only make the edit if the newValue is different than the existing line break
-                    if (len != newValue.Length || string.Compare(text, i, newValue, 0, len) != 0)
+                    if (len != newValue.Length || CultureUtilities.Compare(text, i, newValue, 0, len) != 0)
                     {
                         if (edits == null)
                             edits = new List<TextEdit>();

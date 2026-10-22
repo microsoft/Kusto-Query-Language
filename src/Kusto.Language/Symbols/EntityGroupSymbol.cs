@@ -61,7 +61,7 @@ namespace Kusto.Language.Symbols
             definition = definition.Trim();
 
             // already a entity group expression
-            if (definition.StartsWith("entity_group"))
+            if (CultureUtilities.StartsWith(definition, "entity_group"))
             {
                 return definition;
             }
@@ -69,7 +69,7 @@ namespace Kusto.Language.Symbols
             string expressionList = definition;
 
             // remove brackets
-            if (definition.StartsWith("[") && definition.EndsWith("]"))
+            if (CultureUtilities.StartsWith(definition, "[") && CultureUtilities.EndsWith(definition, "]"))
             {
                 expressionList = definition.Substring(1, definition.Length - 2);           
             }
@@ -77,7 +77,7 @@ namespace Kusto.Language.Symbols
             expressionList = expressionList.Trim();
 
             // get literal value
-            if (expressionList.StartsWith("\"") || expressionList.StartsWith("'"))
+            if (CultureUtilities.StartsWith(expressionList, "\"") || CultureUtilities.StartsWith(expressionList, "'"))
             {
                 expressionList = KustoFacts.GetStringLiteralValue(expressionList);
             }

@@ -678,10 +678,10 @@ namespace Kusto.Language.Symbols
             else if (_body != null)
             {
                 var body = _body.Trim();
-                if (body.StartsWith("{", StringComparison.Ordinal))
+                if (CultureUtilities.StartsWith(body, "{"))
                 {
                     body = body.Substring(1);
-                    if (body.EndsWith("}", StringComparison.Ordinal))
+                    if (CultureUtilities.EndsWith(body, "}"))
                         body = body.Substring(0, body.Length - 1);
                 }
                 var code = KustoCode.Parse(body);

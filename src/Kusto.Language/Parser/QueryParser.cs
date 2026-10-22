@@ -2275,7 +2275,7 @@ namespace Kusto.Language.Parsing
 
         private static bool IsInlineExternalTableDeltaKind(InlineExternalTableKindClause kindClause)
         {
-            return string.Equals(kindClause?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+            return CultureUtilities.Equals(kindClause?.Value?.ValueText, "delta", ignoreCase: true);
         }
 
         private static InlineExternalTableDataFormatClause CreateMissingInlineExternalTableDataFormatClause()

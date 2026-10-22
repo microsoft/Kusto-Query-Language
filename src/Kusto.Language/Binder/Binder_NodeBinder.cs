@@ -1874,7 +1874,7 @@ namespace Kusto.Language.Binding
                 {
                     _binder.CheckQueryOperatorParameters(node.Parameters, QueryOperatorParameters.InlineExternalTableProperties, diagnostics);
 
-                    var isDeltaInlineExternalTable = string.Equals(node.KindParameter?.Value?.ValueText, "delta", StringComparison.OrdinalIgnoreCase);
+                    var isDeltaInlineExternalTable = CultureUtilities.Equals(node.KindParameter?.Value?.ValueText, "delta", ignoreCase: true);
                     var hasOmittedSchema =
                         node.Schema != null
                         && node.Schema.OpenParen.IsMissing

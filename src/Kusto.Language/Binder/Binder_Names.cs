@@ -782,7 +782,7 @@ namespace Kusto.Language.Binding
 
         private static bool IsPossibleInternalFunction(string name)
         {
-            return name.StartsWith("__");
+            return CultureUtilities.StartsWith(name, "__");
         }
 
         private static void RemoveFunctionsThatCannotBeInvokedWithZeroArgs(List<Symbol> list)

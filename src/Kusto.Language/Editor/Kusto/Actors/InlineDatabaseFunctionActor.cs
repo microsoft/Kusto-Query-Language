@@ -274,10 +274,10 @@ namespace Kusto.Language.Editor
         {
             var edit = new EditString(body);
 
-            if (!edit.CurrentText.StartsWith("{", StringComparison.Ordinal))
+            if (!CultureUtilities.StartsWith(edit.CurrentText, "{"))
                 edit = edit.Prepend("{\n");
 
-            if (!edit.CurrentText.EndsWith("}", StringComparison.Ordinal))
+            if (!CultureUtilities.EndsWith(edit.CurrentText, "}"))
                 edit = edit.Append("\n}");
 
             return edit;

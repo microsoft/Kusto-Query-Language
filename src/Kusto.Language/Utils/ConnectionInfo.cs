@@ -22,7 +22,7 @@ namespace Kusto.Language.Utils
 
         public static ConnectionInfo Parse(string text)
         {
-            var parts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var parts = new Dictionary<string, string>(CultureStringComparer.OrdinalIgnoreCase);
 
             // switch to parsing argument text
             int pos = 0;

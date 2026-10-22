@@ -733,7 +733,7 @@ namespace Kusto.Language.Binding
             else if (directive.Name == "connect" && directive.Arguments.Count > 0)
             {
                 var arg = directive.Arguments[0];
-                if (arg.Text.StartsWith("cluster"))
+                if (CultureUtilities.StartsWith(arg.Text, "cluster"))
                 {
                     var cluster = GetStringValueAfterPrefix(arg.Text, "cluster(", 0, out var end);
                     if (cluster != null)
@@ -744,7 +744,7 @@ namespace Kusto.Language.Binding
                         return clusterName != null;
                     }
                 }
-                else if (!arg.Text.StartsWith("@"))
+                else if (!CultureUtilities.StartsWith(arg.Text, "@"))
                 {
                     var connection = GetDirectiveArgumentStringValue(arg);
                     var info = ConnectionInfo.Parse(connection);
@@ -761,7 +761,7 @@ namespace Kusto.Language.Binding
 
         internal static string GetStringValueAfterPrefix(string text, string prefix, int start, out int end)
         {
-            var index = text.IndexOf(prefix, start);
+            var index = CultureUtilities.IndexOf(text, prefix, start);
             if (index >= 0)
             {
                 var wsLen = Parsing.TokenParser.ScanWhitespace(text, index + prefix.Length);

@@ -2,6 +2,8 @@
 
 namespace Kusto.Language.Editor
 {
+    using Utils;
+
     /// <summary>
     /// A directive to be processed by the client before executing the query.
     /// </summary>
@@ -175,7 +177,7 @@ namespace Kusto.Language.Editor
                     if (len >= 0 && len == argLen)
                     {
                         var argText = argumentText.Substring(argStart, argLen);
-                        double.TryParse(argText, out double value);
+                        CultureUtilities.TryParseDoubleInvariant(argText, out double value);
                         args.Add(new ClientDirectiveArgument(argName, argText, value));
                         argName = null;
                         continue;
@@ -186,7 +188,7 @@ namespace Kusto.Language.Editor
                     if (len > 0 && len == argLen)
                     {
                         var argText = argumentText.Substring(argStart, argLen);
-                        long.TryParse(argText, out long value);
+                        CultureUtilities.TryParseInt64Invariant(argText, out long value);
                         args.Add(new ClientDirectiveArgument(argName, argText, value));
                         argName = null;
                         continue;
@@ -215,5 +217,6 @@ namespace Kusto.Language.Editor
             directive = new ClientDirective(text, name, afterNameText, argumentText, args, afterDirectiveText);
             return true;
         }
+
     }
 }

@@ -328,7 +328,7 @@ namespace Kusto.Language.Editor
                 if (actions.Count > 1)
                 {
                     // present them in ascending alphabetical order
-                    actions.Sort((a, b) => string.Compare(a.Title, b.Title, ignoreCase: true));
+                    actions.Sort((a, b) => CultureUtilities.Compare(a.Title, b.Title, ignoreCase: true));
                 }
 
                 return new CodeActionInfo(actions);

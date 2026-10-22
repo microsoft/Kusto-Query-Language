@@ -28,7 +28,10 @@ namespace Kusto.Language.Utils
 
             if (comparingType == typeof(string))
             {
-                return string.Compare((string)convertedX, (string)convertedY, !caseSensitive) == 0;
+                return CultureUtilities.Equals(
+                    (string)convertedX,
+                    (string)convertedY,
+                    ignoreCase: !caseSensitive);
             }
             else
             {

@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Kusto.Language.Editor
 {
+    using Utils;
+
     public class DisabledDiagnostics
     {
         private readonly HashSet<string> _severities;
@@ -20,8 +22,8 @@ namespace Kusto.Language.Editor
             if (!string.IsNullOrEmpty(text))
             {
                 var items = text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
-                _severities = new HashSet<string>(items.Where(i => i.StartsWith(SeverityPrefix)).Select(i => i.Substring(SeverityPrefix.Length)));
-                _codes = new HashSet<string>(items.Where(i => !i.StartsWith(SeverityPrefix)));
+                _severities = new HashSet<string>(items.Where(i => CultureUtilities.StartsWith(i, SeverityPrefix)).Select(i => i.Substring(SeverityPrefix.Length)));
+                _codes = new HashSet<string>(items.Where(i => !CultureUtilities.StartsWith(i, SeverityPrefix)));
             }
         }
 

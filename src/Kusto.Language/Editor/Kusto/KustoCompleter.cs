@@ -129,7 +129,7 @@ namespace Kusto.Language.Editor
             // order completions by rank, priority & text
             var orderedItems = items
                  .Select(i => i.WithOrderText(CreateOrderText(i)))
-                 .OrderBy(i => i.OrderText)
+                 .OrderBy(i => i.OrderText, CultureStringComparer.Ordinal)
                  .ToArray();
 
             return new CompletionInfo(orderedItems, editStart, editLength);
@@ -138,10 +138,10 @@ namespace Kusto.Language.Editor
         private string CreateOrderText(CompletionItem item)
         {
             return
-                ((int)GetOrderingRank(item)).ToString("D2")
-                + ((int)item.Priority).ToString("D1")
+                CultureUtilities.ToInvariantString((int)GetOrderingRank(item), "D2")
+                + CultureUtilities.ToInvariantString((int)item.Priority, "D1")
                 + "_"
-                + item.OrderText.ToLower(); // existing order text should not have rank & priority already
+                + CultureUtilities.ToLowerInvariant(item.OrderText); // existing order text should not have rank & priority already
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace Kusto.Language.Editor
 
         private static bool IsStartOfKnownNameWithDashes(string text)
         {
-            return s_namesWithDashes.Any(n => n.StartsWith(text));
+            return s_namesWithDashes.Any(n => CultureUtilities.StartsWith(n, text));
         }
 
         /// <summary>
@@ -1211,7 +1211,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Bool)
             {
-                if (example.StartsWith("bool("))
+                if (CultureUtilities.StartsWith(example, "bool("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
 
@@ -1227,7 +1227,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Int)
             {
-                if (example.StartsWith("int("))
+                if (CultureUtilities.StartsWith(example, "int("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
                 }
@@ -1238,7 +1238,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Long)
             {
-                if (example.StartsWith("long("))
+                if (CultureUtilities.StartsWith(example, "long("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
 
@@ -1254,7 +1254,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Real)
             {
-                if (example.StartsWith("real(") || example.StartsWith("double("))
+                if (CultureUtilities.StartsWith(example, "real(") || CultureUtilities.StartsWith(example, "double("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
 
@@ -1270,7 +1270,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Decimal)
             {
-                if (example.StartsWith("decimal("))
+                if (CultureUtilities.StartsWith(example, "decimal("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
                 }
@@ -1281,7 +1281,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.TimeSpan)
             {
-                if (example.StartsWith("timespan(") || example.StartsWith("time("))
+                if (CultureUtilities.StartsWith(example, "timespan(") || CultureUtilities.StartsWith(example, "time("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
 
@@ -1297,7 +1297,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.DateTime)
             {
-                if (example.StartsWith("datetime(") || example.StartsWith("date("))
+                if (CultureUtilities.StartsWith(example, "datetime(") || CultureUtilities.StartsWith(example, "date("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
                 }
@@ -1308,7 +1308,7 @@ namespace Kusto.Language.Editor
             }
             else if (type == ScalarTypes.Guid)
             {
-                if (example.StartsWith("guid("))
+                if (CultureUtilities.StartsWith(example, "guid("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
                 }
@@ -1319,7 +1319,7 @@ namespace Kusto.Language.Editor
             }
             else if (type is DynamicSymbol)
             {
-                if (example.StartsWith("dynamic("))
+                if (CultureUtilities.StartsWith(example, "dynamic("))
                 {
                     displayText = matchText = GetGooLiteralContent(example);
                 }
@@ -1482,19 +1482,20 @@ namespace Kusto.Language.Editor
             {
                 case string s:
                     // convert example to lower case (if not case sensitive) to improve matching during completion
-                    return KustoFacts.GetSingleQuotedStringLiteral(p.IsCaseSensitive ? s : s.ToLower());
+                    return KustoFacts.GetSingleQuotedStringLiteral(p.IsCaseSensitive ? s : CultureUtilities.ToLowerInvariant(s));
                 case DateTime dt:
-                    return $"datetime({dt})";
+                    return $"datetime({CultureUtilities.ToInvariantString(dt)})";
                 case TimeSpan ts:
-                    return $"timespan({ts})";
+                    return $"timespan({CultureUtilities.ToInvariantString(ts)})";
                 case Guid g:
-                    return $"guid({g})";
+                    return $"guid({CultureUtilities.ToInvariantString(g)})";
                 case Decimal d:
-                    return $"decimal({d})";
+                    return $"decimal({CultureUtilities.ToInvariantString(d)})";
                 default:
-                    return value.ToString();
+                    return CultureUtilities.ToInvariantString(value);
             }
         }
+
 
         private static void GetOperatorExamples(OperatorSymbol symbol, IReadOnlyList<Expression> arguments, IReadOnlyList<Parameter> possibleParameters, HashSet<string> examples)
         {
@@ -2568,7 +2569,7 @@ namespace Kusto.Language.Editor
 
             // was this an auto appended '='?
             // make appended additional space depend on whether it is currently separated by a space.
-            if (item.BeforeText.EndsWith("=")
+            if (CultureUtilities.EndsWith(item.BeforeText, "=")
                 && TextFacts.IsLetterOrDigit(item.BeforeText[0])
                 && item.BeforeText.Length > 1
                 && !TextFacts.IsWhitespace(item.BeforeText[item.BeforeText.Length - 2]))

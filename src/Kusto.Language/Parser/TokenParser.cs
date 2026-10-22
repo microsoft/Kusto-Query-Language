@@ -134,7 +134,7 @@ namespace Kusto.Language.Parsing
                             var gooText = GetSubstring(text, pos, keywordMatch.Key.Length + gooLen);
 
                             // validate the expected last character is correct
-                            var dx = gooText.EndsWith(")")
+                            var dx = CultureUtilities.EndsWith(gooText, ")")
                                 ? null
                                 : DiagnosticFacts.GetMissingText(")").WithLocationKind(DiagnosticLocationKind.RelativeEnd);
 
@@ -1233,7 +1233,7 @@ namespace Kusto.Language.Parsing
                         && match[2] == text[start + 2];
                 default:
                     return match[0] == text[start]
-                    && string.Compare(text, start, match, 0, match.Length, StringComparison.Ordinal) == 0;
+                    && CultureUtilities.Compare(text, start, match, 0, match.Length) == 0;
             }
         }
 

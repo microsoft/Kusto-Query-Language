@@ -2,6 +2,8 @@
 
 namespace Kusto.Language.Editor
 {
+    using Utils;
+
     /// <summary>
     /// A factory for creating <see cref="KustoCodeService"/>
     /// </summary>
@@ -89,8 +91,8 @@ namespace Kusto.Language.Editor
 
             // check for known sql query keyword
             return 
-                string.Compare(firstToken.Text, "select", ignoreCase: true) == 0
-                || string.Compare(firstToken.Text, "with", ignoreCase: true) == 0;
+                CultureUtilities.Equals(firstToken.Text, "select", ignoreCase: true)
+                || CultureUtilities.Equals(firstToken.Text, "with", ignoreCase: true);
         }
     }
 }
