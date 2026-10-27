@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Kusto.Language.Bridge/Kusto.Language.Bridge.csproj" />
+  <Project Path="Kusto.Language/Kusto.Language.csproj" />
+</Solution>
