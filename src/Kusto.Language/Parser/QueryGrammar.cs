@@ -26,53 +26,48 @@ namespace Kusto.Language.Parsing
         /// </summary>
         public static QueryGrammar From(GlobalState globals)
         {
-            var cg = s_currentGrammar;
-            if (cg != null && cg.Options.EqualExceptForParseKind(globals.ParseOptions))
-            {
-                return cg.Grammar;
-            }
-            else
-            {
-                CachedGrammar newCachedGrammar;
-
-                if (globals.Cache != null)
-                {
-                    // try to access/store grammar from globals cache if there is one
-                    if (!globals.Cache.TryGetValue<CachedGrammar>(out newCachedGrammar))
-                    {
-                        newCachedGrammar = globals.Cache.GetOrCreate(() => 
-                            new CachedGrammar(
-                                new QueryGrammar(globals.ParseOptions),
-                                globals.ParseOptions));
-                    }
-                }
-                else
-                {
-                    // otherwise create a new grammar that corresponds the parse options
-                    newCachedGrammar = new CachedGrammar(
-                        new QueryGrammar(globals.ParseOptions),
-                        globals.ParseOptions);
-                }
-
-                // store recent grammar instance so we it can be used later
-                Interlocked.CompareExchange(ref s_currentGrammar, newCachedGrammar, cg);
-
-                return newCachedGrammar.Grammar;
-            }
+            var options = globals.ParseOptions;
+            var index = (options.AlwaysProduceEndToken ? 1 : 0)
+                | (options.AllowLiteralsWithLineBreaks ? 2 : 0)
+                | (options.AllowNonAdjacentWildcardParts ? 4 : 0);
+#if BRIDGE
+            return s_grammars[index] ?? (s_grammars[index] = CreateGrammar(index));
+#else
+            return s_grammars[index].Value;
+#endif
         }
 
-        private class CachedGrammar
+        private static QueryGrammar CreateGrammar(int index)
         {
-            public readonly QueryGrammar Grammar;
-            public readonly ParseOptions Options;
-            public CachedGrammar(QueryGrammar grammar, ParseOptions options)
-            {
-                this.Grammar = grammar;
-                this.Options = options;
-            }
+            return new QueryGrammar(
+                ParseOptions.Default
+                    .WithAlwaysProduceEndTokens((index & 1) != 0)
+                    .WithAllowLiteralsWithLineBreaks((index & 2) != 0)
+                    .WithAllowNonAdjacentWildcardParts((index & 4) != 0));
         }
 
-        private static CachedGrammar s_currentGrammar;
+#if !BRIDGE
+        private static Lazy<QueryGrammar>[] CreateGrammars()
+        {
+            var grammars = new Lazy<QueryGrammar>[8];
+            for (int i = 0; i < grammars.Length; i++)
+            {
+                var index = i;
+                grammars[i] = new Lazy<QueryGrammar>(() => CreateGrammar(index));
+            }
+
+            return grammars;
+        }
+#endif
+
+        // Key all three boolean options compared by EqualExceptForParseKind.
+#if BRIDGE
+        // Bridge.NET has no System.Lazy<T>; JavaScript lookups run synchronously.
+        private static readonly QueryGrammar[] s_grammars = new QueryGrammar[8];
+#else
+        // Lazy publishes each grammar once without retaining any GlobalState or schema.
+        private static readonly Lazy<QueryGrammar>[] s_grammars = CreateGrammars();
+#endif
 
         public Parser<LexicalToken, QueryBlock> QueryBlock { get; private set; }
         public Parser<LexicalToken, Statement> Statement { get; private set; }

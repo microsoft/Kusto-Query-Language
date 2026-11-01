@@ -49,7 +49,6 @@ namespace Kusto.Language
         {
             if (!m_cache.TryGetValue(typeof(T), out var value))
             {
-                var newValue = creator();
                 value = m_cache.GetOrAdd(typeof(T), _ => creator());
             }
 

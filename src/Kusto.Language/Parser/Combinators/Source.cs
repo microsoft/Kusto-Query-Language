@@ -60,7 +60,6 @@ namespace Kusto.Language.Parsing
         {
             if (!m_cache.TryGetValue(typeof(T), out var value))
             {
-                var newValue = creator();
                 value = m_cache[typeof(T)] = creator();
             }
 
