@@ -58,6 +58,9 @@ namespace Kusto.Language.Editor
         public static readonly KustoAnalyzer AvoidStrlenWithDynamic =
             new AvoidStrlenWithDynamicAnalyzer();
 
+        public static readonly KustoAnalyzer DateTimeLiteral =
+            new DateTimeLiteralAnalyzer();
+
         /// <summary>
         /// The set of all known kusto analyzers
         /// </summary>
@@ -78,7 +81,8 @@ namespace Kusto.Language.Editor
                  CalledFunctionHasErrors,
                  AvoidUsingHasWithIPv4Strings,
                  PreferUsingOptimizedAlternative,
-                 AvoidStrlenWithDynamic
+                 AvoidStrlenWithDynamic,
+                 DateTimeLiteral
              }
              .ToReadOnly();
     }

@@ -31,5 +31,7 @@ namespace Kusto.Language.Editor
         internal const string AvoidUsingHasWithIPv4Strings = "KS514";
         internal const string PreferUsingOptimizedAlternative = "KS515";
         internal const string AvoidStrlenWithDynamic = "KS516";
+        internal const string InvalidDateTimeLiteral = "KS517";
+        internal const string AmbiguousNumericDateTimeLiteral = "KS518";
     }
 }
