@@ -659,6 +659,9 @@ namespace Kusto.Language.Syntax
                     split++;
                 }
 
+#if NET6_0_OR_GREATER && !BRIDGE
+                return GetTimeSpanValue(valueText.AsSpan(0, split), valueText.AsSpan(split));
+#else
                 var numberText = valueText.Substring(0, split);
                 var wordText = valueText.Substring(split);
 
@@ -714,7 +717,64 @@ namespace Kusto.Language.Syntax
 
                 // bad timespan literal?
                 return TimeSpan.FromSeconds(0.0);
+#endif
             }
+
+#if NET6_0_OR_GREATER && !BRIDGE
+            private static TimeSpan GetTimeSpanValue(
+                ReadOnlySpan<char> numberText, ReadOnlySpan<char> wordText)
+            {
+                double number;
+                if (CultureUtilities.TryParseDoubleInvariant(numberText, out number))
+                {
+                    if (wordText.SequenceEqual("s".AsSpan())
+                        || wordText.SequenceEqual("sec".AsSpan())
+                        || wordText.SequenceEqual("second".AsSpan())
+                        || wordText.SequenceEqual("seconds".AsSpan()))
+                        return TimeSpan.FromSeconds(number);
+                    if (wordText.SequenceEqual("m".AsSpan())
+                        || wordText.SequenceEqual("min".AsSpan())
+                        || wordText.SequenceEqual("minute".AsSpan())
+                        || wordText.SequenceEqual("minutes".AsSpan()))
+                        return TimeSpan.FromMinutes(number);
+                    if (wordText.SequenceEqual("h".AsSpan())
+                        || wordText.SequenceEqual("hr".AsSpan())
+                        || wordText.SequenceEqual("hrs".AsSpan())
+                        || wordText.SequenceEqual("hour".AsSpan())
+                        || wordText.SequenceEqual("hours".AsSpan()))
+                        return TimeSpan.FromHours(number);
+                    if (wordText.SequenceEqual("d".AsSpan())
+                        || wordText.SequenceEqual("day".AsSpan())
+                        || wordText.SequenceEqual("days".AsSpan()))
+                        return TimeSpan.FromDays(number);
+                    if (wordText.SequenceEqual("ms".AsSpan())
+                        || wordText.SequenceEqual("milli".AsSpan())
+                        || wordText.SequenceEqual("millis".AsSpan())
+                        || wordText.SequenceEqual("millisec".AsSpan())
+                        || wordText.SequenceEqual("millisecond".AsSpan())
+                        || wordText.SequenceEqual("milliseconds".AsSpan()))
+                        return TimeSpan.FromMilliseconds(number);
+                    if (wordText.SequenceEqual("micro".AsSpan())
+                        || wordText.SequenceEqual("micros".AsSpan())
+                        || wordText.SequenceEqual("microsec".AsSpan())
+                        || wordText.SequenceEqual("microsecond".AsSpan())
+                        || wordText.SequenceEqual("microseconds".AsSpan()))
+                        return TimeSpan.FromSeconds(number / 1_000_000.0);
+                    if (wordText.SequenceEqual("nano".AsSpan())
+                        || wordText.SequenceEqual("nanos".AsSpan())
+                        || wordText.SequenceEqual("nanosec".AsSpan())
+                        || wordText.SequenceEqual("nanosecond".AsSpan())
+                        || wordText.SequenceEqual("nanoseconds".AsSpan()))
+                        return TimeSpan.FromSeconds(number / 1_000_000_000.0);
+                    if (wordText.SequenceEqual("tick".AsSpan())
+                        || wordText.SequenceEqual("ticks".AsSpan()))
+                        return TimeSpan.FromTicks((long)number);
+                }
+
+                // bad timespan literal?
+                return TimeSpan.FromSeconds(0.0);
+            }
+#endif
 
             private static DateTime GetDateTimeValue(string text)
             {

@@ -598,7 +598,7 @@ namespace Kusto.Language.Utils
         /// <summary>
         /// Parses a real/double *literal* the way the engine does, where ',' is a group separator:
         /// real(1,5) is 15 and real(1,234,567) is 1234567. Other numeric text (timespan components,
-        /// client directive arguments) must use <see cref="TryParseDoubleInvariant"/>, which rejects
+        /// client directive arguments) must use <see cref="TryParseDoubleInvariant(string, out double)"/>, which rejects
         /// group separators, because the engine rejects them there.
         /// </summary>
         public static bool TryParseRealLiteralInvariant(string text, out double value)
@@ -634,6 +634,19 @@ namespace Kusto.Language.Utils
             return Double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
 #endif
         }
+
+#if NET6_0_OR_GREATER && !BRIDGE
+        public static bool TryParseDoubleInvariant(ReadOnlySpan<char> text, out double value)
+        {
+            if (text.IndexOf(',') >= 0)
+            {
+                value = default(double);
+                return false;
+            }
+
+            return Double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+        }
+#endif
 
         public static bool TryParseDecimalInvariant(string text, out decimal value)
         {
