@@ -272,7 +272,7 @@ namespace Kusto.Language.Generator
 
         private static readonly string[] c_newline = new string[] { System.Environment.NewLine };
 
-        public void WriteLine(string text, bool detectNewLines = true)
+        public void WriteLine(string text, bool detectNewLines = true, bool unindented = false)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -286,12 +286,26 @@ namespace Kusto.Language.Generator
                 var lines = text.Split(c_newline, StringSplitOptions.None);
                 foreach (var line in lines)
                 {
-                    m_writer.WriteLine(line);
+                    if (unindented)
+                    {
+                        m_writer.WriteLineNoTabs(line);
+                    }
+                    else
+                    {
+                        m_writer.WriteLine(line);
+                    }
                 }
             }
             else
             {
-                m_writer.WriteLine(text);
+                if (unindented)
+                {
+                    m_writer.WriteLineNoTabs(text);
+                }
+                else
+                {
+                    m_writer.WriteLine(text);
+                }
             }
             if (text.EndsWith(Environment.NewLine) || text.EndsWith("{"))
             {

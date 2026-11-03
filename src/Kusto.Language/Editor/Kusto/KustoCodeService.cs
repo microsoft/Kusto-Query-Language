@@ -140,6 +140,11 @@ namespace Kusto.Language.Editor
                             Interlocked.CompareExchange(ref this.lazyBoundCode, newCode, null);
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        // cancellation comes from the caller, not from the text, so it must not be remembered as a failure of this service
+                        throw;
+                    }
                     catch (Exception e)
                     {
                         this.codeException = e;
@@ -191,6 +196,10 @@ namespace Kusto.Language.Editor
                         var ds = code.GetDiagnostics(cancellationToken);
                         Interlocked.CompareExchange(ref this.lazyDiagnostics, ds, null);
                     }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
                     catch (Exception)
                     {
                         Interlocked.CompareExchange(ref this.lazyDiagnostics, EmptyReadOnlyList<Diagnostic>.Instance, null);
@@ -236,6 +245,10 @@ namespace Kusto.Language.Editor
                     try
                     {
                         analyzer.Analyze(code, analyzerDx, cancellationToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
                     }
                     catch (Exception e)
                     {

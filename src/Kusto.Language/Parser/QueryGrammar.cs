@@ -1145,8 +1145,16 @@ namespace Kusto.Language.Parsing
             var KnownFunctionNameReference =
                 AsIdentifierNameReference(Token(knownFunctionNames).Hide());
 
+            // keywords that can be identifiers (like partition) can be user function names too;
+            // typeof(...) and inline_external_table(...) are excluded because they are their own expressions.
+            var ScanKeywordAsFunctionName =
+                Match(t => IsKeywordAsIdentifier(t)
+                    && t.Kind != SyntaxKind.TypeOfKeyword
+                    && t.Kind != SyntaxKind.InlineExternalTableKeyword)
+                .Hide();
+
             var ScanFunctionCall =
-                And(Or(ScanIdentifierName, ScanBracketedName, ScanKnownFunctionNames), Token(SyntaxKind.OpenParenToken));
+                And(Or(ScanIdentifierName, ScanBracketedName, ScanKnownFunctionNames, ScanKeywordAsFunctionName), Token(SyntaxKind.OpenParenToken));
 
             var FunctionCallNames =
                 First(SimpleNameReference, KnownFunctionNameReference);
@@ -1563,10 +1571,10 @@ namespace Kusto.Language.Parsing
                                 (left, op, right) => (Expression)new InExpression(SyntaxKind.NotInCsExpression, left, op, right)),
 
                             Rule(_left, InToken(SyntaxKind.HasAnyKeyword), InOperatorExpressionList,
-                                (left, op, right) => (Expression)new HasAnyExpression(SyntaxKind.HasAnyKeyword, left, op, right)),
+                                (left, op, right) => (Expression)new HasAnyExpression(SyntaxKind.HasAnyExpression, left, op, right)),
 
                               Rule(_left, InToken(SyntaxKind.HasAllKeyword), InOperatorExpressionList,
-                                (left, op, right) => (Expression)new HasAllExpression(SyntaxKind.HasAllKeyword, left, op, right)),
+                                (left, op, right) => (Expression)new HasAllExpression(SyntaxKind.HasAllExpression, left, op, right)),
 
                             Rule(_left, Token(SyntaxKind.BetweenKeyword, CompletionKind.ScalarInfix, ctext: SyntaxFacts.GetText(SyntaxKind.BetweenKeyword) + " (| .. )"), ExpressionCouple,
                                 (left, op, right) => (Expression)new BetweenExpression(SyntaxKind.BetweenExpression, left, op, right)),

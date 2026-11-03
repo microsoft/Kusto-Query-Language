@@ -169,7 +169,7 @@ namespace Kusto.Language
             globals = globals.WithParseOptions(globals.ParseOptions.WithAlwaysProduceEndTokens(true));
             var tokens = TokenParser.ParseTokens(text, globals.ParseOptions);
             var starts = GetTokenStarts(tokens);
-            return Create(text, globals, tokens, starts, analyze: true, cancellationToken: default(CancellationToken));
+            return Create(text, globals, tokens, starts, analyze: true, cancellationToken: cancellationToken);
         }
 
         /// <summary>

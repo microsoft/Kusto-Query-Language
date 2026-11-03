@@ -220,7 +220,8 @@ namespace Kusto.Language.Binding
             DatabaseSymbol currentDatabase,
             FunctionSymbol currentFunction,
             LocalScope outerScope,
-            IEnumerable<Symbol> locals)
+            IEnumerable<Symbol> locals,
+            CancellationToken cancellationToken)
         {
             if (!bodyTree.IsSafeToRecurse(outer._globals))
                 return false;
@@ -235,7 +236,7 @@ namespace Kusto.Language.Binding
                 outer._globalBindingCache,
                 outer._localBindingCache,
                 outer._semanticInfoSetter,
-                outer._cancellationToken);
+                cancellationToken);
 
             if (locals != null)
             {

@@ -54,6 +54,13 @@ namespace Kusto.Language.Parsing
                     Match(
                         (input, start) =>
                         {
+                            // If a complete command already reaches the end of the input, the partial (error recovery)
+                            // parse cannot be longer, and bestCommandOrPartial keeps bestCommand on ties,
+                            // so skip the expensive partial search across all command parsers.
+                            var fullLen = bestCommand.Scan(input, start);
+                            if (fullLen > 0 && (input.IsEnd(start + fullLen) || input.Peek(start + fullLen).Kind == SyntaxKind.EndOfTextToken))
+                                return -1;
+
                             var len = PartialParser.ScanPartialBest(commandParsers, input, start);
                             // fail if only dot (first token). It will become UnknownCommand
                             return (len < 2) ? -1 : len;

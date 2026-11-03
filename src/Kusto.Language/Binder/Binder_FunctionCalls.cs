@@ -1829,7 +1829,7 @@ namespace Kusto.Language.Binding
 
                 // use expansion at this call site to determine correct return type
                 // if signature facts was not yet known, it will be computed by calling GetCallSiteExpansion
-                var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes);
+                var expansion = this.GetFunctionCallExpansion(signature, arguments, argumentTypes, _cancellationToken);
                 
                 // get computed fun facts
                 TryGetFunctionBodyFacts(signature, out funFacts);
@@ -2029,7 +2029,9 @@ namespace Kusto.Language.Binding
                     // re-introduce binding lock since deferred function can be called outside the current binding lock
                     lock (this._globalBindingCache)
                     {
-                        expansion = this.GetFunctionCallExpansion(signature, args, types);
+                        // the token of the binding that created this closure may be cancelled by the time it runs,
+                        // and nothing is waiting on this expansion that could be cancelled with it
+                        expansion = this.GetFunctionCallExpansion(signature, args, types, default(CancellationToken));
                     }
                 }
 
@@ -2042,8 +2044,9 @@ namespace Kusto.Language.Binding
         /// </summary>
         internal FunctionCallExpansion GetFunctionCallExpansion(
             Signature signature,
-            IReadOnlyList<Expression> arguments = null,
-            IReadOnlyList<TypeSymbol> argumentTypes = null)
+            IReadOnlyList<Expression> arguments,
+            IReadOnlyList<TypeSymbol> argumentTypes,
+            CancellationToken cancellationToken)
         {
             if (signature.ReturnKind != ReturnTypeKind.Computed)
                 return null;
@@ -2088,7 +2091,7 @@ namespace Kusto.Language.Binding
                         var staticScope = GetOuterScope(signature);
 
                         var locals = GetCallSiteArgumentsAsVariables(signature, arguments, argumentTypes);
-                        if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, staticScope, locals))
+                        if (TryBindCalledFunctionBody(expansion, this, currentCluster, currentDatabase, signature.Symbol as FunctionSymbol, staticScope, locals, cancellationToken))
                         {
                             // compute function body facts as side effect
                             var _ = GetOrComputeFunctionBodyFacts(signature, expansion.Root);
@@ -2099,6 +2102,12 @@ namespace Kusto.Language.Binding
                             expansion = null;
                         }
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    // a cancelled expansion is not a failed one: remembering it as null would cache an unknown
+                    // result type for this call site that outlives the cancelled binding
+                    throw;
                 }
                 catch (Exception)
                 {
