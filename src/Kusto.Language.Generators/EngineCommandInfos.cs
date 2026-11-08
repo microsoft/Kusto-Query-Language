@@ -875,6 +875,50 @@ namespace Kusto.Language.Generators
                 PolicyResult);
         #endregion
 
+        #region GraphSnapshotIndexing
+        public static readonly CommandInfo ShowGraphModelPolicySnapshotIndexing =
+            new CommandInfo(nameof(ShowGraphModelPolicySnapshotIndexing),
+                "show graph_model ModelName=<graph_model> policy snapshot_indexing",
+                PolicyResult);
+
+        public static readonly CommandInfo ShowGraphModelStarPolicySnapshotIndexing =
+            new CommandInfo(nameof(ShowGraphModelStarPolicySnapshotIndexing),
+                "show graph_model '*' policy snapshot_indexing",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterGraphModelPolicySnapshotIndexing =
+            new CommandInfo(nameof(AlterGraphModelPolicySnapshotIndexing),
+                "alter graph_model ModelName=<graph_model> policy snapshot_indexing SnapshotIndexingPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteGraphModelPolicySnapshotIndexing =
+            new CommandInfo(nameof(DeleteGraphModelPolicySnapshotIndexing),
+                "delete graph_model ModelName=<graph_model> policy snapshot_indexing",
+                PolicyResult);
+        #endregion
+
+        #region GraphQuery
+        public static readonly CommandInfo ShowGraphModelPolicyGraphQuery =
+            new CommandInfo(nameof(ShowGraphModelPolicyGraphQuery),
+                "show graph_model ModelName=<graph_model> policy graph_query",
+                PolicyResult);
+
+        public static readonly CommandInfo ShowGraphModelStarPolicyGraphQuery =
+            new CommandInfo(nameof(ShowGraphModelStarPolicyGraphQuery),
+                "show graph_model '*' policy graph_query",
+                PolicyResult);
+
+        public static readonly CommandInfo AlterGraphModelPolicyGraphQuery =
+            new CommandInfo(nameof(AlterGraphModelPolicyGraphQuery),
+                "alter graph_model ModelName=<graph_model> policy graph_query GraphQueryPolicy=<string>",
+                PolicyResult);
+
+        public static readonly CommandInfo DeleteGraphModelPolicyGraphQuery =
+            new CommandInfo(nameof(DeleteGraphModelPolicyGraphQuery),
+                "delete graph_model ModelName=<graph_model> policy graph_query",
+                PolicyResult);
+        #endregion
+
         #region ChangeDataCapture
         public static readonly CommandInfo ShowTablePolicyChangeDataCapture =
             new CommandInfo(nameof(ShowTablePolicyChangeDataCapture),
