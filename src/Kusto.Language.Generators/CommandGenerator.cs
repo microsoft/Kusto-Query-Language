@@ -113,7 +113,9 @@ namespace Kusto.Language.Generators
             WriteLine($"// WARNING: Do not modify this file");
             WriteLine($"//          This file is auto generated from the template file '{templateName}.tt'");
             WriteLine($"//          Instead modify the corresponding input info file in the Kusto.Language.Generator project.");
-            WriteLine($"//          After making changes, use the right-click menu on the .tt file and select 'run custom tool'.");
+            WriteLine($"//          After making changes, rebuild the Kusto.Language project to regenerate this file.");
+            WriteLine($"//          Alternatively, set the .tt file's Custom Tool to 'TextTemplatingFileGenerator' in Visual Studio");
+            WriteLine($"//          and select 'Run Custom Tool' from its right-click menu.");
             WriteLine();
         }
 
