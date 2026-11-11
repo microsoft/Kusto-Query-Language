@@ -3278,6 +3278,12 @@ namespace Kusto.Language.Generators
         private static readonly string ExtentContainers =
            "(ExtentContainerId:guid, Url:string, State:string, CreatedOn:datetime, MaxDateTime:datetime, IsRecyclable:bool, StoresDatabaseMetadataPointer:bool, HardDeletePeriod:timespan, ActiveMetadataContainer:bool, MetadataContainer:bool)";
 
+        public static readonly CommandInfo AlterDatabaseExtentContainerPath =
+            new CommandInfo(nameof(AlterDatabaseExtentContainerPath),
+                $"#(alter database DatabaseName=<database> extentcontainer {PropertyList()})",
+                ExtentContainers,
+                "DatabaseExtentContainerAlterPathCommand(DatabaseName, (PropertyName, PropertyValue)*)");
+
         public static readonly CommandInfo AlterExtentContainersAdd =
             new CommandInfo(nameof(AlterExtentContainersAdd),
                 "alter extentcontainers databaseName=<database> add container=<string> [hardDeletePeriod=<timespan> containerId=<guid>]",
