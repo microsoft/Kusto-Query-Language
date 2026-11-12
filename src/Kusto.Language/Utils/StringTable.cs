@@ -57,14 +57,7 @@ namespace Kusto.Language.Utils
         /// <returns>The instance of the value added or already found in the table.</returns>
         public string Add(string text, int start, int length)
         {
-            string result;
-
-            if (!this.map.TryGetValue(text, start, length, out result))
-            {
-                result = this.map.GetOrAddValue(text, start, length, (_t, _s, _l) => _t.Substring(_s, _l));
-            }
-
-            return result;
+            return this.map.GetOrAddValue(text, start, length, (_t, _s, _l) => _t.Substring(_s, _l));
         }
 
         /// <summary>
