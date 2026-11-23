@@ -3386,7 +3386,7 @@ namespace Kusto.Language.Generators
 
         public static readonly CommandInfo AttachExtentsIntoTableByMetadata =
             new CommandInfo(nameof(AttachExtentsIntoTableByMetadata),
-                "attach [async] extents {into table tableName=<table>} by metadata csl=('<|' <input_query>)",
+                $"attach [async] extents {{into table tableName=<table>}} by metadata [{PropertyList()}] csl=('<|' <input_query>)",
                 UnknownResult);
 
         public static readonly CommandInfo AlterExtentTagsFromQuery =
