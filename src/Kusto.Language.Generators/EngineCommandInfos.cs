@@ -2647,7 +2647,7 @@ namespace Kusto.Language.Generators
         public static readonly CommandInfo ShowOperations =
             new CommandInfo(nameof(ShowOperations),
                 "show operations [(OperationId=<guid> | '(' { OperationId=<guid>, ',' }+ ')')]",
-                "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime, VirtualCluster: string)");
+                "(OperationId: guid, Operation: string, NodeId: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, Status: string, RootActivityId: guid, ShouldRetry: bool, Database: string, Principal: string, User: string, AdminEpochStartTime: datetime)");
 
         public static readonly CommandInfo ShowOperationDetails =
             new CommandInfo(nameof(ShowOperationDetails),
@@ -2676,13 +2676,13 @@ namespace Kusto.Language.Generators
 
         private static readonly string QueryResults =
             "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, " +
-            "State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, " +
-            "Application: string, MemoryPeak: long, ScannedEventStatistics: dynamic, Pricipal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)";
+            "State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: string, " +
+            "Application: string, MemoryPeak: long, ScannedExtentsStatistics: string, Principal: string, ClientRequestProperties: string, ResultSetStatistics: string, WorkloadGroup: string, OverallQueryStats: string)";
 
         public static readonly CommandInfo ShowQueries =
             new CommandInfo(nameof(ShowQueries),
                 "show queries",
-                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string, OverallQueryStats: string, VirtualCluster: string)");
+                "(ClientActivityId: string, Text: string, Database: string, StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, User: string, FailureReason: string, TotalCpu: timespan, CacheStatistics: dynamic, Application: string, MemoryPeak: long, ScannedExtentsStatistics: dynamic, Principal: string, ClientRequestProperties: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string, OverallQueryStats: dynamic)");
 
         public static readonly CommandInfo ShowRunningQueries =
             new CommandInfo(nameof(ShowRunningQueries),
@@ -2721,7 +2721,7 @@ namespace Kusto.Language.Generators
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " +
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, RootActivityId: guid, " +
                 "User: string, FailureReason: string, Application: string, Principal: string, TotalCpu: timespan, " +
-                "ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string, VirtualCluster: string)");
+                "ResourcesUtilization: dynamic, ClientRequestProperties: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandInfo ShowCommandsAndQueries =
             new CommandInfo(nameof(ShowCommandsAndQueries),
@@ -2729,12 +2729,12 @@ namespace Kusto.Language.Generators
                 "(ClientActivityId: string, CommandType: string, Text: string, Database: string, " +
                 "StartedOn: datetime, LastUpdatedOn: datetime, Duration: timespan, State: string, FailureReason: string, RootActivityId: guid, " +
                 "User: string, Application: string, Principal: string, ClientRequestProperties: dynamic, " +
-                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string, VirtualCluster: string)");
+                "TotalCpu: timespan, MemoryPeak: long, CacheStatistics: dynamic, ScannedExtentsStatistics: dynamic, ResultSetStatistics: dynamic, WorkloadGroup: string)");
 
         public static readonly CommandInfo ShowIngestionFailures =
             new CommandInfo(nameof(ShowIngestionFailures),
                 "show ingestion failures [with '(' OperationId '=' OperationId=<guid> ')']",
-                "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string)");
+                "(OperationId: guid, Database: string, Table: string, FailedOn: datetime, IngestionSourcePath: string, Details: string, FailureKind: string, RootActivityId: guid, OperationKind: string, OriginatesFromUpdatePolicy: bool, ErrorCode: string, Principal: string, ShouldRetry: bool, User: string, IngestionProperties: string, NumberOfSources: int)");
 
         public static readonly CommandInfo ShowDataOperations =
             new CommandInfo(nameof(ShowDataOperations),
